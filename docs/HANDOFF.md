@@ -185,10 +185,41 @@ Dark, premium, cutting-edge. The site itself IS the portfolio piece. Every inter
 
 ### SEO Strategy
 
-- Traditional SEO: meta titles, descriptions, OG images, semantic HTML, sitemap.xml, robots.txt
-- AI-optimized SEO: JSON-LD structured data, clear content hierarchy, FAQ schema, service schema
-- Designed to rank on Google AND be comprehended by AI search (ChatGPT, Perplexity, Claude)
-- Every public page has: meta title, meta description, OG image, OG title, OG description, JSON-LD
+**Dual approach:** Traditional search (Google) AND AI search (ChatGPT, Perplexity, Claude). Designed to rank AND be comprehended.
+
+**Title pattern:** `{Page Title} - BuiltByBas`
+
+- Home: `Custom Software & Web Development for Small Business - BuiltByBas`
+- Services: `Web Development Services - BuiltByBas`
+- Portfolio: `Our Work - BuiltByBas`
+
+**Meta descriptions:** Unique per page, 120-160 chars, primary keyword in first 60 chars, action-oriented CTA language.
+
+**OG image approach:** Static branded image for v1 (single 1200x630 image with logo + tagline). Dynamic OG images deferred to v2 (per-portfolio-item, per-service).
+
+**Structured data schemas (JSON-LD):**
+
+| Schema           | Where            | Purpose                                    |
+| ---------------- | ---------------- | ------------------------------------------ |
+| `Organization`   | Root layout      | Business name, logo, contact, social links |
+| `WebSite`        | Home page        | Site name, URL                             |
+| `Service`        | Services page    | Each service offering with description     |
+| `FAQ`            | Services / About | Common questions for rich results          |
+| `BreadcrumbList` | All pages        | Navigation path in search results          |
+
+**Technical SEO:**
+
+- `robots.txt`: Allow all public pages. Disallow `/admin/`, `/portal/`, `/api/`. Sitemap reference.
+- `sitemap.xml`: Dynamic via Next.js `sitemap.ts` — all public pages, excludes auth/admin/portal/api routes.
+- Favicon: Custom BuiltByBas icon (`.ico` + `.svg`)
+
+**Core Web Vitals targets:** LCP < 2.5s, INP < 200ms, CLS < 0.1
+
+**Font loading:** `next/font` with `font-display: swap`, preloaded. No external font CDN requests.
+
+**Image optimization:** Next.js `<Image>` component for all images. WebP/AVIF automatic format negotiation. Responsive `sizes` attribute. Priority loading for above-fold hero images.
+
+**Analytics:** Deferred to v1 launch decision — options: Google Analytics 4, Plausible (privacy-first), or Umami (self-hosted). Script loaded with `defer`, never render-blocking.
 
 ### Principles (from Bas)
 

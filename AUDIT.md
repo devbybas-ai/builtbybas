@@ -23,7 +23,8 @@
 | 10  | DevOps Readiness        | 10/10     | A+     | 3 environments defined (local/staging/production), deployment strategy documented (PM2 + Nginx), DevSecOps in CI (pnpm audit), testing plan comprehensive (5 test types), VPS provisioned                                         |
 | 11  | RAI Compliance          | 10/10     | A+     | RAI-POLICY.md present with all 6 sections, every AI feature (6 total) has a documented human review gate, data handling rules defined, incident response process documented                                                       |
 | 12  | Handoff Quality         | 10/10     | A+     | Business concept clear with problem/solution/metrics, TOC present, status line accurate, all decisions documented with justification, design direction detailed, SEO strategy noted, Bas's own words captured                     |
-|     | **Overall Readiness**   | **10/10** | **A+** |                                                                                                                                                                                                                                   |
+| 13  | SEO Foundation          | 10/10     | A+     | Title pattern locked (`{Page} - BuiltByBas`), OG static for v1, 5 JSON-LD schemas planned, robots.txt/sitemap.xml rules defined, CWV targets set, font/image strategy decided, all documented in HANDOFF.md                       |
+|     | **Overall Readiness**   | **10/10** | **A+** | All 13 dimensions at 10/10                                                                                                                                                                                                        |
 
 ---
 
@@ -77,10 +78,12 @@ Tech Debt Classes:
 
 ## Section 5: Audit History
 
-| Date       | Session | Type                   | Score      | Auditor      | Notes                                                                                                                                       |
-| ---------- | ------- | ---------------------- | ---------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| 2026-02-28 | Setup   | Pre-Build Readiness    | 10/10 (A+) | Claude + Bas | Initial setup audit. All 10 prerequisites PASS. All 17 quality gates PASS. Zero issues. Zero tech debt. Project starts in perfect standing. |
-| 2026-02-28 | Setup-2 | Doc Format Enforcement | 10/10 (A+) | Claude + Bas | Table formatting fixed across all 9 docs. Markdownlint config updated. Format-tables script created. No score changes.                      |
+| Date       | Session | Type                   | Score       | Auditor      | Notes                                                                                                                                       |
+| ---------- | ------- | ---------------------- | ----------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-02-28 | Setup   | Pre-Build Readiness    | 10/10 (A+)  | Claude + Bas | Initial setup audit. All 10 prerequisites PASS. All 17 quality gates PASS. Zero issues. Zero tech debt. Project starts in perfect standing. |
+| 2026-02-28 | Setup-2 | Doc Format Enforcement | 10/10 (A+)  | Claude + Bas | Table formatting fixed across all 9 docs. Markdownlint config updated. Format-tables script created. No score changes.                      |
+| 2026-02-28 | Setup-3 | SEO Foundation Added   | 9.8/10 (A+) | Claude + Bas | Added Section 6 (SEO Foundation) to PROJECT-SETUP.md. Added dimension 13 to audit. Scored 8/10 — core strategy exists, details deferred.    |
+| 2026-02-28 | Setup-4 | SEO Finalized + Format | 10/10 (A+)  | Claude + Bas | SEO decisions finalized in HANDOFF.md (title pattern, OG, schemas, CWV, fonts, images). Doc format rules added to CLAUDE.md. 13/13 at 10.   |
 
 ---
 

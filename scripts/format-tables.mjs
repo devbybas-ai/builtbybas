@@ -19,6 +19,7 @@ const FILES = [
   'docs/HANDOFF.md',
   'AUDIT.md',
   'RAI-POLICY.md',
+  'PROJECT-SETUP.md',
   '.claude/CLAUDE.md',
 ];
 

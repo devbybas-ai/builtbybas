@@ -171,6 +171,17 @@ From the Site Health Plan — these are NEVER allowed:
 - No changing locked tech stack decisions without documented justification in HANDOFF.md
 - No deploying without `pnpm test` and `pnpm build` passing
 
+**Documentation Format:**
+
+- All markdown tables must have aligned columns in source — run `node scripts/format-tables.mjs` before committing doc changes
+- Every governance doc with tables must be listed in `scripts/format-tables.mjs` FILES array
+- Tables must have a header row, separator row (`---`), and at least one data row
+- Heading hierarchy must be sequential — no skipping levels (H2 → H3 → H4, never H2 → H4)
+- Major sections in governance docs separated by `---` horizontal rules
+- No raw HTML in markdown files — use standard markdown syntax
+- Markdown lint must pass per `.markdownlint.json` configuration
+- When adding a new governance doc: add it to `scripts/format-tables.mjs`, DOCUMENT-INDEX.md, and CLAUDE.md Quick Reference
+
 ---
 
 ## 9. DevOps Standards
