@@ -44,6 +44,17 @@ export function HeroBackground() {
           <path id="r14" d="M700,600 V520 H600 V420 H550 V350 H500 V300" fill="none" />
           <path id="r15" d="M100,600 V530 H250 V450 H380 V350 H500 V300" fill="none" />
           <path id="r16" d="M900,600 V530 H750 V450 H620 V350 H500 V300" fill="none" />
+          {/* Background bus paths — deep layer */}
+          <path id="b1" d="M30,40 H280" fill="none" />
+          <path id="b2" d="M740,40 H970" fill="none" />
+          <path id="b3" d="M50,110 H200" fill="none" />
+          <path id="b4" d="M800,110 H960" fill="none" />
+          <path id="b5" d="M60,30 V180" fill="none" />
+          <path id="b6" d="M940,30 V180" fill="none" />
+          <path id="b7" d="M30,550 H280" fill="none" />
+          <path id="b8" d="M740,550 H970" fill="none" />
+          <path id="b9" d="M60,420 V570" fill="none" />
+          <path id="b10" d="M940,420 V570" fill="none" />
         </defs>
 
         {/* ============================================ */}
@@ -293,25 +304,69 @@ export function HeroBackground() {
         </g>
 
         {/* ============================================ */}
-        {/* PARTICLES — sparse, thin, bright, fast        */}
+        {/* DEEP LAYER PARTICLES — dim, small, slow        */}
+        {/* Creates 3D depth: these feel "behind" the PCB  */}
         {/* ============================================ */}
+        <g>
+          <circle r="0.4" fill="#00D4FF" opacity="0.15">
+            <animateMotion dur="6s" repeatCount="indefinite"><mpath href="#b1" /></animateMotion>
+          </circle>
+          <circle r="0.4" fill="#00D4FF" opacity="0.12">
+            <animateMotion dur="5.5s" repeatCount="indefinite" begin="2s"><mpath href="#b2" /></animateMotion>
+          </circle>
+          <circle r="0.35" fill="#00D4FF" opacity="0.1">
+            <animateMotion dur="4.5s" repeatCount="indefinite" begin="1s"><mpath href="#b3" /></animateMotion>
+          </circle>
+          <circle r="0.35" fill="#00D4FF" opacity="0.1">
+            <animateMotion dur="5s" repeatCount="indefinite" begin="3.5s"><mpath href="#b4" /></animateMotion>
+          </circle>
+          <circle r="0.4" fill="#00D4FF" opacity="0.12">
+            <animateMotion dur="5s" repeatCount="indefinite" begin="0.5s"><mpath href="#b5" /></animateMotion>
+          </circle>
+          <circle r="0.4" fill="#00D4FF" opacity="0.12">
+            <animateMotion dur="5s" repeatCount="indefinite" begin="4s"><mpath href="#b6" /></animateMotion>
+          </circle>
+          <circle r="0.35" fill="#00D4FF" opacity="0.1">
+            <animateMotion dur="6s" repeatCount="indefinite" begin="1.5s"><mpath href="#b7" /></animateMotion>
+          </circle>
+          <circle r="0.4" fill="#00D4FF" opacity="0.15">
+            <animateMotion dur="5.5s" repeatCount="indefinite" begin="3s"><mpath href="#b8" /></animateMotion>
+          </circle>
+          <circle r="0.35" fill="#00D4FF" opacity="0.1">
+            <animateMotion dur="5s" repeatCount="indefinite" begin="2.5s"><mpath href="#b9" /></animateMotion>
+          </circle>
+          <circle r="0.35" fill="#00D4FF" opacity="0.1">
+            <animateMotion dur="5.5s" repeatCount="indefinite" begin="5s"><mpath href="#b10" /></animateMotion>
+          </circle>
+        </g>
+
+        {/* ============================================ */}
+        {/* TRACE ILLUMINATION + PARTICLES — chained       */}
+        {/* Fast travel, 1.1s pause between each.          */}
+        {/* Chain: p1 →1.1s→ p2 →1.1s→ p3 →1.1s→ p1      */}
+        {/* Path lengths: r1=650, r6=400, r9=650          */}
+        {/* ============================================ */}
+        <g fill="none" filter="url(#g1)">
+          <use href="#r1" stroke="#00D4FF" strokeWidth="1.5" opacity="0.5" strokeDasharray="30 2000" strokeDashoffset="30" strokeLinecap="round">
+            <animate attributeName="stroke-dashoffset" from="30" to="-620" dur="1.8s" begin="0s; p3.end+1.1s" fill="remove" />
+          </use>
+          <use href="#r6" stroke="#00D4FF" strokeWidth="1.5" opacity="0.5" strokeDasharray="30 2000" strokeDashoffset="30" strokeLinecap="round">
+            <animate attributeName="stroke-dashoffset" from="30" to="-370" dur="1.2s" begin="p1.end+1.1s" fill="remove" />
+          </use>
+          <use href="#r9" stroke="#00D4FF" strokeWidth="1.5" opacity="0.5" strokeDasharray="30 2000" strokeDashoffset="30" strokeLinecap="round">
+            <animate attributeName="stroke-dashoffset" from="30" to="-620" dur="1.8s" begin="p2.end+1.1s" fill="remove" />
+          </use>
+        </g>
+
+        {/* Particles — fast, 1.1s pause between launches */}
         <circle r="0.8" fill="#66EEFF" filter="url(#g1)" opacity="1">
-          <animateMotion dur="3s" repeatCount="indefinite"><mpath href="#r1" /></animateMotion>
+          <animateMotion id="p1" dur="1.8s" begin="0s; p3.end+1.1s" fill="remove"><mpath href="#r1" /></animateMotion>
         </circle>
         <circle r="0.8" fill="#66EEFF" filter="url(#g1)" opacity="1">
-          <animateMotion dur="2.8s" repeatCount="indefinite" begin="1.5s"><mpath href="#r5" /></animateMotion>
+          <animateMotion id="p2" dur="1.2s" begin="p1.end+1.1s" fill="remove"><mpath href="#r6" /></animateMotion>
         </circle>
         <circle r="0.8" fill="#66EEFF" filter="url(#g1)" opacity="1">
-          <animateMotion dur="2.5s" repeatCount="indefinite" begin="0.8s"><mpath href="#r6" /></animateMotion>
-        </circle>
-        <circle r="0.8" fill="#66EEFF" filter="url(#g1)" opacity="1">
-          <animateMotion dur="3s" repeatCount="indefinite" begin="2s"><mpath href="#r9" /></animateMotion>
-        </circle>
-        <circle r="0.8" fill="#66EEFF" filter="url(#g1)" opacity="1">
-          <animateMotion dur="2.5s" repeatCount="indefinite" begin="0.5s"><mpath href="#r12" /></animateMotion>
-        </circle>
-        <circle r="0.8" fill="#66EEFF" filter="url(#g1)" opacity="1">
-          <animateMotion dur="3.2s" repeatCount="indefinite" begin="3s"><mpath href="#r14" /></animateMotion>
+          <animateMotion id="p3" dur="1.8s" begin="p2.end+1.1s" fill="remove"><mpath href="#r9" /></animateMotion>
         </circle>
       </svg>
 
