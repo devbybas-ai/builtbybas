@@ -1,7 +1,7 @@
 # BuiltByBas — Site Health Audit
 
 > **Last Updated:** 2026-02-28
-> **Audit Type:** Pre-Build Readiness
+> **Audit Type:** Post-Foundation Build
 > **Auditor:** Claude + Bas
 > **Overall Score:** 10/10 — A+
 
@@ -56,9 +56,11 @@
 
 ## Section 3: Issues Tracker
 
-| ID  | Severity | Category | Issue                            | Found | Status | Resolution |
-| --- | -------- | -------- | -------------------------------- | ----- | ------ | ---------- |
-| —   | —        | —        | No issues — project starts clean | Setup | —      | —          |
+| ID    | Severity | Category | Issue                                                            | Found   | Status | Resolution                             |
+| ----- | -------- | -------- | ---------------------------------------------------------------- | ------- | ------ | -------------------------------------- |
+| ISS-1 | Low      | DevOps   | Next.js 16 deprecated middleware.ts in favor of proxy convention | Build-1 | Open   | Migrate when proxy API stabilizes      |
+| ISS-2 | Low      | DevOps   | Local is 1 commit ahead of remote — need to git push             | Build-1 | Open   | Push at start of next session          |
+| ISS-3 | Medium   | Infra    | PostgreSQL not running locally — auth routes untested end-to-end | Build-1 | Open   | Set up local PostgreSQL before Phase 2 |
 
 ---
 
@@ -78,14 +80,15 @@ Tech Debt Classes:
 
 ## Section 5: Audit History
 
-| Date       | Session | Type                   | Score       | Auditor      | Notes                                                                                                                                       |
-| ---------- | ------- | ---------------------- | ----------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| 2026-02-28 | Setup   | Pre-Build Readiness    | 10/10 (A+)  | Claude + Bas | Initial setup audit. All 10 prerequisites PASS. All 17 quality gates PASS. Zero issues. Zero tech debt. Project starts in perfect standing. |
-| 2026-02-28 | Setup-2 | Doc Format Enforcement | 10/10 (A+)  | Claude + Bas | Table formatting fixed across all 9 docs. Markdownlint config updated. Format-tables script created. No score changes.                      |
-| 2026-02-28 | Setup-3 | SEO Foundation Added   | 9.8/10 (A+) | Claude + Bas | Added Section 6 (SEO Foundation) to PROJECT-SETUP.md. Added dimension 13 to audit. Scored 8/10 — core strategy exists, details deferred.    |
-| 2026-02-28 | Setup-4 | SEO Finalized + Format | 10/10 (A+)  | Claude + Bas | SEO decisions finalized in HANDOFF.md (title pattern, OG, schemas, CWV, fonts, images). Doc format rules added to CLAUDE.md. 13/13 at 10.   |
-| 2026-02-28 | Setup-5 | Git + GitHub Push      | 10/10 (A+)  | Claude + Bas | SSH multi-account configured (devbybas-ai). All governance pushed to GitHub. Divergent history resolved via rebase. 3 commits on main.      |
+| Date       | Session | Type                   | Score       | Auditor      | Notes                                                                                                                                                                                                                                             |
+| ---------- | ------- | ---------------------- | ----------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-02-28 | Setup   | Pre-Build Readiness    | 10/10 (A+)  | Claude + Bas | Initial setup audit. All 10 prerequisites PASS. All 17 quality gates PASS. Zero issues. Zero tech debt. Project starts in perfect standing.                                                                                                       |
+| 2026-02-28 | Setup-2 | Doc Format Enforcement | 10/10 (A+)  | Claude + Bas | Table formatting fixed across all 9 docs. Markdownlint config updated. Format-tables script created. No score changes.                                                                                                                            |
+| 2026-02-28 | Setup-3 | SEO Foundation Added   | 9.8/10 (A+) | Claude + Bas | Added Section 6 (SEO Foundation) to PROJECT-SETUP.md. Added dimension 13 to audit. Scored 8/10 — core strategy exists, details deferred.                                                                                                          |
+| 2026-02-28 | Setup-4 | SEO Finalized + Format | 10/10 (A+)  | Claude + Bas | SEO decisions finalized in HANDOFF.md (title pattern, OG, schemas, CWV, fonts, images). Doc format rules added to CLAUDE.md. 13/13 at 10.                                                                                                         |
+| 2026-02-28 | Setup-5 | Git + GitHub Push      | 10/10 (A+)  | Claude + Bas | SSH multi-account configured (devbybas-ai). All governance pushed to GitHub. Divergent history resolved via rebase. 3 commits on main.                                                                                                            |
+| 2026-02-28 | Build-1 | Phase 1 Foundation     | 10/10 (A+)  | Claude + Bas | Full foundation built: Next.js 16, Tailwind 4, shadcn/ui, Drizzle+PG schema, custom auth (bcrypt, httpOnly, RBAC, rate limiting), 6 security headers, 21 tests passing, SEO foundation, 14 routes. 57 files, 12,524 lines. 3 minor issues logged. |
 
 ---
 
-**Transition Note:** After the first build session, Section 1 transitions from Pre-Build dimensions to the standard 14-dimension Health Dashboard from the Site Health Plan. Pre-Build scores are preserved in the Audit History above.
+**Transition Note:** Pre-Build dimensions are preserved in Audit History above. Section 1 will transition to the standard 14-dimension Health Dashboard from the Site Health Plan once the public site is live and measurable (Phase 2+).

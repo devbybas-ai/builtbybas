@@ -1,8 +1,8 @@
 # BuiltByBas — Handoff Document
 
 > **Last Updated:** 2026-02-28
-> **Status:** Pre-Build Complete — All governance committed and pushed to GitHub
-> **Next Session:** Phase 1 — Foundation (Next.js init, DB, auth, layout, design system)
+> **Status:** Phase 1 COMPLETE — Foundation built, tested, committed
+> **Next Session:** Phase 2 — Public Website (hero animations, services, portfolio, intake form)
 
 ---
 
@@ -108,6 +108,7 @@ Dark, premium, cutting-edge. The site itself IS the portfolio piece. Every inter
 - Full in-app invoicing
 - Custom quotes only (no fixed packages)
 - SEO optimized for both traditional search AND AI algorithms (JSON-LD, semantic HTML)
+- **ORM: Drizzle** — SQL-first, TypeScript inference, lighter than Prisma (decided Phase 1)
 
 ### DevOps Decisions
 
@@ -132,12 +133,12 @@ Dark, premium, cutting-edge. The site itself IS the portfolio piece. Every inter
 | Phase | Name                                   | Status      | Sessions |
 | ----- | -------------------------------------- | ----------- | -------- |
 | 0     | Project Setup & Governance             | COMPLETE    | Setup    |
-| 1     | Foundation (Next.js, DB, auth, layout) | NOT STARTED | 1-3      |
-| 2     | Public Website                         | NOT STARTED | 4-7      |
-| 3     | CRM Core (clients, pipeline, scoring)  | NOT STARTED | 8-13     |
-| 4     | Projects + Financials                  | NOT STARTED | 14-19    |
-| 5     | AI Suite + Analytics                   | NOT STARTED | 20-23    |
-| 6     | Hardening + Deployment                 | NOT STARTED | 24-27    |
+| 1     | Foundation (Next.js, DB, auth, layout) | COMPLETE    | 1        |
+| 2     | Public Website                         | NOT STARTED | 2-5      |
+| 3     | CRM Core (clients, pipeline, scoring)  | NOT STARTED | 6-11     |
+| 4     | Projects + Financials                  | NOT STARTED | 12-17    |
+| 5     | AI Suite + Analytics                   | NOT STARTED | 18-21    |
+| 6     | Hardening + Deployment                 | NOT STARTED | 22-25    |
 
 ### What Was Done (Setup Sessions 1-5)
 
@@ -164,18 +165,44 @@ Dark, premium, cutting-edge. The site itself IS the portfolio piece. Every inter
 - Resolved divergent history (rebased local onto GitHub's auto-generated Initial commit)
 - Pushed all commits to GitHub — all 18 governance files now live on remote
 
-**Git state:** 3 commits on main, local and remote in sync at `272d510`
+**Git state:** 4 commits on main, local ahead of remote by 1 at `9139dcc`
 
-### What's Next — Phase 1: Foundation
+**Session Build-1 (Phase 1 Foundation):**
 
-1. Initialize Next.js project with TypeScript strict mode (`pnpm create next-app`)
-2. Configure Tailwind CSS 4 + shadcn/ui
-3. Set up PostgreSQL connection and schema (Drizzle or Prisma — decide)
-4. Implement base layout (admin sidebar, public header/footer)
-5. Build authentication (login, sessions, RBAC middleware)
-6. Create the design system (glassmorphism tokens, cyan accents, Framer Motion base)
-7. Set up testing infrastructure (Vitest + Playwright + axe-core)
-8. Update CI/CD pipeline for real build commands
+- Scaffolded Next.js 16 with App Router, TypeScript strict, pnpm, Tailwind CSS 4
+- Installed 14 production deps + 17 dev deps (Drizzle, Framer Motion, Zod, bcryptjs, shadcn/ui, Vitest, Playwright, axe-core)
+- Built dark glassmorphism design system: globals.css with BuiltByBas tokens (#0A0A0F bg, #00D4FF cyan, glass utilities, neon glow, text gradient, reduced-motion support)
+- Created 5 shadcn/ui components (button, card, input, label, sonner) + 3 shared components (GlassCard, SkipToContent, ErrorBoundary)
+- Set up route groups: (public) with 4 pages, (auth) with login, admin with sidebar layout, portal with sidebar layout
+- Built 4 layout components: PublicHeader (glass navbar, mobile menu), PublicFooter, AdminSidebar (8 nav items with icons), PortalSidebar (3 nav items)
+- Configured Drizzle ORM with PostgreSQL: users table (uuid, email, passwordHash, name, role enum, timestamps) + sessions table (uuid, userId FK, expiresAt)
+- Built custom auth system: bcrypt (cost 12), httpOnly cookie sessions (7-day), rate limiting (5/15min/IP), RBAC middleware
+- Created 3 API routes: POST /api/auth/login (Zod validation + rate limiting), POST /api/auth/logout, GET /api/auth/session
+- Added 6 security headers to next.config.ts (CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy, X-XSS-Protection)
+- Set up Vitest (21 tests passing across 3 suites: utils, sanitize, validation) + Playwright config + axe-core integration
+- Created SEO foundation: robots.ts (disallow admin/portal/api), sitemap.ts (5 public pages), metadata template with OG defaults
+- TypeScript types: auth.ts (User, Session, SafeUser, UserRole), api.ts (ApiResponse, PaginatedResponse, ApiError)
+- Utility modules: sanitize.ts (escapeHtml, sanitizeString, sanitizeObject), validation.ts (loginSchema with Zod), utils.ts (cn helper)
+- Commit: `9139dcc` — 57 files, 12,524 insertions
+
+**Verification — all passing:**
+- `pnpm lint` — 0 errors
+- `pnpm tsc --noEmit` — 0 type errors
+- `pnpm test` — 21/21 tests passing
+- `pnpm build` — 14 routes compiled (8 static, 3 dynamic API, robots.txt, sitemap.xml)
+
+### What's Next — Phase 2: Public Website
+
+1. Hero section with Framer Motion animations (scroll reveals, spring physics, parallax)
+2. Services showcase page (9 service cards with descriptions and pricing ranges)
+3. Portfolio grid page (filterable, case study detail pages)
+4. About page (Bas's story, #OneTeam, values)
+5. 10-section intake form (multi-step, progress bar, save state, Zod validation)
+6. Intake confirmation page
+7. JSON-LD structured data (Organization, WebSite, Service, FAQ, BreadcrumbList)
+8. Framer Motion page transitions and scroll-driven animations
+9. OG image (static branded 1200x630)
+10. Public site E2E tests + accessibility tests (axe-core)
 
 ### Notes
 
@@ -183,6 +210,9 @@ Dark, premium, cutting-edge. The site itself IS the portfolio piece. Every inter
 - `scripts/format-tables.mjs` can be re-run anytime with `node scripts/format-tables.mjs` to realign tables
 - SSH remote: `git@github.com-devbybas:devbybas-ai/builtbybas.git` (multi-account SSH alias)
 - Git identity configured per-repo (not global) — name "Bas Rosario", email `devbybas@gmail.com`
+- Next.js 16 deprecated `middleware.ts` in favor of `proxy` — current middleware works but emits a warning. Migrate when stable.
+- PostgreSQL not yet running locally — auth API routes will fail until `DATABASE_URL` is configured in `.env.local`. Create DB before Phase 2 testing.
+- Need to `git push` to sync remote (local is 1 commit ahead)
 
 ---
 
