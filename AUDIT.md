@@ -84,6 +84,7 @@ Tech Debt Classes:
 | 2026-02-28 | Setup-2 | Doc Format Enforcement | 10/10 (A+)  | Claude + Bas | Table formatting fixed across all 9 docs. Markdownlint config updated. Format-tables script created. No score changes.                      |
 | 2026-02-28 | Setup-3 | SEO Foundation Added   | 9.8/10 (A+) | Claude + Bas | Added Section 6 (SEO Foundation) to PROJECT-SETUP.md. Added dimension 13 to audit. Scored 8/10 — core strategy exists, details deferred.    |
 | 2026-02-28 | Setup-4 | SEO Finalized + Format | 10/10 (A+)  | Claude + Bas | SEO decisions finalized in HANDOFF.md (title pattern, OG, schemas, CWV, fonts, images). Doc format rules added to CLAUDE.md. 13/13 at 10.   |
+| 2026-02-28 | Setup-5 | Git + GitHub Push      | 10/10 (A+)  | Claude + Bas | SSH multi-account configured (devbybas-ai). All governance pushed to GitHub. Divergent history resolved via rebase. 3 commits on main.      |
 
 ---
 
