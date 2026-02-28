@@ -190,6 +190,61 @@
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
+
+  .hero-grid {
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+}
+
+/* === HERO BACKGROUND ANIMATIONS === */
+@keyframes orb-pulse {
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+@keyframes trace-pulse-h {
+  0% {
+    stroke-dashoffset: 200;
+  }
+  100% {
+    stroke-dashoffset: -200;
+  }
+}
+
+@keyframes trace-pulse-v {
+  0% {
+    stroke-dashoffset: 200;
+  }
+  100% {
+    stroke-dashoffset: -200;
+  }
+}
+
+.animate-trace-pulse-h {
+  animation: trace-pulse-h 4s linear infinite;
+}
+
+.animate-trace-pulse-v {
+  animation: trace-pulse-v 5s linear infinite;
+  animation-delay: 1s;
+}
+
+.animate-trace-pulse-h2 {
+  animation: trace-pulse-h 6s linear infinite;
+  animation-delay: 2s;
+}
+
+.animate-trace-pulse-amber {
+  animation: trace-pulse-h 3s linear infinite;
+  animation-delay: 0.5s;
 }
 
 /* === REDUCED MOTION === */

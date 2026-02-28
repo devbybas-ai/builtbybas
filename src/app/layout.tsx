@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { SkipToContent } from "@/components/shared/SkipToContent";
+import { MotionProvider } from "@/components/motion/MotionProvider";
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
@@ -44,7 +45,9 @@ export default function RootLayout({
     <html lang="en" className={`dark ${inter.variable}`}>
       <body className="min-h-screen bg-background font-sans text-foreground antialiased">
         <SkipToContent />
-        {children}
+        <MotionProvider>
+          {children}
+        </MotionProvider>
         <Toaster />
       </body>
     </html>

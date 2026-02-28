@@ -1,8 +1,8 @@
 # BuiltByBas — Handoff Document
 
 > **Last Updated:** 2026-02-28
-> **Status:** Phase 1 COMPLETE — Foundation built, tested, committed
-> **Next Session:** Phase 2 — Public Website (hero animations, services, portfolio, intake form)
+> **Status:** Phase 2, Session 1 COMPLETE — Public pages transformed with cinematic animations
+> **Next Session:** Phase 2, Session 2 — Portfolio page, intake form, JSON-LD, OG image, E2E tests
 
 ---
 
@@ -134,7 +134,7 @@ Dark, premium, cutting-edge. The site itself IS the portfolio piece. Every inter
 | ----- | -------------------------------------- | ----------- | -------- |
 | 0     | Project Setup & Governance             | COMPLETE    | Setup    |
 | 1     | Foundation (Next.js, DB, auth, layout) | COMPLETE    | 1        |
-| 2     | Public Website                         | NOT STARTED | 2-5      |
+| 2     | Public Website                         | IN PROGRESS | 2-5      |
 | 3     | CRM Core (clients, pipeline, scoring)  | NOT STARTED | 6-11     |
 | 4     | Projects + Financials                  | NOT STARTED | 12-17    |
 | 5     | AI Suite + Analytics                   | NOT STARTED | 18-21    |
@@ -165,7 +165,7 @@ Dark, premium, cutting-edge. The site itself IS the portfolio piece. Every inter
 - Resolved divergent history (rebased local onto GitHub's auto-generated Initial commit)
 - Pushed all commits to GitHub — all 18 governance files now live on remote
 
-**Git state:** 4 commits on main, local ahead of remote by 1 at `9139dcc`
+**Git state:** 5 commits on main, local ahead of remote by 2 at `ccd5791`
 
 **Session Build-1 (Phase 1 Foundation):**
 
@@ -191,18 +191,34 @@ Dark, premium, cutting-edge. The site itself IS the portfolio piece. Every inter
 - `pnpm test` — 21/21 tests passing
 - `pnpm build` — 14 routes compiled (8 static, 3 dynamic API, robots.txt, sitemap.xml)
 
-### What's Next — Phase 2: Public Website
+**Session Phase2-1 (Public Website — Elite Frontend):**
 
-1. Hero section with Framer Motion animations (scroll reveals, spring physics, parallax)
-2. Services showcase page (9 service cards with descriptions and pricing ranges)
-3. Portfolio grid page (filterable, case study detail pages)
-4. About page (Bas's story, #OneTeam, values)
-5. 10-section intake form (multi-step, progress bar, save state, Zod validation)
-6. Intake confirmation page
-7. JSON-LD structured data (Organization, WebSite, Service, FAQ, BreadcrumbList)
-8. Framer Motion page transitions and scroll-driven animations
-9. OG image (static branded 1200x630)
-10. Public site E2E tests + accessibility tests (axe-core)
+- Built animation infrastructure: `src/lib/motion.ts` (spring presets, variants, viewport config), `useReducedMotion` hook, `useScrollProgress` hook, 6 motion components (FadeIn, StaggerContainer, AnimatedText, CountUp, ParallaxSection, MotionProvider)
+- Created service data layer: `src/types/services.ts` (Service interface, ServiceIcon type), `src/data/services.ts` (9 services with pricing, features, categories)
+- Built homepage: HeroBackground (dense SVG circuit board with IC chips, bus lines, via holes, animated data particles — inspired by PCB/AI chip aesthetic), Hero (AnimatedText headline, dual CTAs with hover/tap physics), StatsBar (4 aspirational stats with CountUp animation), ValueProposition (3 glass cards with hover lift + cyan glow), CTASection (reusable CTA block)
+- Built services page: ServiceIcon (Lucide icon mapper with glow), ServiceCard (glassmorphism card with 3D mouse-tracked tilt, price badge, feature checklist), ServicesGrid (responsive 1/2/3 col stagger grid)
+- Built about page: AboutStory (two-column narrative — frustrated developer + builder's passion + AI pioneer), AboutValues (4 value cards), AboutOneTeam (Bas + Claude partnership visual), AboutTimeline (vertical timeline with 4 milestones)
+- Added page transitions: MotionProvider wraps all pages with fade-in keyed on pathname
+- CSS additions: orb-pulse keyframe, trace-pulse animations, hero-grid utility
+- Every motion component respects `prefers-reduced-motion` via `useReducedMotion` hook
+- All 3 public pages (home, services, about) transformed from bare placeholders to cinematic, conversion-focused experiences
+- 23 new files created, 5 files modified
+- Commit: pending (session not yet committed)
+
+**Verification — all passing:**
+- `pnpm lint` — 0 errors
+- `pnpm tsc --noEmit` — 0 type errors
+- `pnpm test` — 21/21 tests passing
+- `pnpm build` — 14 routes compiled
+
+### What's Next — Phase 2, Sessions 2-5
+
+1. Portfolio grid page (filterable) + case study detail pages
+2. 10-section intake form (multi-step, progress bar, save state, Zod validation)
+3. Intake confirmation page
+4. JSON-LD structured data (Organization, WebSite, Service, FAQ, BreadcrumbList)
+5. OG image (static branded 1200x630)
+6. Public site E2E tests + accessibility tests (axe-core)
 
 ### Notes
 
