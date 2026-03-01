@@ -1,12 +1,19 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
-import type { IntakeFormData } from "@/types/intake";
-import { INITIAL_FORM_DATA } from "@/types/intake";
-import { stepSchemas } from "@/lib/intake-validation";
+import { useState, useCallback, useEffect, useMemo } from "react";
+import type { IntakeFormData, StepConfig } from "@/types/intake";
+import { INITIAL_FORM_DATA, buildSteps } from "@/types/intake";
+import {
+  serviceSelectionSchema,
+  contactSchema,
+  businessSchema,
+  timelineBudgetSchema,
+  designBrandSchema,
+  finalSchema,
+  validateServiceStep,
+} from "@/lib/intake-validation";
 
 const STORAGE_KEY = "builtbybas-intake-draft";
-const TOTAL_STEPS = 10;
 
 export interface IntakeFormState {
   currentStep: number;
@@ -45,22 +52,6 @@ function clearDraft() {
   }
 }
 
-function getStepFields(step: number): (keyof IntakeFormData)[] {
-  const fieldsByStep: (keyof IntakeFormData)[][] = [
-    ["name", "email", "phone", "company"],
-    ["industry", "businessSize", "website"],
-    ["projectTypes"],
-    ["description", "goals"],
-    ["timeline", "budgetRange"],
-    ["hasExistingSite", "currentPainPoints"],
-    ["desiredFeatures"],
-    ["designPreference", "hasBrandAssets"],
-    ["competitors", "inspiration"],
-    ["additionalNotes", "howDidYouHear"],
-  ];
-  return fieldsByStep[step] || [];
-}
-
 export function useIntakeForm() {
   const [state, setState] = useState<IntakeFormState>(() => {
     const draft = loadDraft();
@@ -72,6 +63,15 @@ export function useIntakeForm() {
       isComplete: false,
     };
   });
+
+  // Dynamic step list based on selected services
+  const steps: StepConfig[] = useMemo(
+    () => buildSteps(state.formData.selectedServices),
+    [state.formData.selectedServices],
+  );
+
+  const totalSteps = steps.length;
+  const currentStepConfig = steps[state.currentStep] as StepConfig | undefined;
 
   // Auto-save on form data change
   useEffect(() => {
@@ -86,44 +86,104 @@ export function useIntakeForm() {
         errors: { ...prev.errors, [field]: "" },
       }));
     },
-    []
+    [],
+  );
+
+  const updateServiceAnswer = useCallback(
+    (serviceId: string, questionId: string, value: string | string[]) => {
+      setState((prev) => {
+        const existing = prev.formData.serviceAnswers[serviceId] ?? {};
+        return {
+          ...prev,
+          formData: {
+            ...prev.formData,
+            serviceAnswers: {
+              ...prev.formData.serviceAnswers,
+              [serviceId]: { ...existing, [questionId]: value },
+            },
+          },
+          errors: { ...prev.errors, [questionId]: "" },
+        };
+      });
+    },
+    [],
   );
 
   const validateCurrentStep = useCallback((): boolean => {
-    const schema = stepSchemas[state.currentStep];
-    if (!schema) return true;
+    const step = steps[state.currentStep];
+    if (!step) return true;
 
-    const fields = getStepFields(state.currentStep);
-    const stepData: Record<string, unknown> = {};
-    for (const field of fields) {
-      stepData[field] = state.formData[field];
+    let result: { success: boolean; error?: { issues: { path: PropertyKey[]; message: string }[] } };
+
+    switch (step.type) {
+      case "service-selection":
+        result = serviceSelectionSchema.safeParse(state.formData);
+        break;
+      case "contact":
+        result = contactSchema.safeParse(state.formData);
+        break;
+      case "business":
+        result = businessSchema.safeParse(state.formData);
+        break;
+      case "timeline-budget":
+        result = timelineBudgetSchema.safeParse(state.formData);
+        break;
+      case "design-brand":
+        result = designBrandSchema.safeParse(state.formData);
+        break;
+      case "final":
+        result = finalSchema.safeParse(state.formData);
+        break;
+      case "service-questions": {
+        if (!step.serviceId) return true;
+        const answers = state.formData.serviceAnswers[step.serviceId] ?? {};
+        const serviceResult = validateServiceStep(step.serviceId, answers);
+        if (serviceResult.valid) {
+          setState((prev) => ({ ...prev, errors: {} }));
+          return true;
+        }
+        setState((prev) => ({ ...prev, errors: serviceResult.errors }));
+        return false;
+      }
+      default:
+        return true;
     }
 
-    const result = schema.safeParse(stepData);
     if (result.success) {
       setState((prev) => ({ ...prev, errors: {} }));
       return true;
     }
 
     const errors: Record<string, string> = {};
-    for (const issue of result.error.issues) {
-      const field = issue.path[0];
-      if (field && typeof field === "string") {
-        errors[field] = issue.message;
+    if (result.error) {
+      for (const issue of result.error.issues) {
+        const field = issue.path[0];
+        if (field && typeof field === "string" && !errors[field]) {
+          errors[field] = issue.message;
+        }
       }
     }
     setState((prev) => ({ ...prev, errors }));
     return false;
-  }, [state.currentStep, state.formData]);
+  }, [state.currentStep, state.formData, steps]);
 
   const nextStep = useCallback(() => {
     if (!validateCurrentStep()) return;
-    setState((prev) => ({
-      ...prev,
-      currentStep: Math.min(prev.currentStep + 1, TOTAL_STEPS - 1),
-      errors: {},
-    }));
-  }, [validateCurrentStep]);
+
+    setState((prev) => {
+      const nextIdx = Math.min(prev.currentStep + 1, totalSteps - 1);
+
+      // When service selection changes, ensure we don't go past new bounds
+      const newSteps = buildSteps(prev.formData.selectedServices);
+      const bounded = Math.min(nextIdx, newSteps.length - 1);
+
+      return {
+        ...prev,
+        currentStep: bounded,
+        errors: {},
+      };
+    });
+  }, [validateCurrentStep, totalSteps]);
 
   const prevStep = useCallback(() => {
     setState((prev) => ({
@@ -133,11 +193,14 @@ export function useIntakeForm() {
     }));
   }, []);
 
-  const goToStep = useCallback((step: number) => {
-    if (step >= 0 && step < TOTAL_STEPS) {
-      setState((prev) => ({ ...prev, currentStep: step, errors: {} }));
-    }
-  }, []);
+  const goToStep = useCallback(
+    (step: number) => {
+      if (step >= 0 && step < totalSteps) {
+        setState((prev) => ({ ...prev, currentStep: step, errors: {} }));
+      }
+    },
+    [totalSteps],
+  );
 
   const submitForm = useCallback(async () => {
     if (!validateCurrentStep()) return;
@@ -164,20 +227,29 @@ export function useIntakeForm() {
 
       clearDraft();
       sessionStorage.setItem("builtbybas-intake-name", state.formData.name);
-      setState((prev) => ({ ...prev, isSubmitting: false, isComplete: true }));
+      setState((prev) => ({
+        ...prev,
+        isSubmitting: false,
+        isComplete: true,
+      }));
     } catch {
       setState((prev) => ({
         ...prev,
         isSubmitting: false,
-        errors: { form: "Network error. Please check your connection and try again." },
+        errors: {
+          form: "Network error. Please check your connection and try again.",
+        },
       }));
     }
   }, [validateCurrentStep, state.formData]);
 
   return {
     ...state,
-    totalSteps: TOTAL_STEPS,
+    steps,
+    totalSteps,
+    currentStepConfig,
     updateField,
+    updateServiceAnswer,
     nextStep,
     prevStep,
     goToStep,

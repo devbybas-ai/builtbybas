@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { listSubmissions } from "@/lib/intake-storage";
-import { IntakeListCard } from "@/components/admin/IntakeListCard";
+import { IntakeListView } from "@/components/admin/IntakeListView";
 
 export const metadata: Metadata = {
-  title: "Intake Submissions",
+  title: "Intake Submissions — BuiltByBas Admin",
   robots: { index: false, follow: false },
 };
 
@@ -14,7 +14,9 @@ export default async function AdminIntakePage() {
 
   return (
     <>
-      <h1 className="text-2xl font-bold tracking-tight">Intake Submissions</h1>
+      <h1 className="text-2xl font-bold tracking-tight">
+        Intake Submissions
+      </h1>
       <p className="mt-1 text-muted-foreground">
         Review and analyze incoming project inquiries. Every submission gets the
         same depth of analysis.
@@ -29,11 +31,7 @@ export default async function AdminIntakePage() {
           </p>
         </div>
       ) : (
-        <div className="mt-8 space-y-4">
-          {submissions.map((submission) => (
-            <IntakeListCard key={submission.id} analysis={submission} />
-          ))}
-        </div>
+        <IntakeListView submissions={submissions} />
       )}
     </>
   );

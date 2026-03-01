@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowUpRight, ExternalLink } from "lucide-react";
 import { springs } from "@/lib/motion";
@@ -40,12 +41,22 @@ export function ProjectCard({ project }: ProjectCardProps) {
 
   const content = (
     <>
-      {/* Gradient Preview Area */}
+      {/* Preview Area */}
       <div className={cn("relative aspect-video overflow-hidden rounded-t-xl bg-gradient-to-br", gradient)}>
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.05),transparent_60%)]" />
+        {project.image ? (
+          <Image
+            src={project.image}
+            alt={`${project.title} screenshot`}
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            className="object-cover object-top"
+          />
+        ) : (
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.05),transparent_60%)]" />
+        )}
         <span
           className={cn(
-            "absolute left-3 top-3 rounded-full px-2.5 py-0.5 text-xs font-medium",
+            "absolute left-3 top-3 z-10 rounded-full px-2.5 py-0.5 text-xs font-medium backdrop-blur-sm",
             badge.className,
           )}
         >
@@ -54,7 +65,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
         {catMeta && (
           <span
             className={cn(
-              "absolute right-3 top-3 rounded-full px-2.5 py-0.5 text-xs font-medium",
+              "absolute right-3 top-3 z-10 rounded-full px-2.5 py-0.5 text-xs font-medium backdrop-blur-sm",
               catMeta.color,
             )}
           >

@@ -19,7 +19,7 @@ export function Hero() {
       <div className="relative z-10 mx-auto max-w-4xl text-center">
         {/* Headline */}
         <AnimatedText
-          text="Custom Software for"
+          text="Custom Solutions for"
           as="h1"
           className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl"
           staggerDelay={0.04}
@@ -31,8 +31,9 @@ export function Hero() {
         {/* Subtitle */}
         <FadeIn delay={0.4} className="mt-6">
           <p className="mx-auto max-w-2xl text-lg text-muted-foreground sm:text-xl">
-            Agency-quality websites, dashboards, and tools — built fast, built
-            right, built for your business.
+            Agency-quality websites, dashboards, and tools.
+            <br />
+            Built fast, built right, built for your business.
           </p>
         </FadeIn>
 

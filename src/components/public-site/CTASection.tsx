@@ -32,7 +32,7 @@ export function CTASection({
             >
               <Link
                 href="/intake"
-                className="neon-glow inline-flex h-12 items-center rounded-lg bg-primary px-8 text-base font-semibold text-primary-foreground transition-colors hover:bg-cyan-hover"
+                className="btn-shine neon-glow inline-flex h-12 items-center rounded-lg bg-primary px-8 text-base font-semibold text-primary-foreground transition-colors hover:bg-cyan-hover"
               >
                 Start a Project
               </Link>

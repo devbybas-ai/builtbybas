@@ -179,9 +179,10 @@
 
   .neon-glow {
     box-shadow:
-      0 0 10px rgba(0, 212, 255, 0.2),
-      0 0 20px rgba(0, 212, 255, 0.1),
-      0 0 40px rgba(0, 212, 255, 0.05);
+      0 0 12px rgba(0, 212, 255, 0.35),
+      0 0 24px rgba(0, 212, 255, 0.2),
+      0 0 48px rgba(0, 212, 255, 0.1);
+    animation: neon-pulse 3s ease-in-out infinite;
   }
 
   .text-gradient {
@@ -220,11 +221,13 @@
     background: linear-gradient(
       120deg,
       transparent 0%,
-      transparent 30%,
-      rgba(255, 255, 255, 0.25) 45%,
-      rgba(255, 255, 255, 0.35) 50%,
-      rgba(255, 255, 255, 0.25) 55%,
-      transparent 70%,
+      transparent 25%,
+      rgba(255, 255, 255, 0.15) 38%,
+      rgba(255, 255, 255, 0.4) 45%,
+      rgba(255, 255, 255, 0.5) 50%,
+      rgba(255, 255, 255, 0.4) 55%,
+      rgba(255, 255, 255, 0.15) 62%,
+      transparent 75%,
       transparent 100%
     );
     transform: translateX(-100%);
@@ -242,6 +245,22 @@
 }
 
 /* === SHINE ANIMATIONS === */
+@keyframes neon-pulse {
+  0%,
+  100% {
+    box-shadow:
+      0 0 12px rgba(0, 212, 255, 0.35),
+      0 0 24px rgba(0, 212, 255, 0.2),
+      0 0 48px rgba(0, 212, 255, 0.1);
+  }
+  50% {
+    box-shadow:
+      0 0 18px rgba(0, 212, 255, 0.5),
+      0 0 36px rgba(0, 212, 255, 0.3),
+      0 0 60px rgba(0, 212, 255, 0.15);
+  }
+}
+
 @keyframes btn-shine {
   0%,
   88% {

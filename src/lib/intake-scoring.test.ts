@@ -25,27 +25,26 @@ import {
 
 function createFormData(overrides: Partial<IntakeFormData> = {}): IntakeFormData {
   return {
+    selectedServices: ["marketing-website"],
     name: "Test User",
     email: "test@example.com",
     phone: "",
     company: "Test Co",
-    industry: "Professional Services",
-    businessSize: "Just me",
+    industry: "professional-services",
+    businessSize: "just-me",
     website: "",
-    projectTypes: ["Marketing Website"],
-    description: "I need a new website for my business",
-    goals: "Get more leads online",
-    timeline: "1-3 months",
-    budgetRange: "$5,000 - $15,000",
-    hasExistingSite: "No — starting from scratch",
-    currentPainPoints: "",
-    desiredFeatures: [],
-    designPreference: "Modern & Minimal",
-    hasBrandAssets: "No — I need branding too",
-    competitors: "",
-    inspiration: "",
+    yearsInBusiness: "1-3",
+    serviceAnswers: {},
+    timeline: "1-3-months",
+    budgetRange: "5k-15k",
+    designPreference: "modern-minimal",
+    hasBrandAssets: "no",
+    brandColors: "",
+    competitorSites: "",
+    inspirationSites: "",
     additionalNotes: "",
     howDidYouHear: "",
+    preferredContact: "",
     ...overrides,
   };
 }
@@ -62,17 +61,18 @@ describe("parsePriceRange", () => {
 });
 
 describe("parseBudgetRange", () => {
-  it("returns null for 'Not sure yet'", () => {
-    expect(parseBudgetRange("Not sure yet")).toBeNull();
+  it("returns null for 'unsure'", () => {
+    expect(parseBudgetRange("unsure")).toBeNull();
   });
 
-  it("parses $30,000+ as open-ended", () => {
-    expect(parseBudgetRange("$30,000+")).toEqual([30000, 100000]);
+  it("parses 30k+ as open-ended", () => {
+    expect(parseBudgetRange("30k+")).toEqual([30000, 100000]);
   });
 
   it("parses standard budget ranges", () => {
-    expect(parseBudgetRange("$1,000 - $5,000")).toEqual([1000, 5000]);
-    expect(parseBudgetRange("$5,000 - $15,000")).toEqual([5000, 15000]);
+    expect(parseBudgetRange("1k-5k")).toEqual([1000, 5000]);
+    expect(parseBudgetRange("5k-15k")).toEqual([5000, 15000]);
+    expect(parseBudgetRange("15k-30k")).toEqual([15000, 30000]);
   });
 });
 
@@ -115,21 +115,21 @@ describe("scoreBusinessMaturity", () => {
   it("scores low for a solo founder starting fresh", () => {
     const fd = createFormData();
     const result = scoreBusinessMaturity(fd);
-    // industry not "Other" = +10, that's it
+    // industry not "other" = +10, that's it
     expect(result.score).toBeLessThanOrEqual(25);
     expect(result.label).toBe("Low");
   });
 
   it("scores high for an established business", () => {
     const fd = createFormData({
-      hasExistingSite: "Yes — it needs a complete rebuild",
-      hasBrandAssets: "Yes — logo, colors, brand guide",
-      businessSize: "21-50 people",
-      industry: "Healthcare",
-      competitors: "Mayo Clinic, CVS Health",
+      website: "https://currentsite.com",
+      hasBrandAssets: "yes-full",
+      businessSize: "21-50",
+      industry: "healthcare",
+      competitorSites: "Mayo Clinic, CVS Health",
     });
     const result = scoreBusinessMaturity(fd);
-    // website +15, full brand +20, 6+ +15, 21+ +25, not Other +10, competitors +15 = 100
+    // website +15, full brand +20, 6+ +15, 21+ +25, not other +10, competitors +15 = 100
     expect(result.score).toBe(100);
     expect(result.label).toBe("Very High");
     expect(result.signals.length).toBeGreaterThanOrEqual(5);
@@ -143,10 +143,11 @@ describe("scoreBusinessMaturity", () => {
 describe("scoreProjectReadiness", () => {
   it("scores low with minimal input", () => {
     const fd = createFormData({
-      description: "Need a website",
-      goals: "Be online",
-      budgetRange: "Not sure yet",
-      timeline: "Flexible — quality over speed",
+      serviceAnswers: {},
+      budgetRange: "unsure",
+      timeline: "flexible",
+      inspirationSites: "",
+      selectedServices: [],
     });
     const result = scoreProjectReadiness(fd);
     expect(result.score).toBeLessThanOrEqual(25);
@@ -154,17 +155,26 @@ describe("scoreProjectReadiness", () => {
 
   it("scores high with detailed input", () => {
     const fd = createFormData({
-      description:
-        "We need a custom marketing website with lead capture, CMS integration, and SEO optimization for our plumbing business serving the greater Phoenix area.",
-      goals: "Increase monthly leads from 10 to 50 within 6 months of launch and improve our conversion rate by 30%",
-      budgetRange: "$5,000 - $15,000",
-      timeline: "1-3 months",
-      inspiration: "https://example1.com, https://example2.com",
-      desiredFeatures: ["SEO Optimization", "Contact / Lead Capture Forms"],
+      selectedServices: ["marketing-website"],
+      serviceAnswers: {
+        "marketing-website": {
+          "primary-goal":
+            "Increase monthly leads from 10 to 50 within 6 months of launch and improve our conversion rate by 30%",
+          "page-count": "5-7 pages with contact forms and SEO optimization",
+          "target-audience":
+            "Homeowners in the greater Phoenix area looking for plumbing services",
+          "must-have-features": ["contact-form", "seo", "cms"],
+          "content-ready":
+            "We have most content ready to go, including photos and testimonials",
+        },
+      },
+      budgetRange: "5k-15k",
+      timeline: "1-3-months",
+      inspirationSites: "https://example1.com, https://example2.com",
     });
     const result = scoreProjectReadiness(fd);
-    // desc >100 +20, goals >50 +20, budget defined +20, timeline defined +15, inspiration +10, features +15 = 100
-    expect(result.score).toBe(100);
+    // answerText > 200 +20, answerCount >= 5 +15, budget +20, timeline +15, inspiration +10, services +15 = 95
+    expect(result.score).toBeGreaterThanOrEqual(80);
     expect(result.label).toBe("Very High");
   });
 });
@@ -184,22 +194,33 @@ describe("scoreEngagementLevel", () => {
   it("scores high when all optional fields are filled", () => {
     const fd = createFormData({
       phone: "(555) 123-4567",
-      currentPainPoints: "Our current site is slow and ugly",
-      competitors: "Competitor A, Competitor B",
-      inspiration: "https://stripe.com",
+      competitorSites: "Competitor A, Competitor B",
+      inspirationSites: "https://stripe.com",
       additionalNotes: "We want to launch before summer",
-      howDidYouHear: "Google Search",
-      desiredFeatures: [
-        "Contact / Lead Capture Forms",
-        "SEO Optimization",
-        "Analytics & Reporting",
-        "Content Management (CMS)",
-        "Email Marketing Integration",
-        "Social Media Integration",
-      ],
+      howDidYouHear: "google",
+      selectedServices: ["marketing-website", "crm-system"],
+      brandColors: "#00D4FF, #0A0A0F",
+      serviceAnswers: {
+        "marketing-website": {
+          "primary-goal": "Get more leads online through organic search",
+          "page-count": "5-7 pages",
+          "target-audience": "Small businesses",
+          "content-ready": "We have all content prepared and ready to upload",
+          "must-have-features": ["contact-form", "seo", "analytics"],
+          "seo-importance": "Critical for our business growth",
+          "call-to-action": "Request a quote",
+          "blog-needed": "yes",
+        },
+        "crm-system": {
+          "team-size": "5 users",
+          "current-tools": "Excel spreadsheets",
+          "key-workflows": "Lead tracking and follow-up management",
+          "integration-needs": "Email and calendar",
+        },
+      },
     });
     const result = scoreEngagementLevel(fd);
-    // phone +10, pain +15, competitors +15, inspiration +15, notes +15, hear +10, 3+ features +10, 6+ features +10 = 100
+    // phone +10, answerCount(12) >= 8 +20, competitors +15, inspiration +15, notes +15, hear +10, 2+ services +10, colors +5 = 100
     expect(result.score).toBe(100);
     expect(result.label).toBe("Very High");
   });
@@ -212,13 +233,19 @@ describe("scoreEngagementLevel", () => {
 describe("scoreScopeClarity", () => {
   it("scores higher for focused scope with specific terms", () => {
     const fd = createFormData({
-      projectTypes: ["Marketing Website"],
-      description: "I need a 5-page marketing website with login portal and SEO",
-      goals: "Increase leads by 50% and improve conversion rate",
-      designPreference: "Modern & Minimal",
+      selectedServices: ["marketing-website"],
+      serviceAnswers: {
+        "marketing-website": {
+          "primary-goal": "Increase leads by 50% and improve conversion rate",
+          "page-count": "5 pages with login portal and SEO optimization",
+          "target-audience": "Local homeowners looking for services",
+        },
+      },
+      designPreference: "modern-minimal",
+      website: "https://oldsite.com",
     });
     const result = scoreScopeClarity(fd);
-    // focused +25, specific terms +20, metrics +20, design defined +10, existing state +10 = 85
+    // focused +25, specific terms (page, login, seo) +20, metrics (50%, increase, conversion) +20, design defined +10, website/years +10 = 85
     expect(result.score).toBeGreaterThanOrEqual(70);
     expect(result.label).toBe("Very High");
   });
@@ -229,16 +256,16 @@ describe("scoreScopeClarity", () => {
 // ---------------------------------------------------------------------------
 
 describe("scoreBudgetAlignment", () => {
-  it("returns 40 for 'Not sure yet'", () => {
-    const fd = createFormData({ budgetRange: "Not sure yet" });
+  it("returns 40 for 'unsure'", () => {
+    const fd = createFormData({ budgetRange: "unsure" });
     const result = scoreBudgetAlignment(fd);
     expect(result.score).toBe(40);
   });
 
   it("scores high when budget covers scope", () => {
     const fd = createFormData({
-      projectTypes: ["Marketing Website"],
-      budgetRange: "$5,000 - $15,000",
+      selectedServices: ["marketing-website"],
+      budgetRange: "5k-15k",
     });
     const result = scoreBudgetAlignment(fd);
     // Marketing website min = $2,500, budget max $15,000 covers it
@@ -247,8 +274,8 @@ describe("scoreBudgetAlignment", () => {
 
   it("scores low when budget is far below scope", () => {
     const fd = createFormData({
-      projectTypes: ["Full Operations Platform", "AI-Powered Tools"],
-      budgetRange: "$1,000 - $5,000",
+      selectedServices: ["full-platform", "ai-tools"],
+      budgetRange: "1k-5k",
     });
     const result = scoreBudgetAlignment(fd);
     // Min viable: $15,000 + $10,000 = $25,000; budget max $5,000 — far below
@@ -261,18 +288,18 @@ describe("scoreBudgetAlignment", () => {
 // ---------------------------------------------------------------------------
 
 describe("scoreServiceRecommendations", () => {
-  it("recommends the correct primary service for a single project type", () => {
-    const fd = createFormData({ projectTypes: ["Marketing Website"] });
+  it("recommends the correct primary service for a single selection", () => {
+    const fd = createFormData({ selectedServices: ["marketing-website"] });
     const recs = scoreServiceRecommendations(fd);
     expect(recs.length).toBeGreaterThanOrEqual(1);
     expect(recs[0].serviceId).toBe("marketing-websites");
     expect(recs[0].isPrimary).toBe(true);
   });
 
-  it("recommends multiple services for multiple project types", () => {
+  it("recommends multiple services for multiple selections", () => {
     const fd = createFormData({
-      projectTypes: ["Marketing Website", "CRM System"],
-      budgetRange: "$15,000 - $30,000",
+      selectedServices: ["marketing-website", "crm-system"],
+      budgetRange: "15k-30k",
     });
     const recs = scoreServiceRecommendations(fd);
     const ids = recs.map((r) => r.serviceId);
@@ -280,17 +307,19 @@ describe("scoreServiceRecommendations", () => {
     expect(ids).toContain("crm-systems");
   });
 
-  it("boosts services matching desired features", () => {
+  it("boosts services matching service answer content", () => {
     const fd = createFormData({
-      projectTypes: ["Marketing Website"],
-      desiredFeatures: [
-        "E-Commerce / Payments",
-        "Client Portal / Dashboard",
-      ],
+      selectedServices: ["marketing-website"],
+      serviceAnswers: {
+        "marketing-website": {
+          "primary-goal":
+            "Sell products online and process payments through an e-commerce storefront",
+        },
+      },
     });
     const recs = scoreServiceRecommendations(fd);
     const ids = recs.map((r) => r.serviceId);
-    // e-commerce and client-portals should appear due to feature alignment
+    // e-commerce should appear due to keyword alignment
     expect(ids).toContain("e-commerce");
   });
 
@@ -308,37 +337,28 @@ describe("scoreServiceRecommendations", () => {
 // ---------------------------------------------------------------------------
 
 describe("scoreComplexity", () => {
-  it("scores simple for a single project type with few features", () => {
+  it("scores simple for a single service with few requirements", () => {
     const fd = createFormData({
-      projectTypes: ["Landing Page"],
-      desiredFeatures: ["Contact / Lead Capture Forms"],
+      selectedServices: ["landing-page"],
     });
     const result = scoreComplexity(fd);
     expect(result.overall).toBeLessThanOrEqual(3);
     expect(result.label).toBe("Simple");
   });
 
-  it("scores enterprise for full platform + AI + branding + integrations", () => {
+  it("scores enterprise for full platform + AI + branding + tight timeline", () => {
     const fd = createFormData({
-      projectTypes: [
-        "Marketing Website",
-        "CRM System",
-        "Client Portal",
-        "AI-Powered Tools",
+      selectedServices: [
+        "marketing-website",
+        "crm-system",
+        "client-portal",
+        "ai-tools",
       ],
-      desiredFeatures: [
-        "Contact / Lead Capture Forms",
-        "Analytics & Reporting",
-        "Custom Integrations / API",
-        "AI-Powered Features",
-        "Email Marketing Integration",
-        "Client Portal / Dashboard",
-        "Content Management (CMS)",
-      ],
-      hasBrandAssets: "No — I need branding too",
-      hasExistingSite: "No — starting from scratch",
-      budgetRange: "$30,000+",
-      timeline: "ASAP — I needed this yesterday",
+      hasBrandAssets: "no",
+      website: "",
+      yearsInBusiness: "pre-launch",
+      budgetRange: "30k+",
+      timeline: "asap",
     });
     const result = scoreComplexity(fd);
     expect(result.overall).toBeGreaterThanOrEqual(8);
@@ -348,27 +368,29 @@ describe("scoreComplexity", () => {
 
   it("caps at 10", () => {
     const fd = createFormData({
-      projectTypes: [
-        "Marketing Website",
-        "Website Redesign",
-        "CRM System",
-        "Client Portal",
-        "AI-Powered Tools",
+      selectedServices: [
+        "marketing-website",
+        "website-redesign",
+        "crm-system",
+        "client-portal",
+        "ai-tools",
       ],
-      desiredFeatures: [
-        "Contact / Lead Capture Forms",
-        "Analytics & Reporting",
-        "Custom Integrations / API",
-        "AI-Powered Features",
-        "Email Marketing Integration",
-        "Client Portal / Dashboard",
-        "Content Management (CMS)",
-        "SEO Optimization",
-      ],
-      hasBrandAssets: "No — I need branding too",
-      hasExistingSite: "No — starting from scratch",
-      budgetRange: "$30,000+",
-      timeline: "ASAP — I needed this yesterday",
+      serviceAnswers: {
+        "marketing-website": {
+          q1: "answer1", q2: "answer2", q3: "answer3", q4: "answer4",
+          q5: "answer5", q6: "answer6", q7: "answer7", q8: "answer8",
+        },
+        "crm-system": {
+          q1: "api integration needed", q2: "third-party sync",
+          q3: "answer3", q4: "answer4", q5: "answer5", q6: "answer6",
+          q7: "answer7",
+        },
+      },
+      hasBrandAssets: "no",
+      website: "",
+      yearsInBusiness: "pre-launch",
+      budgetRange: "30k+",
+      timeline: "asap",
     });
     const result = scoreComplexity(fd);
     expect(result.overall).toBeLessThanOrEqual(10);
@@ -468,8 +490,8 @@ describe("generatePathsForward", () => {
 describe("generateFlags", () => {
   it("warns when budget is below scope minimum", () => {
     const fd = createFormData({
-      projectTypes: ["Full Operations Platform"],
-      budgetRange: "$1,000 - $5,000",
+      selectedServices: ["full-platform"],
+      budgetRange: "1k-5k",
     });
     const complexity = scoreComplexity(fd);
     const profile = {
@@ -485,9 +507,9 @@ describe("generateFlags", () => {
     expect(warnings.some((w) => w.message.includes("Budget"))).toBe(true);
   });
 
-  it("flags opportunity for Marketing Strategy", () => {
+  it("flags opportunity for multiple services", () => {
     const fd = createFormData({
-      projectTypes: ["Marketing Website", "Marketing Strategy"],
+      selectedServices: ["marketing-website", "crm-system", "client-portal"],
     });
     const complexity = scoreComplexity(fd);
     const profile = {
@@ -499,12 +521,12 @@ describe("generateFlags", () => {
     };
     const flags = generateFlags(fd, complexity, profile);
     const opportunities = flags.filter((f) => f.type === "opportunity");
-    expect(opportunities.some((o) => o.message.includes("Marketing Strategy"))).toBe(true);
+    expect(opportunities.some((o) => o.message.includes("Multiple services"))).toBe(true);
   });
 
   it("flags info for existing site", () => {
     const fd = createFormData({
-      hasExistingSite: "Yes — it needs a complete rebuild",
+      website: "https://currentsite.com",
     });
     const complexity = scoreComplexity(fd);
     const profile = {
@@ -531,7 +553,7 @@ describe("generateSummary", () => {
     const recs = scoreServiceRecommendations(fd);
     const summary = generateSummary(fd, complexity, recs);
 
-    expect(summary.projectType).toBe("Marketing Website");
+    expect(summary.projectType).toContain("Marketing Website");
     expect(summary.clientType).toContain("Professional Services");
     expect(summary.headline).toContain("marketing website");
     expect(summary.estimatedTotalInvestment.length).toBeGreaterThan(0);
@@ -547,25 +569,31 @@ describe("analyzeIntake (integration)", () => {
   it("produces a complete analysis from form data", () => {
     const fd = createFormData({
       phone: "(555) 999-0000",
-      projectTypes: ["Marketing Website", "CRM System"],
-      description:
-        "We need a modern marketing website with lead capture and a CRM to track our sales pipeline",
-      goals: "Increase monthly revenue by 25% and track all leads from inquiry to close",
-      budgetRange: "$15,000 - $30,000",
-      timeline: "3-6 months",
-      hasExistingSite: "Yes — it needs a complete rebuild",
-      currentPainPoints: "Losing track of leads, no online presence",
-      desiredFeatures: [
-        "Contact / Lead Capture Forms",
-        "Analytics & Reporting",
-        "SEO Optimization",
-        "Email Marketing Integration",
-      ],
-      hasBrandAssets: "Yes — logo, colors, brand guide",
-      competitors: "Local Competitor A, Regional Competitor B",
-      inspiration: "https://stripe.com",
+      selectedServices: ["marketing-website", "crm-system"],
+      serviceAnswers: {
+        "marketing-website": {
+          "primary-goal":
+            "Increase monthly revenue by 25% and track all leads from inquiry to close",
+          "page-count": "5-7 pages with lead capture forms",
+          "target-audience": "Local businesses and homeowners",
+          "content-ready": "We have most content ready",
+          "seo-importance": "Critical for local search ranking",
+        },
+        "crm-system": {
+          "team-size": "5 sales reps need access",
+          "current-tools": "Spreadsheets and manual tracking — losing leads",
+          "key-workflows": "Lead tracking from inquiry to close",
+          "integration-needs": "Email marketing integration needed",
+        },
+      },
+      budgetRange: "15k-30k",
+      timeline: "3-6-months",
+      website: "https://currentsite.com",
+      hasBrandAssets: "yes-full",
+      competitorSites: "Local Competitor A, Regional Competitor B",
+      inspirationSites: "https://stripe.com",
       additionalNotes: "We want to stand out in our market",
-      howDidYouHear: "Referral",
+      howDidYouHear: "referral",
     });
 
     const analysis = analyzeIntake(fd, {
@@ -614,12 +642,14 @@ describe("analyzeIntake (integration)", () => {
 
   it("handles a minimal solo founder submission", () => {
     const fd = createFormData({
-      projectTypes: ["Landing Page"],
-      description: "Simple landing page for my new business idea",
-      goals: "Get signups for launch",
-      budgetRange: "$1,000 - $5,000",
-      timeline: "ASAP — I needed this yesterday",
-      desiredFeatures: ["Contact / Lead Capture Forms"],
+      selectedServices: ["landing-page"],
+      serviceAnswers: {
+        "landing-page": {
+          "primary-goal": "Get signups for launch of new business idea",
+        },
+      },
+      budgetRange: "1k-5k",
+      timeline: "asap",
     });
 
     const analysis = analyzeIntake(fd, { id: "minimal-test" });

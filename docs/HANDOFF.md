@@ -1,8 +1,8 @@
 # BuiltByBas — Handoff Document
 
-> **Last Updated:** 2026-02-28
-> **Status:** Live Portfolio + Hero Shine COMPLETE — real projects, interactive animation demos, hero polish
-> **Next Session:** PostgreSQL setup, CRM core (clients, pipeline), deployment prep
+> **Last Updated:** 2026-03-01 (Session 13)
+> **Status:** Phase 3 IN PROGRESS — Dashboard analytics live, intake list with filters/sort/search, 20 mock submissions seeded, send-intake-link email via Resend, 33-route build
+> **Next Session:** PII encryption, Resend domain setup, animation portfolio, partnership items, veteran branding, Phase 4 planning
 
 ---
 
@@ -137,7 +137,7 @@ Dark, premium, cutting-edge. The site itself IS the portfolio piece. Every inter
 | 2     | Public Website                         | COMPLETE    | 2-5      |
 | 2.5   | Intake Analysis Engine                 | COMPLETE    | 6        |
 | 2.6   | Live Portfolio + Hero Shine            | COMPLETE    | 7        |
-| 3     | CRM Core (clients, pipeline, scoring)  | NOT STARTED | 7-11     |
+| 3     | CRM Core (clients, pipeline, scoring)  | IN PROGRESS | 7-13     |
 | 4     | Projects + Financials                  | NOT STARTED | 12-17    |
 | 5     | AI Suite + Analytics                   | NOT STARTED | 18-21    |
 | 6     | Hardening + Deployment                 | NOT STARTED | 22-25    |
@@ -270,7 +270,8 @@ Dark, premium, cutting-edge. The site itself IS the portfolio piece. Every inter
 - **Agent Performance Tracking:** Created `docs/AGENT-PERFORMANCE.md` with leaderboard and performance log.
 - All descriptions are 100% ORIGINAL — no content copied from client sites.
 - Deleted 4 old components (PortfolioGrid, PortfolioCard, PortfolioFilter, CaseStudyLayout), created 15 new files.
-- Commits: `8d4aeb5` (hero shine), `425df40` (portfolio overhaul), `3e18ee2` (animation demos)
+- Commits: `8d4aeb5` (hero shine), `425df40` (portfolio overhaul), `3e18ee2` (animation demos), `cfc813c` (docs update)
+- **Hero copy finalized:** Headline "Custom Solutions for" + shimmer "Your Business". Subtitle split to two rows: "Agency-quality websites, dashboards, and tools." / "Built fast, built right, built for your business."
 
 **Verification — all passing:**
 
@@ -278,16 +279,73 @@ Dark, premium, cutting-edge. The site itself IS the portfolio piece. Every inter
 - `pnpm test` — 55/55 tests
 - `pnpm build` — 26 routes compiled (8 SSG portfolio pages: the-colour-parlor, orca-child-in-the-wild, all-beauty-hair-studio, praxis-library, builtbybas, kar-crm, motion-gallery, kinetic-typography)
 
+**Session Phase3 (CRM Core + Button Glow):**
+
+- **PostgreSQL setup:** Installed PostgreSQL 17 locally, created `builtbybas` database, configured `.env.local` with `DATABASE_URL`, `AUTH_SECRET`, and site URL. Updated `drizzle.config.ts` to auto-load `.env.local` via dotenv.
+- **Initial migration:** Generated and applied Drizzle migration for users + sessions tables.
+- **CRM schema (3 tables + 4 enums):** Extended `schema.ts` with `clients` (15 columns, 4 indexes), `pipeline_history` (7 columns, 2 indexes), `client_notes` (7 columns, 2 indexes). Enums: `pipelineStageEnum` (12 stages), `clientStatusEnum`, `clientNoteTypeEnum`. Full Drizzle relations for all tables.
+- **Types + validation:** `src/types/client.ts` (PipelineStage, ClientStatus, PIPELINE_STAGES constant, getStageMeta/getNextStage helpers). `src/lib/client-validation.ts` (5 Zod schemas: createClient, updateClient, updatePipelineStage, createNote, convertIntake).
+- **API auth helper:** `src/lib/api-auth.ts` — `requireAdmin()` reusable guard (checks session + RBAC role).
+- **6 API routes:** `/api/clients` (GET list + POST create), `/api/clients/[id]` (GET detail + PATCH update), `/api/clients/[id]/stage` (PATCH advance), `/api/clients/[id]/notes` (GET + POST), `/api/clients/convert` (POST intake-to-client), `/api/pipeline` (GET grouped by stage).
+- **4 admin components:** `StageBadge` (colored pill by stage order), `ClientListCard` (glass card with hover), `ClientDetailDashboard` (full client view with notes form, stage advancement, pipeline history timeline), `PipelineBoard` (12-column horizontal scrollable board).
+- **4 admin pages:** `/admin/clients` (list with Add Client button), `/admin/clients/new` (form), `/admin/clients/[id]` (detail), `/admin/pipeline` (board view).
+- **Dashboard wired to real data:** `/admin/page.tsx` queries DB for active client count, pipeline count, recent clients (5), recent activity (5).
+- **Owner seeded:** `scripts/seed-owner.ts` — Bas Rosario (devbybas@gmail.com, role: owner). Added `db:seed` script.
+- **Secrets tracking:** Created `secrets.md` (gitignored) — logs all local dev credentials.
+- **Hero background boost:** Bumped circuit board SVG opacity values ~2-3x in `HeroBackground.tsx` — IC chips, bus lines, traces, via holes now clearly visible.
+- **Button glow enhancement:** Enhanced `neon-glow` with pulsing animation (`neon-pulse` keyframes — breathing cyan glow). Boosted `btn-shine` streak to 50% white peak. Applied `btn-shine neon-glow` to all "Start a Project" buttons (hero, CTA section, header).
+- **36 new tests:** `client-validation.test.ts` — all 5 schemas + PIPELINE_STAGES + helpers.
+- 30+ new files, 10+ modified files
+- Commits: pending
+
+**Verification — all passing:**
+
+- `pnpm tsc --noEmit` — 0 type errors
+- `pnpm test` — 91/91 tests (36 new + 55 existing)
+- `pnpm build` — 32 routes compiled (6 new CRM routes: admin/clients, admin/clients/[id], admin/pipeline, api/clients, api/clients/[id], api/pipeline + subroutes)
+
+**Session 12 (Phase 3 continued — Intake Overhaul + CRM Polish):**
+
+- **E2E CRM test suite:** Created `tests/e2e/admin-crm.spec.ts` — serial test suite: auth, client CRUD, validation, notes, pipeline advancement, pipeline board, intake conversion, cleanup. Uses `page.evaluate()` for cookie-based login.
+- **Intake migrated to PostgreSQL:** Added `intakeSubmissions` table to `schema.ts` (jsonb columns for formData/analysis, denormalized name/email/company/complexityScore/primaryService). Rewrote `intake-storage.ts` from filesystem to Drizzle. Generated + applied migration `0002_intake-submissions.sql`.
+- **Portfolio image infrastructure:** Added `image?: string` to `PortfolioProject`, updated `ProjectCard.tsx` + `ProjectDetail.tsx` with `<Image>` / gradient fallback. Created `scripts/capture-screenshots.ts`. Added `"scripts/**"` to tsconfig.json exclude.
+- **Intake form overhauled (major):** User requested thorough service-specific intake. Created `src/data/intake-questions.ts` with 9 service modules (marketing-website, website-redesign, landing-page, business-dashboard, client-portal, ecommerce, crm-system, full-platform, ai-tools), each with 7-10 targeted questions. Rewrote `src/types/intake.ts` with new `IntakeFormData` (selectedServices, serviceAnswers keyed by serviceId, yearsInBusiness, brandColors, competitorSites, inspirationSites, preferredContact). Added `StepConfig`, `StepType`, `buildSteps()` for dynamic step generation. Rewrote `src/lib/intake-validation.ts` with per-step schemas + `buildServiceSchema()`. Rewrote `src/hooks/useIntakeForm.ts` with dynamic steps via `buildSteps()`, `updateServiceAnswer()`. Rewrote `src/components/public-site/IntakeStep.tsx` with 7 step renderers and dynamic `ServiceQuestionField` for each question type. Updated `IntakeProgress.tsx` and `IntakeForm.tsx` for new props.
+- **Login form built:** Created `src/components/auth/LoginForm.tsx` (client component, calls `/api/auth/login`, redirects to `/admin`). Updated login page to use it.
+- **Scoring engine rewritten:** Complete rewrite of `src/lib/intake-scoring.ts` for new IntakeFormData shape. Key changes: `INTAKE_TO_SERVICE_ID` mapping (intake form IDs → service data IDs), `SERVICE_KEYWORDS` map for recommendation scoring, new `INDUSTRY_SERVICE_MAP` with kebab-case keys, `INDUSTRY_LABELS` for display, `extractServiceText()` and `countServiceAnswers()` helpers for text-based scoring from serviceAnswers, `parseBudgetRange()` updated for new shorthand values (1k-5k, 5k-15k, etc.), all 6 scoring functions updated for new fields. Updated all 34 tests in `intake-scoring.test.ts`.
+- **Pipeline board wrapping:** Changed `PipelineBoard.tsx` from `flex overflow-x-auto` to `grid grid-cols-[repeat(auto-fill,minmax(15rem,1fr))]` — columns now wrap to next row instead of horizontal scroll.
+- **Zod v4 type fix:** Fixed `PropertyKey[]` vs `(string | number)[]` mismatch in `useIntakeForm.ts` line 116.
+- **Login credentials:** Owner seeded as `devbybas@gmail.com` / `BuiltByBas2026!`
+
+**Verification — all passing:**
+- `pnpm test` — 91/91 tests
+- `pnpm build` — 32+ routes, 0 type errors
+
+**Session 13 (Dashboard Analytics + Intake Enhancement + Email):**
+
+- **20 mock intake submissions:** Created `scripts/seed-intakes.ts` — 20 diverse, realistic businesses across all industries (home services, healthcare, legal, tech, food, fitness, construction, education, nonprofit, real estate, finance). Full service-specific answers for each. Complexity distribution: 7 Simple, 7 Moderate, 3 Complex, 2 Enterprise. Spread over 30 days for realistic date distribution.
+- **Dashboard analytics engine:** Created `src/lib/dashboard-analytics.ts` — server-side analytics computation: total submissions, active clients, estimated pipeline value, avg complexity, complexity distribution, service demand breakdown, budget range distribution, industry mix, submission trend (week-over-week), recent submissions feed. All computed from real DB data.
+- **Admin dashboard overhaul:** Rewrote `/admin/page.tsx` — 4 stat cards (submissions with trend, active clients, pipeline value, avg complexity with gradient bar), complexity distribution (stacked horizontal bar + legend), service demand (horizontal bar chart), budget ranges (horizontal bar chart), industry mix (horizontal bar chart), recent submissions feed, pipeline activity. All glassmorphism, all CSS-powered (no chart library).
+- **Intake list page enhanced:** Created `IntakeListView.tsx` (client component) — search by name/company/email, complexity filter pills (All/Simple/Moderate/Complex/Enterprise), service dropdown filter, sort by date/complexity/name (toggle direction), summary stats bar (total, avg complexity, counts), results count, enhanced card design with service count and budget display.
+- **Send intake link email:** Installed Resend SDK. Created `src/lib/email.ts` (client config). Created `/api/intake/send-link` (POST, auth-guarded, Zod-validated). BuiltByBas-branded HTML email template (dark theme, cyan CTA button, glassmorphism card). Admin `SendIntakeLinkButton.tsx` component — popover form with email, name, optional custom message, send status feedback. Added to dashboard header.
+- **Env updates:** Updated `.env.example` with `RESEND_API_KEY` and `EMAIL_FROM` (replaced SMTP placeholders).
+
+**Verification — all passing:**
+- `pnpm test` — 91/91 tests
+- `pnpm build` — 33 routes (new: /api/intake/send-link), 0 type errors
+
 ### What's Next
 
-1. Set up local PostgreSQL — create database, run Drizzle migrations, test auth endpoints end-to-end
-2. CRM core: clients module, pipeline (12-stage kanban)
-3. Run E2E tests with Playwright (requires dev server)
-4. Add real images/screenshots to portfolio projects (replace gradient placeholders)
-5. Migrate intake submissions from JSON files to PostgreSQL (Phase 3)
-6. Deliver comprehensive breakdown of every deliverable with state of product at delivery (per Bas's requirement)
-7. Add portfolio items for upcoming partnerships: Marketing Reset, small business web co (name TBD)
-8. Reflect veteran-backed status in branding/about page
+**Priority:**
+1. Intake data security — field-level encryption for PII (name, email, phone)
+2. Set up Resend account + verify builtbybas.com domain for production email
+3. Animation portfolio pages
+4. Partnership portfolio items (Marketing Reset, Small Business Web Co)
+5. Veteran-backed branding
+
+**Phase 4 (Projects + Financials):**
+6. Projects table + CRUD
+7. Invoicing system
+8. Financial dashboard
 
 ### Notes
 
@@ -296,8 +354,10 @@ Dark, premium, cutting-edge. The site itself IS the portfolio piece. Every inter
 - SSH remote: `git@github.com-devbybas:devbybas-ai/builtbybas.git` (multi-account SSH alias)
 - Git identity configured per-repo (not global) — name "Bas Rosario", email `devbybas@gmail.com`
 - Next.js 16 deprecated `middleware.ts` in favor of `proxy` — current middleware works but emits a warning. Migrate when stable.
-- PostgreSQL not yet running locally — auth API routes will fail until `DATABASE_URL` is configured in `.env.local`. Create DB before Phase 2 testing.
-- Need to `git push` to sync remote (local is 1 commit ahead)
+- PostgreSQL now running locally with `builtbybas` database. Auth and CRM routes functional.
+- Login: `devbybas@gmail.com` / `BuiltByBas2026!`
+- `npx tsx scripts/seed-intakes.ts` — re-run to seed 20 mock intakes (idempotent if table is empty)
+- Resend API key needed in `.env.local` for email sending to work. Without it, the send-link endpoint returns 503 gracefully.
 
 ---
 

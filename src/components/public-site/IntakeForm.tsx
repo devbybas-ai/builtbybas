@@ -31,26 +31,23 @@ export function IntakeForm() {
   const {
     currentStep,
     totalSteps,
+    steps,
+    currentStepConfig,
     formData,
     errors,
     isSubmitting,
     isComplete,
     updateField,
+    updateServiceAnswer,
     nextStep,
     prevStep,
     submitForm,
   } = useIntakeForm();
 
-  // Track direction for animation
   const isLastStep = currentStep === totalSteps - 1;
 
   async function handleSubmit() {
     await submitForm();
-    // Store name for confirmation page
-    if (typeof window !== "undefined") {
-      sessionStorage.setItem("intake-name", formData.name);
-    }
-    router.push("/intake/confirmation");
   }
 
   if (isComplete) {
@@ -58,22 +55,29 @@ export function IntakeForm() {
     return null;
   }
 
+  if (!currentStepConfig) return null;
+
   return (
     <div className="mx-auto max-w-2xl">
-      <IntakeProgress currentStep={currentStep} totalSteps={totalSteps} />
+      <IntakeProgress
+        currentStep={currentStep}
+        totalSteps={totalSteps}
+        steps={steps}
+      />
 
       <div className="glass-card overflow-hidden p-6 sm:p-8">
         {shouldReduceMotion ? (
           <IntakeStep
-            step={currentStep}
+            stepConfig={currentStepConfig}
             formData={formData}
             errors={errors}
             onUpdate={updateField}
+            onUpdateServiceAnswer={updateServiceAnswer}
           />
         ) : (
           <AnimatePresence mode="wait" custom={1}>
             <motion.div
-              key={currentStep}
+              key={`${currentStepConfig.type}-${currentStepConfig.serviceId ?? currentStep}`}
               custom={1}
               variants={slideVariants}
               initial="enter"
@@ -82,13 +86,24 @@ export function IntakeForm() {
               transition={{ ...springs.snappy, duration: 0.25 }}
             >
               <IntakeStep
-                step={currentStep}
+                stepConfig={currentStepConfig}
                 formData={formData}
                 errors={errors}
                 onUpdate={updateField}
+                onUpdateServiceAnswer={updateServiceAnswer}
               />
             </motion.div>
           </AnimatePresence>
+        )}
+
+        {/* Form-level error */}
+        {errors.form && (
+          <div
+            className="mt-4 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300"
+            role="alert"
+          >
+            {errors.form}
+          </div>
         )}
 
         {/* Navigation */}
@@ -100,7 +115,7 @@ export function IntakeForm() {
               className={cn(
                 "inline-flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium",
                 "text-muted-foreground transition-colors hover:text-foreground",
-                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
               )}
             >
               <ArrowLeft className="h-4 w-4" />
@@ -119,7 +134,7 @@ export function IntakeForm() {
                 "neon-glow inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground transition-colors",
                 "hover:bg-cyan-hover",
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                "disabled:cursor-not-allowed disabled:opacity-50"
+                "disabled:cursor-not-allowed disabled:opacity-50",
               )}
             >
               {isSubmitting ? "Submitting..." : "Submit Project"}
@@ -132,7 +147,7 @@ export function IntakeForm() {
               className={cn(
                 "inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground transition-colors",
                 "hover:bg-cyan-hover",
-                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
               )}
             >
               Next

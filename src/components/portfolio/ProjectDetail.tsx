@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowLeft, ArrowRight, ExternalLink } from "lucide-react";
 import { springs, fadeInUp } from "@/lib/motion";
@@ -61,16 +62,31 @@ export function ProjectDetail({
 
       {/* Hero */}
       <Wrapper {...wrapperProps}>
-        <div className={cn("relative overflow-hidden rounded-2xl bg-gradient-to-br p-8 sm:p-12", gradient)}>
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.05),transparent_60%)]" />
+        {project.image && (
+          <div className="relative aspect-[21/9] overflow-hidden rounded-2xl">
+            <Image
+              src={project.image}
+              alt={`${project.title} screenshot`}
+              fill
+              sizes="(max-width: 1200px) 100vw, 1024px"
+              priority
+              className="object-cover object-top"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
+          </div>
+        )}
+        <div className={cn("relative overflow-hidden rounded-2xl bg-gradient-to-br p-8 sm:p-12", project.image ? "" : gradient)}>
+          {!project.image && (
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.05),transparent_60%)]" />
+          )}
           <div className="relative space-y-4">
             <div className="flex flex-wrap items-center gap-2">
               {catMeta && (
-                <span className={cn("rounded-full px-3 py-1 text-xs font-medium", catMeta.color)}>
+                <span className={cn("rounded-full px-3 py-1 text-xs font-medium backdrop-blur-sm", catMeta.color)}>
                   {catMeta.label}
                 </span>
               )}
-              <span className={cn("rounded-full px-3 py-1 text-xs font-medium", badge.className)}>
+              <span className={cn("rounded-full px-3 py-1 text-xs font-medium backdrop-blur-sm", badge.className)}>
                 {badge.label}
               </span>
             </div>

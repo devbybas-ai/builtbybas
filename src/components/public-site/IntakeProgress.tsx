@@ -3,17 +3,19 @@
 import { motion } from "framer-motion";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { springs } from "@/lib/motion";
-import { STEP_LABELS } from "@/types/intake";
+import type { StepConfig } from "@/types/intake";
 import { cn } from "@/lib/utils";
 
 interface IntakeProgressProps {
   currentStep: number;
   totalSteps: number;
+  steps: StepConfig[];
 }
 
-export function IntakeProgress({ currentStep, totalSteps }: IntakeProgressProps) {
+export function IntakeProgress({ currentStep, totalSteps, steps }: IntakeProgressProps) {
   const shouldReduceMotion = useReducedMotion();
   const progress = ((currentStep + 1) / totalSteps) * 100;
+  const currentLabel = steps[currentStep]?.label ?? "";
 
   return (
     <div className="mb-10">
@@ -23,14 +25,14 @@ export function IntakeProgress({ currentStep, totalSteps }: IntakeProgressProps)
           Step {currentStep + 1} of {totalSteps}
         </span>
         <span className="text-sm text-muted-foreground">
-          {STEP_LABELS[currentStep]}
+          {currentLabel}
         </span>
       </div>
 
       {/* Desktop: step indicators */}
       <div className="mb-3 hidden sm:flex sm:items-center sm:justify-between">
         <span className="text-sm font-medium">
-          {STEP_LABELS[currentStep]}
+          {currentLabel}
         </span>
         <span className="text-sm text-muted-foreground">
           {currentStep + 1} / {totalSteps}

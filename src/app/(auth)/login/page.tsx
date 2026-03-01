@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { GlassCard } from "@/components/shared/GlassCard";
+import { LoginForm } from "@/components/auth/LoginForm";
 
 export const metadata: Metadata = {
   title: "Login",
@@ -13,12 +14,7 @@ export default function LoginPage() {
       <p className="mt-1 text-sm text-muted-foreground">
         Enter your credentials to access your account.
       </p>
-      {/* LoginForm component will replace this in Step 8 */}
-      <div className="mt-6 space-y-4">
-        <p className="text-sm text-muted-foreground">
-          Login form will be implemented with authentication system.
-        </p>
-      </div>
+      <LoginForm />
     </GlassCard>
   );
 }

@@ -3,17 +3,28 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
-import type { IntakeFormData } from "@/types/intake";
+import type { IntakeFormData, StepConfig } from "@/types/intake";
+import { SERVICE_MODULES, getServiceModule } from "@/data/intake-questions";
+import type { IntakeQuestion } from "@/data/intake-questions";
 
 interface IntakeStepProps {
-  step: number;
+  stepConfig: StepConfig;
   formData: IntakeFormData;
   errors: Record<string, string>;
   onUpdate: <K extends keyof IntakeFormData>(
     field: K,
-    value: IntakeFormData[K]
+    value: IntakeFormData[K],
+  ) => void;
+  onUpdateServiceAnswer: (
+    serviceId: string,
+    questionId: string,
+    value: string | string[],
   ) => void;
 }
+
+/* ------------------------------------------------------------------ */
+/*  Shared sub-components                                              */
+/* ------------------------------------------------------------------ */
 
 function FieldError({ error }: { error?: string }) {
   if (!error) return null;
@@ -44,22 +55,22 @@ function CheckboxGroup({
   selected,
   onChange,
 }: {
-  options: string[];
+  options: { value: string; label: string }[];
   selected: string[];
   onChange: (value: string[]) => void;
 }) {
   return (
     <div className="grid gap-2 sm:grid-cols-2">
       {options.map((option) => {
-        const isChecked = selected.includes(option);
+        const isChecked = selected.includes(option.value);
         return (
           <label
-            key={option}
+            key={option.value}
             className={cn(
               "flex cursor-pointer items-center gap-3 rounded-lg border p-3 text-sm transition-colors",
               isChecked
                 ? "border-primary/30 bg-primary/5"
-                : "border-white/10 bg-white/[0.02] hover:border-white/20"
+                : "border-white/10 bg-white/[0.02] hover:border-white/20",
             )}
           >
             <input
@@ -67,9 +78,9 @@ function CheckboxGroup({
               checked={isChecked}
               onChange={() => {
                 if (isChecked) {
-                  onChange(selected.filter((s) => s !== option));
+                  onChange(selected.filter((s) => s !== option.value));
                 } else {
-                  onChange([...selected, option]);
+                  onChange([...selected, option.value]);
                 }
               }}
               className="sr-only"
@@ -77,9 +88,7 @@ function CheckboxGroup({
             <div
               className={cn(
                 "flex h-4 w-4 shrink-0 items-center justify-center rounded border",
-                isChecked
-                  ? "border-primary bg-primary"
-                  : "border-white/30"
+                isChecked ? "border-primary bg-primary" : "border-white/30",
               )}
             >
               {isChecked && (
@@ -98,7 +107,7 @@ function CheckboxGroup({
                 </svg>
               )}
             </div>
-            {option}
+            {option.label}
           </label>
         );
       })}
@@ -113,7 +122,7 @@ function RadioGroup({
   onChange,
 }: {
   name: string;
-  options: string[];
+  options: { value: string; label: string }[];
   value: string;
   onChange: (value: string) => void;
 }) {
@@ -121,34 +130,32 @@ function RadioGroup({
     <div className="grid gap-2 sm:grid-cols-2">
       {options.map((option) => (
         <label
-          key={option}
+          key={option.value}
           className={cn(
             "flex cursor-pointer items-center gap-3 rounded-lg border p-3 text-sm transition-colors",
-            value === option
+            value === option.value
               ? "border-primary/30 bg-primary/5"
-              : "border-white/10 bg-white/[0.02] hover:border-white/20"
+              : "border-white/10 bg-white/[0.02] hover:border-white/20",
           )}
         >
           <input
             type="radio"
             name={name}
-            checked={value === option}
-            onChange={() => onChange(option)}
+            checked={value === option.value}
+            onChange={() => onChange(option.value)}
             className="sr-only"
           />
           <div
             className={cn(
               "flex h-4 w-4 shrink-0 items-center justify-center rounded-full border",
-              value === option
-                ? "border-primary"
-                : "border-white/30"
+              value === option.value ? "border-primary" : "border-white/30",
             )}
           >
-            {value === option && (
+            {value === option.value && (
               <div className="h-2 w-2 rounded-full bg-primary" />
             )}
           </div>
-          {option}
+          {option.label}
         </label>
       ))}
     </div>
@@ -180,435 +187,668 @@ function TextArea({
   );
 }
 
-export function IntakeStep({ step, formData, errors, onUpdate }: IntakeStepProps) {
-  switch (step) {
-    case 0:
+/* ------------------------------------------------------------------ */
+/*  Service question renderer                                          */
+/* ------------------------------------------------------------------ */
+
+function ServiceQuestionField({
+  question,
+  value,
+  onChange,
+  error,
+}: {
+  question: IntakeQuestion;
+  value: string | string[];
+  onChange: (value: string | string[]) => void;
+  error?: string;
+}) {
+  switch (question.type) {
+    case "text":
+    case "url":
+    case "number":
       return (
         <div>
-          <StepHeader
-            title="Let's Start With You"
-            description="Tell us who you are and how to reach you."
+          <Label htmlFor={question.id}>
+            {question.label} {question.required && "*"}
+          </Label>
+          <Input
+            id={question.id}
+            type={question.type === "url" ? "url" : question.type === "number" ? "number" : "text"}
+            value={typeof value === "string" ? value : ""}
+            onChange={(e) => onChange(e.target.value)}
+            placeholder={question.placeholder}
+            className="mt-1.5"
           />
-          <div className="space-y-5">
-            <div>
-              <Label htmlFor="name">Full Name *</Label>
-              <Input
-                id="name"
-                value={formData.name}
-                onChange={(e) => onUpdate("name", e.target.value)}
-                placeholder="Your name"
-                className="mt-1.5"
+          {question.helpText && (
+            <p className="mt-1 text-xs text-muted-foreground">
+              {question.helpText}
+            </p>
+          )}
+          <FieldError error={error} />
+        </div>
+      );
+
+    case "textarea":
+      return (
+        <div>
+          <Label htmlFor={question.id}>
+            {question.label} {question.required && "*"}
+          </Label>
+          <div className="mt-1.5">
+            <TextArea
+              id={question.id}
+              value={typeof value === "string" ? value : ""}
+              onChange={(v) => onChange(v)}
+              placeholder={question.placeholder}
+            />
+          </div>
+          <FieldError error={error} />
+        </div>
+      );
+
+    case "radio":
+      return (
+        <div>
+          <Label>
+            {question.label} {question.required && "*"}
+          </Label>
+          <div className="mt-1.5">
+            <RadioGroup
+              name={question.id}
+              options={
+                question.options?.map((o) => ({
+                  value: o.value,
+                  label: o.label,
+                })) ?? []
+              }
+              value={typeof value === "string" ? value : ""}
+              onChange={(v) => onChange(v)}
+            />
+          </div>
+          <FieldError error={error} />
+        </div>
+      );
+
+    case "checkbox":
+      return (
+        <div>
+          <Label>
+            {question.label} {question.required && "*"}
+          </Label>
+          <div className="mt-1.5">
+            <CheckboxGroup
+              options={
+                question.options?.map((o) => ({
+                  value: o.value,
+                  label: o.label,
+                })) ?? []
+              }
+              selected={Array.isArray(value) ? value : []}
+              onChange={(v) => onChange(v)}
+            />
+          </div>
+          <FieldError error={error} />
+        </div>
+      );
+
+    default:
+      return null;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/*  Step renderers                                                     */
+/* ------------------------------------------------------------------ */
+
+function ServiceSelectionStep({
+  formData,
+  errors,
+  onUpdate,
+}: {
+  formData: IntakeFormData;
+  errors: Record<string, string>;
+  onUpdate: IntakeStepProps["onUpdate"];
+}) {
+  return (
+    <div>
+      <StepHeader
+        title="What Do You Need?"
+        description="Select all services that apply — your form will adapt with targeted questions for each."
+      />
+      <div className="grid gap-3 sm:grid-cols-2">
+        {SERVICE_MODULES.map((svc) => {
+          const isSelected = formData.selectedServices.includes(svc.serviceId);
+          return (
+            <label
+              key={svc.serviceId}
+              className={cn(
+                "flex cursor-pointer flex-col gap-1.5 rounded-xl border p-4 transition-all",
+                isSelected
+                  ? "border-primary/40 bg-primary/5 shadow-[0_0_20px_rgba(0,212,255,0.08)]"
+                  : "border-white/10 bg-white/[0.02] hover:border-white/20",
+              )}
+            >
+              <input
+                type="checkbox"
+                checked={isSelected}
+                onChange={() => {
+                  const next = isSelected
+                    ? formData.selectedServices.filter(
+                        (id) => id !== svc.serviceId,
+                      )
+                    : [...formData.selectedServices, svc.serviceId];
+                  onUpdate("selectedServices", next);
+                }}
+                className="sr-only"
               />
-              <FieldError error={errors.name} />
-            </div>
-            <div>
-              <Label htmlFor="email">Email *</Label>
-              <Input
-                id="email"
-                type="email"
-                value={formData.email}
-                onChange={(e) => onUpdate("email", e.target.value)}
-                placeholder="you@company.com"
-                className="mt-1.5"
-              />
-              <FieldError error={errors.email} />
-            </div>
-            <div>
-              <Label htmlFor="phone">Phone (optional)</Label>
-              <Input
-                id="phone"
-                type="tel"
-                value={formData.phone}
-                onChange={(e) => onUpdate("phone", e.target.value)}
-                placeholder="(555) 123-4567"
-                className="mt-1.5"
-              />
-            </div>
-            <div>
-              <Label htmlFor="company">Company Name *</Label>
-              <Input
-                id="company"
-                value={formData.company}
-                onChange={(e) => onUpdate("company", e.target.value)}
-                placeholder="Your company"
-                className="mt-1.5"
-              />
-              <FieldError error={errors.company} />
-            </div>
+              <div className="flex items-center gap-2">
+                <div
+                  className={cn(
+                    "flex h-5 w-5 shrink-0 items-center justify-center rounded border",
+                    isSelected
+                      ? "border-primary bg-primary"
+                      : "border-white/30",
+                  )}
+                >
+                  {isSelected && (
+                    <svg
+                      className="h-3.5 w-3.5 text-background"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={3}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M5 13l4 4L19 7"
+                      />
+                    </svg>
+                  )}
+                </div>
+                <span className="font-semibold">{svc.serviceLabel}</span>
+              </div>
+              <p className="pl-7 text-xs text-muted-foreground">
+                {svc.tagline}
+              </p>
+            </label>
+          );
+        })}
+      </div>
+      <FieldError error={errors.selectedServices} />
+    </div>
+  );
+}
+
+function ContactStep({
+  formData,
+  errors,
+  onUpdate,
+}: {
+  formData: IntakeFormData;
+  errors: Record<string, string>;
+  onUpdate: IntakeStepProps["onUpdate"];
+}) {
+  return (
+    <div>
+      <StepHeader
+        title="Let's Start With You"
+        description="Tell us who you are and how to reach you."
+      />
+      <div className="space-y-5">
+        <div>
+          <Label htmlFor="name">Full Name *</Label>
+          <Input
+            id="name"
+            value={formData.name}
+            onChange={(e) => onUpdate("name", e.target.value)}
+            placeholder="Your name"
+            className="mt-1.5"
+          />
+          <FieldError error={errors.name} />
+        </div>
+        <div>
+          <Label htmlFor="email">Email *</Label>
+          <Input
+            id="email"
+            type="email"
+            value={formData.email}
+            onChange={(e) => onUpdate("email", e.target.value)}
+            placeholder="you@company.com"
+            className="mt-1.5"
+          />
+          <FieldError error={errors.email} />
+        </div>
+        <div>
+          <Label htmlFor="phone">Phone (optional)</Label>
+          <Input
+            id="phone"
+            type="tel"
+            value={formData.phone}
+            onChange={(e) => onUpdate("phone", e.target.value)}
+            placeholder="(555) 123-4567"
+            className="mt-1.5"
+          />
+        </div>
+        <div>
+          <Label htmlFor="company">Company Name *</Label>
+          <Input
+            id="company"
+            value={formData.company}
+            onChange={(e) => onUpdate("company", e.target.value)}
+            placeholder="Your company"
+            className="mt-1.5"
+          />
+          <FieldError error={errors.company} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function BusinessStep({
+  formData,
+  errors,
+  onUpdate,
+}: {
+  formData: IntakeFormData;
+  errors: Record<string, string>;
+  onUpdate: IntakeStepProps["onUpdate"];
+}) {
+  return (
+    <div>
+      <StepHeader
+        title="About Your Business"
+        description="Help us understand your business so we can tailor our approach."
+      />
+      <div className="space-y-5">
+        <div>
+          <Label>Industry *</Label>
+          <div className="mt-1.5">
+            <RadioGroup
+              name="industry"
+              options={[
+                { value: "professional-services", label: "Professional Services" },
+                { value: "home-services", label: "Home Services" },
+                { value: "healthcare", label: "Healthcare" },
+                { value: "retail-ecommerce", label: "Retail / E-Commerce" },
+                { value: "food-hospitality", label: "Food & Hospitality" },
+                { value: "fitness-wellness", label: "Fitness & Wellness" },
+                { value: "real-estate", label: "Real Estate" },
+                { value: "construction", label: "Construction" },
+                { value: "education", label: "Education" },
+                { value: "nonprofit", label: "Nonprofit" },
+                { value: "technology", label: "Technology" },
+                { value: "other", label: "Other" },
+              ]}
+              value={formData.industry}
+              onChange={(v) => onUpdate("industry", v)}
+            />
+          </div>
+          <FieldError error={errors.industry} />
+        </div>
+        <div>
+          <Label>Business Size *</Label>
+          <div className="mt-1.5">
+            <RadioGroup
+              name="businessSize"
+              options={[
+                { value: "just-me", label: "Just me" },
+                { value: "2-5", label: "2-5 people" },
+                { value: "6-20", label: "6-20 people" },
+                { value: "21-50", label: "21-50 people" },
+                { value: "50+", label: "50+ people" },
+              ]}
+              value={formData.businessSize}
+              onChange={(v) => onUpdate("businessSize", v)}
+            />
+          </div>
+          <FieldError error={errors.businessSize} />
+        </div>
+        <div>
+          <Label>How long has your business been operating? *</Label>
+          <div className="mt-1.5">
+            <RadioGroup
+              name="yearsInBusiness"
+              options={[
+                { value: "pre-launch", label: "Pre-launch / idea stage" },
+                { value: "less-than-1", label: "Less than 1 year" },
+                { value: "1-3", label: "1-3 years" },
+                { value: "3-10", label: "3-10 years" },
+                { value: "10+", label: "10+ years" },
+              ]}
+              value={formData.yearsInBusiness}
+              onChange={(v) => onUpdate("yearsInBusiness", v)}
+            />
+          </div>
+          <FieldError error={errors.yearsInBusiness} />
+        </div>
+        <div>
+          <Label htmlFor="website">Current Website (optional)</Label>
+          <Input
+            id="website"
+            value={formData.website}
+            onChange={(e) => onUpdate("website", e.target.value)}
+            placeholder="https://yoursite.com"
+            className="mt-1.5"
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ServiceQuestionsStep({
+  serviceId,
+  formData,
+  errors,
+  onUpdateServiceAnswer,
+}: {
+  serviceId: string;
+  formData: IntakeFormData;
+  errors: Record<string, string>;
+  onUpdateServiceAnswer: IntakeStepProps["onUpdateServiceAnswer"];
+}) {
+  const module = getServiceModule(serviceId);
+  if (!module) return null;
+
+  const answers = formData.serviceAnswers[serviceId] ?? {};
+
+  return (
+    <div>
+      <StepHeader title={module.serviceLabel} description={module.tagline} />
+      <div className="space-y-6">
+        {module.questions.map((q) => (
+          <ServiceQuestionField
+            key={q.id}
+            question={q}
+            value={answers[q.id] ?? (q.type === "checkbox" ? [] : "")}
+            onChange={(v) => onUpdateServiceAnswer(serviceId, q.id, v)}
+            error={errors[q.id]}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function TimelineBudgetStep({
+  formData,
+  errors,
+  onUpdate,
+}: {
+  formData: IntakeFormData;
+  errors: Record<string, string>;
+  onUpdate: IntakeStepProps["onUpdate"];
+}) {
+  return (
+    <div>
+      <StepHeader
+        title="Timeline & Budget"
+        description="Help us understand your timeline and investment range."
+      />
+      <div className="space-y-5">
+        <div>
+          <Label>Timeline *</Label>
+          <div className="mt-1.5">
+            <RadioGroup
+              name="timeline"
+              options={[
+                { value: "asap", label: "ASAP \u2014 I needed this yesterday" },
+                { value: "1-3-months", label: "1-3 months" },
+                { value: "3-6-months", label: "3-6 months" },
+                { value: "flexible", label: "Flexible \u2014 quality over speed" },
+              ]}
+              value={formData.timeline}
+              onChange={(v) => onUpdate("timeline", v)}
+            />
+          </div>
+          <FieldError error={errors.timeline} />
+        </div>
+        <div>
+          <Label>Investment Range *</Label>
+          <div className="mt-1.5">
+            <RadioGroup
+              name="budgetRange"
+              options={[
+                { value: "1k-5k", label: "$1,000 - $5,000" },
+                { value: "5k-15k", label: "$5,000 - $15,000" },
+                { value: "15k-30k", label: "$15,000 - $30,000" },
+                { value: "30k+", label: "$30,000+" },
+                { value: "unsure", label: "Not sure yet" },
+              ]}
+              value={formData.budgetRange}
+              onChange={(v) => onUpdate("budgetRange", v)}
+            />
+          </div>
+          <FieldError error={errors.budgetRange} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function DesignBrandStep({
+  formData,
+  errors,
+  onUpdate,
+}: {
+  formData: IntakeFormData;
+  errors: Record<string, string>;
+  onUpdate: IntakeStepProps["onUpdate"];
+}) {
+  return (
+    <div>
+      <StepHeader
+        title="Design & Brand"
+        description="What look and feel resonates with your brand?"
+      />
+      <div className="space-y-5">
+        <div>
+          <Label>Design Preference *</Label>
+          <div className="mt-1.5">
+            <RadioGroup
+              name="designPreference"
+              options={[
+                { value: "modern-minimal", label: "Modern & Minimal" },
+                { value: "bold-energetic", label: "Bold & Energetic" },
+                { value: "professional-corporate", label: "Professional & Corporate" },
+                { value: "creative-unique", label: "Creative & Unique" },
+                { value: "let-us-decide", label: "Let BuiltByBas decide" },
+              ]}
+              value={formData.designPreference}
+              onChange={(v) => onUpdate("designPreference", v)}
+            />
+          </div>
+          <FieldError error={errors.designPreference} />
+        </div>
+        <div>
+          <Label>Do you have existing brand assets? *</Label>
+          <div className="mt-1.5">
+            <RadioGroup
+              name="hasBrandAssets"
+              options={[
+                { value: "yes-full", label: "Yes \u2014 logo, colors, brand guide" },
+                { value: "yes-partial", label: "Partial \u2014 logo only" },
+                { value: "no", label: "No \u2014 I need branding too" },
+              ]}
+              value={formData.hasBrandAssets}
+              onChange={(v) => onUpdate("hasBrandAssets", v)}
+            />
+          </div>
+          <FieldError error={errors.hasBrandAssets} />
+        </div>
+        <div>
+          <Label htmlFor="brandColors">Brand Colors (optional)</Label>
+          <Input
+            id="brandColors"
+            value={formData.brandColors}
+            onChange={(e) => onUpdate("brandColors", e.target.value)}
+            placeholder="Hex codes, color names, or describe your palette"
+            className="mt-1.5"
+          />
+        </div>
+        <div>
+          <Label htmlFor="competitorSites">
+            Competitor Websites (optional)
+          </Label>
+          <div className="mt-1.5">
+            <TextArea
+              id="competitorSites"
+              value={formData.competitorSites}
+              onChange={(v) => onUpdate("competitorSites", v)}
+              placeholder="List competitor websites or businesses in your space"
+              rows={3}
+            />
           </div>
         </div>
-      );
-
-    case 1:
-      return (
         <div>
-          <StepHeader
-            title="About Your Business"
-            description="Help us understand your business so we can tailor our approach."
-          />
-          <div className="space-y-5">
-            <div>
-              <Label>Industry *</Label>
-              <div className="mt-1.5">
-                <RadioGroup
-                  name="industry"
-                  options={[
-                    "Professional Services",
-                    "Home Services",
-                    "Healthcare",
-                    "Retail / E-Commerce",
-                    "Food & Hospitality",
-                    "Fitness & Wellness",
-                    "Real Estate",
-                    "Other",
-                  ]}
-                  value={formData.industry}
-                  onChange={(v) => onUpdate("industry", v)}
-                />
-              </div>
-              <FieldError error={errors.industry} />
-            </div>
-            <div>
-              <Label>Business Size *</Label>
-              <div className="mt-1.5">
-                <RadioGroup
-                  name="businessSize"
-                  options={[
-                    "Just me",
-                    "2-5 people",
-                    "6-20 people",
-                    "21-50 people",
-                    "50+ people",
-                  ]}
-                  value={formData.businessSize}
-                  onChange={(v) => onUpdate("businessSize", v)}
-                />
-              </div>
-              <FieldError error={errors.businessSize} />
-            </div>
-            <div>
-              <Label htmlFor="website">Current Website (optional)</Label>
-              <Input
-                id="website"
-                value={formData.website}
-                onChange={(e) => onUpdate("website", e.target.value)}
-                placeholder="https://yoursite.com"
-                className="mt-1.5"
-              />
-            </div>
+          <Label htmlFor="inspirationSites">
+            Websites You Admire (optional)
+          </Label>
+          <div className="mt-1.5">
+            <TextArea
+              id="inspirationSites"
+              value={formData.inspirationSites}
+              onChange={(v) => onUpdate("inspirationSites", v)}
+              placeholder="URLs of websites you love (any industry)"
+              rows={3}
+            />
           </div>
         </div>
-      );
+      </div>
+    </div>
+  );
+}
 
-    case 2:
-      return (
+function FinalStep({
+  formData,
+  errors,
+  onUpdate,
+}: {
+  formData: IntakeFormData;
+  errors: Record<string, string>;
+  onUpdate: IntakeStepProps["onUpdate"];
+}) {
+  return (
+    <div>
+      <StepHeader
+        title="Final Details"
+        description="Almost done \u2014 share anything else that would help us understand your project."
+      />
+      <div className="space-y-5">
         <div>
-          <StepHeader
-            title="What Do You Need?"
-            description="Select all the project types that apply."
-          />
-          <CheckboxGroup
-            options={[
-              "Marketing Website",
-              "Website Redesign",
-              "Landing Page",
-              "E-Commerce Store",
-              "Business Dashboard",
-              "Client Portal",
-              "CRM System",
-              "Full Operations Platform",
-              "AI-Powered Tools",
-              "Marketing Strategy",
-            ]}
-            selected={formData.projectTypes}
-            onChange={(v) => onUpdate("projectTypes", v)}
-          />
-          <FieldError error={errors.projectTypes} />
-        </div>
-      );
-
-    case 3:
-      return (
-        <div>
-          <StepHeader
-            title="Tell Us More"
-            description="Describe your project and what you're trying to achieve."
-          />
-          <div className="space-y-5">
-            <div>
-              <Label htmlFor="description">Project Description *</Label>
-              <div className="mt-1.5">
-                <TextArea
-                  id="description"
-                  value={formData.description}
-                  onChange={(v) => onUpdate("description", v)}
-                  placeholder="What do you need built? What problem are you solving?"
-                  rows={5}
-                />
-              </div>
-              <FieldError error={errors.description} />
-            </div>
-            <div>
-              <Label htmlFor="goals">Goals & Success Metrics *</Label>
-              <div className="mt-1.5">
-                <TextArea
-                  id="goals"
-                  value={formData.goals}
-                  onChange={(v) => onUpdate("goals", v)}
-                  placeholder="What does success look like? More leads? Faster operations? Better client experience?"
-                  rows={4}
-                />
-              </div>
-              <FieldError error={errors.goals} />
-            </div>
+          <Label htmlFor="additionalNotes">
+            Additional Notes (optional)
+          </Label>
+          <div className="mt-1.5">
+            <TextArea
+              id="additionalNotes"
+              value={formData.additionalNotes}
+              onChange={(v) => onUpdate("additionalNotes", v)}
+              placeholder="Anything else you'd like us to know?"
+              rows={4}
+            />
           </div>
         </div>
-      );
-
-    case 4:
-      return (
         <div>
-          <StepHeader
-            title="Timeline & Budget"
-            description="Help us understand your timeline and investment range."
-          />
-          <div className="space-y-5">
-            <div>
-              <Label>Timeline *</Label>
-              <div className="mt-1.5">
-                <RadioGroup
-                  name="timeline"
-                  options={[
-                    "ASAP — I needed this yesterday",
-                    "1-3 months",
-                    "3-6 months",
-                    "Flexible — quality over speed",
-                  ]}
-                  value={formData.timeline}
-                  onChange={(v) => onUpdate("timeline", v)}
-                />
-              </div>
-              <FieldError error={errors.timeline} />
-            </div>
-            <div>
-              <Label>Investment Range *</Label>
-              <div className="mt-1.5">
-                <RadioGroup
-                  name="budgetRange"
-                  options={[
-                    "$1,000 - $5,000",
-                    "$5,000 - $15,000",
-                    "$15,000 - $30,000",
-                    "$30,000+",
-                    "Not sure yet",
-                  ]}
-                  value={formData.budgetRange}
-                  onChange={(v) => onUpdate("budgetRange", v)}
-                />
-              </div>
-              <FieldError error={errors.budgetRange} />
-            </div>
+          <Label>How did you hear about BuiltByBas? (optional)</Label>
+          <div className="mt-1.5">
+            <RadioGroup
+              name="howDidYouHear"
+              options={[
+                { value: "google", label: "Google Search" },
+                { value: "social-media", label: "Social Media" },
+                { value: "referral", label: "Referral" },
+                { value: "other", label: "Other" },
+              ]}
+              value={formData.howDidYouHear}
+              onChange={(v) => onUpdate("howDidYouHear", v)}
+            />
           </div>
         </div>
-      );
-
-    case 5:
-      return (
         <div>
-          <StepHeader
-            title="Where Are You Now?"
-            description="Understanding your current state helps us plan the right approach."
-          />
-          <div className="space-y-5">
-            <div>
-              <Label>Do you have an existing website? *</Label>
-              <div className="mt-1.5">
-                <RadioGroup
-                  name="hasExistingSite"
-                  options={[
-                    "Yes — it needs a complete rebuild",
-                    "Yes — it needs updates",
-                    "No — starting from scratch",
-                    "I have a basic template/builder site",
-                  ]}
-                  value={formData.hasExistingSite}
-                  onChange={(v) => onUpdate("hasExistingSite", v)}
-                />
-              </div>
-              <FieldError error={errors.hasExistingSite} />
-            </div>
-            <div>
-              <Label htmlFor="painPoints">Current Pain Points (optional)</Label>
-              <div className="mt-1.5">
-                <TextArea
-                  id="painPoints"
-                  value={formData.currentPainPoints}
-                  onChange={(v) => onUpdate("currentPainPoints", v)}
-                  placeholder="What's not working with your current setup?"
-                  rows={4}
-                />
-              </div>
-            </div>
+          <Label>Preferred Contact Method (optional)</Label>
+          <div className="mt-1.5">
+            <RadioGroup
+              name="preferredContact"
+              options={[
+                { value: "email", label: "Email" },
+                { value: "phone", label: "Phone" },
+                { value: "text", label: "Text message" },
+                { value: "any", label: "No preference" },
+              ]}
+              value={formData.preferredContact}
+              onChange={(v) => onUpdate("preferredContact", v)}
+            />
           </div>
         </div>
-      );
+      </div>
+    </div>
+  );
+}
 
-    case 6:
+/* ------------------------------------------------------------------ */
+/*  Main export                                                        */
+/* ------------------------------------------------------------------ */
+
+export function IntakeStep({
+  stepConfig,
+  formData,
+  errors,
+  onUpdate,
+  onUpdateServiceAnswer,
+}: IntakeStepProps) {
+  switch (stepConfig.type) {
+    case "service-selection":
       return (
-        <div>
-          <StepHeader
-            title="Features & Capabilities"
-            description="Select any features you're interested in. Don't worry — we'll refine this together."
-          />
-          <CheckboxGroup
-            options={[
-              "Contact / Lead Capture Forms",
-              "Online Booking / Scheduling",
-              "E-Commerce / Payments",
-              "Client Portal / Dashboard",
-              "Content Management (CMS)",
-              "Email Marketing Integration",
-              "Analytics & Reporting",
-              "AI-Powered Features",
-              "SEO Optimization",
-              "Social Media Integration",
-              "Mobile App",
-              "Custom Integrations / API",
-            ]}
-            selected={formData.desiredFeatures}
-            onChange={(v) => onUpdate("desiredFeatures", v)}
-          />
-        </div>
+        <ServiceSelectionStep
+          formData={formData}
+          errors={errors}
+          onUpdate={onUpdate}
+        />
       );
-
-    case 7:
+    case "contact":
       return (
-        <div>
-          <StepHeader
-            title="Design Direction"
-            description="What look and feel resonates with your brand?"
-          />
-          <div className="space-y-5">
-            <div>
-              <Label>Design Preference *</Label>
-              <div className="mt-1.5">
-                <RadioGroup
-                  name="designPreference"
-                  options={[
-                    "Modern & Minimal",
-                    "Bold & Energetic",
-                    "Professional & Corporate",
-                    "Creative & Unique",
-                    "Let BuiltByBas decide",
-                  ]}
-                  value={formData.designPreference}
-                  onChange={(v) => onUpdate("designPreference", v)}
-                />
-              </div>
-              <FieldError error={errors.designPreference} />
-            </div>
-            <div>
-              <Label>Do you have existing brand assets? *</Label>
-              <div className="mt-1.5">
-                <RadioGroup
-                  name="hasBrandAssets"
-                  options={[
-                    "Yes — logo, colors, brand guide",
-                    "Partial — logo only",
-                    "No — I need branding too",
-                  ]}
-                  value={formData.hasBrandAssets}
-                  onChange={(v) => onUpdate("hasBrandAssets", v)}
-                />
-              </div>
-              <FieldError error={errors.hasBrandAssets} />
-            </div>
-          </div>
-        </div>
+        <ContactStep formData={formData} errors={errors} onUpdate={onUpdate} />
       );
-
-    case 8:
+    case "business":
       return (
-        <div>
-          <StepHeader
-            title="Inspiration & Competition"
-            description="This helps us understand the landscape and your vision."
-          />
-          <div className="space-y-5">
-            <div>
-              <Label htmlFor="competitors">
-                Competitors or Similar Businesses (optional)
-              </Label>
-              <div className="mt-1.5">
-                <TextArea
-                  id="competitors"
-                  value={formData.competitors}
-                  onChange={(v) => onUpdate("competitors", v)}
-                  placeholder="List any competitors or businesses in your space"
-                  rows={3}
-                />
-              </div>
-            </div>
-            <div>
-              <Label htmlFor="inspiration">
-                Websites You Love (optional)
-              </Label>
-              <div className="mt-1.5">
-                <TextArea
-                  id="inspiration"
-                  value={formData.inspiration}
-                  onChange={(v) => onUpdate("inspiration", v)}
-                  placeholder="Share URLs of websites you admire (any industry)"
-                  rows={3}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
+        <BusinessStep
+          formData={formData}
+          errors={errors}
+          onUpdate={onUpdate}
+        />
       );
-
-    case 9:
+    case "service-questions":
       return (
-        <div>
-          <StepHeader
-            title="Anything Else?"
-            description="Last step — share anything else that would help us understand your project."
-          />
-          <div className="space-y-5">
-            <div>
-              <Label htmlFor="additionalNotes">
-                Additional Notes (optional)
-              </Label>
-              <div className="mt-1.5">
-                <TextArea
-                  id="additionalNotes"
-                  value={formData.additionalNotes}
-                  onChange={(v) => onUpdate("additionalNotes", v)}
-                  placeholder="Anything else you'd like us to know?"
-                  rows={4}
-                />
-              </div>
-            </div>
-            <div>
-              <Label>How did you hear about BuiltByBas? (optional)</Label>
-              <div className="mt-1.5">
-                <RadioGroup
-                  name="howDidYouHear"
-                  options={[
-                    "Google Search",
-                    "Social Media",
-                    "Referral",
-                    "Other",
-                  ]}
-                  value={formData.howDidYouHear}
-                  onChange={(v) => onUpdate("howDidYouHear", v)}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
+        <ServiceQuestionsStep
+          serviceId={stepConfig.serviceId!}
+          formData={formData}
+          errors={errors}
+          onUpdateServiceAnswer={onUpdateServiceAnswer}
+        />
       );
-
+    case "timeline-budget":
+      return (
+        <TimelineBudgetStep
+          formData={formData}
+          errors={errors}
+          onUpdate={onUpdate}
+        />
+      );
+    case "design-brand":
+      return (
+        <DesignBrandStep
+          formData={formData}
+          errors={errors}
+          onUpdate={onUpdate}
+        />
+      );
+    case "final":
+      return (
+        <FinalStep formData={formData} errors={errors} onUpdate={onUpdate} />
+      );
     default:
       return null;
   }

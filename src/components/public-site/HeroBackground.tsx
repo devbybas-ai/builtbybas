@@ -62,7 +62,7 @@ export function HeroBackground() {
         {/* ============================================ */}
 
         {/* Parallel bus lines — horizontal groups */}
-        <g stroke="rgba(0, 212, 255, 0.035)" strokeWidth="0.5" fill="none">
+        <g stroke="rgba(0, 212, 255, 0.08)" strokeWidth="0.5" fill="none">
           {/* Top bus group */}
           <line x1="30" y1="40" x2="280" y2="40" /><line x1="30" y1="44" x2="260" y2="44" />
           <line x1="30" y1="48" x2="240" y2="48" /><line x1="30" y1="52" x2="220" y2="52" />
@@ -113,7 +113,7 @@ export function HeroBackground() {
         </g>
 
         {/* Vertical bus lines */}
-        <g stroke="rgba(0, 212, 255, 0.035)" strokeWidth="0.5" fill="none">
+        <g stroke="rgba(0, 212, 255, 0.08)" strokeWidth="0.5" fill="none">
           <line x1="60" y1="30" x2="60" y2="180" /><line x1="64" y1="30" x2="64" y2="160" />
           <line x1="60" y1="220" x2="60" y2="380" /><line x1="64" y1="240" x2="64" y2="380" />
           <line x1="60" y1="420" x2="60" y2="570" /><line x1="64" y1="440" x2="64" y2="570" />
@@ -133,7 +133,7 @@ export function HeroBackground() {
         </g>
 
         {/* Dense short connectors — fills the gaps */}
-        <g stroke="rgba(0, 212, 255, 0.04)" strokeWidth="0.6" fill="none">
+        <g stroke="rgba(0, 212, 255, 0.09)" strokeWidth="0.6" fill="none">
           {/* Dozens of small right-angle connectors */}
           <path d="M80,40 V70 H120" /><path d="M180,44 V75 H220" /><path d="M280,40 V60 H320" />
           <path d="M480,40 V65 H520" /><path d="M700,40 V60 H740" />
@@ -161,20 +161,20 @@ export function HeroBackground() {
         </g>
 
         {/* Main animated route traces */}
-        <g stroke="rgba(0, 212, 255, 0.07)" strokeWidth="1" fill="none" strokeLinecap="square">
+        <g stroke="rgba(0, 212, 255, 0.12)" strokeWidth="1" fill="none" strokeLinecap="square">
           <use href="#r1" /><use href="#r2" /><use href="#r3" /><use href="#r4" />
           <use href="#r5" /><use href="#r6" /><use href="#r7" /><use href="#r8" />
           <use href="#r9" /><use href="#r10" /><use href="#r11" /><use href="#r12" />
           <use href="#r13" /><use href="#r14" /><use href="#r15" /><use href="#r16" />
         </g>
-        <g stroke="rgba(0, 212, 255, 0.14)" strokeWidth="1" fill="none" filter="url(#g1)" strokeLinecap="square">
+        <g stroke="rgba(0, 212, 255, 0.22)" strokeWidth="1" fill="none" filter="url(#g1)" strokeLinecap="square">
           <use href="#r1" /><use href="#r5" /><use href="#r6" /><use href="#r9" /><use href="#r12" />
         </g>
 
         {/* ============================================ */}
         {/* IC CHIPS — scattered across board             */}
         {/* ============================================ */}
-        <g stroke="rgba(0, 212, 255, 0.055)" strokeWidth="0.7" fill="rgba(0, 212, 255, 0.008)">
+        <g stroke="rgba(0, 212, 255, 0.12)" strokeWidth="0.7" fill="rgba(0, 212, 255, 0.06)">
           {/* IC 1 — top-left */}
           <rect x="70" y="55" width="35" height="50" rx="1" />
           <line x1="70" y1="65" x2="58" y2="65" /><line x1="70" y1="75" x2="58" y2="75" />
@@ -238,7 +238,7 @@ export function HeroBackground() {
         </g>
 
         {/* SMD components — small rectangles scattered everywhere */}
-        <g stroke="rgba(0, 212, 255, 0.05)" strokeWidth="0.6" fill="rgba(0, 212, 255, 0.01)">
+        <g stroke="rgba(0, 212, 255, 0.10)" strokeWidth="0.6" fill="rgba(0, 212, 255, 0.03)">
           <rect x="140" y="72" width="12" height="6" rx="1" /><rect x="230" y="90" width="12" height="6" rx="1" />
           <rect x="410" y="55" width="6" height="12" rx="1" /><rect x="560" y="65" width="12" height="6" rx="1" />
           <rect x="640" y="85" width="6" height="12" rx="1" /><rect x="770" y="70" width="12" height="6" rx="1" />
@@ -254,23 +254,23 @@ export function HeroBackground() {
         </g>
 
         {/* Via holes */}
-        <g fill="none" stroke="rgba(0, 212, 255, 0.06)" strokeWidth="0.6">
-          <circle cx="200" cy="250" r="4" /><circle cx="200" cy="250" r="1.5" fill="rgba(0, 212, 255, 0.025)" />
-          <circle cx="350" cy="300" r="4" /><circle cx="350" cy="300" r="1.5" fill="rgba(0, 212, 255, 0.025)" />
-          <circle cx="400" cy="180" r="4" /><circle cx="400" cy="180" r="1.5" fill="rgba(0, 212, 255, 0.025)" />
-          <circle cx="700" cy="250" r="4" /><circle cx="700" cy="250" r="1.5" fill="rgba(0, 212, 255, 0.025)" />
-          <circle cx="600" cy="220" r="4" /><circle cx="600" cy="220" r="1.5" fill="rgba(0, 212, 255, 0.025)" />
-          <circle cx="850" cy="250" r="4" /><circle cx="850" cy="250" r="1.5" fill="rgba(0, 212, 255, 0.025)" />
-          <circle cx="300" cy="350" r="4" /><circle cx="300" cy="350" r="1.5" fill="rgba(0, 212, 255, 0.025)" />
-          <circle cx="700" cy="350" r="4" /><circle cx="700" cy="350" r="1.5" fill="rgba(0, 212, 255, 0.025)" />
-          <circle cx="450" cy="400" r="4" /><circle cx="450" cy="400" r="1.5" fill="rgba(0, 212, 255, 0.025)" />
-          <circle cx="550" cy="420" r="4" /><circle cx="550" cy="420" r="1.5" fill="rgba(0, 212, 255, 0.025)" />
-          <circle cx="150" cy="350" r="3" /><circle cx="150" cy="350" r="1.2" fill="rgba(0, 212, 255, 0.025)" />
-          <circle cx="850" cy="350" r="3" /><circle cx="850" cy="350" r="1.2" fill="rgba(0, 212, 255, 0.025)" />
-          <circle cx="250" cy="200" r="3" /><circle cx="250" cy="200" r="1.2" fill="rgba(0, 212, 255, 0.025)" />
-          <circle cx="750" cy="180" r="3" /><circle cx="750" cy="180" r="1.2" fill="rgba(0, 212, 255, 0.025)" />
-          <circle cx="400" cy="420" r="3" /><circle cx="400" cy="420" r="1.2" fill="rgba(0, 212, 255, 0.025)" />
-          <circle cx="600" cy="420" r="3" /><circle cx="600" cy="420" r="1.2" fill="rgba(0, 212, 255, 0.025)" />
+        <g fill="none" stroke="rgba(0, 212, 255, 0.12)" strokeWidth="0.6">
+          <circle cx="200" cy="250" r="4" /><circle cx="200" cy="250" r="1.5" fill="rgba(0, 212, 255, 0.06)" />
+          <circle cx="350" cy="300" r="4" /><circle cx="350" cy="300" r="1.5" fill="rgba(0, 212, 255, 0.06)" />
+          <circle cx="400" cy="180" r="4" /><circle cx="400" cy="180" r="1.5" fill="rgba(0, 212, 255, 0.06)" />
+          <circle cx="700" cy="250" r="4" /><circle cx="700" cy="250" r="1.5" fill="rgba(0, 212, 255, 0.06)" />
+          <circle cx="600" cy="220" r="4" /><circle cx="600" cy="220" r="1.5" fill="rgba(0, 212, 255, 0.06)" />
+          <circle cx="850" cy="250" r="4" /><circle cx="850" cy="250" r="1.5" fill="rgba(0, 212, 255, 0.06)" />
+          <circle cx="300" cy="350" r="4" /><circle cx="300" cy="350" r="1.5" fill="rgba(0, 212, 255, 0.06)" />
+          <circle cx="700" cy="350" r="4" /><circle cx="700" cy="350" r="1.5" fill="rgba(0, 212, 255, 0.06)" />
+          <circle cx="450" cy="400" r="4" /><circle cx="450" cy="400" r="1.5" fill="rgba(0, 212, 255, 0.06)" />
+          <circle cx="550" cy="420" r="4" /><circle cx="550" cy="420" r="1.5" fill="rgba(0, 212, 255, 0.06)" />
+          <circle cx="150" cy="350" r="3" /><circle cx="150" cy="350" r="1.2" fill="rgba(0, 212, 255, 0.06)" />
+          <circle cx="850" cy="350" r="3" /><circle cx="850" cy="350" r="1.2" fill="rgba(0, 212, 255, 0.06)" />
+          <circle cx="250" cy="200" r="3" /><circle cx="250" cy="200" r="1.2" fill="rgba(0, 212, 255, 0.06)" />
+          <circle cx="750" cy="180" r="3" /><circle cx="750" cy="180" r="1.2" fill="rgba(0, 212, 255, 0.06)" />
+          <circle cx="400" cy="420" r="3" /><circle cx="400" cy="420" r="1.2" fill="rgba(0, 212, 255, 0.06)" />
+          <circle cx="600" cy="420" r="3" /><circle cx="600" cy="420" r="1.2" fill="rgba(0, 212, 255, 0.06)" />
         </g>
 
         {/* Center hub */}
@@ -278,7 +278,7 @@ export function HeroBackground() {
         <circle cx="500" cy="300" r="2.5" fill="#00D4FF" opacity="0.9" />
 
         {/* Junction nodes on routes */}
-        <g fill="rgba(0, 212, 255, 0.3)">
+        <g fill="rgba(0, 212, 255, 0.45)">
           <circle cx="200" cy="150" r="1.5" /><circle cx="200" cy="250" r="1.5" />
           <circle cx="350" cy="250" r="1.5" /><circle cx="350" cy="300" r="1.5" />
           <circle cx="150" cy="300" r="1.5" /><circle cx="150" cy="350" r="1.5" />
