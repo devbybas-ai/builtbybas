@@ -1,26 +1,25 @@
+export type PortfolioCategory = "websites" | "platforms" | "software" | "animation";
+
 export interface PortfolioProject {
   id: string;
   slug: string;
   title: string;
-  client: string;
-  category: "web" | "software" | "ai";
+  subtitle: string;
+  category: PortfolioCategory;
   description: string;
-  challenge: string;
-  solution: string;
-  results: string[];
+  capabilities: string[];
   technologies: string[];
-  features: string[];
-  testimonial?: {
-    text: string;
-    author: string;
-    role: string;
-  };
-  images: {
-    thumbnail: string;
-    hero: string;
-    gallery: string[];
-  };
-  url?: string;
+  status: "live" | "in-progress" | "demo";
   featured: boolean;
-  completedAt: string;
+  url?: string;
+  colorAccent: string;
+  isDemo?: boolean;
+}
+
+export interface PortfolioCategoryMeta {
+  id: PortfolioCategory;
+  label: string;
+  description: string;
+  color: string;
+  icon: string;
 }

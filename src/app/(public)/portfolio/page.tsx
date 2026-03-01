@@ -2,13 +2,13 @@ import type { Metadata } from "next";
 import { PublicHeader } from "@/components/layout/PublicHeader";
 import { PublicFooter } from "@/components/layout/PublicFooter";
 import { FadeIn } from "@/components/motion/FadeIn";
-import { PortfolioGrid } from "@/components/public-site/PortfolioGrid";
+import { ProjectGrid } from "@/components/portfolio/ProjectGrid";
 import { CTASection } from "@/components/public-site/CTASection";
 
 export const metadata: Metadata = {
   title: "Our Work",
   description:
-    "See the custom software, websites, and marketing solutions BuiltByBas has delivered. Real projects, real results.",
+    "Real projects, live demos. See the custom websites, platforms, and tools BuiltByBas has shipped — and try our interactive capability showcases.",
 };
 
 export default function PortfolioPage() {
@@ -24,7 +24,7 @@ export default function PortfolioPage() {
               </h1>
               <p className="mt-4 max-w-2xl text-lg text-muted-foreground">
                 Real projects, real results. Every project is custom-engineered
-                for the client — no templates, no shortcuts.
+                — no templates, no shortcuts.
               </p>
             </FadeIn>
           </div>
@@ -32,7 +32,7 @@ export default function PortfolioPage() {
 
         <section className="pb-24">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <PortfolioGrid />
+            <ProjectGrid />
           </div>
         </section>
 

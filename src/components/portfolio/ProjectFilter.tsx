@@ -3,28 +3,28 @@
 import { motion } from "framer-motion";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { cn } from "@/lib/utils";
+import { categoryMeta } from "@/data/portfolio";
+import type { PortfolioCategory } from "@/types/portfolio";
 
-const categories = [
-  { id: "all", label: "All" },
-  { id: "web", label: "Web" },
-  { id: "software", label: "Software" },
-  { id: "ai", label: "AI" },
-] as const;
+export type FilterCategory = PortfolioCategory | "all";
 
-export type FilterCategory = (typeof categories)[number]["id"];
-
-interface PortfolioFilterProps {
+interface ProjectFilterProps {
   active: FilterCategory;
   onChange: (category: FilterCategory) => void;
 }
 
-export function PortfolioFilter({ active, onChange }: PortfolioFilterProps) {
+const allCategories = [
+  { id: "all" as const, label: "All" },
+  ...categoryMeta.map((c) => ({ id: c.id, label: c.label })),
+];
+
+export function ProjectFilter({ active, onChange }: ProjectFilterProps) {
   const shouldReduceMotion = useReducedMotion();
 
   return (
     <nav aria-label="Filter projects by category" className="mb-10">
       <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-        {categories.map((cat) => (
+        {allCategories.map((cat) => (
           <button
             key={cat.id}
             onClick={() => onChange(cat.id)}
@@ -33,7 +33,7 @@ export function PortfolioFilter({ active, onChange }: PortfolioFilterProps) {
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background",
               active === cat.id
                 ? "text-background"
-                : "text-muted-foreground hover:text-foreground"
+                : "text-muted-foreground hover:text-foreground",
             )}
           >
             {active === cat.id && !shouldReduceMotion && (

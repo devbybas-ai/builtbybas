@@ -44,7 +44,7 @@ npm-debug.log*
 .claude/settings.local.json
 
 # Server data (intake submissions — not committed)
-data/
+/data/
 
 # Misc
 *.tsbuildinfo

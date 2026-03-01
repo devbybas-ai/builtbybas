@@ -2,28 +2,25 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { staggerContainer, viewportOnce } from "@/lib/motion";
+import { staggerContainer } from "@/lib/motion";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
-import {
-  PortfolioFilter,
-  type FilterCategory,
-} from "@/components/public-site/PortfolioFilter";
-import { PortfolioCard } from "@/components/public-site/PortfolioCard";
+import { ProjectFilter, type FilterCategory } from "@/components/portfolio/ProjectFilter";
+import { ProjectCard } from "@/components/portfolio/ProjectCard";
 import { getProjectsByCategory } from "@/data/portfolio";
 
-export function PortfolioGrid() {
+export function ProjectGrid() {
   const [activeFilter, setActiveFilter] = useState<FilterCategory>("all");
   const shouldReduceMotion = useReducedMotion();
-  const filteredProjects = getProjectsByCategory(activeFilter);
+  const filteredProjects = getProjectsByCategory(activeFilter === "all" ? "all" : activeFilter);
 
   return (
     <div>
-      <PortfolioFilter active={activeFilter} onChange={setActiveFilter} />
+      <ProjectFilter active={activeFilter} onChange={setActiveFilter} />
 
       {shouldReduceMotion ? (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {filteredProjects.map((project) => (
-            <PortfolioCard key={project.id} project={project} />
+            <ProjectCard key={project.id} project={project} />
           ))}
         </div>
       ) : (
@@ -34,11 +31,10 @@ export function PortfolioGrid() {
             initial="hidden"
             animate="visible"
             exit={{ opacity: 0, transition: { duration: 0.15 } }}
-            viewport={viewportOnce}
             className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
           >
             {filteredProjects.map((project) => (
-              <PortfolioCard key={project.id} project={project} />
+              <ProjectCard key={project.id} project={project} />
             ))}
           </motion.div>
         </AnimatePresence>
