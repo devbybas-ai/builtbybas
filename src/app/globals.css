@@ -191,11 +191,80 @@
     background-clip: text;
   }
 
+  .text-gradient-shimmer {
+    background: linear-gradient(
+      135deg,
+      #00D4FF 0%,
+      #0EA5E9 25%,
+      #67E8F9 40%,
+      #0EA5E9 55%,
+      #00D4FF 100%
+    );
+    background-size: 250% 100%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: text-shimmer 8s ease-in-out infinite;
+    animation-delay: 3s;
+  }
+
+  .btn-shine {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-shine::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      120deg,
+      transparent 0%,
+      transparent 30%,
+      rgba(255, 255, 255, 0.25) 45%,
+      rgba(255, 255, 255, 0.35) 50%,
+      rgba(255, 255, 255, 0.25) 55%,
+      transparent 70%,
+      transparent 100%
+    );
+    transform: translateX(-100%);
+    animation: btn-shine 8s ease-in-out infinite;
+    pointer-events: none;
+    border-radius: inherit;
+  }
+
   .hero-grid {
     background-image:
       linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
       linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
     background-size: 60px 60px;
+  }
+}
+
+/* === SHINE ANIMATIONS === */
+@keyframes btn-shine {
+  0%,
+  88% {
+    transform: translateX(-100%);
+  }
+  95% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes text-shimmer {
+  0%,
+  85% {
+    background-position: 100% 50%;
+  }
+  95% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
   }
 }
 
