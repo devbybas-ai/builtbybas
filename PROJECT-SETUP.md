@@ -983,12 +983,12 @@ Every public page needs a title and description. Define patterns during setup, n
 
 **Required for every public page:**
 
-| Tag                | Pattern                                         | Example                                          |
-| ------------------ | ----------------------------------------------- | ------------------------------------------------ |
-| `<title>`          | `{Page Title} - {Brand}`                        | `Web Development Services - BuiltByBas`          |
-| `meta description` | 120-160 chars, primary keyword, unique per page | `Custom web development for your business...`    |
-| `canonical`        | Self-referencing absolute URL                   | `https://builtbybas.com/services`                |
-| `viewport`         | `width=device-width, initial-scale=1`           | Standard responsive                              |
+| Tag                | Pattern                                         | Example                                       |
+| ------------------ | ----------------------------------------------- | --------------------------------------------- |
+| `<title>`          | `{Page Title} - {Brand}`                        | `Web Development Services - BuiltByBas`       |
+| `meta description` | 120-160 chars, primary keyword, unique per page | `Custom web development for your business...` |
+| `canonical`        | Self-referencing absolute URL                   | `https://builtbybas.com/services`             |
+| `viewport`         | `width=device-width, initial-scale=1`           | Standard responsive                           |
 
 **Implementation:** Use the framework's metadata API (e.g., Next.js `generateMetadata` or `metadata` export) — never raw `<meta>` tags in `<head>`.
 

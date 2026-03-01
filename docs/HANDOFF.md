@@ -1,7 +1,7 @@
 # BuiltByBas — Handoff Document
 
 > **Last Updated:** 2026-02-28
-> **Status:** Intake Analysis Engine COMPLETE — algorithmic scoring, admin dashboard, API endpoints
+> **Status:** Live Portfolio + Hero Shine COMPLETE — real projects, interactive animation demos, hero polish
 > **Next Session:** PostgreSQL setup, CRM core (clients, pipeline), deployment prep
 
 ---
@@ -136,6 +136,7 @@ Dark, premium, cutting-edge. The site itself IS the portfolio piece. Every inter
 | 1     | Foundation (Next.js, DB, auth, layout) | COMPLETE    | 1        |
 | 2     | Public Website                         | COMPLETE    | 2-5      |
 | 2.5   | Intake Analysis Engine                 | COMPLETE    | 6        |
+| 2.6   | Live Portfolio + Hero Shine            | COMPLETE    | 7        |
 | 3     | CRM Core (clients, pipeline, scoring)  | NOT STARTED | 7-11     |
 | 4     | Projects + Financials                  | NOT STARTED | 12-17    |
 | 5     | AI Suite + Analytics                   | NOT STARTED | 18-21    |
@@ -257,15 +258,36 @@ Dark, premium, cutting-edge. The site itself IS the portfolio piece. Every inter
 - `pnpm test` — 55/55 tests (34 new scoring engine tests + 21 existing)
 - `pnpm build` — 26 routes compiled (4 new: admin/intake, admin/intake/[id], api/intake, api/intake/[id])
 
+**Session Phase2.6 (Live Portfolio + Hero Shine):**
+
+- **Hero shine animations:** CSS `@keyframes btn-shine` on "Start a Project" button — recurring light sweep every ~8s using pseudo-element with diagonal gradient. `@keyframes text-shimmer` on "Your Business" text — animated background-position on gradient for flowing highlight effect offset by 3s from button. Both respect `prefers-reduced-motion`.
+- **Portfolio overhaul:** Replaced 5 fictional client projects with 6 REAL shipped projects (The Colour Parlor, Orca Child in the Wild, All Beauty Hair Studio, Praxis Library, BuiltByBas, KAR CRM) and 2 interactive demo slots (Motion Gallery, Kinetic Typography).
+- **New type system:** `PortfolioProject` with `status` (live/in-progress/demo), `capabilities`, `colorAccent`, `isDemo` flag. `PortfolioCategoryMeta` for filter metadata. 4 categories: Websites, Platforms, Software, Animation.
+- **New component architecture:** `ProjectCard` (themed gradient preview, status badges, category badges, capability pills, "Visit Site" links), `ProjectGrid` (filterable with AnimatePresence), `ProjectFilter` (animated pill tabs), `ProjectDetail` (real project showcase with "What We Built" section, capabilities, tech stack, "Visit Live Site" CTA), `DemoDetail` (interactive demo layout with fullscreen toggle), `DemoFrame` (browser chrome wrapper), `DemoRenderer` (dynamic imports for demo components).
+- **Motion Gallery demo:** 8 interactive animation specimens — spring physics drag ball, stagger reveal, morphing shapes, 3D tilt card, loading patterns (4 variants), gesture swipe cards, scale entrance, hover glow buttons. Each specimen in glass card with replay control.
+- **Kinetic Typography demo:** 7 text animation techniques — word-by-word reveal with blur, character cascade, typewriter with cursor blink, gradient sweep, split flip (rotateX), wave motion, blur-in. Each in specimen row with replay.
+- **"All business" positioning:** Removed all "small business" language across entire codebase (23 instances), repositioned for businesses of all sizes.
+- **Agent Performance Tracking:** Created `docs/AGENT-PERFORMANCE.md` with leaderboard and performance log.
+- All descriptions are 100% ORIGINAL — no content copied from client sites.
+- Deleted 4 old components (PortfolioGrid, PortfolioCard, PortfolioFilter, CaseStudyLayout), created 15 new files.
+- Commits: `8d4aeb5` (hero shine), `425df40` (portfolio overhaul), `3e18ee2` (animation demos)
+
+**Verification — all passing:**
+
+- `pnpm tsc --noEmit` — 0 type errors
+- `pnpm test` — 55/55 tests
+- `pnpm build` — 26 routes compiled (8 SSG portfolio pages: the-colour-parlor, orca-child-in-the-wild, all-beauty-hair-studio, praxis-library, builtbybas, kar-crm, motion-gallery, kinetic-typography)
+
 ### What's Next
 
 1. Set up local PostgreSQL — create database, run Drizzle migrations, test auth endpoints end-to-end
 2. CRM core: clients module, pipeline (12-stage kanban)
 3. Run E2E tests with Playwright (requires dev server)
-4. Replace aspirational portfolio data with real projects as they're completed
+4. Add real images/screenshots to portfolio projects (replace gradient placeholders)
 5. Migrate intake submissions from JSON files to PostgreSQL (Phase 3)
-6. Add real images to portfolio projects
-7. Deliver comprehensive breakdown of every deliverable with state of product at delivery (per Bas's requirement)
+6. Deliver comprehensive breakdown of every deliverable with state of product at delivery (per Bas's requirement)
+7. Add portfolio items for upcoming partnerships: Marketing Reset, small business web co (name TBD)
+8. Reflect veteran-backed status in branding/about page
 
 ### Notes
 
