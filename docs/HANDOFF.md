@@ -1,8 +1,8 @@
 # BuiltByBas — Handoff Document
 
-> **Last Updated:** 2026-03-01 (Session 13)
-> **Status:** Phase 3 IN PROGRESS — Dashboard analytics live, intake list with filters/sort/search, 20 mock submissions seeded, send-intake-link email via Resend, 33-route build
-> **Next Session:** PII encryption, Resend domain setup, animation portfolio, partnership items, veteran branding, Phase 4 planning
+> **Last Updated:** 2026-03-01 (Session 15)
+> **Status:** LIVE AT builtbybas.com — SSL, PostgreSQL 16, PM2, Nginx on Hostinger VPS. Phase 4 complete. 131 tests, 43-route build.
+> **Next Session:** Deploy Phase 4 to production (push + migrate), seed production DB, test admin login, Phase 5 (AI Suite), proposals system, client portal
 
 ---
 
@@ -124,7 +124,7 @@ Dark, premium, cutting-edge. The site itself IS the portfolio piece. Every inter
 - **OS:** Ubuntu 24.04 LTS
 - **Specs:** 2 CPU, 8 GB RAM, 100 GB disk
 - **Domain:** builtbybas.com (purchased)
-- **Deploy TODO:** SSH keys, disable root password, malware scanner, Nginx, PM2, Let's Encrypt SSL
+- **Deploy:** LIVE — Node 22, pnpm 10, PM2, Nginx, PostgreSQL 16, Let's Encrypt SSL (expires 2026-05-30), GitHub deploy key configured
 
 ---
 
@@ -137,10 +137,10 @@ Dark, premium, cutting-edge. The site itself IS the portfolio piece. Every inter
 | 2     | Public Website                         | COMPLETE    | 2-5      |
 | 2.5   | Intake Analysis Engine                 | COMPLETE    | 6        |
 | 2.6   | Live Portfolio + Hero Shine            | COMPLETE    | 7        |
-| 3     | CRM Core (clients, pipeline, scoring)  | IN PROGRESS | 7-13     |
-| 4     | Projects + Financials                  | NOT STARTED | 12-17    |
-| 5     | AI Suite + Analytics                   | NOT STARTED | 18-21    |
-| 6     | Hardening + Deployment                 | NOT STARTED | 22-25    |
+| 3     | CRM Core (clients, pipeline, scoring)  | COMPLETE    | 7-13     |
+| 4     | Projects + Financials                  | COMPLETE    | 15       |
+| 5     | AI Suite + Analytics                   | NOT STARTED | TBD      |
+| 6     | Hardening + Deployment                 | PARTIAL     | 14       |
 
 ### What Was Done (Setup Sessions 1-5)
 
@@ -333,19 +333,62 @@ Dark, premium, cutting-edge. The site itself IS the portfolio piece. Every inter
 - `pnpm test` — 91/91 tests
 - `pnpm build` — 33 routes (new: /api/intake/send-link), 0 type errors
 
+**Session 14 (Deployment — builtbybas.com LIVE):**
+
+- **Resend domain verified:** Added DKIM (TXT), SPF (MX + TXT), DMARC records to Hostinger DNS. All verified green. API key configured in production env.
+- **DNS pointed:** A record `@` → `72.62.200.30` for builtbybas.com. CNAME `www` → `builtbybas.com` (pre-existing).
+- **VPS provisioned for BuiltByBas:** Node 22, pnpm 10.30.3, PM2 6.0.14, PostgreSQL 16 installed. GitHub deploy key (ed25519) added. Repo cloned to `/var/www/builtbybas`.
+- **Database created:** PostgreSQL user `builtbybas` with generated password. Database `builtbybas` owned by user. Drizzle schema pushed.
+- **Production env configured:** `.env.production` + `.env.local` on VPS with DATABASE_URL, AUTH_SECRET, RESEND_API_KEY, SITE_URL.
+- **Build + PM2:** `pnpm build` — 33 routes compiled (30 static, dynamic API/admin). PM2 running `npx next start -p 3002` alongside colourparlor (port 3001) and ocinw (port 3000).
+- **Nginx configured:** Server block for `builtbybas.com` + `www.builtbybas.com` proxying to `127.0.0.1:3002`. Fixed catch-all `server_name _` on ocinw and colourparlor configs that were intercepting builtbybas traffic.
+- **SSL live:** Let's Encrypt certificate via certbot. Auto-renewal configured. Expires 2026-05-30.
+- **stdout fix:** VPS terminal had stdout redirected to /dev/null. Fixed with `exec 1>/dev/tty`.
+- **PM2 bin fix:** `ecosystem.config.cjs` pointed to `node_modules/.bin/next` (shell script, not JS). Fixed by using `npx next start -p 3002` string command.
+
+**Verification:**
+- `https://builtbybas.com` — LIVE with SSL green lock
+- `https://www.builtbybas.com` — redirects correctly
+- PM2 status: builtbybas online, colourparlor online
+- All 3 sites (builtbybas, colourparlor, ocinw) coexist on VPS
+
+**Session 15 (Phase 4 — Projects, Invoicing, Financial Analytics + PII Encryption + Branding):**
+
+- **PII encryption (AES-256-GCM):** Created `src/lib/encryption.ts` — `encrypt()`, `decrypt()`, `isEncrypted()`, `hmacHash()`, `encryptAnalysisPii()`, `decryptAnalysisPii()`. Wired into all PII touchpoints: `intake-storage.ts`, `dashboard-analytics.ts`, 5 API routes (clients CRUD, convert, pipeline). Encrypted 20 existing intake submissions via `scripts/encrypt-existing-pii.ts`. New env var `ENCRYPTION_KEY`. Backwards-compatible — plaintext values pass through `decrypt()` unchanged.
+- **Database migration:** Expanded PII columns from varchar(255) to varchar(500) for encrypted data (migration `0003_pii-encryption-columns.sql`).
+- **Veteran-backed branding:** Added across 6 locations — About page hero, About Story narrative, About Story descriptors (new "Veteran-Backed" bullet), footer tagline, JSON-LD organization schema, site-wide metadata.
+- **Partnership portfolio items:** Added Marketing Reset (marketing strategy company) and Small Business Web Co ($500 web solutions) as in-progress platform projects in `portfolio.ts`.
+- **Phase 4 — Projects table:** New `projects` table (13 columns, 3 indexes, FK to clients + users) with `project_status` enum (planning/in_progress/on_hold/completed/cancelled). Types, validation (Zod), 2 API routes (GET/POST `/api/projects`, GET/PATCH `/api/projects/[id]`). 3 admin pages (list, new, detail). `ProjectForm` and `ProjectDetailView` components with status management.
+- **Phase 4 — Invoicing system:** New `invoices` table (15 columns, 4 indexes) + `invoice_items` table (7 columns, 1 index) with `invoice_status` enum (draft/sent/paid/overdue/cancelled). Auto-generated invoice numbers (`INV-2026-0001`). Tax rate support. 2 API routes (GET/POST `/api/invoices`, GET/PATCH `/api/invoices/[id]`). 3 admin pages (list, new, detail). `InvoiceForm` (dynamic line items with add/remove) and `InvoiceDetailView` (table with subtotal/tax/total, status management).
+- **Phase 4 — Financial Analytics:** `/admin/analytics` page with 4 revenue cards (total/outstanding/overdue/draft), monthly revenue bar chart (6 months), project status breakdown, invoice/project/client summary, recent payments feed. All CSS-powered (no chart library).
+- **Schema:** 9 tables total (users, sessions, clients, pipeline_history, client_notes, intake_submissions, projects, invoices, invoice_items). Full Drizzle relations. Migration `0004_phase4-projects-invoices.sql`.
+- **Tests:** 21 encryption tests, 8 project validation tests, 11 invoice validation tests (40 new, 131 total).
+- 30+ new files, 15+ modified files.
+
+**Verification — all passing:**
+- `pnpm test` — 131/131 tests (8 suites)
+- `pnpm build` — 43 routes (10 new: projects list/new/detail, invoices list/new/detail, analytics, api/projects, api/projects/[id], api/invoices, api/invoices/[id])
+- Zero type errors
+
 ### What's Next
 
-**Priority:**
-1. Intake data security — field-level encryption for PII (name, email, phone)
-2. Set up Resend account + verify builtbybas.com domain for production email
-3. Animation portfolio pages
-4. Partnership portfolio items (Marketing Reset, Small Business Web Co)
-5. Veteran-backed branding
+**Immediate (production deployment):**
+1. Push to GitHub, deploy to VPS (git pull + pnpm install + build + pm2 restart)
+2. Run migrations on production DB (`drizzle-kit push` or apply SQL files)
+3. Add `ENCRYPTION_KEY` to production `.env.local`
+4. Run `scripts/encrypt-existing-pii.ts` on production to encrypt existing data
+5. Run `scripts/seed-owner.ts` on production (if not done)
+6. Test admin login on production (`/login`)
 
-**Phase 4 (Projects + Financials):**
-6. Projects table + CRUD
-7. Invoicing system
-8. Financial dashboard
+**Phase 5 (AI Suite):**
+7. AI proposal generation (Claude API integration)
+8. Proposals admin page (create, review, send)
+9. Client portal (project status, invoices, communication)
+
+**Improvements:**
+10. Animation portfolio polish
+11. Invoice PDF generation
+12. Email notifications for invoice status changes
 
 ### Notes
 
@@ -357,7 +400,13 @@ Dark, premium, cutting-edge. The site itself IS the portfolio piece. Every inter
 - PostgreSQL now running locally with `builtbybas` database. Auth and CRM routes functional.
 - Login: `devbybas@gmail.com` / `BuiltByBas2026!`
 - `npx tsx scripts/seed-intakes.ts` — re-run to seed 20 mock intakes (idempotent if table is empty)
-- Resend API key needed in `.env.local` for email sending to work. Without it, the send-link endpoint returns 503 gracefully.
+- Resend API key configured in production. Domain verified (DKIM, SPF, DMARC all green).
+- **VPS deployment:** SSH port 2222 (not 22). Deploy key at `~/.ssh/github_deploy`. App at `/var/www/builtbybas`. PM2 process name: `builtbybas`. Nginx config: `/etc/nginx/sites-available/builtbybas`.
+- **Redeploy command:** `cd /var/www/builtbybas && git pull && pnpm install --frozen-lockfile && pnpm build && pm2 restart builtbybas`
+- **VPS sites:** builtbybas (port 3002), colourparlor (port 3001), ocinw (port 3000)
+- **Production DB password:** stored in `/var/www/builtbybas/.env.local` on VPS (not in repo)
+- **ENCRYPTION_KEY:** Generate with `openssl rand -base64 32` — must be added to production `.env.local` before deploying Phase 4. Run `npx tsx scripts/encrypt-existing-pii.ts` after adding key to encrypt existing plaintext PII.
+- **Invoice numbers:** Auto-generated as `INV-{year}-{seq}` (e.g., INV-2026-0001). Sequential, not resettable.
 
 ---
 

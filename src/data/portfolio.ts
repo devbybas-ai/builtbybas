@@ -105,6 +105,50 @@ export const projects: PortfolioProject[] = [
     colorAccent: "pink",
   },
 
+  // === PARTNERSHIPS ===
+  {
+    id: "marketing-reset",
+    slug: "marketing-reset",
+    title: "Marketing Reset",
+    subtitle: "Marketing strategy redesign company built from the ground up",
+    category: "platforms",
+    description:
+      "A full-brand partnership building a marketing strategy company from scratch. Marketing Reset helps businesses rethink and redesign their marketing approach with data-driven strategies, competitive analysis, and clear execution plans. We are building the complete digital platform — brand identity, client onboarding, strategy delivery system, and results dashboards. Everything custom, everything aligned to conversion.",
+    capabilities: [
+      "Brand Identity",
+      "Strategy Platform",
+      "Client Onboarding",
+      "Results Dashboards",
+      "Competitive Analysis",
+      "Conversion Tracking",
+    ],
+    technologies: ["Next.js", "TypeScript", "Tailwind CSS", "PostgreSQL", "Analytics"],
+    status: "in-progress",
+    featured: false,
+    colorAccent: "rose",
+  },
+  {
+    id: "small-business-web-co",
+    slug: "small-business-web-co",
+    title: "Small Business Web Co",
+    subtitle: "Complete $500 web solutions for businesses getting started",
+    category: "platforms",
+    description:
+      "A partnership brand delivering complete web solutions at an accessible price point. Small Business Web Co provides businesses with a professional website, hosting, and launch package for $500 — no hidden fees, no upselling. We are building the platform that powers the entire operation: client intake, template customization engine, automated deployment pipeline, and ongoing hosting management. Making quality accessible.",
+    capabilities: [
+      "Automated Deployment",
+      "Template Engine",
+      "Client Portal",
+      "Hosting Management",
+      "Payment Processing",
+      "Scalable Architecture",
+    ],
+    technologies: ["Next.js", "TypeScript", "Tailwind CSS", "PostgreSQL", "Stripe"],
+    status: "in-progress",
+    featured: false,
+    colorAccent: "green",
+  },
+
   // === PLATFORMS ===
   {
     id: "praxis-library",

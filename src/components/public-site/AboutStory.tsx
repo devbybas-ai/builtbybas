@@ -16,18 +16,20 @@ export function AboutStory() {
           <FadeIn direction="left">
             <div className="space-y-6 text-muted-foreground">
               <p className="text-lg leading-relaxed">
-                I started BuiltByBas because I was tired of watching small
-                businesses get burned. Handed cookie-cutter templates and told
+                I started BuiltByBas because I was tired of watching businesses
+                get burned. Handed cookie-cutter templates and told
                 it was &quot;custom.&quot; Ghosted by freelancers who disappear
                 after launch. Left with tools that don&apos;t actually fit
                 their business.
               </p>
               <p className="text-lg leading-relaxed">
-                I&apos;m a software developer, and building things is what I do
-                best. Not managing teams. Not padding proposals. Not selling
-                features nobody asked for. I build — and I build with precision,
-                because every line of code matters when it&apos;s your business
-                on the line.
+                I&apos;m a veteran-backed software developer, and building
+                things is what I do best. The discipline, precision, and
+                commitment to mission that the military instills — that&apos;s
+                what I bring to every project. Not managing teams. Not padding
+                proposals. Not selling features nobody asked for. I build — and
+                I build with precision, because every line of code matters when
+                it&apos;s your business on the line.
               </p>
               <p className="text-lg leading-relaxed">
                 When AI changed the game, I didn&apos;t resist it — I embraced
@@ -62,6 +64,18 @@ export function AboutStory() {
                   One of the first developers to fully integrate AI into
                   professional software delivery — not as a gimmick, but as
                   core infrastructure.
+                </p>
+              </div>
+
+              <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <div className="h-2 w-2 rounded-full bg-primary" />
+                  <span className="font-medium">Veteran-Backed</span>
+                </div>
+                <p className="pl-5 text-sm text-muted-foreground">
+                  Military discipline, mission focus, and a commitment to
+                  delivering on every promise. That foundation shapes how I
+                  build.
                 </p>
               </div>
 

@@ -11,7 +11,7 @@ import { CTASection } from "@/components/public-site/CTASection";
 export const metadata: Metadata = {
   title: "About",
   description:
-    "Meet Bas Rosario — the developer behind BuiltByBas. Custom software and web development for businesses ready to grow.",
+    "Meet Bas Rosario — veteran-backed developer behind BuiltByBas. Custom software and web development for businesses ready to grow.",
 };
 
 export default function AboutPage() {
@@ -25,8 +25,8 @@ export default function AboutPage() {
               About <span className="text-gradient">BuiltByBas</span>
             </h1>
             <p className="mt-4 max-w-2xl text-lg text-muted-foreground">
-              One developer. One mission. Elite custom software for small
-              businesses that deserve better than templates.
+              Veteran-backed. One developer. One mission. Elite custom
+              software for businesses that deserve better than templates.
             </p>
           </FadeIn>
         </section>

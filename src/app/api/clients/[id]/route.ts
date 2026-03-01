@@ -10,6 +10,7 @@ import {
 import { requireAdmin } from "@/lib/api-auth";
 import { updateClientSchema } from "@/lib/client-validation";
 import { sanitizeString } from "@/lib/sanitize";
+import { encrypt, decrypt } from "@/lib/encryption";
 
 export async function GET(
   _request: NextRequest,
@@ -95,6 +96,9 @@ export async function GET(
       success: true,
       data: {
         ...client,
+        name: decrypt(client.name),
+        email: decrypt(client.email),
+        phone: client.phone ? decrypt(client.phone) : null,
         assignedUser: client.assignedTo
           ? { id: client.assignedTo, name: client.assignedUserName }
           : null,
@@ -156,10 +160,10 @@ export async function PATCH(
   const updates: Record<string, unknown> = { updatedAt: new Date() };
   const data = parsed.data;
 
-  if (data.name !== undefined) updates.name = sanitizeString(data.name);
-  if (data.email !== undefined) updates.email = data.email.toLowerCase();
+  if (data.name !== undefined) updates.name = encrypt(sanitizeString(data.name));
+  if (data.email !== undefined) updates.email = encrypt(data.email.toLowerCase());
   if (data.phone !== undefined)
-    updates.phone = data.phone ? sanitizeString(data.phone) : null;
+    updates.phone = data.phone ? encrypt(sanitizeString(data.phone)) : null;
   if (data.company !== undefined)
     updates.company = sanitizeString(data.company);
   if (data.industry !== undefined)
@@ -182,7 +186,15 @@ export async function PATCH(
       );
     }
 
-    return NextResponse.json({ success: true, data: updated });
+    return NextResponse.json({
+      success: true,
+      data: {
+        ...updated,
+        name: decrypt(updated.name),
+        email: decrypt(updated.email),
+        phone: updated.phone ? decrypt(updated.phone) : null,
+      },
+    });
   } catch {
     return NextResponse.json(
       { success: false, error: "Failed to update client" },

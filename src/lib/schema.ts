@@ -7,6 +7,9 @@ import {
   index,
   integer,
   jsonb,
+  numeric,
+  boolean,
+  text,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
@@ -78,9 +81,9 @@ export const clients = pgTable(
   "clients",
   {
     id: uuid("id").primaryKey().defaultRandom(),
-    name: varchar("name", { length: 255 }).notNull(),
-    email: varchar("email", { length: 255 }).notNull(),
-    phone: varchar("phone", { length: 50 }),
+    name: varchar("name", { length: 500 }).notNull(),
+    email: varchar("email", { length: 500 }).notNull(),
+    phone: varchar("phone", { length: 500 }),
     company: varchar("company", { length: 255 }).notNull(),
     industry: varchar("industry", { length: 100 }),
     website: varchar("website", { length: 500 }),
@@ -170,8 +173,8 @@ export const intakeSubmissions = pgTable(
     submittedAt: timestamp("submitted_at", { withTimezone: true })
       .notNull()
       .defaultNow(),
-    name: varchar("name", { length: 255 }).notNull(),
-    email: varchar("email", { length: 255 }).notNull(),
+    name: varchar("name", { length: 500 }).notNull(),
+    email: varchar("email", { length: 500 }).notNull(),
     company: varchar("company", { length: 255 }).notNull(),
     complexityScore: integer("complexity_score"),
     primaryService: varchar("primary_service", { length: 255 }),
@@ -188,6 +191,117 @@ export const intakeSubmissions = pgTable(
 );
 
 // ============================================
+// Projects
+// ============================================
+
+export const projectStatusEnum = pgEnum("project_status", [
+  "planning",
+  "in_progress",
+  "on_hold",
+  "completed",
+  "cancelled",
+]);
+
+export const projects = pgTable(
+  "projects",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    clientId: uuid("client_id")
+      .notNull()
+      .references(() => clients.id, { onDelete: "cascade" }),
+    name: varchar("name", { length: 255 }).notNull(),
+    description: text("description"),
+    status: projectStatusEnum("status").notNull().default("planning"),
+    startDate: timestamp("start_date", { withTimezone: true }),
+    targetDate: timestamp("target_date", { withTimezone: true }),
+    completedDate: timestamp("completed_date", { withTimezone: true }),
+    budgetCents: integer("budget_cents"),
+    services: jsonb("services").$type<string[]>().default([]),
+    assignedTo: uuid("assigned_to").references(() => users.id, {
+      onDelete: "set null",
+    }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (table) => [
+    index("idx_projects_client_id").on(table.clientId),
+    index("idx_projects_status").on(table.status),
+    index("idx_projects_assigned_to").on(table.assignedTo),
+  ]
+);
+
+// ============================================
+// Invoices
+// ============================================
+
+export const invoiceStatusEnum = pgEnum("invoice_status", [
+  "draft",
+  "sent",
+  "paid",
+  "overdue",
+  "cancelled",
+]);
+
+export const invoices = pgTable(
+  "invoices",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    invoiceNumber: varchar("invoice_number", { length: 20 }).notNull().unique(),
+    clientId: uuid("client_id")
+      .notNull()
+      .references(() => clients.id, { onDelete: "cascade" }),
+    projectId: uuid("project_id").references(() => projects.id, {
+      onDelete: "set null",
+    }),
+    status: invoiceStatusEnum("status").notNull().default("draft"),
+    issuedDate: timestamp("issued_date", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    dueDate: timestamp("due_date", { withTimezone: true }).notNull(),
+    paidDate: timestamp("paid_date", { withTimezone: true }),
+    subtotalCents: integer("subtotal_cents").notNull().default(0),
+    taxRate: numeric("tax_rate", { precision: 5, scale: 4 }).default("0"),
+    taxCents: integer("tax_cents").notNull().default(0),
+    totalCents: integer("total_cents").notNull().default(0),
+    notes: text("notes"),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (table) => [
+    index("idx_invoices_client_id").on(table.clientId),
+    index("idx_invoices_project_id").on(table.projectId),
+    index("idx_invoices_status").on(table.status),
+    index("idx_invoices_due_date").on(table.dueDate),
+  ]
+);
+
+export const invoiceItems = pgTable(
+  "invoice_items",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    invoiceId: uuid("invoice_id")
+      .notNull()
+      .references(() => invoices.id, { onDelete: "cascade" }),
+    description: varchar("description", { length: 500 }).notNull(),
+    quantity: numeric("quantity", { precision: 10, scale: 2 })
+      .notNull()
+      .default("1"),
+    unitPriceCents: integer("unit_price_cents").notNull(),
+    totalCents: integer("total_cents").notNull(),
+    sortOrder: integer("sort_order").notNull().default(0),
+  },
+  (table) => [index("idx_invoice_items_invoice_id").on(table.invoiceId)]
+);
+
+// ============================================
 // Relations
 // ============================================
 
@@ -195,6 +309,7 @@ export const usersRelations = relations(users, ({ many }) => ({
   sessions: many(sessions),
   assignedClients: many(clients),
   authoredNotes: many(clientNotes),
+  assignedProjects: many(projects),
 }));
 
 export const sessionsRelations = relations(sessions, ({ one }) => ({
@@ -208,6 +323,8 @@ export const clientsRelations = relations(clients, ({ one, many }) => ({
   }),
   notes: many(clientNotes),
   pipelineHistory: many(pipelineHistory),
+  projects: many(projects),
+  invoices: many(invoices),
 }));
 
 export const pipelineHistoryRelations = relations(
@@ -232,5 +349,36 @@ export const clientNotesRelations = relations(clientNotes, ({ one }) => ({
   author: one(users, {
     fields: [clientNotes.authorId],
     references: [users.id],
+  }),
+}));
+
+export const projectsRelations = relations(projects, ({ one, many }) => ({
+  client: one(clients, {
+    fields: [projects.clientId],
+    references: [clients.id],
+  }),
+  assignedUser: one(users, {
+    fields: [projects.assignedTo],
+    references: [users.id],
+  }),
+  invoices: many(invoices),
+}));
+
+export const invoicesRelations = relations(invoices, ({ one, many }) => ({
+  client: one(clients, {
+    fields: [invoices.clientId],
+    references: [clients.id],
+  }),
+  project: one(projects, {
+    fields: [invoices.projectId],
+    references: [projects.id],
+  }),
+  items: many(invoiceItems),
+}));
+
+export const invoiceItemsRelations = relations(invoiceItems, ({ one }) => ({
+  invoice: one(invoices, {
+    fields: [invoiceItems.invoiceId],
+    references: [invoices.id],
   }),
 }));

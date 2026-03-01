@@ -1,6 +1,7 @@
 import { count, desc, eq } from "drizzle-orm";
 import { db } from "./db";
 import { clients, intakeSubmissions, pipelineHistory } from "./schema";
+import { decryptAnalysisPii } from "./encryption";
 import type { IntakeAnalysis } from "@/types/intake-analysis";
 import type { PipelineStage } from "@/types/client";
 
@@ -155,7 +156,7 @@ export async function getDashboardData(): Promise<DashboardData> {
       .limit(5),
   ]);
 
-  const analyses = allSubmissions.map((r) => r.analysis as IntakeAnalysis);
+  const analyses = allSubmissions.map((r) => decryptAnalysisPii(r.analysis as IntakeAnalysis));
   const total = analyses.length;
 
   // --- Stats ---

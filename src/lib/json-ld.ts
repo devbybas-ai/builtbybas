@@ -9,7 +9,7 @@ export function getOrganizationSchema() {
     name: "BuiltByBas",
     url: SITE_URL,
     description:
-      "Full-stack development and marketing company that builds custom software, websites, and growth strategies for businesses ready to grow.",
+      "Veteran-backed full-stack development and marketing company that builds custom software, websites, and growth strategies for businesses ready to grow.",
     founder: {
       "@type": "Person",
       name: "Bas Rosario",

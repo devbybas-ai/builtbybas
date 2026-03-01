@@ -4,6 +4,7 @@ import { db } from "@/lib/db";
 import { clients } from "@/lib/schema";
 import { requireAdmin } from "@/lib/api-auth";
 import { PIPELINE_STAGES, type PipelineStage } from "@/types/client";
+import { decrypt } from "@/lib/encryption";
 
 export async function GET() {
   const auth = await requireAdmin();
@@ -51,9 +52,9 @@ export async function GET() {
         bucket.count++;
         bucket.clients.push({
           id: c.id,
-          name: c.name,
+          name: decrypt(c.name),
           company: c.company,
-          email: c.email,
+          email: decrypt(c.email),
           daysInStage,
         });
       }

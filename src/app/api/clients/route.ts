@@ -5,6 +5,7 @@ import { clients, users, pipelineHistory } from "@/lib/schema";
 import { requireAdmin } from "@/lib/api-auth";
 import { createClientSchema } from "@/lib/client-validation";
 import { sanitizeString } from "@/lib/sanitize";
+import { encrypt, decrypt } from "@/lib/encryption";
 
 export async function GET(request: NextRequest) {
   const auth = await requireAdmin();
@@ -46,6 +47,9 @@ export async function GET(request: NextRequest) {
 
     const data = rows.map((row) => ({
       ...row,
+      name: decrypt(row.name),
+      email: decrypt(row.email),
+      phone: row.phone ? decrypt(row.phone) : null,
       assignedUser: row.assignedTo
         ? { id: row.assignedTo, name: row.assignedUserName }
         : null,
@@ -90,9 +94,9 @@ export async function POST(request: NextRequest) {
     const [client] = await db
       .insert(clients)
       .values({
-        name: sanitizeString(data.name),
-        email: data.email.toLowerCase(),
-        phone: data.phone ? sanitizeString(data.phone) : null,
+        name: encrypt(sanitizeString(data.name)),
+        email: encrypt(data.email.toLowerCase()),
+        phone: data.phone ? encrypt(sanitizeString(data.phone)) : null,
         company: sanitizeString(data.company),
         industry: data.industry ? sanitizeString(data.industry) : null,
         website: data.website || null,
@@ -111,7 +115,15 @@ export async function POST(request: NextRequest) {
       note: "Client created",
     });
 
-    return NextResponse.json({ success: true, data: client }, { status: 201 });
+    return NextResponse.json({
+      success: true,
+      data: {
+        ...client,
+        name: decrypt(client.name),
+        email: decrypt(client.email),
+        phone: client.phone ? decrypt(client.phone) : null,
+      },
+    }, { status: 201 });
   } catch {
     return NextResponse.json(
       { success: false, error: "Failed to create client" },

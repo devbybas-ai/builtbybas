@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     template: "%s - BuiltByBas",
   },
   description:
-    "BuiltByBas delivers custom software, websites, and marketing solutions for businesses ready to grow. Full-stack development and strategic marketing — precision-engineered, no templates, no shortcuts.",
+    "BuiltByBas is a veteran-backed company delivering custom software, websites, and marketing solutions for businesses ready to grow. Full-stack development and strategic marketing — precision-engineered, no templates, no shortcuts.",
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_SITE_URL || "https://builtbybas.com"
   ),
