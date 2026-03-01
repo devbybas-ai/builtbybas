@@ -17,10 +17,10 @@ export function AboutStory() {
             <div className="space-y-6 text-muted-foreground">
               <p className="text-lg leading-relaxed">
                 I started BuiltByBas because I was tired of watching small
-                businesses get burned. Overcharged by agencies that hand them a
-                $20,000 template. Ghosted by freelancers who disappear after
-                launch. Left with tools that don&apos;t actually fit their
-                business.
+                businesses get burned. Handed cookie-cutter templates and told
+                it was &quot;custom.&quot; Ghosted by freelancers who disappear
+                after launch. Left with tools that don&apos;t actually fit
+                their business.
               </p>
               <p className="text-lg leading-relaxed">
                 I&apos;m a software developer, and building things is what I do
@@ -31,10 +31,11 @@ export function AboutStory() {
               </p>
               <p className="text-lg leading-relaxed">
                 When AI changed the game, I didn&apos;t resist it — I embraced
-                it. While other agencies are still figuring out prompts, I&apos;m
-                shipping production code with AI as my co-pilot. That means you
-                get agency-quality work at freelancer speed, without the
-                agency-quality invoice.
+                it. While others are still figuring out prompts, I&apos;m
+                shipping production code with AI as my co-pilot. That means
+                every project gets the full picture — the engineering AND the
+                marketing strategy — built by someone who understands both. AI
+                doesn&apos;t replace craftsmanship, it amplifies it.
               </p>
             </div>
           </FadeIn>
@@ -67,7 +68,7 @@ export function AboutStory() {
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
                   <div className="h-2 w-2 rounded-full bg-primary" />
-                  <span className="font-medium">Small Business Advocate</span>
+                  <span className="font-medium">Business Advocate</span>
                 </div>
                 <p className="pl-5 text-sm text-muted-foreground">
                   Every client gets my full attention. No account managers, no

@@ -3,6 +3,8 @@ import { Inter } from "next/font/google";
 import { SkipToContent } from "@/components/shared/SkipToContent";
 import { MotionProvider } from "@/components/motion/MotionProvider";
 import { Toaster } from "@/components/ui/sonner";
+import { JsonLd } from "@/components/shared/JsonLd";
+import { getOrganizationSchema } from "@/lib/json-ld";
 import "./globals.css";
 
 const inter = Inter({
@@ -14,11 +16,11 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: {
     default:
-      "Custom Software & Web Development for Small Business - BuiltByBas",
+      "Custom Software & Web Development - BuiltByBas",
     template: "%s - BuiltByBas",
   },
   description:
-    "BuiltByBas delivers custom software, websites, and marketing solutions for small businesses. Agency-quality work at freelancer speed.",
+    "BuiltByBas delivers custom software, websites, and marketing solutions for businesses ready to grow. Full-stack development and strategic marketing — precision-engineered, no templates, no shortcuts.",
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_SITE_URL || "https://builtbybas.com"
   ),
@@ -43,6 +45,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`dark ${inter.variable}`}>
+      <head>
+        <JsonLd data={getOrganizationSchema()} />
+      </head>
       <body className="min-h-screen bg-background font-sans text-foreground antialiased">
         <SkipToContent />
         <MotionProvider>

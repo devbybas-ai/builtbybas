@@ -20,7 +20,7 @@ export function PublicFooter() {
               Built<span className="text-primary">By</span>Bas
             </Link>
             <p className="mt-2 text-sm text-muted-foreground">
-              Custom software &amp; web development for small business.
+              Custom software &amp; web development for your business.
             </p>
           </div>
 

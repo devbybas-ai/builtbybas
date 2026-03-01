@@ -74,4 +74,4 @@ export function staggerContainer(
 // Viewport Detection Defaults
 // ============================================================
 
-export const viewportOnce = { once: true, margin: "-100px" } as const;
+export const viewportOnce = { once: true, margin: "0px 0px -100px 0px" } as const;

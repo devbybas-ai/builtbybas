@@ -38,7 +38,7 @@ export function ValueProposition() {
             Why <span className="text-gradient">BuiltByBas</span>?
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
-            Small businesses deserve better than what most agencies deliver.
+            Your business deserves better than what most agencies deliver.
           </p>
         </FadeIn>
 

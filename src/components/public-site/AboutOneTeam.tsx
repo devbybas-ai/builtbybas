@@ -62,12 +62,12 @@ export function AboutOneTeam() {
               </div>
               <div className="hidden h-px w-full bg-gradient-to-r from-transparent via-primary/50 to-transparent md:block" />
               <p className="mt-2 text-center text-sm text-muted-foreground">
-                Agency quality.
+                Full-stack engineering.
                 <br />
-                Freelancer speed.
+                Strategic marketing.
                 <br />
                 <span className="font-medium text-foreground">
-                  Unbeatable value.
+                  Extraordinary results.
                 </span>
               </p>
             </div>

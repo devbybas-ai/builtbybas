@@ -14,9 +14,9 @@ const milestones = [
   },
   {
     label: "The Realization",
-    title: "Small Businesses Deserve Better",
+    title: "Businesses Deserve Better",
     description:
-      "Watched too many small businesses get overcharged for templates, abandoned after launch, and left with tools that didn't fit. Knew there had to be a better way.",
+      "Watched too many businesses get overcharged for templates, abandoned after launch, and left with tools that didn't fit. Knew there had to be a better way.",
   },
   {
     label: "The Evolution",
@@ -28,7 +28,7 @@ const milestones = [
     label: "Today",
     title: "BuiltByBas is Born",
     description:
-      "One developer. One AI partner. Zero compromises. BuiltByBas exists to give small businesses the custom software they deserve — at a price that makes sense.",
+      "One developer. One AI partner. Zero compromises. BuiltByBas exists to give every business the custom software they deserve — without compromise.",
   },
 ];
 

@@ -25,7 +25,7 @@ export function Hero() {
           staggerDelay={0.04}
         >
           <br />
-          <span className="text-gradient">Small Business</span>
+          <span className="text-gradient">Your Business</span>
         </AnimatedText>
 
         {/* Subtitle */}
