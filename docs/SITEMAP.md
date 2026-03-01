@@ -302,7 +302,7 @@ Protected. Requires login with client role. Scoped to their own data only.
 
 | Page                | Title Pattern                                    | Description                                          |
 | ------------------- | ------------------------------------------------ | ---------------------------------------------------- |
-| `/`                 | BuiltByBas — Software, Web & Marketing Solutions | Custom digital solutions for small businesses        |
+| `/`                 | BuiltByBas — Software, Web & Marketing Solutions | Custom digital solutions for your business           |
 | `/services`         | Services — BuiltByBas                            | Software development, web development, and marketing |
 | `/portfolio`        | Portfolio — BuiltByBas                           | See what we've built                                 |
 | `/portfolio/[slug]` | [Project Name] — BuiltByBas                      | Case study detail                                    |

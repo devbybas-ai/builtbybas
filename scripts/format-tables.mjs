@@ -13,6 +13,7 @@ const ROOT = resolve(import.meta.dirname, '..');
 const FILES = [
   'docs/TESTING-PLAN.md',
   'docs/AGENT-PERSONAS.md',
+  'docs/AGENT-PERFORMANCE.md',
   'docs/DIRECTORY-STRUCTURE.md',
   'docs/SITEMAP.md',
   'docs/DOCUMENT-INDEX.md',

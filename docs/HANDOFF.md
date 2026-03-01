@@ -1,8 +1,8 @@
 # BuiltByBas — Handoff Document
 
 > **Last Updated:** 2026-02-28
-> **Status:** Phase 2, Session 1 COMPLETE — Public pages transformed with cinematic animations
-> **Next Session:** Phase 2, Session 2 — Portfolio page, intake form, JSON-LD, OG image, E2E tests
+> **Status:** Intake Analysis Engine COMPLETE — algorithmic scoring, admin dashboard, API endpoints
+> **Next Session:** PostgreSQL setup, CRM core (clients, pipeline), deployment prep
 
 ---
 
@@ -19,11 +19,11 @@
 
 ### What Is BuiltByBas?
 
-An elite one-man digital agency that builds custom software, websites, and marketing solutions for small businesses. Every project is handcrafted — no templates, no bloated teams, no disappearing act. Bas + Claude (#OneTeam) deliver agency-quality work at freelancer speed.
+A full-stack development and marketing company that builds custom software, websites, and growth strategies for businesses ready to grow. Every project is precision-engineered — no templates, no bloated teams, no disappearing act. Bas + Claude (#OneTeam) deliver elite-quality work through unified engineering and marketing under one roof.
 
 ### Who Is It For?
 
-Small businesses across all sectors:
+Businesses across all sectors:
 - **Local service businesses** — plumbers, contractors, cleaners, salons
 - **Growing service companies** — agencies, consultants, coaches
 - **Startups / new businesses** — need everything from brand to tools
@@ -31,7 +31,7 @@ Small businesses across all sectors:
 
 ### The Problem
 
-Small businesses get burned by agencies that:
+Businesses get burned by agencies that:
 1. **Overcharge and underdeliver** — $20k+ quotes, months of delays
 2. **Give them cookie-cutter templates** — every site looks the same
 3. **Disappear after launch** — no support, no relationship
@@ -134,8 +134,9 @@ Dark, premium, cutting-edge. The site itself IS the portfolio piece. Every inter
 | ----- | -------------------------------------- | ----------- | -------- |
 | 0     | Project Setup & Governance             | COMPLETE    | Setup    |
 | 1     | Foundation (Next.js, DB, auth, layout) | COMPLETE    | 1        |
-| 2     | Public Website                         | IN PROGRESS | 2-5      |
-| 3     | CRM Core (clients, pipeline, scoring)  | NOT STARTED | 6-11     |
+| 2     | Public Website                         | COMPLETE    | 2-5      |
+| 2.5   | Intake Analysis Engine                 | COMPLETE    | 6        |
+| 3     | CRM Core (clients, pipeline, scoring)  | NOT STARTED | 7-11     |
 | 4     | Projects + Financials                  | NOT STARTED | 12-17    |
 | 5     | AI Suite + Analytics                   | NOT STARTED | 18-21    |
 | 6     | Hardening + Deployment                 | NOT STARTED | 22-25    |
@@ -211,14 +212,60 @@ Dark, premium, cutting-edge. The site itself IS the portfolio piece. Every inter
 - `pnpm test` — 21/21 tests passing
 - `pnpm build` — 14 routes compiled
 
-### What's Next — Phase 2, Sessions 2-5
+**Session Phase2-2 (Portfolio, Intake Form, SEO, E2E Tests + Copy Overhaul):**
 
-1. Portfolio grid page (filterable) + case study detail pages
-2. 10-section intake form (multi-step, progress bar, save state, Zod validation)
-3. Intake confirmation page
-4. JSON-LD structured data (Organization, WebSite, Service, FAQ, BreadcrumbList)
-5. OG image (static branded 1200x630)
-6. Public site E2E tests + accessibility tests (axe-core)
+- **Copy overhaul:** Removed all budget/cheap positioning language. Established full-stack dev + marketing identity. Updated AboutStory, AboutOneTeam, AboutTimeline, layout.tsx meta description, HANDOFF.md
+- **FadeIn fix:** Changed viewport margin from `-100px` (all sides) to `0px 0px -100px 0px` — above-the-fold content now triggers immediately, below-fold still has scroll trigger
+- **Portfolio data layer:** `src/types/portfolio.ts` (PortfolioProject interface), `src/data/portfolio.ts` (5 aspirational case studies with full detail — Meridian Plumbing, Atlas Consulting, Bloom Botanicals, Nexus Law AI, Summit Fitness)
+- **Portfolio grid:** PortfolioFilter (animated `layoutId` tab indicator), PortfolioCard (3D perspective entrance, category badges, tech pills), PortfolioGrid (`AnimatePresence` for filter transitions)
+- **Case study pages:** Dynamic `[slug]` route with `generateStaticParams` (5 static pages), CaseStudyLayout (hero, challenge, solution, results with CountUp, tech stack stagger, features grid, testimonial blockquote, prev/next navigation)
+- **10-step intake form:** IntakeFormData type (20+ fields), 10 Zod step schemas + combined schema, `useIntakeForm` hook (localStorage persistence, step validation, navigation), IntakeProgress (animated progress bar + step dots), IntakeStep (10 step configs with RadioGroup, CheckboxGroup, TextArea components), IntakeForm (AnimatePresence step transitions), confirmation page with animated checkmark
+- **JSON-LD structured data:** `src/lib/json-ld.ts` (Organization, WebSite, Service, Breadcrumb, FAQ schema helpers), `src/components/shared/JsonLd.tsx` (reusable component — justified `dangerouslySetInnerHTML` exception for web standard, hardcoded data only). Applied to layout (Organization), homepage (WebSite), services page (Service + FAQ + Breadcrumb)
+- **OG image:** `src/app/opengraph-image.tsx` using `next/og` ImageResponse — dark bg, cyan accents, "Full-Stack Development & Marketing" tagline
+- **E2E tests:** 3 Playwright test files — public-pages.spec.ts (8 tests: page loads, navigation, filters, case study, reduced motion), accessibility.spec.ts (axe-core AA on all 5 pages, skip-to-content, form labels, focus indicators), intake-form.spec.ts (5 tests: step navigation, validation errors, localStorage persistence, mobile viewport, full 10-step flow)
+- ~20 new files, ~13 modified files
+- Commit: pending
+
+**Verification — all passing:**
+
+- `pnpm lint` — 0 errors
+- `pnpm tsc --noEmit` — 0 type errors
+- `pnpm test` — 21/21 unit tests passing
+- `pnpm build` — 22 routes compiled (5 new SSG portfolio pages, intake, confirmation, OG image)
+
+**Session Phase2.5 (Intake Analysis Engine):**
+
+- **Scoring engine:** `src/lib/intake-scoring.ts` — pure algorithmic analysis of intake form submissions. 5 client profile dimensions (business maturity, project readiness, engagement level, scope clarity, budget alignment), each scored 0-100 with transparent signals. Service recommendations with fit scores (0-100) based on direct match, feature alignment, budget fit, and context signals. Complexity scoring (1-10) with labeled factors. 1-3 paths forward generated based on complexity level. Flags system (warning/opportunity/info) for budget mismatches, timeline concerns, and upsell opportunities. Summary generator for quick-glance overview.
+- **Type system:** `src/types/intake-analysis.ts` — IntakeAnalysis, ClientProfile, ScoredDimension, ServiceRecommendation, ComplexityScore, PathForward, AnalysisFlag, AnalysisSummary
+- **Storage layer:** `src/lib/intake-storage.ts` — JSON file storage in `data/intake-submissions/` (gitignored). Path traversal protection via UUID format validation. Auto-creates directory on first write.
+- **API routes:** POST `/api/intake` (validate with Zod, analyze, store, return ID), GET `/api/intake` (list all submissions), GET `/api/intake/[id]` (single submission detail)
+- **Form connection:** Modified `src/hooks/useIntakeForm.ts` — `submitForm()` now POSTs to `/api/intake`, stores client name in sessionStorage for confirmation page, handles network/server errors gracefully
+- **Admin sidebar:** Added "Intake" nav item with ClipboardList icon after Pipeline
+- **Admin list page:** `/admin/intake` — server-rendered, lists all submissions with complexity badges, primary service, summary headline, estimated investment
+- **Admin detail page:** `/admin/intake/[id]` — full analysis dashboard with 8 sections: header + complexity gauge, summary card, flags, client profile (5 score bars with signals), service recommendations (ranked cards with fit scores), complexity breakdown (factor list), paths forward (2-3 option cards with phases), collapsible raw submission data
+- **Components:** ScoreBar (horizontal 0-100 bar with color + ARIA), ComplexityGauge (10-segment bar with color gradient + ARIA meter), IntakeListCard (glass card with complexity badge), IntakeAnalysisDashboard (full analysis layout)
+- **Agent performance tracking:** Created `docs/AGENT-PERFORMANCE.md` — tracks SME agent activations, success rates, leaderboard. 4 agents activated this session, all 100% success rate.
+- **Ethics:** Scoring uses objective project criteria only per RAI Policy. Every submission gets equal analysis depth. No automated decisions or client contact. All results for Bas's advisory review only.
+- **Governance:** Updated DOCUMENT-INDEX.md, CLAUDE.md Quick Reference, `scripts/format-tables.mjs` for new AGENT-PERFORMANCE.md doc
+- 13 new files, 6 modified files
+- Commit: pending
+
+**Verification — all passing:**
+
+- `pnpm lint` — 0 errors
+- `pnpm tsc --noEmit` — 0 type errors
+- `pnpm test` — 55/55 tests (34 new scoring engine tests + 21 existing)
+- `pnpm build` — 26 routes compiled (4 new: admin/intake, admin/intake/[id], api/intake, api/intake/[id])
+
+### What's Next
+
+1. Set up local PostgreSQL — create database, run Drizzle migrations, test auth endpoints end-to-end
+2. CRM core: clients module, pipeline (12-stage kanban)
+3. Run E2E tests with Playwright (requires dev server)
+4. Replace aspirational portfolio data with real projects as they're completed
+5. Migrate intake submissions from JSON files to PostgreSQL (Phase 3)
+6. Add real images to portfolio projects
+7. Deliver comprehensive breakdown of every deliverable with state of product at delivery (per Bas's requirement)
 
 ### Notes
 
@@ -257,7 +304,7 @@ Dark, premium, cutting-edge. The site itself IS the portfolio piece. Every inter
 
 **Title pattern:** `{Page Title} - BuiltByBas`
 
-- Home: `Custom Software & Web Development for Small Business - BuiltByBas`
+- Home: `Custom Software & Web Development - BuiltByBas`
 - Services: `Web Development Services - BuiltByBas`
 - Portfolio: `Our Work - BuiltByBas`
 

@@ -30,6 +30,7 @@
 | Deployment process                       | SITE-HEALTH-PLAN.md (Deployment)   | `.claude/SITE-HEALTH-PLAN.md`                      |
 | VPS server details                       | Memory files                       | Claude memory                                      |
 | SME Agent Personas                       | AGENT-PERSONAS.md                  | `docs/AGENT-PERSONAS.md`                           |
+| Agent performance tracking               | AGENT-PERFORMANCE.md               | `docs/AGENT-PERFORMANCE.md`                        |
 
 ---
 
@@ -109,6 +110,7 @@ PROJECT-SETUP.md                    ← Read once (project founding)
 | SITEMAP.md             | Claude + Bas  | Claude                 | When new routes/pages added           |
 | DOCUMENT-INDEX.md      | Claude        | Claude                 | When any document is added or removed |
 | AGENT-PERSONAS.md      | Bas + Claude  | Both                   | When new SME agents are designed      |
+| AGENT-PERFORMANCE.md   | Claude        | Claude                 | When agents are activated in sessions |
 | RAI-POLICY.md          | Claude + Bas  | Claude                 | When AI scope changes                 |
 | PROJECT-SETUP.md       | Bas           | Bas                    | When setup protocol evolves           |
 

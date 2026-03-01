@@ -57,17 +57,17 @@ If code exists: run `pnpm test` and `pnpm build` to confirm baseline before maki
 
 ## 4. Project Identity
 
-| Field        | Value                                                                  |
-| ------------ | ---------------------------------------------------------------------- |
-| **Project**  | BuiltByBas                                                             |
-| **Type**     | Full-stack web platform (public site + admin CRM + client portal)      |
-| **Owner**    | Bas Rosario                                                            |
-| **Company**  | BuiltByBas                                                             |
-| **Domain**   | builtbybas.com                                                         |
-| **Audience** | Small businesses — service companies, startups, professional practices |
-| **Region**   | United States (primary), global (accessible)                           |
-| **Repo**     | https://github.com/devbybas-ai/builtbybas (private)                    |
-| **VPS**      | Hostinger — 72.62.200.30 (Ubuntu 24.04, KVM 2)                         |
+| Field        | Value                                                                                              |
+| ------------ | -------------------------------------------------------------------------------------------------- |
+| **Project**  | BuiltByBas                                                                                         |
+| **Type**     | Full-stack web platform (public site + admin CRM + client portal)                                  |
+| **Owner**    | Bas Rosario                                                                                        |
+| **Company**  | BuiltByBas                                                                                         |
+| **Domain**   | builtbybas.com                                                                                     |
+| **Audience** | Businesses of all sizes — service companies, startups, professional practices, growing enterprises |
+| **Region**   | United States (primary), global (accessible)                                                       |
+| **Repo**     | https://github.com/devbybas-ai/builtbybas (private)                                                |
+| **VPS**      | Hostinger — 72.62.200.30 (Ubuntu 24.04, KVM 2)                                                     |
 
 ---
 
@@ -233,6 +233,7 @@ git pull origin main → pnpm install --frozen-lockfile → pnpm build → pm2 r
 | SITEMAP.md             | `docs/`              | Routes, pages, navigation                       | When routes change      |
 | DOCUMENT-INDEX.md      | `docs/`              | Master doc navigation                           | When docs added         |
 | AGENT-PERSONAS.md      | `docs/`              | SME agent library (59 agents)                   | When agents added       |
+| AGENT-PERFORMANCE.md   | `docs/`              | Agent performance log and leaderboard           | When agents activated   |
 | PROJECT-SETUP.md       | root                 | Founding document — how project was initialized | Reference only          |
 | .env.example           | root                 | Environment variable template                   | When vars added         |
 | .gitignore             | root                 | Git exclusion rules                             | When patterns needed    |
