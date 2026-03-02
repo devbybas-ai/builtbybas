@@ -30,6 +30,8 @@ function useChipActivity(
     const hubOuter = hubOuterRef.current;
     const hubInner = hubInnerRef.current;
     if (!g || !hubOuter || !hubInner) return;
+    const svg = g.closest("svg");
+    if (!svg) return;
 
     const rects = g.querySelectorAll<SVGRectElement>("rect");
     const paths = g.querySelectorAll<SVGPathElement>("path");
@@ -44,37 +46,19 @@ function useChipActivity(
       path.style.strokeDashoffset = String(len);
     });
 
-    let timeout: ReturnType<typeof setTimeout>;
+    // Track last chip index so we don't repeat the same one twice in a row
+    let lastIdx = -1;
 
-    const pulseHub = () => {
-      hubOuter.animate(
-        [
-          { fill: "rgba(0,212,255,0.5)", r: 5 },
-          { fill: "rgba(255,255,255,1)", r: 7 },
-          { fill: "rgba(0,212,255,0.5)", r: 5 },
-        ],
-        { duration: 500, easing: "ease-out" }
-      );
-      hubInner.animate(
-        [
-          { fill: "#00D4FF", r: 2.5 },
-          { fill: "#FFFFFF", r: 3.5 },
-          { fill: "#00D4FF", r: 2.5 },
-        ],
-        { duration: 500, easing: "ease-out" }
-      );
-    };
+    const fireTrace = () => {
+      let i = Math.floor(Math.random() * rects.length);
+      if (i === lastIdx) i = (i + 1) % rects.length;
+      lastIdx = i;
 
-    const fire = () => {
-      const i = Math.floor(Math.random() * rects.length);
       const rect = rects[i];
       const path = paths[i];
       const chip = chipTargets[i];
       const peak = chip.peak;
       const len = lengths[i];
-
-      // Pulse hub as it starts sending
-      pulseHub();
 
       // Progress-bar fill: trace lights up from hub toward chip over 2s
       const fillAnim = path.animate(
@@ -106,18 +90,19 @@ function useChipActivity(
           { duration: 2000, delay: 800, easing: "ease-out", fill: "forwards" }
         );
         fadeAnim.onfinish = () => {
-          // Reset to hidden for next cycle
           path.style.strokeDashoffset = String(len);
         };
       };
-
-      // 7.77s cycle + 2.22s break
-      timeout = setTimeout(fire, 7770 + 2220);
     };
 
-    // First fire after a short random delay
-    timeout = setTimeout(fire, 1000 + Math.random() * 2000);
-    return () => clearTimeout(timeout);
+    // Listen for SMIL particle arrivals at the center hub
+    const particles = svg.querySelectorAll<SVGAnimateMotionElement>("animateMotion[id^='p']");
+    const handler = () => fireTrace();
+    particles.forEach((p) => p.addEventListener("endEvent", handler));
+
+    return () => {
+      particles.forEach((p) => p.removeEventListener("endEvent", handler));
+    };
   }, [groupRef, hubOuterRef, hubInnerRef]);
 }
 
