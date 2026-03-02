@@ -65,7 +65,6 @@ function useChipActivity(
       const rect = rects[i];
       const chip = chipTargets[i];
       const peak = chip.peak;
-      const isIC = chip.w > 12;
 
       // Trace from center hub outward to chip
       const cx = chip.x + chip.w / 2;
@@ -73,9 +72,11 @@ function useChipActivity(
       const dx = cx - HUB_X;
       const dy = cy - HUB_Y;
       const len = Math.sqrt(dx * dx + dy * dy);
-      const travelDur = Math.max(600, len * 1.8);
 
-      // Pulse hub as it sends data out
+      // Progress bar fill: ~2s to fill the trace
+      const fillDur = 2000;
+
+      // Pulse hub as it starts sending
       pulseHub();
 
       const line = document.createElementNS(SVG_NS, "line");
@@ -86,21 +87,22 @@ function useChipActivity(
       line.setAttribute("stroke", "rgba(0, 212, 255, 0.4)");
       line.setAttribute("stroke-width", "0.8");
       line.setAttribute("stroke-linecap", "round");
-      line.setAttribute("stroke-dasharray", `20 ${len}`);
-      line.setAttribute("stroke-dashoffset", String(len + 20));
+      // Full length dash — starts fully hidden, progressively reveals
+      line.setAttribute("stroke-dasharray", String(len));
+      line.setAttribute("stroke-dashoffset", String(len));
       svg.appendChild(line);
 
-      const anim = line.animate(
+      // Fill from hub to chip like a progress bar
+      const fillAnim = line.animate(
         [
-          { strokeDashoffset: len + 20 },
-          { strokeDashoffset: -20 },
+          { strokeDashoffset: len },
+          { strokeDashoffset: 0 },
         ],
-        { duration: travelDur, easing: "ease-out" }
+        { duration: fillDur, easing: "ease-in-out", fill: "forwards" }
       );
 
-      anim.onfinish = () => {
-        line.remove();
-        // Light up chip instantly, hold 3.33s, then slowly power down
+      fillAnim.onfinish = () => {
+        // Chip lights up once trace is fully filled
         rect.animate(
           [
             { fill: `rgba(0, 212, 255, 0)`, offset: 0 },
@@ -110,9 +112,19 @@ function useChipActivity(
           ],
           { duration: 3330, easing: "linear" }
         );
+
+        // Fade out the trace after the chip is lit
+        const fadeAnim = line.animate(
+          [
+            { opacity: 1 },
+            { opacity: 0 },
+          ],
+          { duration: 2000, delay: 1000, easing: "ease-out", fill: "forwards" }
+        );
+        fadeAnim.onfinish = () => line.remove();
       };
 
-      // 7.77s animation cycle + 2.22s break = 9.99s total, then repeat
+      // 7.77s animation cycle + 2.22s break
       timeout = setTimeout(fire, 7770 + 2220);
     };
 
