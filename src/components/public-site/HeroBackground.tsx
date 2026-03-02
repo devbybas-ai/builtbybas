@@ -260,39 +260,19 @@ export function HeroBackground() {
           <rect x="860" y="500" width="12" height="6" rx="1" /><rect x="460" y="550" width="12" height="6" rx="1" />
         </g>
 
-        {/* Random chip activity — staggered pulses across 12s cycle */}
+        {/* Subtle chip activity — 4 chips, spaced 3s apart across 12s cycle */}
         <g className="hero-anim">
           <rect x="230" y="90" width="12" height="6" rx="1" fill="rgba(0, 212, 255, 0.03)" stroke="rgba(0, 212, 255, 0.10)" strokeWidth="0.6">
-            <animate attributeName="fill" values="rgba(0,212,255,0.03);rgba(0,212,255,0.5);rgba(0,212,255,0.03)" keyTimes="0;0.4;1" dur="0.8s" begin="0s; 12s" repeatCount="indefinite" />
-            <animate attributeName="stroke" values="rgba(0,212,255,0.10);rgba(0,212,255,0.7);rgba(0,212,255,0.10)" keyTimes="0;0.4;1" dur="0.8s" begin="0s; 12s" repeatCount="indefinite" />
-          </rect>
-          <rect x="620" y="240" width="12" height="6" rx="1" fill="rgba(0, 212, 255, 0.03)" stroke="rgba(0, 212, 255, 0.10)" strokeWidth="0.6">
-            <animate attributeName="fill" values="rgba(0,212,255,0.03);rgba(0,212,255,0.5);rgba(0,212,255,0.03)" keyTimes="0;0.4;1" dur="0.8s" begin="1.5s; 13.5s" repeatCount="indefinite" />
-            <animate attributeName="stroke" values="rgba(0,212,255,0.10);rgba(0,212,255,0.7);rgba(0,212,255,0.10)" keyTimes="0;0.4;1" dur="0.8s" begin="1.5s; 13.5s" repeatCount="indefinite" />
-          </rect>
-          <rect x="140" y="365" width="12" height="6" rx="1" fill="rgba(0, 212, 255, 0.03)" stroke="rgba(0, 212, 255, 0.10)" strokeWidth="0.6">
-            <animate attributeName="fill" values="rgba(0,212,255,0.03);rgba(0,212,255,0.5);rgba(0,212,255,0.03)" keyTimes="0;0.4;1" dur="0.8s" begin="3s; 15s" repeatCount="indefinite" />
-            <animate attributeName="stroke" values="rgba(0,212,255,0.10);rgba(0,212,255,0.7);rgba(0,212,255,0.10)" keyTimes="0;0.4;1" dur="0.8s" begin="3s; 15s" repeatCount="indefinite" />
+            <animate attributeName="fill" values="rgba(0,212,255,0.03);rgba(0,212,255,0.3);rgba(0,212,255,0.03)" keyTimes="0;0.4;1" dur="1s" begin="0s; 12s" repeatCount="indefinite" />
           </rect>
           <rect x="770" y="70" width="12" height="6" rx="1" fill="rgba(0, 212, 255, 0.03)" stroke="rgba(0, 212, 255, 0.10)" strokeWidth="0.6">
-            <animate attributeName="fill" values="rgba(0,212,255,0.03);rgba(0,212,255,0.5);rgba(0,212,255,0.03)" keyTimes="0;0.4;1" dur="0.8s" begin="4.5s; 16.5s" repeatCount="indefinite" />
-            <animate attributeName="stroke" values="rgba(0,212,255,0.10);rgba(0,212,255,0.7);rgba(0,212,255,0.10)" keyTimes="0;0.4;1" dur="0.8s" begin="4.5s; 16.5s" repeatCount="indefinite" />
+            <animate attributeName="fill" values="rgba(0,212,255,0.03);rgba(0,212,255,0.3);rgba(0,212,255,0.03)" keyTimes="0;0.4;1" dur="1s" begin="3s; 15s" repeatCount="indefinite" />
           </rect>
-          <rect x="380" y="385" width="12" height="6" rx="1" fill="rgba(0, 212, 255, 0.03)" stroke="rgba(0, 212, 255, 0.10)" strokeWidth="0.6">
-            <animate attributeName="fill" values="rgba(0,212,255,0.03);rgba(0,212,255,0.5);rgba(0,212,255,0.03)" keyTimes="0;0.4;1" dur="0.8s" begin="6s; 18s" repeatCount="indefinite" />
-            <animate attributeName="stroke" values="rgba(0,212,255,0.10);rgba(0,212,255,0.7);rgba(0,212,255,0.10)" keyTimes="0;0.4;1" dur="0.8s" begin="6s; 18s" repeatCount="indefinite" />
-          </rect>
-          <rect x="560" y="505" width="12" height="6" rx="1" fill="rgba(0, 212, 255, 0.03)" stroke="rgba(0, 212, 255, 0.10)" strokeWidth="0.6">
-            <animate attributeName="fill" values="rgba(0,212,255,0.03);rgba(0,212,255,0.5);rgba(0,212,255,0.03)" keyTimes="0;0.4;1" dur="0.8s" begin="7.5s; 19.5s" repeatCount="indefinite" />
-            <animate attributeName="stroke" values="rgba(0,212,255,0.10);rgba(0,212,255,0.7);rgba(0,212,255,0.10)" keyTimes="0;0.4;1" dur="0.8s" begin="7.5s; 19.5s" repeatCount="indefinite" />
+          <rect x="140" y="365" width="12" height="6" rx="1" fill="rgba(0, 212, 255, 0.03)" stroke="rgba(0, 212, 255, 0.10)" strokeWidth="0.6">
+            <animate attributeName="fill" values="rgba(0,212,255,0.03);rgba(0,212,255,0.3);rgba(0,212,255,0.03)" keyTimes="0;0.4;1" dur="1s" begin="6s; 18s" repeatCount="indefinite" />
           </rect>
           <rect x="810" y="310" width="12" height="6" rx="1" fill="rgba(0, 212, 255, 0.03)" stroke="rgba(0, 212, 255, 0.10)" strokeWidth="0.6">
-            <animate attributeName="fill" values="rgba(0,212,255,0.03);rgba(0,212,255,0.5);rgba(0,212,255,0.03)" keyTimes="0;0.4;1" dur="0.8s" begin="9s; 21s" repeatCount="indefinite" />
-            <animate attributeName="stroke" values="rgba(0,212,255,0.10);rgba(0,212,255,0.7);rgba(0,212,255,0.10)" keyTimes="0;0.4;1" dur="0.8s" begin="9s; 21s" repeatCount="indefinite" />
-          </rect>
-          <rect x="460" y="550" width="12" height="6" rx="1" fill="rgba(0, 212, 255, 0.03)" stroke="rgba(0, 212, 255, 0.10)" strokeWidth="0.6">
-            <animate attributeName="fill" values="rgba(0,212,255,0.03);rgba(0,212,255,0.5);rgba(0,212,255,0.03)" keyTimes="0;0.4;1" dur="0.8s" begin="10.5s; 22.5s" repeatCount="indefinite" />
-            <animate attributeName="stroke" values="rgba(0,212,255,0.10);rgba(0,212,255,0.7);rgba(0,212,255,0.10)" keyTimes="0;0.4;1" dur="0.8s" begin="10.5s; 22.5s" repeatCount="indefinite" />
+            <animate attributeName="fill" values="rgba(0,212,255,0.03);rgba(0,212,255,0.3);rgba(0,212,255,0.03)" keyTimes="0;0.4;1" dur="1s" begin="9s; 21s" repeatCount="indefinite" />
           </rect>
         </g>
 
