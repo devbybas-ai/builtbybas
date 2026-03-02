@@ -117,15 +117,13 @@ function useChipActivity(
       };
     };
 
-    // Listen for SMIL particle arrivals at the center hub
+    // Listen for SMIL particle arrivals at the center hub — fire trace immediately
     const particles = svg.querySelectorAll<SVGAnimateMotionElement>("animateMotion[id^='p']");
     const handler = (e: Event) => {
       const id = (e.target as SVGAnimateMotionElement).id;
       const targetSide = particleOpposite[id];
       if (!targetSide) return;
-      // 1.11s delay — hub "processes" the data before sending it out
-      const t = setTimeout(() => fireTrace(targetSide), 1110);
-      timeouts.push(t);
+      fireTrace(targetSide);
     };
     particles.forEach((p) => p.addEventListener("endEvent", handler));
 
@@ -517,33 +515,33 @@ export function HeroBackground() {
         </g>
 
         {/* ============================================ */}
+        {/* ============================================ */}
         {/* TRACE ILLUMINATION + PARTICLES — chained       */}
-        {/* Fast travel, 1.1s pause between each.          */}
-        {/* Chain: p1 →1.1s→ p2 →1.1s→ p3 →1.1s→ p1      */}
-        {/* Path lengths: r1=650, r6=400, r9=650          */}
+        {/* After particle arrives: 1.11s delay + 2s trace */}
+        {/* + 3.33s chip glow + 2.22s pause = 7.55s gap   */}
         {/* ============================================ */}
         <g className="hero-anim" fill="none" filter="url(#g1)">
           <use href="#r1" stroke="#00D4FF" strokeWidth="1.5" opacity="0.5" strokeDasharray="30 2000" strokeDashoffset="30" strokeLinecap="round">
-            <animate attributeName="stroke-dashoffset" from="30" to="-620" dur="1.8s" begin="0s; p3.end+2.22s" fill="remove" />
+            <animate attributeName="stroke-dashoffset" from="30" to="-620" dur="1.8s" begin="0s; p3.end+7.55s" fill="remove" />
           </use>
           <use href="#r6" stroke="#00D4FF" strokeWidth="1.5" opacity="0.5" strokeDasharray="30 2000" strokeDashoffset="30" strokeLinecap="round">
-            <animate attributeName="stroke-dashoffset" from="30" to="-370" dur="1.2s" begin="p1.end+2.22s" fill="remove" />
+            <animate attributeName="stroke-dashoffset" from="30" to="-370" dur="1.2s" begin="p1.end+7.55s" fill="remove" />
           </use>
           <use href="#r9" stroke="#00D4FF" strokeWidth="1.5" opacity="0.5" strokeDasharray="30 2000" strokeDashoffset="30" strokeLinecap="round">
-            <animate attributeName="stroke-dashoffset" from="30" to="-620" dur="1.8s" begin="p2.end+2.22s" fill="remove" />
+            <animate attributeName="stroke-dashoffset" from="30" to="-620" dur="1.8s" begin="p2.end+7.55s" fill="remove" />
           </use>
         </g>
 
-        {/* Particles — fast, 2.22s pause between launches */}
+        {/* Particles — 7.55s gap: chip completes + 2.22s pause */}
         <g className="hero-anim">
           <circle r="0.8" fill="#66EEFF" filter="url(#g1)" opacity="1">
-            <animateMotion id="p1" dur="1.8s" begin="0s; p3.end+2.22s" fill="remove"><mpath href="#r1" /></animateMotion>
+            <animateMotion id="p1" dur="1.8s" begin="0s; p3.end+7.55s" fill="remove"><mpath href="#r1" /></animateMotion>
           </circle>
           <circle r="0.8" fill="#66EEFF" filter="url(#g1)" opacity="1">
-            <animateMotion id="p2" dur="1.2s" begin="p1.end+2.22s" fill="remove"><mpath href="#r6" /></animateMotion>
+            <animateMotion id="p2" dur="1.2s" begin="p1.end+7.55s" fill="remove"><mpath href="#r6" /></animateMotion>
           </circle>
           <circle r="0.8" fill="#66EEFF" filter="url(#g1)" opacity="1">
-            <animateMotion id="p3" dur="1.8s" begin="p2.end+2.22s" fill="remove"><mpath href="#r9" /></animateMotion>
+            <animateMotion id="p3" dur="1.8s" begin="p2.end+7.55s" fill="remove"><mpath href="#r9" /></animateMotion>
           </circle>
         </g>
       </svg>
