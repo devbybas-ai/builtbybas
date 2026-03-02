@@ -59,11 +59,14 @@ function useChipActivity(
       path.style.strokeDashoffset = String(len);
     });
 
-    // Track last chip index so we don't repeat the same one twice in a row
+    // Only one trace active at a time — ignore extra endEvents
     let lastIdx = -1;
+    let busy = false;
     const timeouts: ReturnType<typeof setTimeout>[] = [];
 
     const fireTrace = (targetSide: string) => {
+      if (busy) return;
+      busy = true;
       // Pick a random chip on the opposite side
       const candidates = chipTargets
         .map((c, idx) => ({ ...c, idx }))
@@ -109,6 +112,7 @@ function useChipActivity(
         );
         fadeAnim.onfinish = () => {
           path.style.strokeDashoffset = String(len);
+          busy = false;
         };
       };
     };
