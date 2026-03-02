@@ -112,12 +112,11 @@ function useChipActivity(
         );
       };
 
-      // Next fire: random 3-8s
-      const next = 3000 + Math.random() * 5000;
-      timeout = setTimeout(fire, next);
+      // 7.77s animation cycle + 2.22s break = 9.99s total, then repeat
+      timeout = setTimeout(fire, 7770 + 2220);
     };
 
-    // Start after 1-3s
+    // First fire after a short random delay
     timeout = setTimeout(fire, 1000 + Math.random() * 2000);
     return () => clearTimeout(timeout);
   }, [groupRef, hubOuterRef, hubInnerRef]);
