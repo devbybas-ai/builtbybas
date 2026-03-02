@@ -2,27 +2,23 @@
 
 import { useEffect, useRef } from "react";
 
-// Chip locations — SMD (small) and IC (large)
+// Chip locations + PCB trace paths from hub (500,300) — routed with right-angle segments, no crossings
 const chipTargets = [
-  // SMD chips
-  { x: 230, y: 90, w: 12, h: 6, peak: 0.35 },
-  { x: 140, y: 365, w: 12, h: 6, peak: 0.35 },
-  { x: 810, y: 310, w: 12, h: 6, peak: 0.35 },
-  { x: 620, y: 240, w: 12, h: 6, peak: 0.35 },
-  { x: 560, y: 65, w: 12, h: 6, peak: 0.35 },
-  { x: 460, y: 550, w: 12, h: 6, peak: 0.35 },
+  // SMD chips — routed to avoid overlaps
+  { x: 230, y: 90, w: 12, h: 6, peak: 0.35, trace: "M500,300 L460,300 L460,93 L236,93" },
+  { x: 140, y: 365, w: 12, h: 6, peak: 0.35, trace: "M500,300 L300,300 L300,368 L146,368" },
+  { x: 810, y: 310, w: 12, h: 6, peak: 0.35, trace: "M500,300 L700,300 L700,313 L816,313" },
+  { x: 620, y: 240, w: 12, h: 6, peak: 0.35, trace: "M500,300 L580,300 L580,243 L626,243" },
+  { x: 560, y: 65, w: 12, h: 6, peak: 0.35, trace: "M500,300 L520,300 L520,68 L566,68" },
+  { x: 460, y: 550, w: 12, h: 6, peak: 0.35, trace: "M500,300 L500,450 L466,450 L466,553" },
   // IC chips
-  { x: 70, y: 250, w: 30, h: 45, peak: 0.15 },
-  { x: 530, y: 130, w: 40, h: 30, peak: 0.15 },
-  { x: 860, y: 230, w: 30, h: 50, peak: 0.15 },
-  { x: 430, y: 440, w: 40, h: 30, peak: 0.15 },
-  { x: 195, y: 500, w: 45, h: 35, peak: 0.15 },
-  { x: 870, y: 360, w: 35, h: 40, peak: 0.15 },
+  { x: 70, y: 250, w: 30, h: 45, peak: 0.15, trace: "M500,300 L350,300 L350,272 L85,272" },
+  { x: 530, y: 130, w: 40, h: 30, peak: 0.15, trace: "M500,300 L550,300 L550,145" },
+  { x: 860, y: 230, w: 30, h: 50, peak: 0.15, trace: "M500,300 L740,300 L740,255 L875,255" },
+  { x: 430, y: 440, w: 40, h: 30, peak: 0.15, trace: "M500,300 L450,300 L450,455" },
+  { x: 195, y: 500, w: 45, h: 35, peak: 0.15, trace: "M500,300 L400,300 L400,480 L217,480 L217,517" },
+  { x: 870, y: 360, w: 35, h: 40, peak: 0.15, trace: "M500,300 L760,300 L760,380 L887,380" },
 ];
-
-const SVG_NS = "http://www.w3.org/2000/svg";
-const HUB_X = 500;
-const HUB_Y = 300;
 
 function useChipActivity(
   groupRef: React.RefObject<SVGGElement | null>,
@@ -34,10 +30,19 @@ function useChipActivity(
     const hubOuter = hubOuterRef.current;
     const hubInner = hubInnerRef.current;
     if (!g || !hubOuter || !hubInner) return;
-    const svg = g.closest("svg");
-    if (!svg) return;
-    const rects = g.querySelectorAll("rect");
-    if (!rects.length) return;
+
+    const rects = g.querySelectorAll<SVGRectElement>("rect");
+    const paths = g.querySelectorAll<SVGPathElement>("path");
+    if (!rects.length || !paths.length) return;
+
+    // Measure each trace path length and set up hidden dasharray
+    const lengths: number[] = [];
+    paths.forEach((path, idx) => {
+      const len = path.getTotalLength();
+      lengths[idx] = len;
+      path.style.strokeDasharray = String(len);
+      path.style.strokeDashoffset = String(len);
+    });
 
     let timeout: ReturnType<typeof setTimeout>;
 
@@ -63,46 +68,25 @@ function useChipActivity(
     const fire = () => {
       const i = Math.floor(Math.random() * rects.length);
       const rect = rects[i];
+      const path = paths[i];
       const chip = chipTargets[i];
       const peak = chip.peak;
-
-      // Trace from center hub outward to chip
-      const cx = chip.x + chip.w / 2;
-      const cy = chip.y + chip.h / 2;
-      const dx = cx - HUB_X;
-      const dy = cy - HUB_Y;
-      const len = Math.sqrt(dx * dx + dy * dy);
-
-      // Progress bar fill: ~2s to fill the trace
-      const fillDur = 2000;
+      const len = lengths[i];
 
       // Pulse hub as it starts sending
       pulseHub();
 
-      const line = document.createElementNS(SVG_NS, "line");
-      line.setAttribute("x1", String(HUB_X));
-      line.setAttribute("y1", String(HUB_Y));
-      line.setAttribute("x2", String(cx));
-      line.setAttribute("y2", String(cy));
-      line.setAttribute("stroke", "rgba(0, 212, 255, 0.4)");
-      line.setAttribute("stroke-width", "0.8");
-      line.setAttribute("stroke-linecap", "round");
-      // Full length dash — starts fully hidden, progressively reveals
-      line.setAttribute("stroke-dasharray", String(len));
-      line.setAttribute("stroke-dashoffset", String(len));
-      svg.appendChild(line);
-
-      // Fill from hub to chip like a progress bar
-      const fillAnim = line.animate(
+      // Progress-bar fill: trace lights up from hub toward chip over 2s
+      const fillAnim = path.animate(
         [
-          { strokeDashoffset: len },
-          { strokeDashoffset: 0 },
+          { strokeDashoffset: len, stroke: "rgba(0, 212, 255, 0.35)" },
+          { strokeDashoffset: 0, stroke: "rgba(0, 212, 255, 0.35)" },
         ],
-        { duration: fillDur, easing: "ease-in-out", fill: "forwards" }
+        { duration: 2000, easing: "ease-in-out", fill: "forwards" }
       );
 
       fillAnim.onfinish = () => {
-        // Chip lights up once trace is fully filled
+        // Chip lights up once trace reaches it
         rect.animate(
           [
             { fill: `rgba(0, 212, 255, 0)`, offset: 0 },
@@ -113,18 +97,21 @@ function useChipActivity(
           { duration: 3330, easing: "linear" }
         );
 
-        // Fade out the trace after the chip is lit
-        const fadeAnim = line.animate(
+        // Fade trace back to dim after chip is lit
+        const fadeAnim = path.animate(
           [
-            { opacity: 1 },
-            { opacity: 0 },
+            { strokeDashoffset: 0, stroke: "rgba(0, 212, 255, 0.35)" },
+            { strokeDashoffset: 0, stroke: "rgba(0, 212, 255, 0.06)" },
           ],
-          { duration: 2000, delay: 1000, easing: "ease-out", fill: "forwards" }
+          { duration: 2000, delay: 800, easing: "ease-out", fill: "forwards" }
         );
-        fadeAnim.onfinish = () => line.remove();
+        fadeAnim.onfinish = () => {
+          // Reset to hidden for next cycle
+          path.style.strokeDashoffset = String(len);
+        };
       };
 
-      // 7.77s animation cycle + 2.22s break
+      // 7.77s cycle + 2.22s break
       timeout = setTimeout(fire, 7770 + 2220);
     };
 
@@ -401,10 +388,15 @@ export function HeroBackground() {
           <rect x="860" y="500" width="12" height="6" rx="1" /><rect x="460" y="550" width="12" height="6" rx="1" />
         </g>
 
-        {/* Chip activity overlays — JS-driven random pulses */}
+        {/* Data traces + chip overlays — permanent board traces that light up */}
         <g className="hero-anim" ref={chipGroupRef}>
+          {/* Trace paths — always on the board, dim by default */}
           {chipTargets.map((c, i) => (
-            <rect key={i} x={c.x} y={c.y} width={c.w} height={c.h} rx={1} fill="rgba(0, 212, 255, 0)" stroke="none" />
+            <path key={`t${i}`} d={c.trace} fill="none" stroke="rgba(0, 212, 255, 0.06)" strokeWidth="0.8" />
+          ))}
+          {/* Chip overlays */}
+          {chipTargets.map((c, i) => (
+            <rect key={`c${i}`} x={c.x} y={c.y} width={c.w} height={c.h} rx={1} fill="rgba(0, 212, 255, 0)" stroke="none" />
           ))}
         </g>
 
