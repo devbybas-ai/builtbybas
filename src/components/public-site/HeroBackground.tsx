@@ -260,19 +260,30 @@ export function HeroBackground() {
           <rect x="860" y="500" width="12" height="6" rx="1" /><rect x="460" y="550" width="12" height="6" rx="1" />
         </g>
 
-        {/* Subtle chip activity — 4 chips, spaced 3s apart across 12s cycle */}
+        {/* Subtle activity — each element on its own unique cycle so nothing syncs */}
         <g className="hero-anim">
+          {/* SMD chips — each has a different dur so they drift apart */}
           <rect x="230" y="90" width="12" height="6" rx="1" fill="rgba(0, 212, 255, 0.03)" stroke="rgba(0, 212, 255, 0.10)" strokeWidth="0.6">
-            <animate attributeName="fill" values="rgba(0,212,255,0.03);rgba(0,212,255,0.3);rgba(0,212,255,0.03)" keyTimes="0;0.4;1" dur="1s" begin="0s; 12s" repeatCount="indefinite" />
-          </rect>
-          <rect x="770" y="70" width="12" height="6" rx="1" fill="rgba(0, 212, 255, 0.03)" stroke="rgba(0, 212, 255, 0.10)" strokeWidth="0.6">
-            <animate attributeName="fill" values="rgba(0,212,255,0.03);rgba(0,212,255,0.3);rgba(0,212,255,0.03)" keyTimes="0;0.4;1" dur="1s" begin="3s; 15s" repeatCount="indefinite" />
+            <animate attributeName="fill" values="rgba(0,212,255,0.03);rgba(0,212,255,0.3);rgba(0,212,255,0.03)" keyTimes="0;0.08;1" dur="11s" begin="0.5s" repeatCount="indefinite" />
           </rect>
           <rect x="140" y="365" width="12" height="6" rx="1" fill="rgba(0, 212, 255, 0.03)" stroke="rgba(0, 212, 255, 0.10)" strokeWidth="0.6">
-            <animate attributeName="fill" values="rgba(0,212,255,0.03);rgba(0,212,255,0.3);rgba(0,212,255,0.03)" keyTimes="0;0.4;1" dur="1s" begin="6s; 18s" repeatCount="indefinite" />
+            <animate attributeName="fill" values="rgba(0,212,255,0.03);rgba(0,212,255,0.3);rgba(0,212,255,0.03)" keyTimes="0;0.08;1" dur="13s" begin="3.7s" repeatCount="indefinite" />
           </rect>
           <rect x="810" y="310" width="12" height="6" rx="1" fill="rgba(0, 212, 255, 0.03)" stroke="rgba(0, 212, 255, 0.10)" strokeWidth="0.6">
-            <animate attributeName="fill" values="rgba(0,212,255,0.03);rgba(0,212,255,0.3);rgba(0,212,255,0.03)" keyTimes="0;0.4;1" dur="1s" begin="9s; 21s" repeatCount="indefinite" />
+            <animate attributeName="fill" values="rgba(0,212,255,0.03);rgba(0,212,255,0.3);rgba(0,212,255,0.03)" keyTimes="0;0.08;1" dur="17s" begin="7.3s" repeatCount="indefinite" />
+          </rect>
+          {/* IC chips — longer glow, each on a prime-ish cycle */}
+          <rect x="70" y="250" width="30" height="45" rx="1" fill="rgba(0, 212, 255, 0)" stroke="none">
+            <animate attributeName="fill" values="rgba(0,212,255,0);rgba(0,212,255,0.12);rgba(0,212,255,0)" keyTimes="0;0.1;1" dur="14s" begin="1.2s" repeatCount="indefinite" />
+          </rect>
+          <rect x="530" y="130" width="40" height="30" rx="1" fill="rgba(0, 212, 255, 0)" stroke="none">
+            <animate attributeName="fill" values="rgba(0,212,255,0);rgba(0,212,255,0.12);rgba(0,212,255,0)" keyTimes="0;0.1;1" dur="19s" begin="5.8s" repeatCount="indefinite" />
+          </rect>
+          <rect x="860" y="230" width="30" height="50" rx="1" fill="rgba(0, 212, 255, 0)" stroke="none">
+            <animate attributeName="fill" values="rgba(0,212,255,0);rgba(0,212,255,0.12);rgba(0,212,255,0)" keyTimes="0;0.1;1" dur="16s" begin="9.1s" repeatCount="indefinite" />
+          </rect>
+          <rect x="430" y="440" width="40" height="30" rx="1" fill="rgba(0, 212, 255, 0)" stroke="none">
+            <animate attributeName="fill" values="rgba(0,212,255,0);rgba(0,212,255,0.12);rgba(0,212,255,0)" keyTimes="0;0.1;1" dur="21s" begin="2.4s" repeatCount="indefinite" />
           </rect>
         </g>
 
