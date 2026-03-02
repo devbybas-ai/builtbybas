@@ -369,12 +369,15 @@ export function HeroBackground() {
         <g className="hero-anim">
           <circle r="0.8" fill="#66EEFF" filter="url(#g1)" opacity="1">
             <animateMotion id="p1" dur="1.8s" begin="0s; p3.end+1.1s" fill="remove"><mpath href="#r1" /></animateMotion>
+            <animate attributeName="fill" values="#66EEFF;#66EEFF;#FFFFFF;#FFFFFF;#66EEFF;#66EEFF" keyTimes="0;0.42;0.48;0.52;0.58;1" dur="1.8s" begin="0s; p3.end+1.1s" fill="remove" />
           </circle>
           <circle r="0.8" fill="#66EEFF" filter="url(#g1)" opacity="1">
             <animateMotion id="p2" dur="1.2s" begin="p1.end+1.1s" fill="remove"><mpath href="#r6" /></animateMotion>
+            <animate attributeName="fill" values="#66EEFF;#66EEFF;#FFFFFF;#FFFFFF;#66EEFF;#66EEFF" keyTimes="0;0.42;0.48;0.52;0.58;1" dur="1.2s" begin="p1.end+1.1s" fill="remove" />
           </circle>
           <circle r="0.8" fill="#66EEFF" filter="url(#g1)" opacity="1">
             <animateMotion id="p3" dur="1.8s" begin="p2.end+1.1s" fill="remove"><mpath href="#r9" /></animateMotion>
+            <animate attributeName="fill" values="#66EEFF;#66EEFF;#FFFFFF;#FFFFFF;#66EEFF;#66EEFF" keyTimes="0;0.42;0.48;0.52;0.58;1" dur="1.8s" begin="p2.end+1.1s" fill="remove" />
           </circle>
         </g>
       </svg>

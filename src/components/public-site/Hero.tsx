@@ -31,7 +31,7 @@ export function Hero() {
         {/* Subtitle */}
         <FadeIn delay={0.4} className="mt-6">
           <p className="mx-auto max-w-2xl text-lg text-muted-foreground sm:text-xl">
-            Agency-quality websites, dashboards, and tools.
+            Agency-quality software, websites, dashboards, and tools.
             <br />
             Built fast, built right, built for your business.
           </p>
