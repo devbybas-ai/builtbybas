@@ -9,6 +9,18 @@ const demoComponents: Record<string, React.ComponentType> = {
   "kinetic-typography": dynamic(() =>
     import("@/components/portfolio/demos/KineticTypography").then((m) => ({ default: m.KineticTypography })),
   ),
+  "micro-interactions": dynamic(() =>
+    import("@/components/portfolio/demos/MicroInteractions").then((m) => ({ default: m.MicroInteractions })),
+  ),
+  "layout-animations": dynamic(() =>
+    import("@/components/portfolio/demos/LayoutAnimations").then((m) => ({ default: m.LayoutAnimations })),
+  ),
+  "svg-animations": dynamic(() =>
+    import("@/components/portfolio/demos/SVGAnimations").then((m) => ({ default: m.SVGAnimations })),
+  ),
+  "scroll-animations": dynamic(() =>
+    import("@/components/portfolio/demos/ScrollAnimations").then((m) => ({ default: m.ScrollAnimations })),
+  ),
 };
 
 interface DemoRendererProps {

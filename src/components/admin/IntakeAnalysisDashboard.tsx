@@ -7,6 +7,80 @@ import { ComplexityGauge } from "./ComplexityGauge";
 import { ScoreBar } from "./ScoreBar";
 import type { IntakeAnalysis } from "@/types/intake-analysis";
 
+/** Convert camelCase or kebab-case key to a readable label */
+function formatKey(key: string): string {
+  return key
+    .replace(/([a-z])([A-Z])/g, "$1 $2")
+    .replace(/[-_]/g, " ")
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+/** Render a single field from the raw submission data */
+function RawField({ label, value }: { label: string; value: unknown }) {
+  const displayLabel = formatKey(label);
+
+  if (value == null || value === "") {
+    return (
+      <div>
+        <dt className="text-xs font-medium text-muted-foreground">{displayLabel}</dt>
+        <dd className="text-sm text-muted-foreground/60">—</dd>
+      </div>
+    );
+  }
+
+  if (Array.isArray(value)) {
+    return (
+      <div>
+        <dt className="text-xs font-medium text-muted-foreground">{displayLabel}</dt>
+        <dd className="mt-1 flex flex-wrap gap-1.5">
+          {value.length === 0 ? (
+            <span className="text-sm text-muted-foreground/60">—</span>
+          ) : (
+            value.map((item, i) => (
+              <span
+                key={i}
+                className="inline-block rounded-md border border-white/10 bg-white/[0.03] px-2 py-0.5 text-xs text-foreground"
+              >
+                {formatKey(String(item))}
+              </span>
+            ))
+          )}
+        </dd>
+      </div>
+    );
+  }
+
+  if (typeof value === "object") {
+    const entries = Object.entries(value as Record<string, unknown>);
+    return (
+      <div>
+        <dt className="text-xs font-medium text-muted-foreground">{displayLabel}</dt>
+        <dd className="mt-2 space-y-3 rounded-lg border border-white/5 bg-white/[0.02] p-3">
+          {entries.map(([subKey, subVal]) => (
+            <RawField key={subKey} label={subKey} value={subVal} />
+          ))}
+        </dd>
+      </div>
+    );
+  }
+
+  if (typeof value === "boolean") {
+    return (
+      <div>
+        <dt className="text-xs font-medium text-muted-foreground">{displayLabel}</dt>
+        <dd className="text-sm text-foreground">{value ? "Yes" : "No"}</dd>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <dt className="text-xs font-medium text-muted-foreground">{displayLabel}</dt>
+      <dd className="text-sm text-foreground">{String(value)}</dd>
+    </div>
+  );
+}
+
 interface IntakeAnalysisDashboardProps {
   analysis: IntakeAnalysis;
 }
@@ -212,30 +286,10 @@ export function IntakeAnalysisDashboard({ analysis }: IntakeAnalysisDashboardPro
         </button>
 
         {showRaw && (
-          <dl className="mt-4 space-y-3">
-            {Object.entries(formData).map(([key, value]) => {
-              let display: string;
-              if (value == null || value === "") {
-                display = "—";
-              } else if (Array.isArray(value)) {
-                display = value.join(", ") || "—";
-              } else if (typeof value === "object") {
-                display = JSON.stringify(value, null, 2);
-              } else {
-                display = String(value);
-              }
-              return (
-                <div key={key}>
-                  <dt className="text-xs font-medium text-muted-foreground">{key}</dt>
-                  <dd className={cn(
-                    "text-sm text-foreground",
-                    typeof value === "object" && !Array.isArray(value) && value != null && "whitespace-pre-wrap font-mono text-xs"
-                  )}>
-                    {display}
-                  </dd>
-                </div>
-              );
-            })}
+          <dl className="mt-4 space-y-4">
+            {Object.entries(formData).map(([key, value]) => (
+              <RawField key={key} label={key} value={value} />
+            ))}
           </dl>
         )}
       </GlassCard>

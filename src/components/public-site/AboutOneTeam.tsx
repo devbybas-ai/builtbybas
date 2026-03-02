@@ -9,7 +9,7 @@ export function AboutOneTeam() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <FadeIn className="mb-16 text-center">
           <h2 className="text-3xl font-bold sm:text-4xl">
-            <span className="text-gradient">#OneTeam</span>
+            Human <span className="text-gradient">Oversight</span>
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
             Human creativity meets AI capability. That&apos;s the BuiltByBas
@@ -28,6 +28,14 @@ export function AboutOneTeam() {
                 Strategy &amp; Craft
               </p>
               <ul className="mt-4 space-y-2 text-left text-sm text-muted-foreground">
+                <li className="flex items-center gap-2">
+                  <div className="h-1.5 w-1.5 rounded-full bg-primary" />
+                  Human code review
+                </li>
+                <li className="flex items-center gap-2">
+                  <div className="h-1.5 w-1.5 rounded-full bg-primary" />
+                  Human oversight
+                </li>
                 <li className="flex items-center gap-2">
                   <div className="h-1.5 w-1.5 rounded-full bg-primary" />
                   Architecture decisions

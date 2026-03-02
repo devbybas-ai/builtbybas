@@ -1,8 +1,9 @@
 "use client";
 
+import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, ArrowRight, ExternalLink } from "lucide-react";
 import { springs, fadeInUp } from "@/lib/motion";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
@@ -34,6 +35,8 @@ const statusBadge: Record<string, { label: string; className: string }> = {
   demo: { label: "Interactive Demo", className: "bg-violet-500/20 text-violet-400" },
 };
 
+const CYCLE_INTERVAL = 5000;
+
 export function ProjectDetail({
   project,
   prevProject,
@@ -43,6 +46,40 @@ export function ProjectDetail({
   const catMeta = getCategoryMeta(project.category);
   const gradient = accentGradients[project.colorAccent] ?? accentGradients.cyan;
   const badge = statusBadge[project.status];
+
+  const galleryImages = project.image
+    ? [project.image, ...(project.gallery ?? [])]
+    : [];
+  const hasGallery = galleryImages.length > 1;
+
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const clearTimer = useCallback(() => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+  }, []);
+
+  const startTimer = useCallback(() => {
+    clearTimer();
+    if (shouldReduceMotion || galleryImages.length <= 1) return;
+    timerRef.current = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % galleryImages.length);
+    }, CYCLE_INTERVAL);
+  }, [clearTimer, shouldReduceMotion, galleryImages.length]);
+
+  useEffect(() => {
+    if (!paused) startTimer();
+    return clearTimer;
+  }, [paused, startTimer, clearTimer]);
+
+  const handleThumbClick = (index: number) => {
+    setActiveIndex(index);
+    startTimer();
+  };
 
   const Wrapper = shouldReduceMotion ? "div" : motion.div;
   const wrapperProps = shouldReduceMotion
@@ -62,21 +99,83 @@ export function ProjectDetail({
 
       {/* Hero */}
       <Wrapper {...wrapperProps}>
-        {project.image && (
-          <div className="relative aspect-[21/9] overflow-hidden rounded-2xl">
-            <Image
-              src={project.image}
-              alt={`${project.title} screenshot`}
-              fill
-              sizes="(max-width: 1200px) 100vw, 1024px"
-              priority
-              className="object-cover object-top"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
+        {galleryImages.length > 0 && (
+          <div
+            className="overflow-hidden rounded-2xl"
+            onMouseEnter={() => setPaused(true)}
+            onMouseLeave={() => setPaused(false)}
+          >
+            {/* Main Image */}
+            <div className="relative aspect-[21/9] overflow-hidden">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeIndex}
+                  initial={shouldReduceMotion ? false : { opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={shouldReduceMotion ? undefined : { opacity: 0 }}
+                  transition={{ duration: 0.4, ease: "easeInOut" }}
+                  className="absolute inset-0"
+                >
+                  <Image
+                    src={galleryImages[activeIndex]}
+                    alt={`${project.title} screenshot ${activeIndex + 1}`}
+                    fill
+                    sizes="(max-width: 1200px) 100vw, 1024px"
+                    priority={activeIndex === 0}
+                    className="object-cover object-top"
+                  />
+                </motion.div>
+              </AnimatePresence>
+              <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
+
+              {/* Progress indicators */}
+              {!shouldReduceMotion && hasGallery && (
+                <div className="absolute bottom-0 left-0 right-0 z-10 flex gap-1 px-2 pb-2">
+                  {galleryImages.map((_, i) => (
+                    <div key={i} className="h-0.5 flex-1 overflow-hidden rounded-full bg-white/10">
+                      <motion.div
+                        className="h-full bg-primary"
+                        initial={{ width: "0%" }}
+                        animate={{
+                          width: i === activeIndex ? "100%" : i < activeIndex ? "100%" : "0%",
+                        }}
+                        transition={
+                          i === activeIndex && !paused
+                            ? { duration: CYCLE_INTERVAL / 1000, ease: "linear" }
+                            : { duration: 0.2 }
+                        }
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Thumbnail Strip */}
+            {hasGallery && (
+              <div className="flex gap-1.5 bg-black/30 p-1.5 backdrop-blur-sm">
+                {galleryImages.map((src, i) => (
+                  <button
+                    key={src}
+                    type="button"
+                    onClick={() => handleThumbClick(i)}
+                    className={cn(
+                      "relative h-14 flex-1 overflow-hidden rounded transition-all sm:h-16",
+                      i === activeIndex
+                        ? "ring-2 ring-primary ring-offset-1 ring-offset-black/50"
+                        : "opacity-50 hover:opacity-80",
+                    )}
+                    aria-label={`View screenshot ${i + 1}`}
+                  >
+                    <Image src={src} alt="" fill sizes="200px" className="object-cover object-top" />
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         )}
-        <div className={cn("relative overflow-hidden rounded-2xl bg-gradient-to-br p-8 sm:p-12", project.image ? "" : gradient)}>
-          {!project.image && (
+        <div className={cn("relative overflow-hidden rounded-2xl bg-gradient-to-br p-8 sm:p-12", galleryImages.length > 0 ? "" : gradient)}>
+          {galleryImages.length === 0 && (
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.05),transparent_60%)]" />
           )}
           <div className="relative space-y-4">

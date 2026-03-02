@@ -15,6 +15,7 @@ export interface PortfolioProject {
   colorAccent: string;
   isDemo?: boolean;
   image?: string;
+  gallery?: string[];
 }
 
 export interface PortfolioCategoryMeta {
