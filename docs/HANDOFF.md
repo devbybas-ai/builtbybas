@@ -1,8 +1,8 @@
 # BuiltByBas — Handoff Document
 
-> **Last Updated:** 2026-03-01 (Session 18)
-> **Status:** LIVE AT builtbybas.com — Phase 5 deployed. Portfolio image galleries (auto-cycle, thumbnails, click-to-swap). 6 animation demo pages (41 specimens). About page updated (Human Oversight). 163 tests, 50-route build. Deployed to production.
-> **Next Session:** Client portal, invoice PDF generation, SSH key fix for local dev machine, gallery screenshots for remaining projects
+> **Last Updated:** 2026-03-01 (Session 19)
+> **Status:** LIVE AT builtbybas.com — Portfolio detail pages upgraded with Project Health stats (animated SVG rings, checklist accordion), business narratives (challenge, approach, scope, tech choices), 19 new gallery images (Colour Parlor + Praxis Library). ScrollAnimations infinite render fix. 163 tests, 50-route build. Deployed to production.
+> **Next Session:** Client portal, invoice PDF generation, SSH key fix for local dev machine
 
 ---
 
@@ -411,6 +411,22 @@ Dark, premium, cutting-edge. The site itself IS the portfolio piece. Every inter
 - `pnpm test` — 163/163 tests
 - `pnpm build` — 50 routes (14 portfolio SSG paths including 4 new demos)
 - Zero type errors
+
+**Session 19 (Portfolio Detail Upgrade — Health Stats, Business Narratives, Galleries):**
+
+- **Project Health Stats component:** Created `ProjectHealthStats.tsx` — animated SVG circular progress rings (4 dimensions: Security, Accessibility, Performance, Stability), overall score bar with letter grade (A+ through C), CountUp numbers, staggered entrance animation. Each ring shows score/100 with X/10 checks count. Colors: cyan (security), violet (accessibility), emerald (performance), amber (stability). Respects `prefers-reduced-motion`.
+- **40-point checklist accordion:** Added expandable accordion below health rings showing all 40 individual checks with pass/fail indicators (green checkmark / red X). Each dimension section shows color dot, label, "X/10 passed" count, chevron toggle. Smooth height animation via Framer Motion `AnimatePresence`. Footer: "Based on 40-point verifiable checklist".
+- **Health scoring data:** Added `health` and `healthChecklist` fields to `PortfolioProject` type. Real scores for 5 projects based on transparent 10-check rubric per dimension: BuiltByBas (100/100/100/100), Orca Child (90/100/90/80), Praxis Library (90/100/90/80), Colour Parlor (80/90/90/70), All Beauty (70/80/80/60).
+- **Business narrative sections:** Added 4 new optional fields to `PortfolioProject`: `scope` (bullet list), `challenge` (business problem), `approach` (how we solved it), `techChoices` (tech + rationale). Full narratives written for all 6 real projects. ProjectDetail renders: The Challenge, Our Approach, Project Scope, Why We Chose This Stack (replaces plain tech pills when techChoices exists).
+- **Colour Parlor real story:** Updated with actual business context — dual-location salon in Wildomar and Menifee, California. Freelancer dependency problem. Split-site landing page solution. Custom admin backend for real-time stylist management between locations.
+- **19 new gallery images:** 8 Colour Parlor images (including admin panel screenshots), 11 Praxis Library images (all major features). PNG→WebP conversion via sharp-cli.
+- **ScrollAnimations fix:** `CounterBox` component had `start()` called directly in render body, causing infinite re-render loop. Replaced with proper `useEffect`.
+- Commits: `21b18f4` (health stats + narratives + galleries), `acf9c76` (ScrollAnimations fix). Pushed and deployed.
+
+**Verification — all passing:**
+- `pnpm test` — 163/163 tests
+- `pnpm build` — 50 routes, 0 type errors
+- Production deployed and verified
 
 ### What's Next
 
