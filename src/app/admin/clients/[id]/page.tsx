@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { eq, desc } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { clients, users, clientNotes, pipelineHistory } from "@/lib/schema";
+import { decrypt } from "@/lib/encryption";
 import { ClientDetailDashboard } from "@/components/admin/ClientDetailDashboard";
 
 export const dynamic = "force-dynamic";
@@ -94,6 +95,9 @@ export default async function AdminClientDetailPage({
       <ClientDetailDashboard
         client={{
           ...client,
+          name: decrypt(client.name),
+          email: decrypt(client.email),
+          phone: client.phone ? decrypt(client.phone) : null,
           assignedUser: client.assignedTo
             ? { id: client.assignedTo, name: client.assignedUserName }
             : null,

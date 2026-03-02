@@ -1,8 +1,8 @@
 # BuiltByBas — Handoff Document
 
-> **Last Updated:** 2026-03-01 (Session 16)
-> **Status:** LIVE AT builtbybas.com — Phase 4 deployed to production. SSL, PostgreSQL 16, PM2, Nginx on Hostinger VPS. PII encryption active. Projects + Invoicing live. 131 tests, 43-route build.
-> **Next Session:** Phase 5 (AI Suite — Claude API proposal generation), client portal, invoice PDF generation, SSH key fix for local dev machine
+> **Last Updated:** 2026-03-01 (Session 17)
+> **Status:** LIVE AT builtbybas.com — Phase 5 built (algorithmic proposal generation). Mobile perf fixed. Revision workflows on proposals + invoices. 163 tests, 50-route build. VPS deployed with Phase 4; Phase 5 ready to commit + deploy.
+> **Next Session:** Commit + deploy Phase 5 to production, client portal, invoice PDF generation, SSH key fix for local dev machine
 
 ---
 
@@ -130,17 +130,17 @@ Dark, premium, cutting-edge. The site itself IS the portfolio piece. Every inter
 
 ## Part 3: Build Status
 
-| Phase | Name                                   | Status      | Sessions |
-| ----- | -------------------------------------- | ----------- | -------- |
-| 0     | Project Setup & Governance             | COMPLETE    | Setup    |
-| 1     | Foundation (Next.js, DB, auth, layout) | COMPLETE    | 1        |
-| 2     | Public Website                         | COMPLETE    | 2-5      |
-| 2.5   | Intake Analysis Engine                 | COMPLETE    | 6        |
-| 2.6   | Live Portfolio + Hero Shine            | COMPLETE    | 7        |
-| 3     | CRM Core (clients, pipeline, scoring)  | COMPLETE    | 7-13     |
-| 4     | Projects + Financials                  | COMPLETE    | 15       |
-| 5     | AI Suite + Analytics                   | NOT STARTED | TBD      |
-| 6     | Hardening + Deployment                 | PARTIAL     | 14       |
+| Phase | Name                                   | Status   | Sessions |
+| ----- | -------------------------------------- | -------- | -------- |
+| 0     | Project Setup & Governance             | COMPLETE | Setup    |
+| 1     | Foundation (Next.js, DB, auth, layout) | COMPLETE | 1        |
+| 2     | Public Website                         | COMPLETE | 2-5      |
+| 2.5   | Intake Analysis Engine                 | COMPLETE | 6        |
+| 2.6   | Live Portfolio + Hero Shine            | COMPLETE | 7        |
+| 3     | CRM Core (clients, pipeline, scoring)  | COMPLETE | 7-13     |
+| 4     | Projects + Financials                  | COMPLETE | 15       |
+| 5     | Algorithmic Proposals + Revision UX    | COMPLETE | 17       |
+| 6     | Hardening + Deployment                 | PARTIAL  | 14       |
 
 ### What Was Done (Setup Sessions 1-5)
 
@@ -370,32 +370,52 @@ Dark, premium, cutting-edge. The site itself IS the portfolio piece. Every inter
 - `pnpm build` — 43 routes (10 new: projects list/new/detail, invoices list/new/detail, analytics, api/projects, api/projects/[id], api/invoices, api/invoices/[id])
 - Zero type errors
 
+**Session 17 (Phase 5 — Algorithmic Proposals + Mobile Perf + Revision Workflows):**
+
+- **Mobile animation performance fix:** HeroBackground SVG was running 13 SMIL animations + 2 blur filters on mobile — main thread paint every frame. Added CSS `<style>` inside SVG with `@media (max-width: 768px), (prefers-reduced-motion: reduce)` to hide animated groups and strip blur filters on mobile. Removed `filter: blur(4px)` per-word animation from AnimatedText (kept GPU-compositable opacity+y only). Noise texture hidden on mobile (`hidden md:block`). Orb-pulse desktop-only (`motion-safe:md:animate-[...]`).
+- **Colour Parlor Nginx fix:** Direct IP access (http://72.62.200.30/) was returning 404 because colourparlor Nginx config only matched domain names. Added `default_server` to listen directive and `_` wildcard to server_name.
+- **Phase 5 — Proposal types + validation:** `src/types/proposal.ts` (ProposalStatus, ProposalService, PROPOSAL_STATUSES, getProposalStatusMeta). `src/lib/proposal-validation.ts` (4 Zod schemas: generate, create, update, send). 20 validation tests.
+- **Phase 5 — Generator engine:** `src/lib/proposal-generator.ts` — pure algorithmic template builder. Takes IntakeAnalysis + service catalog, produces structured Markdown proposal: executive summary, understanding needs, scope of work (per recommended service), timeline (from pathForward phases), investment (itemized + total), inclusions/exclusions, next steps, terms. Zero AI API calls — instant, deterministic. 12 tests.
+- **Phase 5 — Supporting utilities:** `src/lib/markdown-to-html.ts` (zero-dep MD→HTML for display/email). `src/lib/proposal-email.ts` (branded dark theme email template with inline CSS).
+- **Phase 5 — API routes (4):** `POST /api/proposals/generate` (intake → algorithm → draft), `GET/POST /api/proposals` (list + manual create), `GET/PATCH /api/proposals/[id]` (detail + update with pipeline advancement), `POST /api/proposals/[id]/send` (email delivery via Resend, requires "reviewed" status).
+- **Phase 5 — Database:** `proposals` table (19 columns) with `proposal_status` enum (draft/reviewed/sent/accepted/rejected). JSONB services column. Relations to clients + intake_submissions. Migration `0005_military_black_widow.sql`.
+- **Phase 5 — Admin UI (6 files):** Proposals list page (status badges, budget, client info). Proposal detail page (server component with client join + PII decryption). New proposal page (manual creation with client dropdown). `ProposalDetailView` (stats cards, services table, rendered markdown, review gate, send form). `ProposalForm` (manual creation). `GenerateProposalButton` (for intake detail page).
+- **Phase 5 — Intake integration:** Modified `/admin/intake/[id]/page.tsx` — queries clients table by intakeSubmissionId to find linked client, shows "Generate Proposal" button if client exists.
+- **Revision workflow — ProposalDetailView:** "Edit Proposal" button (visible for draft/reviewed). Inline editing: title (header input), summary (textarea), content (monospace markdown textarea), timeline, valid until. If a reviewed proposal is edited, status resets to draft (re-review required — RAI compliance). Save/Cancel with error handling.
+- **Revision workflow — InvoiceDetailView:** "Edit Invoice" button (visible for draft/sent). Inline editing: all line items (description, qty, unit price), add/remove rows, due date, tax rate (%), notes. Live subtotal/tax/total preview during editing. Save/Cancel with error handling.
+- **VPS git remote fix:** SSH key auth failed on VPS. Switched to HTTPS remote URL.
+- 17 new files, 3+ modified files.
+- Commits: `3f93d41` (mobile perf fix), `ff06f26` (Phase 5 foundation). Phase 5 UI + revision workflows not yet committed.
+
+**Verification — all passing:**
+- `pnpm test` — 163/163 tests (32 new proposal tests + 131 existing)
+- `pnpm build` — 50 routes (7 new: proposals list/new/detail, api/proposals, api/proposals/[id], api/proposals/generate, api/proposals/[id]/send)
+- Zero type errors
+
 ### What's Next
 
-**Phase 4 Production Deployment: DONE (Session 16)**
-1. ~~Push to GitHub, deploy to VPS~~ — DONE
-2. ~~Run migrations on production DB~~ — DONE (drizzle-kit push)
-3. ~~Add ENCRYPTION_KEY to production .env.local~~ — DONE
-4. ~~Run encrypt-existing-pii.ts on production~~ — DONE (0 records, clean DB)
-5. ~~Seed owner on production~~ — DONE (`devbybas@gmail.com`)
-6. ~~Test admin login + Phase 4 pages~~ — DONE (dashboard, projects, invoices, analytics all working)
+**Phase 5 Commit + Deploy — NEXT:**
+1. Commit Phase 5 UI + revision workflows to git
+2. Push to GitHub, deploy to VPS
+3. Run migration on production DB (proposals table)
+4. Test full flow: intake → generate proposal → review → edit → send
 
-**Phase 5 (AI Suite) — NEXT:**
-1. AI proposal generation (Claude API integration)
-2. Proposals admin page (create, review, send)
-3. Client portal (project status, invoices, communication)
+**Phase 6 — Client Portal:**
+1. Client-facing portal (project status, invoices, communication)
+2. Invoice PDF generation
+3. Email notifications for invoice/proposal status changes
 
 **Improvements:**
 4. Animation portfolio polish
-5. Invoice PDF generation
-6. Email notifications for invoice status changes
-7. Fix SSH key access from local dev machine to VPS
+5. Fix SSH key access from local dev machine to VPS (currently using HTTPS workaround)
+6. Run `pm2 startup && pm2 save` on VPS for auto-restart on reboot
 
 ### Notes
 
 - Active project root is `c:\builtbybas\` — old `c:\iostudio\` copies are stale, do not edit those
 - `scripts/format-tables.mjs` can be re-run anytime with `node scripts/format-tables.mjs` to realign tables
-- SSH remote: `git@github.com-devbybas:devbybas-ai/builtbybas.git` (multi-account SSH alias)
+- **Local remote:** `git@github.com-devbybas:devbybas-ai/builtbybas.git` (multi-account SSH alias)
+- **VPS remote:** HTTPS (`https://github.com/devbybas-ai/builtbybas.git`) — SSH key auth broken on VPS, switched Session 17
 - Git identity configured per-repo (not global) — name "Bas Rosario", email `devbybas@gmail.com`
 - Next.js 16 deprecated `middleware.ts` in favor of `proxy` — current middleware works but emits a warning. Migrate when stable.
 - PostgreSQL now running locally with `builtbybas` database. Auth and CRM routes functional.

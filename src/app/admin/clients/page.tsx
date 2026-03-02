@@ -3,6 +3,7 @@ import Link from "next/link";
 import { desc, eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { clients, users } from "@/lib/schema";
+import { decrypt } from "@/lib/encryption";
 import { ClientListCard } from "@/components/admin/ClientListCard";
 import { Plus } from "lucide-react";
 
@@ -33,6 +34,8 @@ export default async function AdminClientsPage() {
 
   const clientList = rows.map((row) => ({
     ...row,
+    name: decrypt(row.name),
+    email: decrypt(row.email),
     assignedUser: row.assignedTo
       ? { id: row.assignedTo, name: row.assignedUserName }
       : null,

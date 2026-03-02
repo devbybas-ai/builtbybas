@@ -3,6 +3,7 @@ import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { clients } from "@/lib/schema";
 import { PIPELINE_STAGES, type PipelineStage } from "@/types/client";
+import { decrypt } from "@/lib/encryption";
 import { PipelineBoard } from "@/components/admin/PipelineBoard";
 
 export const dynamic = "force-dynamic";
@@ -31,9 +32,9 @@ export default async function AdminPipelinePage() {
       .filter((c) => c.pipelineStage === stage.value)
       .map((c) => ({
         id: c.id,
-        name: c.name,
+        name: decrypt(c.name),
         company: c.company,
-        email: c.email,
+        email: decrypt(c.email),
         daysInStage: Math.floor(
           (now - new Date(c.stageChangedAt).getTime()) / (1000 * 60 * 60 * 24)
         ),
