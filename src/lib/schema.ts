@@ -302,6 +302,72 @@ export const invoiceItems = pgTable(
 );
 
 // ============================================
+// Proposals
+// ============================================
+
+export const proposalStatusEnum = pgEnum("proposal_status", [
+  "draft",
+  "reviewed",
+  "sent",
+  "accepted",
+  "rejected",
+]);
+
+export const proposals = pgTable(
+  "proposals",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    clientId: uuid("client_id")
+      .notNull()
+      .references(() => clients.id, { onDelete: "cascade" }),
+    intakeSubmissionId: uuid("intake_submission_id").references(
+      () => intakeSubmissions.id,
+      { onDelete: "set null" }
+    ),
+    title: varchar("title", { length: 255 }).notNull(),
+    summary: text("summary").notNull(),
+    content: text("content").notNull(),
+    services: jsonb("services")
+      .$type<
+        {
+          serviceId: string;
+          serviceName: string;
+          description: string;
+          estimatedPriceCents: number;
+          estimatedTimeline: string;
+        }[]
+      >()
+      .default([]),
+    estimatedBudgetCents: integer("estimated_budget_cents"),
+    timeline: varchar("timeline", { length: 255 }),
+    validUntil: timestamp("valid_until", { withTimezone: true }),
+    status: proposalStatusEnum("status").notNull().default("draft"),
+    generatedBy: uuid("generated_by").references(() => users.id, {
+      onDelete: "set null",
+    }),
+    reviewedBy: uuid("reviewed_by").references(() => users.id, {
+      onDelete: "set null",
+    }),
+    reviewedAt: timestamp("reviewed_at", { withTimezone: true }),
+    sentAt: timestamp("sent_at", { withTimezone: true }),
+    acceptedAt: timestamp("accepted_at", { withTimezone: true }),
+    rejectionReason: text("rejection_reason"),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (table) => [
+    index("idx_proposals_client_id").on(table.clientId),
+    index("idx_proposals_intake_submission_id").on(table.intakeSubmissionId),
+    index("idx_proposals_status").on(table.status),
+    index("idx_proposals_generated_by").on(table.generatedBy),
+  ]
+);
+
+// ============================================
 // Relations
 // ============================================
 
@@ -310,6 +376,8 @@ export const usersRelations = relations(users, ({ many }) => ({
   assignedClients: many(clients),
   authoredNotes: many(clientNotes),
   assignedProjects: many(projects),
+  generatedProposals: many(proposals, { relationName: "generatedProposals" }),
+  reviewedProposals: many(proposals, { relationName: "reviewedProposals" }),
 }));
 
 export const sessionsRelations = relations(sessions, ({ one }) => ({
@@ -325,6 +393,7 @@ export const clientsRelations = relations(clients, ({ one, many }) => ({
   pipelineHistory: many(pipelineHistory),
   projects: many(projects),
   invoices: many(invoices),
+  proposals: many(proposals),
 }));
 
 export const pipelineHistoryRelations = relations(
@@ -380,5 +449,26 @@ export const invoiceItemsRelations = relations(invoiceItems, ({ one }) => ({
   invoice: one(invoices, {
     fields: [invoiceItems.invoiceId],
     references: [invoices.id],
+  }),
+}));
+
+export const proposalsRelations = relations(proposals, ({ one }) => ({
+  client: one(clients, {
+    fields: [proposals.clientId],
+    references: [clients.id],
+  }),
+  intakeSubmission: one(intakeSubmissions, {
+    fields: [proposals.intakeSubmissionId],
+    references: [intakeSubmissions.id],
+  }),
+  generatedByUser: one(users, {
+    fields: [proposals.generatedBy],
+    references: [users.id],
+    relationName: "generatedProposals",
+  }),
+  reviewedByUser: one(users, {
+    fields: [proposals.reviewedBy],
+    references: [users.id],
+    relationName: "reviewedProposals",
   }),
 }));

@@ -1,8 +1,8 @@
 # BuiltByBas — Handoff Document
 
-> **Last Updated:** 2026-03-01 (Session 15)
-> **Status:** LIVE AT builtbybas.com — SSL, PostgreSQL 16, PM2, Nginx on Hostinger VPS. Phase 4 complete. 131 tests, 43-route build.
-> **Next Session:** Deploy Phase 4 to production (push + migrate), seed production DB, test admin login, Phase 5 (AI Suite), proposals system, client portal
+> **Last Updated:** 2026-03-01 (Session 16)
+> **Status:** LIVE AT builtbybas.com — Phase 4 deployed to production. SSL, PostgreSQL 16, PM2, Nginx on Hostinger VPS. PII encryption active. Projects + Invoicing live. 131 tests, 43-route build.
+> **Next Session:** Phase 5 (AI Suite — Claude API proposal generation), client portal, invoice PDF generation, SSH key fix for local dev machine
 
 ---
 
@@ -372,23 +372,24 @@ Dark, premium, cutting-edge. The site itself IS the portfolio piece. Every inter
 
 ### What's Next
 
-**Immediate (production deployment):**
-1. Push to GitHub, deploy to VPS (git pull + pnpm install + build + pm2 restart)
-2. Run migrations on production DB (`drizzle-kit push` or apply SQL files)
-3. Add `ENCRYPTION_KEY` to production `.env.local`
-4. Run `scripts/encrypt-existing-pii.ts` on production to encrypt existing data
-5. Run `scripts/seed-owner.ts` on production (if not done)
-6. Test admin login on production (`/login`)
+**Phase 4 Production Deployment: DONE (Session 16)**
+1. ~~Push to GitHub, deploy to VPS~~ — DONE
+2. ~~Run migrations on production DB~~ — DONE (drizzle-kit push)
+3. ~~Add ENCRYPTION_KEY to production .env.local~~ — DONE
+4. ~~Run encrypt-existing-pii.ts on production~~ — DONE (0 records, clean DB)
+5. ~~Seed owner on production~~ — DONE (`devbybas@gmail.com`)
+6. ~~Test admin login + Phase 4 pages~~ — DONE (dashboard, projects, invoices, analytics all working)
 
-**Phase 5 (AI Suite):**
-7. AI proposal generation (Claude API integration)
-8. Proposals admin page (create, review, send)
-9. Client portal (project status, invoices, communication)
+**Phase 5 (AI Suite) — NEXT:**
+1. AI proposal generation (Claude API integration)
+2. Proposals admin page (create, review, send)
+3. Client portal (project status, invoices, communication)
 
 **Improvements:**
-10. Animation portfolio polish
-11. Invoice PDF generation
-12. Email notifications for invoice status changes
+4. Animation portfolio polish
+5. Invoice PDF generation
+6. Email notifications for invoice status changes
+7. Fix SSH key access from local dev machine to VPS
 
 ### Notes
 
