@@ -20,45 +20,113 @@ const chipTargets = [
   { x: 870, y: 360, w: 35, h: 40, peak: 0.15 },
 ];
 
-function useChipActivity(groupRef: React.RefObject<SVGGElement | null>) {
+const SVG_NS = "http://www.w3.org/2000/svg";
+const HUB_X = 500;
+const HUB_Y = 300;
+
+function useChipActivity(
+  groupRef: React.RefObject<SVGGElement | null>,
+  hubOuterRef: React.RefObject<SVGCircleElement | null>,
+  hubInnerRef: React.RefObject<SVGCircleElement | null>,
+) {
   useEffect(() => {
     const g = groupRef.current;
-    if (!g) return;
+    const hubOuter = hubOuterRef.current;
+    const hubInner = hubInnerRef.current;
+    if (!g || !hubOuter || !hubInner) return;
+    const svg = g.closest("svg");
+    if (!svg) return;
     const rects = g.querySelectorAll("rect");
     if (!rects.length) return;
 
     let timeout: ReturnType<typeof setTimeout>;
-    const pulse = () => {
-      const i = Math.floor(Math.random() * rects.length);
-      const rect = rects[i];
-      const peak = chipTargets[i]?.peak ?? 0.2;
-      const isIC = (chipTargets[i]?.w ?? 12) > 12;
-      const dur = isIC ? 1200 : 800;
 
-      // Animate fill up then back down
-      rect.animate(
+    const pulseHub = () => {
+      hubOuter.animate(
         [
-          { fill: `rgba(0, 212, 255, 0)` },
-          { fill: `rgba(0, 212, 255, ${peak})` },
-          { fill: `rgba(0, 212, 255, 0)` },
+          { fill: "rgba(0,212,255,0.5)", r: 5 },
+          { fill: "rgba(255,255,255,1)", r: 7 },
+          { fill: "rgba(0,212,255,0.5)", r: 5 },
         ],
-        { duration: dur, easing: "ease-in-out" }
+        { duration: 500, easing: "ease-out" }
       );
-
-      // Next pulse: random 3-8s
-      const next = 3000 + Math.random() * 5000;
-      timeout = setTimeout(pulse, next);
+      hubInner.animate(
+        [
+          { fill: "#00D4FF", r: 2.5 },
+          { fill: "#FFFFFF", r: 3.5 },
+          { fill: "#00D4FF", r: 2.5 },
+        ],
+        { duration: 500, easing: "ease-out" }
+      );
     };
 
-    // Start after a random 1-3s delay
-    timeout = setTimeout(pulse, 1000 + Math.random() * 2000);
+    const fire = () => {
+      const i = Math.floor(Math.random() * rects.length);
+      const rect = rects[i];
+      const chip = chipTargets[i];
+      const peak = chip.peak;
+      const isIC = chip.w > 12;
+
+      // Trace from center hub outward to chip
+      const cx = chip.x + chip.w / 2;
+      const cy = chip.y + chip.h / 2;
+      const dx = cx - HUB_X;
+      const dy = cy - HUB_Y;
+      const len = Math.sqrt(dx * dx + dy * dy);
+      const travelDur = Math.max(600, len * 1.8);
+
+      // Pulse hub as it sends data out
+      pulseHub();
+
+      const line = document.createElementNS(SVG_NS, "line");
+      line.setAttribute("x1", String(HUB_X));
+      line.setAttribute("y1", String(HUB_Y));
+      line.setAttribute("x2", String(cx));
+      line.setAttribute("y2", String(cy));
+      line.setAttribute("stroke", "rgba(0, 212, 255, 0.4)");
+      line.setAttribute("stroke-width", "0.8");
+      line.setAttribute("stroke-linecap", "round");
+      line.setAttribute("stroke-dasharray", `20 ${len}`);
+      line.setAttribute("stroke-dashoffset", String(len + 20));
+      svg.appendChild(line);
+
+      const anim = line.animate(
+        [
+          { strokeDashoffset: len + 20 },
+          { strokeDashoffset: -20 },
+        ],
+        { duration: travelDur, easing: "ease-out" }
+      );
+
+      anim.onfinish = () => {
+        line.remove();
+        // Light up the chip on arrival
+        rect.animate(
+          [
+            { fill: `rgba(0, 212, 255, 0)` },
+            { fill: `rgba(0, 212, 255, ${peak})` },
+            { fill: `rgba(0, 212, 255, 0)` },
+          ],
+          { duration: isIC ? 1200 : 800, easing: "ease-in-out" }
+        );
+      };
+
+      // Next fire: random 3-8s
+      const next = 3000 + Math.random() * 5000;
+      timeout = setTimeout(fire, next);
+    };
+
+    // Start after 1-3s
+    timeout = setTimeout(fire, 1000 + Math.random() * 2000);
     return () => clearTimeout(timeout);
-  }, [groupRef]);
+  }, [groupRef, hubOuterRef, hubInnerRef]);
 }
 
 export function HeroBackground() {
   const chipGroupRef = useRef<SVGGElement>(null);
-  useChipActivity(chipGroupRef);
+  const hubOuterRef = useRef<SVGCircleElement>(null);
+  const hubInnerRef = useRef<SVGCircleElement>(null);
+  useChipActivity(chipGroupRef, hubOuterRef, hubInnerRef);
 
   return (
     <div
@@ -349,7 +417,7 @@ export function HeroBackground() {
         </g>
 
         {/* Center hub */}
-        <circle className="hero-filter-glow" cx="500" cy="300" r="5" fill="rgba(0, 212, 255, 0.5)" filter="url(#g2)">
+        <circle ref={hubOuterRef} className="hero-filter-glow" cx="500" cy="300" r="5" fill="rgba(0, 212, 255, 0.5)" filter="url(#g2)">
           <animate attributeName="fill" values="rgba(0,212,255,0.5);rgba(255,255,255,1);rgba(255,255,255,0.9);rgba(0,212,255,0.5)" keyTimes="0;0.1;0.5;1" dur="0.6s" begin="p1.end" fill="remove" />
           <animate attributeName="fill" values="rgba(0,212,255,0.5);rgba(255,255,255,1);rgba(255,255,255,0.9);rgba(0,212,255,0.5)" keyTimes="0;0.1;0.5;1" dur="0.6s" begin="p2.end" fill="remove" />
           <animate attributeName="fill" values="rgba(0,212,255,0.5);rgba(255,255,255,1);rgba(255,255,255,0.9);rgba(0,212,255,0.5)" keyTimes="0;0.1;0.5;1" dur="0.6s" begin="p3.end" fill="remove" />
@@ -357,7 +425,7 @@ export function HeroBackground() {
           <animate attributeName="r" values="5;7;5" keyTimes="0;0.3;1" dur="0.6s" begin="p2.end" fill="remove" />
           <animate attributeName="r" values="5;7;5" keyTimes="0;0.3;1" dur="0.6s" begin="p3.end" fill="remove" />
         </circle>
-        <circle cx="500" cy="300" r="2.5" fill="#00D4FF" opacity="1">
+        <circle ref={hubInnerRef} cx="500" cy="300" r="2.5" fill="#00D4FF" opacity="1">
           <animate attributeName="fill" values="#00D4FF;#FFFFFF;#FFFFFF;#00D4FF" keyTimes="0;0.1;0.5;1" dur="0.6s" begin="p1.end" fill="remove" />
           <animate attributeName="fill" values="#00D4FF;#FFFFFF;#FFFFFF;#00D4FF" keyTimes="0;0.1;0.5;1" dur="0.6s" begin="p2.end" fill="remove" />
           <animate attributeName="fill" values="#00D4FF;#FFFFFF;#FFFFFF;#00D4FF" keyTimes="0;0.1;0.5;1" dur="0.6s" begin="p3.end" fill="remove" />
