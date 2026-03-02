@@ -282,14 +282,20 @@ export function HeroBackground() {
 
         {/* Center hub */}
         <circle className="hero-filter-glow" cx="500" cy="300" r="5" fill="rgba(0, 212, 255, 0.5)" filter="url(#g2)">
-          <animate attributeName="fill" values="rgba(0,212,255,0.5);rgba(255,255,255,0.9);rgba(255,255,255,0.9);rgba(0,212,255,0.5)" keyTimes="0;0.15;0.5;1" dur="0.5s" begin="p1.end" fill="remove" />
-          <animate attributeName="fill" values="rgba(0,212,255,0.5);rgba(255,255,255,0.9);rgba(255,255,255,0.9);rgba(0,212,255,0.5)" keyTimes="0;0.15;0.5;1" dur="0.5s" begin="p2.end" fill="remove" />
-          <animate attributeName="fill" values="rgba(0,212,255,0.5);rgba(255,255,255,0.9);rgba(255,255,255,0.9);rgba(0,212,255,0.5)" keyTimes="0;0.15;0.5;1" dur="0.5s" begin="p3.end" fill="remove" />
+          <animate attributeName="fill" values="rgba(0,212,255,0.5);rgba(255,255,255,1);rgba(255,255,255,0.9);rgba(0,212,255,0.5)" keyTimes="0;0.1;0.5;1" dur="0.6s" begin="p1.end" fill="remove" />
+          <animate attributeName="fill" values="rgba(0,212,255,0.5);rgba(255,255,255,1);rgba(255,255,255,0.9);rgba(0,212,255,0.5)" keyTimes="0;0.1;0.5;1" dur="0.6s" begin="p2.end" fill="remove" />
+          <animate attributeName="fill" values="rgba(0,212,255,0.5);rgba(255,255,255,1);rgba(255,255,255,0.9);rgba(0,212,255,0.5)" keyTimes="0;0.1;0.5;1" dur="0.6s" begin="p3.end" fill="remove" />
+          <animate attributeName="r" values="5;7;5" keyTimes="0;0.3;1" dur="0.6s" begin="p1.end" fill="remove" />
+          <animate attributeName="r" values="5;7;5" keyTimes="0;0.3;1" dur="0.6s" begin="p2.end" fill="remove" />
+          <animate attributeName="r" values="5;7;5" keyTimes="0;0.3;1" dur="0.6s" begin="p3.end" fill="remove" />
         </circle>
         <circle cx="500" cy="300" r="2.5" fill="#00D4FF" opacity="1">
-          <animate attributeName="fill" values="#00D4FF;#FFFFFF;#FFFFFF;#00D4FF" keyTimes="0;0.15;0.5;1" dur="0.5s" begin="p1.end" fill="remove" />
-          <animate attributeName="fill" values="#00D4FF;#FFFFFF;#FFFFFF;#00D4FF" keyTimes="0;0.15;0.5;1" dur="0.5s" begin="p2.end" fill="remove" />
-          <animate attributeName="fill" values="#00D4FF;#FFFFFF;#FFFFFF;#00D4FF" keyTimes="0;0.15;0.5;1" dur="0.5s" begin="p3.end" fill="remove" />
+          <animate attributeName="fill" values="#00D4FF;#FFFFFF;#FFFFFF;#00D4FF" keyTimes="0;0.1;0.5;1" dur="0.6s" begin="p1.end" fill="remove" />
+          <animate attributeName="fill" values="#00D4FF;#FFFFFF;#FFFFFF;#00D4FF" keyTimes="0;0.1;0.5;1" dur="0.6s" begin="p2.end" fill="remove" />
+          <animate attributeName="fill" values="#00D4FF;#FFFFFF;#FFFFFF;#00D4FF" keyTimes="0;0.1;0.5;1" dur="0.6s" begin="p3.end" fill="remove" />
+          <animate attributeName="r" values="2.5;3.5;2.5" keyTimes="0;0.3;1" dur="0.6s" begin="p1.end" fill="remove" />
+          <animate attributeName="r" values="2.5;3.5;2.5" keyTimes="0;0.3;1" dur="0.6s" begin="p2.end" fill="remove" />
+          <animate attributeName="r" values="2.5;3.5;2.5" keyTimes="0;0.3;1" dur="0.6s" begin="p3.end" fill="remove" />
         </circle>
 
         {/* Junction nodes on routes */}
