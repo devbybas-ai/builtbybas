@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import {
   motion,
   useScroll,
@@ -209,8 +209,11 @@ function ScrollCounter({ replayKey }: { replayKey: number }) {
 function CounterBox({ label, target, active }: { label: string; target: number; active: boolean }) {
   const [count, setCount] = useState(0);
 
-  const startCounting = () => {
-    setCount(0);
+  useEffect(() => {
+    if (!active) {
+      setCount(0);
+      return;
+    }
     const duration = 1500;
     const steps = 40;
     const increment = target / steps;
@@ -225,19 +228,7 @@ function CounterBox({ label, target, active }: { label: string; target: number; 
       }
     }, duration / steps);
     return () => clearInterval(timer);
-  };
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const start = startCounting;
-
-  useState(() => {
-    if (active) start();
-  });
-
-  // Re-trigger when active changes
-  if (active && count === 0) {
-    start();
-  }
+  }, [active, target]);
 
   const formatted = target >= 1000 ? `${(count / 1000).toFixed(count >= target ? 0 : 1)}k` : String(count);
 
