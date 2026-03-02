@@ -3,22 +3,35 @@
 import { useEffect, useRef } from "react";
 
 // Chip locations + PCB trace paths from hub (500,300) — routed with right-angle segments, no crossings
+// side: which side of the board the chip is on (for opposite-side targeting)
+// p1 arrives from left → fire to "right" chips
+// p2 arrives from top  → fire to "bottom" chips
+// p3 arrives from right → fire to "left" chips
 const chipTargets = [
-  // SMD chips — routed to avoid overlaps
-  { x: 230, y: 90, w: 12, h: 6, peak: 0.35, trace: "M500,300 L460,300 L460,93 L236,93" },
-  { x: 140, y: 365, w: 12, h: 6, peak: 0.35, trace: "M500,300 L300,300 L300,368 L146,368" },
-  { x: 810, y: 310, w: 12, h: 6, peak: 0.35, trace: "M500,300 L700,300 L700,313 L816,313" },
-  { x: 620, y: 240, w: 12, h: 6, peak: 0.35, trace: "M500,300 L580,300 L580,243 L626,243" },
-  { x: 560, y: 65, w: 12, h: 6, peak: 0.35, trace: "M500,300 L520,300 L520,68 L566,68" },
-  { x: 460, y: 550, w: 12, h: 6, peak: 0.35, trace: "M500,300 L500,450 L466,450 L466,553" },
-  // IC chips
-  { x: 70, y: 250, w: 30, h: 45, peak: 0.15, trace: "M500,300 L350,300 L350,272 L85,272" },
-  { x: 530, y: 130, w: 40, h: 30, peak: 0.15, trace: "M500,300 L550,300 L550,145" },
-  { x: 860, y: 230, w: 30, h: 50, peak: 0.15, trace: "M500,300 L740,300 L740,255 L875,255" },
-  { x: 430, y: 440, w: 40, h: 30, peak: 0.15, trace: "M500,300 L450,300 L450,455" },
-  { x: 195, y: 500, w: 45, h: 35, peak: 0.15, trace: "M500,300 L400,300 L400,480 L217,480 L217,517" },
-  { x: 870, y: 360, w: 35, h: 40, peak: 0.15, trace: "M500,300 L760,300 L760,380 L887,380" },
+  // Left side
+  { x: 230, y: 90, w: 12, h: 6, peak: 0.35, side: "left" as const, trace: "M500,300 L460,300 L460,93 L236,93" },
+  { x: 140, y: 365, w: 12, h: 6, peak: 0.35, side: "left" as const, trace: "M500,300 L300,300 L300,368 L146,368" },
+  { x: 70, y: 250, w: 30, h: 45, peak: 0.15, side: "left" as const, trace: "M500,300 L350,300 L350,272 L85,272" },
+  { x: 195, y: 500, w: 45, h: 35, peak: 0.15, side: "left" as const, trace: "M500,300 L400,300 L400,480 L217,480 L217,517" },
+  // Right side
+  { x: 810, y: 310, w: 12, h: 6, peak: 0.35, side: "right" as const, trace: "M500,300 L700,300 L700,313 L816,313" },
+  { x: 620, y: 240, w: 12, h: 6, peak: 0.35, side: "right" as const, trace: "M500,300 L580,300 L580,243 L626,243" },
+  { x: 860, y: 230, w: 30, h: 50, peak: 0.15, side: "right" as const, trace: "M500,300 L740,300 L740,255 L875,255" },
+  { x: 870, y: 360, w: 35, h: 40, peak: 0.15, side: "right" as const, trace: "M500,300 L760,300 L760,380 L887,380" },
+  // Top side
+  { x: 560, y: 65, w: 12, h: 6, peak: 0.35, side: "top" as const, trace: "M500,300 L520,300 L520,68 L566,68" },
+  { x: 530, y: 130, w: 40, h: 30, peak: 0.15, side: "top" as const, trace: "M500,300 L550,300 L550,145" },
+  // Bottom side
+  { x: 460, y: 550, w: 12, h: 6, peak: 0.35, side: "bottom" as const, trace: "M500,300 L500,450 L466,450 L466,553" },
+  { x: 430, y: 440, w: 40, h: 30, peak: 0.15, side: "bottom" as const, trace: "M500,300 L450,300 L450,455" },
 ];
+
+// Particle → opposite side mapping
+const particleOpposite: Record<string, string> = {
+  p1: "right",  // p1 comes from left
+  p2: "bottom", // p2 comes from top
+  p3: "left",   // p3 comes from right
+};
 
 function useChipActivity(
   groupRef: React.RefObject<SVGGElement | null>,
@@ -48,17 +61,22 @@ function useChipActivity(
 
     // Track last chip index so we don't repeat the same one twice in a row
     let lastIdx = -1;
+    const timeouts: ReturnType<typeof setTimeout>[] = [];
 
-    const fireTrace = () => {
-      let i = Math.floor(Math.random() * rects.length);
-      if (i === lastIdx) i = (i + 1) % rects.length;
-      lastIdx = i;
+    const fireTrace = (targetSide: string) => {
+      // Pick a random chip on the opposite side
+      const candidates = chipTargets
+        .map((c, idx) => ({ ...c, idx }))
+        .filter((c) => c.side === targetSide && c.idx !== lastIdx);
+      if (!candidates.length) return;
 
-      const rect = rects[i];
-      const path = paths[i];
-      const chip = chipTargets[i];
-      const peak = chip.peak;
-      const len = lengths[i];
+      const pick = candidates[Math.floor(Math.random() * candidates.length)];
+      lastIdx = pick.idx;
+
+      const rect = rects[pick.idx];
+      const path = paths[pick.idx];
+      const peak = pick.peak;
+      const len = lengths[pick.idx];
 
       // Progress-bar fill: trace lights up from hub toward chip over 2s
       const fillAnim = path.animate(
@@ -97,11 +115,19 @@ function useChipActivity(
 
     // Listen for SMIL particle arrivals at the center hub
     const particles = svg.querySelectorAll<SVGAnimateMotionElement>("animateMotion[id^='p']");
-    const handler = () => fireTrace();
+    const handler = (e: Event) => {
+      const id = (e.target as SVGAnimateMotionElement).id;
+      const targetSide = particleOpposite[id];
+      if (!targetSide) return;
+      // 1.11s delay — hub "processes" the data before sending it out
+      const t = setTimeout(() => fireTrace(targetSide), 1110);
+      timeouts.push(t);
+    };
     particles.forEach((p) => p.addEventListener("endEvent", handler));
 
     return () => {
       particles.forEach((p) => p.removeEventListener("endEvent", handler));
+      timeouts.forEach(clearTimeout);
     };
   }, [groupRef, hubOuterRef, hubInnerRef]);
 }
