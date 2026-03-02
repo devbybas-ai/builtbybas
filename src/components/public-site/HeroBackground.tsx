@@ -520,26 +520,26 @@ export function HeroBackground() {
         {/* ============================================ */}
         <g className="hero-anim" fill="none" filter="url(#g1)">
           <use href="#r1" stroke="#00D4FF" strokeWidth="1.5" opacity="0.5" strokeDasharray="30 2000" strokeDashoffset="30" strokeLinecap="round">
-            <animate attributeName="stroke-dashoffset" from="30" to="-620" dur="1.8s" begin="0s; p3.end+1.1s" fill="remove" />
+            <animate attributeName="stroke-dashoffset" from="30" to="-620" dur="1.8s" begin="0s; p3.end+2.22s" fill="remove" />
           </use>
           <use href="#r6" stroke="#00D4FF" strokeWidth="1.5" opacity="0.5" strokeDasharray="30 2000" strokeDashoffset="30" strokeLinecap="round">
-            <animate attributeName="stroke-dashoffset" from="30" to="-370" dur="1.2s" begin="p1.end+1.1s" fill="remove" />
+            <animate attributeName="stroke-dashoffset" from="30" to="-370" dur="1.2s" begin="p1.end+2.22s" fill="remove" />
           </use>
           <use href="#r9" stroke="#00D4FF" strokeWidth="1.5" opacity="0.5" strokeDasharray="30 2000" strokeDashoffset="30" strokeLinecap="round">
-            <animate attributeName="stroke-dashoffset" from="30" to="-620" dur="1.8s" begin="p2.end+1.1s" fill="remove" />
+            <animate attributeName="stroke-dashoffset" from="30" to="-620" dur="1.8s" begin="p2.end+2.22s" fill="remove" />
           </use>
         </g>
 
-        {/* Particles — fast, 1.1s pause between launches */}
+        {/* Particles — fast, 2.22s pause between launches */}
         <g className="hero-anim">
           <circle r="0.8" fill="#66EEFF" filter="url(#g1)" opacity="1">
-            <animateMotion id="p1" dur="1.8s" begin="0s; p3.end+1.1s" fill="remove"><mpath href="#r1" /></animateMotion>
+            <animateMotion id="p1" dur="1.8s" begin="0s; p3.end+2.22s" fill="remove"><mpath href="#r1" /></animateMotion>
           </circle>
           <circle r="0.8" fill="#66EEFF" filter="url(#g1)" opacity="1">
-            <animateMotion id="p2" dur="1.2s" begin="p1.end+1.1s" fill="remove"><mpath href="#r6" /></animateMotion>
+            <animateMotion id="p2" dur="1.2s" begin="p1.end+2.22s" fill="remove"><mpath href="#r6" /></animateMotion>
           </circle>
           <circle r="0.8" fill="#66EEFF" filter="url(#g1)" opacity="1">
-            <animateMotion id="p3" dur="1.8s" begin="p2.end+1.1s" fill="remove"><mpath href="#r9" /></animateMotion>
+            <animateMotion id="p3" dur="1.8s" begin="p2.end+2.22s" fill="remove"><mpath href="#r9" /></animateMotion>
           </circle>
         </g>
       </svg>
