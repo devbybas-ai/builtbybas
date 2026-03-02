@@ -18,6 +18,13 @@ export function HeroBackground() {
         xmlns="http://www.w3.org/2000/svg"
         preserveAspectRatio="none"
       >
+        {/* Kill heavy SMIL animations + SVG filters on mobile and reduced-motion */}
+        <style>{`
+          @media (max-width: 768px), (prefers-reduced-motion: reduce) {
+            .hero-anim { display: none !important; }
+            .hero-filter-glow { filter: none !important; }
+          }
+        `}</style>
         <defs>
           <filter id="g1" x="-100%" y="-100%" width="300%" height="300%">
             <feGaussianBlur in="SourceGraphic" stdDeviation="1.5" result="b" />
@@ -167,7 +174,7 @@ export function HeroBackground() {
           <use href="#r9" /><use href="#r10" /><use href="#r11" /><use href="#r12" />
           <use href="#r13" /><use href="#r14" /><use href="#r15" /><use href="#r16" />
         </g>
-        <g stroke="rgba(0, 212, 255, 0.22)" strokeWidth="1" fill="none" filter="url(#g1)" strokeLinecap="square">
+        <g className="hero-filter-glow" stroke="rgba(0, 212, 255, 0.22)" strokeWidth="1" fill="none" filter="url(#g1)" strokeLinecap="square">
           <use href="#r1" /><use href="#r5" /><use href="#r6" /><use href="#r9" /><use href="#r12" />
         </g>
 
@@ -274,7 +281,7 @@ export function HeroBackground() {
         </g>
 
         {/* Center hub */}
-        <circle cx="500" cy="300" r="5" fill="rgba(0, 212, 255, 0.5)" filter="url(#g2)" />
+        <circle className="hero-filter-glow" cx="500" cy="300" r="5" fill="rgba(0, 212, 255, 0.5)" filter="url(#g2)" />
         <circle cx="500" cy="300" r="2.5" fill="#00D4FF" opacity="0.9" />
 
         {/* Junction nodes on routes */}
@@ -307,7 +314,7 @@ export function HeroBackground() {
         {/* DEEP LAYER PARTICLES — dim, small, slow        */}
         {/* Creates 3D depth: these feel "behind" the PCB  */}
         {/* ============================================ */}
-        <g>
+        <g className="hero-anim">
           <circle r="0.4" fill="#00D4FF" opacity="0.15">
             <animateMotion dur="6s" repeatCount="indefinite"><mpath href="#b1" /></animateMotion>
           </circle>
@@ -346,7 +353,7 @@ export function HeroBackground() {
         {/* Chain: p1 →1.1s→ p2 →1.1s→ p3 →1.1s→ p1      */}
         {/* Path lengths: r1=650, r6=400, r9=650          */}
         {/* ============================================ */}
-        <g fill="none" filter="url(#g1)">
+        <g className="hero-anim" fill="none" filter="url(#g1)">
           <use href="#r1" stroke="#00D4FF" strokeWidth="1.5" opacity="0.5" strokeDasharray="30 2000" strokeDashoffset="30" strokeLinecap="round">
             <animate attributeName="stroke-dashoffset" from="30" to="-620" dur="1.8s" begin="0s; p3.end+1.1s" fill="remove" />
           </use>
@@ -359,30 +366,31 @@ export function HeroBackground() {
         </g>
 
         {/* Particles — fast, 1.1s pause between launches */}
-        <circle r="0.8" fill="#66EEFF" filter="url(#g1)" opacity="1">
-          <animateMotion id="p1" dur="1.8s" begin="0s; p3.end+1.1s" fill="remove"><mpath href="#r1" /></animateMotion>
-        </circle>
-        <circle r="0.8" fill="#66EEFF" filter="url(#g1)" opacity="1">
-          <animateMotion id="p2" dur="1.2s" begin="p1.end+1.1s" fill="remove"><mpath href="#r6" /></animateMotion>
-        </circle>
-        <circle r="0.8" fill="#66EEFF" filter="url(#g1)" opacity="1">
-          <animateMotion id="p3" dur="1.8s" begin="p2.end+1.1s" fill="remove"><mpath href="#r9" /></animateMotion>
-        </circle>
+        <g className="hero-anim">
+          <circle r="0.8" fill="#66EEFF" filter="url(#g1)" opacity="1">
+            <animateMotion id="p1" dur="1.8s" begin="0s; p3.end+1.1s" fill="remove"><mpath href="#r1" /></animateMotion>
+          </circle>
+          <circle r="0.8" fill="#66EEFF" filter="url(#g1)" opacity="1">
+            <animateMotion id="p2" dur="1.2s" begin="p1.end+1.1s" fill="remove"><mpath href="#r6" /></animateMotion>
+          </circle>
+          <circle r="0.8" fill="#66EEFF" filter="url(#g1)" opacity="1">
+            <animateMotion id="p3" dur="1.8s" begin="p2.end+1.1s" fill="remove"><mpath href="#r9" /></animateMotion>
+          </circle>
+        </g>
       </svg>
 
-      {/* Central processor glow */}
+      {/* Central processor glow — static on mobile, animated on desktop */}
       <div
-        className="absolute left-1/2 top-1/2 h-[350px] w-[350px] -translate-x-1/2 -translate-y-1/2 rounded-full md:h-[500px] md:w-[500px]"
+        className="absolute left-1/2 top-1/2 h-[350px] w-[350px] -translate-x-1/2 -translate-y-1/2 rounded-full md:h-[500px] md:w-[500px] motion-safe:md:animate-[orb-pulse_6s_ease-in-out_infinite]"
         style={{
           background:
             "radial-gradient(circle at center, rgba(0, 212, 255, 0.08) 0%, rgba(0, 212, 255, 0.03) 40%, transparent 65%)",
-          animation: "orb-pulse 6s ease-in-out infinite",
         }}
       />
 
-      {/* Grain */}
+      {/* Grain — hidden on mobile to reduce GPU load */}
       <div
-        className="absolute inset-0 opacity-[0.02]"
+        className="absolute inset-0 hidden opacity-[0.02] md:block"
         style={{
           backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E")`,
           backgroundRepeat: "repeat",
