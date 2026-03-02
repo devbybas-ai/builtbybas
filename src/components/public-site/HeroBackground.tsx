@@ -1,4 +1,65 @@
+"use client";
+
+import { useEffect, useRef } from "react";
+
+// Chip locations — SMD (small) and IC (large)
+const chipTargets = [
+  // SMD chips
+  { x: 230, y: 90, w: 12, h: 6, peak: 0.35 },
+  { x: 140, y: 365, w: 12, h: 6, peak: 0.35 },
+  { x: 810, y: 310, w: 12, h: 6, peak: 0.35 },
+  { x: 620, y: 240, w: 12, h: 6, peak: 0.35 },
+  { x: 560, y: 65, w: 12, h: 6, peak: 0.35 },
+  { x: 460, y: 550, w: 12, h: 6, peak: 0.35 },
+  // IC chips
+  { x: 70, y: 250, w: 30, h: 45, peak: 0.15 },
+  { x: 530, y: 130, w: 40, h: 30, peak: 0.15 },
+  { x: 860, y: 230, w: 30, h: 50, peak: 0.15 },
+  { x: 430, y: 440, w: 40, h: 30, peak: 0.15 },
+  { x: 195, y: 500, w: 45, h: 35, peak: 0.15 },
+  { x: 870, y: 360, w: 35, h: 40, peak: 0.15 },
+];
+
+function useChipActivity(groupRef: React.RefObject<SVGGElement | null>) {
+  useEffect(() => {
+    const g = groupRef.current;
+    if (!g) return;
+    const rects = g.querySelectorAll("rect");
+    if (!rects.length) return;
+
+    let timeout: ReturnType<typeof setTimeout>;
+    const pulse = () => {
+      const i = Math.floor(Math.random() * rects.length);
+      const rect = rects[i];
+      const peak = chipTargets[i]?.peak ?? 0.2;
+      const isIC = (chipTargets[i]?.w ?? 12) > 12;
+      const dur = isIC ? 1200 : 800;
+
+      // Animate fill up then back down
+      rect.animate(
+        [
+          { fill: `rgba(0, 212, 255, 0)` },
+          { fill: `rgba(0, 212, 255, ${peak})` },
+          { fill: `rgba(0, 212, 255, 0)` },
+        ],
+        { duration: dur, easing: "ease-in-out" }
+      );
+
+      // Next pulse: random 3-8s
+      const next = 3000 + Math.random() * 5000;
+      timeout = setTimeout(pulse, next);
+    };
+
+    // Start after a random 1-3s delay
+    timeout = setTimeout(pulse, 1000 + Math.random() * 2000);
+    return () => clearTimeout(timeout);
+  }, [groupRef]);
+}
+
 export function HeroBackground() {
+  const chipGroupRef = useRef<SVGGElement>(null);
+  useChipActivity(chipGroupRef);
+
   return (
     <div
       className="pointer-events-none absolute inset-0 overflow-hidden"
@@ -260,31 +321,11 @@ export function HeroBackground() {
           <rect x="860" y="500" width="12" height="6" rx="1" /><rect x="460" y="550" width="12" height="6" rx="1" />
         </g>
 
-        {/* Subtle activity — each element on its own unique cycle so nothing syncs */}
-        <g className="hero-anim">
-          {/* SMD chips — quick 1s flash, different repeat intervals */}
-          <rect x="230" y="90" width="12" height="6" rx="1" fill="rgba(0, 212, 255, 0.03)" stroke="rgba(0, 212, 255, 0.10)" strokeWidth="0.6">
-            <animate attributeName="fill" values="rgba(0,212,255,0.03);rgba(0,212,255,0.35);rgba(0,212,255,0.03)" keyTimes="0;0.3;1" dur="1s" begin="0.5s; 7.5s; 18s" repeatCount="1" />
-          </rect>
-          <rect x="140" y="365" width="12" height="6" rx="1" fill="rgba(0, 212, 255, 0.03)" stroke="rgba(0, 212, 255, 0.10)" strokeWidth="0.6">
-            <animate attributeName="fill" values="rgba(0,212,255,0.03);rgba(0,212,255,0.35);rgba(0,212,255,0.03)" keyTimes="0;0.3;1" dur="1s" begin="3.2s; 14s; 22s" repeatCount="1" />
-          </rect>
-          <rect x="810" y="310" width="12" height="6" rx="1" fill="rgba(0, 212, 255, 0.03)" stroke="rgba(0, 212, 255, 0.10)" strokeWidth="0.6">
-            <animate attributeName="fill" values="rgba(0,212,255,0.03);rgba(0,212,255,0.35);rgba(0,212,255,0.03)" keyTimes="0;0.3;1" dur="1s" begin="5.8s; 11s; 20s" repeatCount="1" />
-          </rect>
-          {/* IC chips — slightly longer glow */}
-          <rect x="70" y="250" width="30" height="45" rx="1" fill="rgba(0, 212, 255, 0)" stroke="none">
-            <animate attributeName="fill" values="rgba(0,212,255,0);rgba(0,212,255,0.15);rgba(0,212,255,0)" keyTimes="0;0.3;1" dur="1.5s" begin="2s; 13s; 25s" repeatCount="1" />
-          </rect>
-          <rect x="530" y="130" width="40" height="30" rx="1" fill="rgba(0, 212, 255, 0)" stroke="none">
-            <animate attributeName="fill" values="rgba(0,212,255,0);rgba(0,212,255,0.15);rgba(0,212,255,0)" keyTimes="0;0.3;1" dur="1.5s" begin="6.5s; 16s; 28s" repeatCount="1" />
-          </rect>
-          <rect x="860" y="230" width="30" height="50" rx="1" fill="rgba(0, 212, 255, 0)" stroke="none">
-            <animate attributeName="fill" values="rgba(0,212,255,0);rgba(0,212,255,0.15);rgba(0,212,255,0)" keyTimes="0;0.3;1" dur="1.5s" begin="9.5s; 19s; 30s" repeatCount="1" />
-          </rect>
-          <rect x="430" y="440" width="40" height="30" rx="1" fill="rgba(0, 212, 255, 0)" stroke="none">
-            <animate attributeName="fill" values="rgba(0,212,255,0);rgba(0,212,255,0.15);rgba(0,212,255,0)" keyTimes="0;0.3;1" dur="1.5s" begin="4s; 10s; 23s" repeatCount="1" />
-          </rect>
+        {/* Chip activity overlays — JS-driven random pulses */}
+        <g className="hero-anim" ref={chipGroupRef}>
+          {chipTargets.map((c, i) => (
+            <rect key={i} x={c.x} y={c.y} width={c.w} height={c.h} rx={1} fill="rgba(0, 212, 255, 0)" stroke="none" />
+          ))}
         </g>
 
         {/* Via holes */}
