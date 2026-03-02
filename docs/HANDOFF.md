@@ -1,7 +1,7 @@
 # BuiltByBas — Handoff Document
 
-> **Last Updated:** 2026-03-01 (Session 19)
-> **Status:** LIVE AT builtbybas.com — Portfolio detail pages upgraded with Project Health stats (animated SVG rings, checklist accordion), business narratives (challenge, approach, scope, tech choices), 19 new gallery images (Colour Parlor + Praxis Library). ScrollAnimations infinite render fix. 163 tests, 50-route build. Deployed to production.
+> **Last Updated:** 2026-03-01 (Session 20)
+> **Status:** LIVE AT builtbybas.com — Hero animation overhaul: center hub energize pulse on particle arrival, organic PCB chip activity with permanent right-angle traces, progress-bar data flow from hub to opposite-side chips. Hero subtitle updated. 163 tests, 50-route build.
 > **Next Session:** Client portal, invoice PDF generation, SSH key fix for local dev machine
 
 ---
@@ -427,6 +427,22 @@ Dark, premium, cutting-edge. The site itself IS the portfolio piece. Every inter
 - `pnpm test` — 163/163 tests
 - `pnpm build` — 50 routes, 0 type errors
 - Production deployed and verified
+
+**Session 20 (Hero Animation Overhaul — Data Flow, Chip Activity, Center Pulse):**
+
+- **Hero subtitle update:** Changed to "Agency-quality software, websites, dashboards, and tools." — added "software" to the tagline.
+- **Center hub energize pulse:** When SMIL particles (p1/p2/p3) arrive at center hub (500,300), both hub circles flash white and scale up briefly (outer r=5→7, inner r=2.5→3.5). Pure SMIL `animate` on fill + r attributes, triggered by `p1.end`/`p2.end`/`p3.end`.
+- **Permanent PCB data traces:** 12 right-angle routed traces from center hub to chips (6 SMD + 6 IC) — always visible on the board at dim opacity (0.06). Routed with horizontal/vertical segments only, no cross-tracing. Traces are part of the board layout, not dynamically created.
+- **Progress-bar trace fill:** When a particle arrives, a random trace on the **opposite side** fills like a progress bar from center outward (2s ease-in-out). p1 (from left) → right-side chips, p2 (from top) → bottom chips, p3 (from right) → left-side chips.
+- **Chip activation:** Once trace reaches the chip, chip lights up instantly, holds for 3.33s, then slowly powers down. Only one trace active at a time — `busy` guard prevents overlapping animations.
+- **Timing:** Particle arrives → hub pulses → trace fires immediately → 2s fill → 3.33s chip glow → trace fades → 2.22s pause → next particle launches. Total gap between particles: 7.55s.
+- **Client component conversion:** `HeroBackground.tsx` converted to `"use client"` with `useEffect`/`useRef` for JS-driven Web Animations API chip pulses. SMIL `endEvent` listener on particles triggers the outward trace flow.
+- **Organic chip activity removed:** Earlier random-interval chip blinking replaced with deterministic particle-driven flow. Chips only light up through the single data-in → process → data-out animation.
+- Commits: `fdbff4b` through `402255d` (12 incremental commits). All pushed to GitHub.
+
+**Verification — all passing:**
+- `pnpm build` — 50 routes, 0 type errors
+- Production ready for deploy
 
 ### What's Next
 
