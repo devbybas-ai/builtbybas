@@ -213,14 +213,29 @@ export function IntakeAnalysisDashboard({ analysis }: IntakeAnalysisDashboardPro
 
         {showRaw && (
           <dl className="mt-4 space-y-3">
-            {Object.entries(formData).map(([key, value]) => (
-              <div key={key}>
-                <dt className="text-xs font-medium text-muted-foreground">{key}</dt>
-                <dd className="text-sm text-foreground">
-                  {Array.isArray(value) ? value.join(", ") || "—" : (value as string) || "—"}
-                </dd>
-              </div>
-            ))}
+            {Object.entries(formData).map(([key, value]) => {
+              let display: string;
+              if (value == null || value === "") {
+                display = "—";
+              } else if (Array.isArray(value)) {
+                display = value.join(", ") || "—";
+              } else if (typeof value === "object") {
+                display = JSON.stringify(value, null, 2);
+              } else {
+                display = String(value);
+              }
+              return (
+                <div key={key}>
+                  <dt className="text-xs font-medium text-muted-foreground">{key}</dt>
+                  <dd className={cn(
+                    "text-sm text-foreground",
+                    typeof value === "object" && !Array.isArray(value) && value != null && "whitespace-pre-wrap font-mono text-xs"
+                  )}>
+                    {display}
+                  </dd>
+                </div>
+              );
+            })}
           </dl>
         )}
       </GlassCard>
