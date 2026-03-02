@@ -100,14 +100,15 @@ function useChipActivity(
 
       anim.onfinish = () => {
         line.remove();
-        // Light up the chip on arrival
+        // Light up chip instantly, hold 3.33s, then slowly power down
         rect.animate(
           [
-            { fill: `rgba(0, 212, 255, 0)` },
-            { fill: `rgba(0, 212, 255, ${peak})` },
-            { fill: `rgba(0, 212, 255, 0)` },
+            { fill: `rgba(0, 212, 255, 0)`, offset: 0 },
+            { fill: `rgba(0, 212, 255, ${peak})`, offset: 0.05 },
+            { fill: `rgba(0, 212, 255, ${peak})`, offset: 0.6 },
+            { fill: `rgba(0, 212, 255, 0)`, offset: 1 },
           ],
-          { duration: isIC ? 1200 : 800, easing: "ease-in-out" }
+          { duration: 3330, easing: "linear" }
         );
       };
 
