@@ -12,6 +12,7 @@ import { GlassCard } from "@/components/shared/GlassCard";
 import { getCategoryMeta } from "@/data/portfolio";
 import { cn } from "@/lib/utils";
 import type { PortfolioProject } from "@/types/portfolio";
+import { ProjectHealthStats } from "@/components/portfolio/ProjectHealthStats";
 
 interface ProjectDetailProps {
   project: PortfolioProject;
@@ -221,6 +222,52 @@ export function ProjectDetail({
         </GlassCard>
       </FadeIn>
 
+      {/* The Challenge */}
+      {project.challenge && (
+        <FadeIn>
+          <GlassCard as="section">
+            <h2 className="text-lg font-semibold">The Challenge</h2>
+            <p className="mt-3 leading-relaxed text-muted-foreground">
+              {project.challenge}
+            </p>
+          </GlassCard>
+        </FadeIn>
+      )}
+
+      {/* Our Approach */}
+      {project.approach && (
+        <FadeIn>
+          <GlassCard as="section">
+            <h2 className="text-lg font-semibold">Our Approach</h2>
+            <p className="mt-3 leading-relaxed text-muted-foreground">
+              {project.approach}
+            </p>
+          </GlassCard>
+        </FadeIn>
+      )}
+
+      {/* Project Scope */}
+      {project.scope && project.scope.length > 0 && (
+        <FadeIn>
+          <GlassCard as="section">
+            <h2 className="text-lg font-semibold">Project Scope</h2>
+            <ul className="mt-4 space-y-3">
+              {project.scope.map((item) => (
+                <li key={item} className="flex items-start gap-3">
+                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
+                  <span className="text-sm leading-relaxed text-muted-foreground">{item}</span>
+                </li>
+              ))}
+            </ul>
+          </GlassCard>
+        </FadeIn>
+      )}
+
+      {/* Project Health */}
+      {project.health && (
+        <ProjectHealthStats health={project.health} checklist={project.healthChecklist} />
+      )}
+
       {/* Capabilities */}
       <FadeIn>
         <GlassCard as="section">
@@ -238,22 +285,40 @@ export function ProjectDetail({
         </GlassCard>
       </FadeIn>
 
-      {/* Technologies */}
-      <FadeIn>
-        <GlassCard as="section">
-          <h2 className="text-lg font-semibold">Technology Stack</h2>
-          <div className="mt-4 flex flex-wrap gap-2">
-            {project.technologies.map((tech) => (
-              <span
-                key={tech}
-                className="rounded-full bg-white/5 px-3 py-1 text-sm text-muted-foreground"
-              >
-                {tech}
-              </span>
-            ))}
-          </div>
-        </GlassCard>
-      </FadeIn>
+      {/* Technology Choices */}
+      {project.techChoices && project.techChoices.length > 0 ? (
+        <FadeIn>
+          <GlassCard as="section">
+            <h2 className="text-lg font-semibold">Why We Chose This Stack</h2>
+            <div className="mt-4 space-y-4">
+              {project.techChoices.map((choice) => (
+                <div key={choice.tech} className="rounded-lg border border-white/5 bg-white/[0.02] p-4">
+                  <p className="text-sm font-semibold text-primary">{choice.tech}</p>
+                  <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+                    {choice.reason}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </GlassCard>
+        </FadeIn>
+      ) : (
+        <FadeIn>
+          <GlassCard as="section">
+            <h2 className="text-lg font-semibold">Technology Stack</h2>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {project.technologies.map((tech) => (
+                <span
+                  key={tech}
+                  className="rounded-full bg-white/5 px-3 py-1 text-sm text-muted-foreground"
+                >
+                  {tech}
+                </span>
+              ))}
+            </div>
+          </GlassCard>
+        </FadeIn>
+      )}
 
       {/* Navigation */}
       <nav

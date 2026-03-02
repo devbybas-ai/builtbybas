@@ -1,8 +1,8 @@
 # BuiltByBas — Handoff Document
 
-> **Last Updated:** 2026-03-01 (Session 17)
-> **Status:** LIVE AT builtbybas.com — Phase 5 built (algorithmic proposal generation). Mobile perf fixed. Revision workflows on proposals + invoices. 163 tests, 50-route build. VPS deployed with Phase 4; Phase 5 ready to commit + deploy.
-> **Next Session:** Commit + deploy Phase 5 to production, client portal, invoice PDF generation, SSH key fix for local dev machine
+> **Last Updated:** 2026-03-01 (Session 18)
+> **Status:** LIVE AT builtbybas.com — Phase 5 deployed. Portfolio image galleries (auto-cycle, thumbnails, click-to-swap). 6 animation demo pages (41 specimens). About page updated (Human Oversight). 163 tests, 50-route build. Deployed to production.
+> **Next Session:** Client portal, invoice PDF generation, SSH key fix for local dev machine, gallery screenshots for remaining projects
 
 ---
 
@@ -392,23 +392,40 @@ Dark, premium, cutting-edge. The site itself IS the portfolio piece. Every inter
 - `pnpm build` — 50 routes (7 new: proposals list/new/detail, api/proposals, api/proposals/[id], api/proposals/generate, api/proposals/[id]/send)
 - Zero type errors
 
-### What's Next
+**Session 18 (Portfolio Galleries + Animation Demos + About Update):**
 
-**Phase 5 Commit + Deploy — NEXT:**
-1. Commit Phase 5 UI + revision workflows to git
-2. Push to GitHub, deploy to VPS
-3. Run migration on production DB (proposals table)
-4. Test full flow: intake → generate proposal → review → edit → send
+- **Raw Submission Data cleanup:** Rewrote raw data display in `IntakeAnalysisDashboard.tsx`. Created `formatKey()` helper (camelCase/kebab → readable labels) and `RawField` recursive component (arrays → tag chips, nested objects → indented sections, booleans → Yes/No, null → "—"). Replaced raw JSON dump with structured, scannable display.
+- **Portfolio image galleries:** Added `gallery?: string[]` to `PortfolioProject` type. Created `ProjectCardGallery.tsx` — large main image with crossfade transitions (`AnimatePresence`), thumbnail strip below, auto-cycle every 5s via `setInterval`, pause on hover (`onMouseEnter`/`onMouseLeave`), progress bar indicators, click-to-swap thumbnails with `e.preventDefault()` to prevent card link navigation. Updated `ProjectCard.tsx` (combines `[image, ...gallery]`, uses gallery when >1 image). Updated `ProjectDetail.tsx` hero with same gallery cycling behavior.
+- **Image pipeline:** Converted PNG screenshots to WebP via `npx sharp-cli` (quality 80). 4.7MB → 244KB. Organized into subfolders: `public/portfolio/builtbybas/` (5 images), `colourparlor/` (1), `orcachild/` (10), `praxislibrary/` (1). Gallery arrays wired for Orca Child (9 gallery images) and BuiltByBas (4 gallery images).
+- **4 new animation demo pages (26 specimens):**
+  - `MicroInteractions.tsx` — 8 specimens: toggle switch, success checkmark, like button, notification bell, progress ring, expandable card, ripple button, magnetic hover
+  - `LayoutAnimations.tsx` — 6 specimens: shared layout tabs, drag reorder list, grid↔list toggle, accordion, animated counter, 3D flip card
+  - `SVGAnimations.tsx` — 7 specimens: logo draw (BB), icon morph (star/heart/hexagon/circle), draw checkmark, wavy line, circular loaders, handwriting, animated bars
+  - `ScrollAnimations.tsx` — 5 specimens: parallax layers, scroll progress, reveal on scroll, number counter, sticky navigation
+  - All registered in `DemoRenderer.tsx` via `next/dynamic` imports. All 4 added to `portfolio.ts` data. Total: 41 specimens across 6 demo pages.
+- **About page update:** Changed heading from "#OneTeam" to "Human Oversight" in `AboutOneTeam.tsx`. Added "Human code review" and "Human oversight" as top two items in Bas's role list.
+- **Deployed to production:** Commit `92269cc`, pushed to GitHub, deployed to VPS.
+- 7 new files, 8+ modified files.
+
+**Verification — all passing:**
+- `pnpm test` — 163/163 tests
+- `pnpm build` — 50 routes (14 portfolio SSG paths including 4 new demos)
+- Zero type errors
+
+### What's Next
 
 **Phase 6 — Client Portal:**
 1. Client-facing portal (project status, invoices, communication)
 2. Invoice PDF generation
 3. Email notifications for invoice/proposal status changes
 
+**Portfolio Enhancements:**
+4. Gallery screenshots for remaining projects (All Beauty, Praxis Library, Colour Parlor — currently single image)
+5. Screenshots for KAR CRM once it's back up
+
 **Improvements:**
-4. Animation portfolio polish
-5. Fix SSH key access from local dev machine to VPS (currently using HTTPS workaround)
-6. Run `pm2 startup && pm2 save` on VPS for auto-restart on reboot
+6. Fix SSH key access from local dev machine to VPS (currently using HTTPS workaround)
+7. Run `pm2 startup && pm2 save` on VPS for auto-restart on reboot
 
 ### Notes
 

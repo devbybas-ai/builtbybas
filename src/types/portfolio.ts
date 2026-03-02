@@ -16,6 +16,22 @@ export interface PortfolioProject {
   isDemo?: boolean;
   image?: string;
   gallery?: string[];
+  health?: {
+    security: number;
+    accessibility: number;
+    performance: number;
+    stability: number;
+  };
+  healthChecklist?: {
+    security: boolean[];
+    accessibility: boolean[];
+    performance: boolean[];
+    stability: boolean[];
+  };
+  scope?: string[];
+  challenge?: string;
+  approach?: string;
+  techChoices?: { tech: string; reason: string }[];
 }
 
 export interface PortfolioCategoryMeta {

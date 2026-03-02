@@ -37,23 +37,68 @@ export const projects: PortfolioProject[] = [
     id: "the-colour-parlor",
     slug: "the-colour-parlor",
     title: "The Colour Parlor",
-    subtitle: "Premium hair salon with booking and gallery showcase",
+    subtitle: "Dual-salon platform with real-time stylist management",
     category: "websites",
     description:
-      "We designed and built a polished marketing website for a hair salon in Wildomar, California. The site features an elegant teal color palette, service catalog with pricing, a stylist portfolio gallery showcasing real transformations, and integrated appointment booking. Every page is optimized for local search and mobile-first browsing.",
+      "We designed and built a dual-location salon platform for The Colour Parlor, serving both Wildomar and Menifee, California. The owner runs two salon locations and needed one unified site — not two separate hosting plans. We built a split-site landing page that serves both locations under one roof, with a custom admin backend that lets the owner add or remove stylists, update services and pricing, and swap stylists between salons in real time. No more calling a freelancer every time something changes.",
     capabilities: [
-      "Responsive Design",
+      "Dual-Location Split Site",
+      "Real-Time Stylist Management",
+      "Admin Backend",
       "Local SEO",
       "Booking Integration",
       "Gallery System",
       "Mobile-First",
     ],
-    technologies: ["Custom Design", "SEO", "Responsive CSS", "Gallery Components"],
+    technologies: ["Custom Design", "Admin Panel", "SEO", "Responsive CSS", "Gallery Components"],
     status: "live",
     featured: true,
     url: "https://thecolourparlor.com",
     colorAccent: "teal",
     image: "/portfolio/colourparlor/the-colour-parlor.webp",
+    gallery: [
+      "/portfolio/colourparlor/colourparlorwildomar.webp",
+      "/portfolio/colourparlor/colourparlorwildomarabout.webp",
+      "/portfolio/colourparlor/colourparlorservices.webp",
+      "/portfolio/colourparlor/colourparlorstylists.webp",
+      "/portfolio/colourparlor/colourparlorsocial.webp",
+      "/portfolio/colourparlor/colourparloradmin.webp",
+      "/portfolio/colourparlor/colourparloradminservices.webp",
+      "/portfolio/colourparlor/colourparlorfooter.webp",
+    ],
+    health: {
+      security: 80,
+      accessibility: 90,
+      performance: 90,
+      stability: 70,
+    },
+    healthChecklist: {
+      security: [true, true, true, true, true, true, true, false, false, true],
+      accessibility: [false, true, true, true, true, true, true, true, true, true],
+      performance: [true, true, true, true, true, true, true, true, true, false],
+      stability: [false, true, true, true, true, false, false, true, true, true],
+    },
+    scope: [
+      "Dual-location split-site landing page serving Wildomar and Menifee salons under one domain",
+      "Custom admin backend for managing stylists, services, and pricing",
+      "Real-time stylist swapping between salon locations",
+      "Ability to feature stylists on both salon pages simultaneously",
+      "Stylist portfolio gallery with real transformation photos",
+      "Integrated appointment booking system",
+      "Local SEO optimization for both Wildomar and Menifee, California",
+      "Mobile-first responsive design for on-the-go booking",
+    ],
+    challenge:
+      "The Colour Parlor had a branded but outdated website and was at the mercy of freelancers who charged every time the owner needed to update pricing, change the service menu, or adjust the stylist lineup. With two salon locations in Wildomar and Menifee, California, the owner was facing two separate hosting plans and two sites to maintain. Stylists move between locations, and the old setup had no way to reflect that — a stylist could be working at one salon but only listed on the other's page.",
+    approach:
+      "Through collaborative conversations, we designed a split-site landing page that serves both the Wildomar and Menifee locations under one domain and one hosting plan — eliminating the double cost. The custom admin backend puts the owner in full control: add or remove stylists, update services and pricing, and swap stylists between the two California salons in real time. A stylist can appear on both salon pages simultaneously or be moved exclusively to one location with a single toggle. No more paying a freelancer $100 to change a phone number. The owner manages everything herself.",
+    techChoices: [
+      { tech: "Custom Design", reason: "A salon's brand is visual — the premium teal aesthetic and split-site layout for two locations couldn't be achieved with any template" },
+      { tech: "Admin Panel", reason: "The core problem was dependency on freelancers. A custom backend gives the owner full control over stylists, services, and pricing without touching code" },
+      { tech: "SEO", reason: "Local search drives salon traffic. We optimized for both salon locations so Wildomar and Menifee each rank in their own service area" },
+      { tech: "Responsive CSS", reason: "Most clients browse on their phone while deciding where to go. Mobile-first ensures the booking flow works on any device" },
+      { tech: "Gallery Components", reason: "Before/after transformation galleries are the #1 conversion tool for salons. Custom gallery components showcase work better than any template widget" },
+    ],
   },
   {
     id: "orca-child-in-the-wild",
@@ -95,6 +140,38 @@ export const projects: PortfolioProject[] = [
       "/portfolio/orcachild/orcachildtideinfo.webp",
       "/portfolio/orcachild/orcachildNOOAAPI.webp",
     ],
+    health: {
+      security: 90,
+      accessibility: 100,
+      performance: 90,
+      stability: 80,
+    },
+    healthChecklist: {
+      security: [true, true, true, true, true, true, true, false, true, true],
+      accessibility: [true, true, true, true, true, true, true, true, true, true],
+      performance: [true, true, true, true, true, true, true, true, true, false],
+      stability: [true, true, true, false, true, false, true, true, true, true],
+    },
+    scope: [
+      "Full nonprofit website with ocean-inspired design language",
+      "Bilingual English/Spanish support across all pages",
+      "Volunteer signup with parental consent workflows for minors",
+      "Donation integration for tax-deductible contributions",
+      "Real-time weather and tide data from NOAA API",
+      "Educational resource library with species profiles",
+      "Dark/light mode with smooth theme transitions",
+    ],
+    challenge:
+      "A youth-run 501(c)(3) conservation nonprofit needed a digital home that could recruit volunteers (many under 18, requiring parental consent), accept donations, and educate the public about Southern California marine life. The organization serves a bilingual community, so English-only wasn't an option. Previous attempts at a web presence were basic and didn't reflect the professionalism of the mission.",
+    approach:
+      "We built a platform that takes the organization seriously despite its young founders. The bilingual system isn't an afterthought — it's native, with every page fully translated. The parental consent workflow solves a real legal requirement for minor volunteers. NOAA API integration gives visitors live environmental data, making the site a resource people return to. The ocean-inspired design — coastal photography, tidal color palette, smooth wave animations — reinforces the mission on every page.",
+    techChoices: [
+      { tech: "Next.js", reason: "Server-side rendering for SEO ensures the nonprofit shows up in search. Static generation keeps hosting costs near zero — critical for a nonprofit budget" },
+      { tech: "TypeScript", reason: "Strict typing prevents bugs in complex workflows like parental consent forms and donation processing where errors aren't acceptable" },
+      { tech: "Tailwind CSS", reason: "Rapid iteration on the ocean-inspired design system while keeping the bundle small. Dark/light mode is built into the utility classes" },
+      { tech: "Framer Motion", reason: "Smooth wave-like animations and theme transitions bring the ocean conservation mission to life without hurting performance" },
+      { tech: "i18n", reason: "Native internationalization framework ensures English and Spanish content stays synchronized and any new language can be added without restructuring" },
+    ],
   },
   {
     id: "all-beauty-hair-studio",
@@ -116,6 +193,36 @@ export const projects: PortfolioProject[] = [
     featured: false,
     url: "https://allbeautyhairstudio.com",
     colorAccent: "pink",
+    health: {
+      security: 70,
+      accessibility: 80,
+      performance: 80,
+      stability: 60,
+    },
+    healthChecklist: {
+      security: [true, true, true, false, true, true, true, false, false, true],
+      accessibility: [false, true, true, true, true, true, true, true, true, false],
+      performance: [true, true, true, true, true, true, true, true, false, false],
+      stability: [false, true, false, false, true, false, true, true, true, true],
+    },
+    scope: [
+      "Complete website redesign from Wix template to custom build",
+      "Modern performance-optimized codebase replacing bloated template",
+      "Mobile-first responsive design for on-the-go booking",
+      "Service catalog with pricing and stylist profiles",
+      "Conversion-optimized booking flow",
+      "Brand identity elevation from generic to premium",
+    ],
+    challenge:
+      "All Beauty Hair Studio was running on a generic Wix template that looked like every other salon online. The template was slow, hard to update, and didn't reflect the quality of work the stylists actually deliver. The booking flow was clunky, and the site wasn't ranking in local search. The owner was paying monthly Wix fees for a site that actively hurt the business.",
+    approach:
+      "We're rebuilding everything from scratch — no template constraints, no bloated code, no monthly platform fees. The custom design elevates the brand from generic to premium. Performance optimization means the site loads in under 2 seconds instead of 8+. The mobile-first approach recognizes that most salon clients are booking from their phone. Every design decision maps to a business outcome: faster load = lower bounce rate, better SEO = more discovery, cleaner booking = more appointments.",
+    techChoices: [
+      { tech: "Next.js", reason: "Replacing Wix means we need SSR for SEO parity plus static generation for speed. Next.js delivers both without a monthly platform fee" },
+      { tech: "TypeScript", reason: "Catches bugs during development so the client never sees a broken page — critical when migrating away from a managed platform" },
+      { tech: "Tailwind CSS", reason: "Rapid custom design iteration. No more fighting a template's built-in styles to make changes" },
+      { tech: "Custom Design", reason: "The whole point — breaking free from template constraints so the site reflects the actual quality of the salon's work" },
+    ],
   },
 
   // === PARTNERSHIPS ===
@@ -191,6 +298,51 @@ export const projects: PortfolioProject[] = [
     url: "https://praxislibrary.com",
     colorAccent: "indigo",
     image: "/portfolio/praxislibrary/praxis-library.webp",
+    gallery: [
+      "/portfolio/praxislibrary/praxislibraryglossary.webp",
+      "/portfolio/praxislibrary/praxislibraryAIhistory.webp",
+      "/portfolio/praxislibrary/praxislibraryanalyzer.webp",
+      "/portfolio/praxislibrary/praxislibrarybuilder.webp",
+      "/portfolio/praxislibrary/praxislibrarypersonaarcitect.webp",
+      "/portfolio/praxislibrary/praxislibrarypromptzxotomy.webp",
+      "/portfolio/praxislibrary/praxislibrarybarker.webp",
+      "/portfolio/praxislibrary/praxislibraryoptions.webp",
+      "/portfolio/praxislibrary/praxislibraryglobalsearch.webp",
+      "/portfolio/praxislibrary/praxislibraryquizz.webp",
+      "/portfolio/praxislibrary/praxislibraryfooter.webp",
+    ],
+    health: {
+      security: 90,
+      accessibility: 100,
+      performance: 90,
+      stability: 80,
+    },
+    healthChecklist: {
+      security: [true, true, true, true, true, true, true, false, true, true],
+      accessibility: [true, true, true, true, true, true, true, true, true, true],
+      performance: [true, true, true, true, true, true, true, true, true, false],
+      stability: [true, true, true, false, true, false, true, true, true, true],
+    },
+    scope: [
+      "5,000+ searchable AI terms with instant search",
+      "177 techniques and frameworks cataloged",
+      "Interactive tools: Prompt Analyzer, Prompt Builder, Technique Finder, Persona Architect",
+      "Neurodivergence hub with ADHD and autism-specific AI resources",
+      "Adjustable text sizing, high-contrast modes, and read-aloud functionality",
+      "Global search across all content types",
+      "Quiz system for testing AI literacy knowledge",
+    ],
+    challenge:
+      "The AI education space is fragmented — scattered blog posts, paywalled courses, and jargon-heavy documentation that excludes beginners and neurodivergent learners. There was no single, free, comprehensive resource that treated AI literacy as a public good. The founder needed a platform that could house thousands of terms, dozens of interactive tools, and still be accessible to someone who learns differently.",
+    approach:
+      "We built a platform-scale reference tool, not a blog. The search system handles 5,000+ terms with instant results. Interactive tools like the Prompt Analyzer and Persona Architect teach by doing, not just reading. The neurodivergence hub was designed with input from ADHD and autism communities — adjustable text, high contrast, read-aloud, and reduced cognitive load layouts. Accessibility isn't a checkbox here; it's the core design principle.",
+    techChoices: [
+      { tech: "Next.js", reason: "Static generation for 5,000+ term pages means instant load times and zero server cost per page view. Dynamic routes handle the interactive tools" },
+      { tech: "TypeScript", reason: "With 5,000+ content entries and multiple tool interfaces, type safety prevents data shape mismatches that would break the search or tool outputs" },
+      { tech: "Tailwind CSS", reason: "Utility-first approach made it possible to build adjustable text sizing and high-contrast modes without maintaining separate stylesheets" },
+      { tech: "Search Engine", reason: "Custom fuzzy search across 5,000+ terms with weighted relevance scoring. No external search service dependency keeps the platform free" },
+      { tech: "Accessibility Tools", reason: "Built-in text scaling, contrast modes, and read-aloud aren't plugins — they're first-class features because the target audience needs them" },
+    ],
   },
   {
     id: "builtbybas",
@@ -227,6 +379,40 @@ export const projects: PortfolioProject[] = [
       "/portfolio/builtbybas/builtbybasIntakeform.webp",
       "/portfolio/builtbybas/builtbybasinfomrational.webp",
     ],
+    health: {
+      security: 100,
+      accessibility: 100,
+      performance: 100,
+      stability: 100,
+    },
+    healthChecklist: {
+      security: [true, true, true, true, true, true, true, true, true, true],
+      accessibility: [true, true, true, true, true, true, true, true, true, true],
+      performance: [true, true, true, true, true, true, true, true, true, true],
+      stability: [true, true, true, true, true, true, true, true, true, true],
+    },
+    scope: [
+      "Public marketing website with cinematic animations and glassmorphism design",
+      "10-step intake form with algorithmic analysis engine",
+      "Admin CRM: client pipeline, scoring, notes, stage management",
+      "Proposal generation engine with revision workflows",
+      "Invoice system with line items, tax, and status management",
+      "Financial analytics dashboard with revenue tracking",
+      "Portfolio system with image galleries and interactive animation demos",
+      "Custom authentication with RBAC (owner, team, client roles)",
+    ],
+    challenge:
+      "Most agencies either look generic (template site, stock photos, no personality) or premium but hollow (flashy but no real backend). BuiltByBas needed to be both — a site that makes visitors think 'this guy is elite' AND a full operational platform that runs the actual business. Every client touchpoint from first visit to final invoice had to flow through one custom system. No Salesforce, no QuickBooks, no stitching together 5 SaaS tools.",
+    approach:
+      "We built everything in one Next.js monorepo — public site, admin CRM, and client portal under one roof. The glassmorphism design system with 2026 animation techniques IS the portfolio piece; the site sells itself. The algorithmic intake engine scores every lead automatically so Bas can prioritize intelligently. The proposal generator creates structured proposals from intake data without AI API calls — instant, deterministic, and free. The invoice system closes the loop from lead to revenue, all in one platform.",
+    techChoices: [
+      { tech: "Next.js", reason: "One framework for three applications — public site (SSR/SSG for SEO), admin dashboard (server components for security), and client portal (authenticated routes). No separate frontend/backend deploy" },
+      { tech: "TypeScript", reason: "Strict mode with zero 'any' types. When you're building auth, invoicing, and proposal systems, type safety catches bugs that would cost real money" },
+      { tech: "Tailwind CSS 4", reason: "Design tokens for the glassmorphism system — bg-white/5, backdrop-blur-xl, border-white/10 are reused everywhere. v4's native CSS cascade layers keep specificity clean" },
+      { tech: "Framer Motion", reason: "Spring physics, scroll-driven animations, page transitions, gesture support. The animation layer IS the competitive advantage — it demonstrates what BuiltByBas can build" },
+      { tech: "PostgreSQL", reason: "Multi-user CRM with ACID transactions, JSONB for flexible intake data, and indexed queries. Production-grade from day one, not a toy database" },
+      { tech: "Zod", reason: "Runtime validation on every API endpoint. Every form submission, every PATCH request, every query parameter is validated before it touches the database" },
+    ],
   },
 
   // === SOFTWARE ===
@@ -256,6 +442,25 @@ export const projects: PortfolioProject[] = [
     status: "live",
     featured: false,
     colorAccent: "emerald",
+    scope: [
+      "Visual pipeline management with drag-and-drop deal tracking",
+      "Client contact database with search and filtering",
+      "Activity logging with timestamped history",
+      "Task management with assignment and due dates",
+      "Reporting dashboards with conversion metrics",
+      "RESTful API for all CRUD operations",
+    ],
+    challenge:
+      "Off-the-shelf CRMs like Salesforce and HubSpot are bloated, expensive, and force businesses into workflows that don't match how they actually operate. The client needed a CRM that does exactly what they need — pipeline tracking, contact management, activity logging — without paying $50/user/month for features they'll never use.",
+    approach:
+      "We built a lean CRM focused on speed and simplicity. The pipeline view gives instant visibility into every deal stage. Activity logging creates an automatic paper trail without manual data entry. The reporting dashboard shows conversion rates and revenue forecasts from real data. Every feature exists because it solves a daily workflow problem, not because a product manager added it to a feature comparison chart.",
+    techChoices: [
+      { tech: "React", reason: "Component-based architecture for the pipeline board, contact cards, and activity feeds. Real-time UI updates when deals move through stages" },
+      { tech: "TypeScript", reason: "Type safety across the full stack ensures contact records, deal amounts, and activity logs maintain data integrity" },
+      { tech: "Node.js", reason: "Same language front-to-back. Fast development cycles when the backend team and frontend team are the same person" },
+      { tech: "Database", reason: "Relational database for structured CRM data — contacts, deals, activities all linked with foreign keys and indexed for fast queries" },
+      { tech: "REST API", reason: "Clean CRUD endpoints that could power a mobile app or third-party integration if the business grows beyond the web interface" },
+    ],
   },
 
   // === ANIMATION ===
