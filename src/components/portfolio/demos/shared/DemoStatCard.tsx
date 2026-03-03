@@ -8,7 +8,7 @@ interface DemoStatCardProps {
   label: string;
   value: string | number;
   icon: LucideIcon;
-  color?: "cyan" | "violet" | "emerald" | "amber" | "rose";
+  color?: "cyan" | "violet" | "emerald" | "amber" | "rose" | "blue";
   trend?: { value: string; up: boolean };
   suffix?: string;
 }
@@ -19,6 +19,7 @@ const colorMap = {
   emerald: { icon: "text-emerald-400", bg: "rgba(16,185,129,0.08)", border: "rgba(16,185,129,0.2)" },
   amber: { icon: "text-amber-400", bg: "rgba(245,158,11,0.08)", border: "rgba(245,158,11,0.2)" },
   rose: { icon: "text-rose-400", bg: "rgba(244,63,94,0.08)", border: "rgba(244,63,94,0.2)" },
+  blue: { icon: "text-blue-400", bg: "rgba(59,130,246,0.08)", border: "rgba(59,130,246,0.2)" },
 };
 
 export function DemoStatCard({ label, value, icon: Icon, color = "cyan", trend, suffix }: DemoStatCardProps) {

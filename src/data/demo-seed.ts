@@ -5,27 +5,27 @@
 
 // ---- INTRANET ----
 export const announcements = [
-  { id: "1", title: "Q1 All-Hands Meeting — March 15th", body: "Join us for our quarterly all-hands. Agenda: product roadmap, team updates, and open Q&A. Lunch provided.", author: "Sarah Kim", role: "CEO", date: "2026-03-10", pinned: true, category: "Company" },
-  { id: "2", title: "New Benefits Portal Now Live", body: "Enroll in or update your health, dental, and vision benefits through the new HR portal. Open enrollment closes March 20th.", author: "Marcus Hill", role: "HR Director", date: "2026-03-08", pinned: true, category: "HR" },
-  { id: "3", title: "Office Closure — March 17th (St. Patrick's Day)", body: "The office will be closed. Remote staff should update their availability in the calendar.", author: "Office Manager", role: "Operations", date: "2026-03-07", pinned: false, category: "Operations" },
-  { id: "4", title: "New Hire: Jordan Walsh joins the Engineering Team", body: "Please join us in welcoming Jordan Walsh as our new Senior Frontend Engineer. Jordan comes from Stripe and specializes in React.", author: "Sarah Kim", role: "CEO", date: "2026-03-05", pinned: false, category: "People" },
-  { id: "5", title: "IT Security Reminder — Enable 2FA", body: "As part of our security audit, all accounts must have 2FA enabled by March 12th. Contact IT if you need help.", author: "Derek Lam", role: "IT Security", date: "2026-03-03", pinned: false, category: "IT" },
-  { id: "6", title: "Parking Lot Maintenance — Lots C & D", body: "Lots C and D will be closed March 14-16 for resurfacing. Please use the overflow lot on Main Street.", author: "Facilities", role: "Facilities", date: "2026-03-01", pinned: false, category: "Facilities" },
+  { id: "1", title: "Q1 All-Hands Meeting — March 15th", body: "Join us for our quarterly all-hands. Agenda: product roadmap, team updates, and open Q&A. Lunch provided.", author: "Sarah Kim", role: "CEO", date: "2026-03-10", pinned: true, category: "Company", reactions: [{ emoji: "👍", count: 24 }, { emoji: "❤️", count: 8 }, { emoji: "👏", count: 12 }] },
+  { id: "2", title: "New Benefits Portal Now Live", body: "Enroll in or update your health, dental, and vision benefits through the new HR portal. Open enrollment closes March 20th.", author: "Marcus Hill", role: "HR Director", date: "2026-03-08", pinned: true, category: "HR", reactions: [{ emoji: "👍", count: 15 }, { emoji: "❤️", count: 4 }, { emoji: "👏", count: 6 }] },
+  { id: "3", title: "Office Closure — March 17th (St. Patrick's Day)", body: "The office will be closed. Remote staff should update their availability in the calendar.", author: "Office Manager", role: "Operations", date: "2026-03-07", pinned: false, category: "Operations", reactions: [{ emoji: "👍", count: 9 }, { emoji: "❤️", count: 1 }, { emoji: "👏", count: 2 }] },
+  { id: "4", title: "New Hire: Jordan Walsh joins the Engineering Team", body: "Please join us in welcoming Jordan Walsh as our new Senior Frontend Engineer. Jordan comes from Stripe and specializes in React.", author: "Sarah Kim", role: "CEO", date: "2026-03-05", pinned: false, category: "People", reactions: [{ emoji: "👍", count: 18 }, { emoji: "❤️", count: 11 }, { emoji: "👏", count: 14 }] },
+  { id: "5", title: "IT Security Reminder — Enable 2FA", body: "As part of our security audit, all accounts must have 2FA enabled by March 12th. Contact IT if you need help.", author: "Derek Lam", role: "IT Security", date: "2026-03-03", pinned: false, category: "IT", reactions: [{ emoji: "👍", count: 5 }, { emoji: "❤️", count: 0 }, { emoji: "👏", count: 1 }] },
+  { id: "6", title: "Parking Lot Maintenance — Lots C & D", body: "Lots C and D will be closed March 14-16 for resurfacing. Please use the overflow lot on Main Street.", author: "Facilities", role: "Facilities", date: "2026-03-01", pinned: false, category: "Facilities", reactions: [{ emoji: "👍", count: 3 }, { emoji: "❤️", count: 0 }, { emoji: "👏", count: 0 }] },
 ];
 
 export const employees = [
-  { id: "1", name: "Sarah Kim", title: "Chief Executive Officer", dept: "Executive", email: "s.kim@company.com", phone: "555-0101", location: "HQ — Floor 4", status: "active", avatar: "SK" },
-  { id: "2", name: "Marcus Hill", title: "HR Director", dept: "Human Resources", email: "m.hill@company.com", phone: "555-0102", location: "HQ — Floor 3", status: "active", avatar: "MH" },
-  { id: "3", name: "Jordan Walsh", title: "Senior Frontend Engineer", dept: "Engineering", email: "j.walsh@company.com", phone: "555-0103", location: "Remote — Austin, TX", status: "active", avatar: "JW" },
-  { id: "4", name: "Derek Lam", title: "IT Security Lead", dept: "IT", email: "d.lam@company.com", phone: "555-0104", location: "HQ — Floor 2", status: "active", avatar: "DL" },
-  { id: "5", name: "Priya Patel", title: "Product Manager", dept: "Product", email: "p.patel@company.com", phone: "555-0105", location: "HQ — Floor 3", status: "active", avatar: "PP" },
-  { id: "6", name: "Carlos Mendez", title: "Sales Director", dept: "Sales", email: "c.mendez@company.com", phone: "555-0106", location: "HQ — Floor 2", status: "active", avatar: "CM" },
-  { id: "7", name: "Aisha Johnson", title: "Marketing Manager", dept: "Marketing", email: "a.johnson@company.com", phone: "555-0107", location: "Remote — Chicago, IL", status: "active", avatar: "AJ" },
-  { id: "8", name: "Tom Fischer", title: "Operations Manager", dept: "Operations", email: "t.fischer@company.com", phone: "555-0108", location: "HQ — Floor 1", status: "on-leave", avatar: "TF" },
-  { id: "9", name: "Elena Vasquez", title: "UX Designer", dept: "Design", email: "e.vasquez@company.com", phone: "555-0109", location: "Remote — Miami, FL", status: "active", avatar: "EV" },
-  { id: "10", name: "Ryan Cho", title: "Backend Engineer", dept: "Engineering", email: "r.cho@company.com", phone: "555-0110", location: "HQ — Floor 2", status: "active", avatar: "RC" },
-  { id: "11", name: "Natalie Brooks", title: "Customer Success Manager", dept: "Sales", email: "n.brooks@company.com", phone: "555-0111", location: "Remote — Denver, CO", status: "active", avatar: "NB" },
-  { id: "12", name: "James Osei", title: "Finance Analyst", dept: "Finance", email: "j.osei@company.com", phone: "555-0112", location: "HQ — Floor 4", status: "active", avatar: "JO" },
+  { id: "1", name: "Sarah Kim", title: "Chief Executive Officer", dept: "Executive", email: "s.kim@meridian.com", phone: "555-0101", location: "HQ — Floor 4", status: "online", avatar: "SK" },
+  { id: "2", name: "Marcus Hill", title: "HR Director", dept: "Human Resources", email: "m.hill@meridian.com", phone: "555-0102", location: "HQ — Floor 3", status: "online", avatar: "MH" },
+  { id: "3", name: "Jordan Walsh", title: "Senior Frontend Engineer", dept: "Engineering", email: "j.walsh@meridian.com", phone: "555-0103", location: "Remote — Austin, TX", status: "online", avatar: "JW" },
+  { id: "4", name: "Derek Lam", title: "IT Security Lead", dept: "IT", email: "d.lam@meridian.com", phone: "555-0104", location: "HQ — Floor 2", status: "busy", avatar: "DL" },
+  { id: "5", name: "Priya Patel", title: "Product Manager", dept: "Product", email: "p.patel@meridian.com", phone: "555-0105", location: "HQ — Floor 3", status: "online", avatar: "PP" },
+  { id: "6", name: "Carlos Mendez", title: "Sales Director", dept: "Sales", email: "c.mendez@meridian.com", phone: "555-0106", location: "HQ — Floor 2", status: "away", avatar: "CM" },
+  { id: "7", name: "Aisha Johnson", title: "Marketing Manager", dept: "Marketing", email: "a.johnson@meridian.com", phone: "555-0107", location: "Remote — Chicago, IL", status: "online", avatar: "AJ" },
+  { id: "8", name: "Tom Fischer", title: "Operations Manager", dept: "Operations", email: "t.fischer@meridian.com", phone: "555-0108", location: "HQ — Floor 1", status: "on-leave", avatar: "TF" },
+  { id: "9", name: "Elena Vasquez", title: "UX Designer", dept: "Design", email: "e.vasquez@meridian.com", phone: "555-0109", location: "Remote — Miami, FL", status: "online", avatar: "EV" },
+  { id: "10", name: "Ryan Cho", title: "Backend Engineer", dept: "Engineering", email: "r.cho@meridian.com", phone: "555-0110", location: "HQ — Floor 2", status: "online", avatar: "RC" },
+  { id: "11", name: "Natalie Brooks", title: "Customer Success Manager", dept: "Sales", email: "n.brooks@meridian.com", phone: "555-0111", location: "Remote — Denver, CO", status: "away", avatar: "NB" },
+  { id: "12", name: "James Osei", title: "Finance Analyst", dept: "Finance", email: "j.osei@meridian.com", phone: "555-0112", location: "HQ — Floor 4", status: "offline", avatar: "JO" },
 ];
 
 export const companyDocs = [
@@ -35,6 +35,12 @@ export const companyDocs = [
   { id: "4", name: "Q1 2026 Company Goals", category: "Strategy", type: "DOC", size: "340 KB", updated: "2026-01-05", author: "Sarah Kim" },
   { id: "5", name: "Expense Report Template", category: "Finance", type: "XLSX", size: "128 KB", updated: "2025-12-01", author: "James Osei" },
   { id: "6", name: "Brand Guidelines v2", category: "Marketing", type: "PDF", size: "5.2 MB", updated: "2026-02-14", author: "Aisha Johnson" },
+];
+
+export const intranetNotifications = [
+  { id: "n1", text: "Sarah Kim posted: Q1 All-Hands Meeting", time: "2h ago", type: "announcement" },
+  { id: "n2", text: "Jordan Walsh joined the Engineering team", time: "5h ago", type: "people" },
+  { id: "n3", text: "IT Security: Enable 2FA by March 12th", time: "1d ago", type: "alert" },
 ];
 
 // ---- DOCUMENT FILING ----
