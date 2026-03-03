@@ -1,3 +1,6 @@
+packages:
+  - "bbbprojects/demos"
+
 ignoredBuiltDependencies:
   - sharp
   - unrs-resolver

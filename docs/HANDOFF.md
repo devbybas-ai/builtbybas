@@ -1,8 +1,8 @@
 # BuiltByBas — Handoff Document
 
-> **Last Updated:** 2026-03-03 (Session 21)
-> **Status:** LIVE AT builtbybas.com — Portfolio grades updated with real Lighthouse data, CRM images added, BuiltByBas wordmark with cyan neon glow, brand assets committed. 163 tests, 40-route build.
-> **Next Session:** Wire up KAR CRM images + grades, client portal, invoice PDF generation, SSH key fix for local dev machine
+> **Last Updated:** 2026-03-03 (Session 24)
+> **Status:** LIVE AT builtbybas.com — All 16 BBB demo systems BUILT. `bbbprojects/demos/` is a standalone Next.js app (port 3010) with all 16 systems compiled and running. All 16 added to portfolio.ts. Main: 163/163 tests, 56-route build. Demo platform: 17-route build (home + 16 systems). tsc clean both.
+> **Next Session:** Deploy the demo platform to VPS on a subdomain (demos.builtbybas.com or similar), wire portfolio links, start Phase 6 (Client Portal) or continue demo polish
 
 ---
 
@@ -466,23 +466,85 @@ Dark, premium, cutting-edge. The site itself IS the portfolio piece. Every inter
 - `public/portfolio/colourparlor/treemap.png` / `inline.png` — JS bundle audit artifacts
 - `public/portfolio/colourparlor/portfolio - Shortcut.lnk` — Windows shortcut, delete this
 
+**Session 23 (BBB Projects — 16 Demo Systems Strategy):**
+
+- **New strategic direction confirmed:** Build 16 real business systems and platforms as interactive demos in `bbbprojects/demos/` directory inside the monorepo. These will serve as portfolio proof-of-work, lead-generation tools, and real deployable products for clients.
+- **16 systems confirmed (no HR systems):**
+  - **Office/Internal:** Intranet, Document Filing System, Meeting Room/Resource Booking, Internal Help Desk
+  - **Operations:** Inventory System, Asset Tracker, Maintenance Request System, Purchase Order System, Inspection/Audit Checklist
+  - **Client-Facing:** Client Portal, Booking/Appointment System, Estimate/Proposal Portal, Support Ticket Portal
+  - **Specialty:** Vendor/Supplier Directory, Order Tracking Dashboard, Loyalty Program Tracker
+- **All 16 added to portfolio.ts** as `systems` or `platforms` category entries, `status: "demo"`, `isDemo: true`, `featured: false`. Ready to display on portfolio page.
+- **Build plan:** Each system gets its own fresh chat. Intranet is first (highest value, most comprehensive). Directory: `bbbprojects/demos/intranet/`.
+- **No code written yet** — strategy confirmed, entries staged. Fresh chat will scaffold the Intranet.
+
+**Session 22 (All Beauty Hair Studio Portfolio + Category System Overhaul):**
+
+- **All Beauty Hair Studio — fully wired:** 9 screenshots added (`public/portfolio/allbeautyhairstudio/`). `image` + `gallery` fields set in `portfolio.ts`. Status: `live`, `featured: true`, health: 100/100/100/100.
+- **Portfolio entry rewritten — before/after narrative:** Subtitle: "From Wix template to full business operating system". Challenge section = "What she had" (Wix, notebook, zero backend). Approach section = "What she got" (personal brand site, 7-step intake, full CRM). Description leads with "Karli had a Wix template. Now she has a business operating system."
+- **True scope documented:** Personal brand platform, 7-step new client intake (About You → Your Hair → Personality → History → Goals → Photos → Review), inclusive pronouns field, admin CRM dashboard (Total Clients, Revenue, Testimonials, Sessions), kanban pipeline (Inquiry → Consultation Scheduled → Consultation Complete → Active Client → Follow-Up), 10-stage client journey tracker, AI fit scoring (Service Fit / Readiness / Engagement), Accept/Decline workflow, multi-business admin (Hair Studio + Marketing Reset), Prompt Library.
+- **Category renamed:** `software` → `systems` ("CRM, ops platforms, and business operating systems"). Updated `PortfolioCategory` type, `categoryMeta`, KAR CRM category. All Beauty moved to `platforms`.
+- **ProjectCard redesigned:** Full-width category banner across top of card (readable on any image background, including light/white screenshots). Status badge (`Live` / `In Progress` / `Interactive Demo`) inline right inside the banner. Removed floating absolute-positioned badge.
+- **ProjectFilter redesigned:** Full-width glassmorphism tab bar (`border border-white/10 rounded-xl bg-white/5 backdrop-blur-sm`). Tabs fill full width (`flex-1`), uppercase bold labels, spring-animated active indicator. Inactive tabs `text-white/50` (readable, not invisible).
+- **Category color bump:** All colors from `/20 text-*-400` → `/30 text-*-300` for better readability.
+- **colourparlor images committed:** `lighthousescore.png`, `lighthousescoremobile.png`, `treemap.png`, `inline.png`, `colourparloreditstylist.webp.png`, `colourparloreditstylistb.webp.png` — all committed.
+- **Commit:** `e9f28dd` — pushed to GitHub. Bas deploying manually from Hostinger terminal (SSH key not configured on local dev machine).
+- **Build:** 163/163 tests, 40-route build clean, tsc clean.
+
+**Session 24 (BBB Demo Platform — All 16 Systems Built):**
+
+- **Demo platform created:** `bbbprojects/demos/` — standalone Next.js 15 app (port 3010) added to pnpm workspace.
+- **Shared foundation:** `globals.css` (design tokens, glass utilities, glow classes), `src/lib/motion.ts` (spring presets + variants), `src/lib/utils.ts`, 5 shared components: `Sidebar`, `PageWrapper`, `PageHeader`, `StatCard`, `GlassButton`, `SearchBar`.
+- **Sidebar:** All 16 systems listed with icons, color-coded by category (cyan=Office, violet=Ops, emerald=Client, amber=Specialty), animated `layoutId` active indicator, spring hover effects.
+- **Home dashboard:** Full categorized grid of all 16 systems with hover glow, spring animations, CTA footer.
+- **Seed data:** Comprehensive `src/data/seed.ts` — realistic data for all 16 systems (employees, announcements, rooms, bookings, tickets, inventory, assets, maintenance, purchase orders, inspections, clients, appointments, proposals, support tickets, vendors, orders, loyalty members/rewards).
+- **16 systems built:**
+  - **Intranet** — announcements (pinned + categorized), employee directory (search/filter/modal), doc library, quick links grid, today's schedule, notices sidebar, employee profile modal with email/call actions.
+  - **Document Filing** — folder grid (8 depts), file list with type filter (PDF/DOC/XLSX/IMG/PPT), tag chips, upload button.
+  - **Meeting Rooms** — room grid with in-use/available badges, amenities, booking modal with capacity validation.
+  - **Help Desk** — priority/status filter, ticket cards with assignee and category, hover action buttons, new ticket modal.
+  - **Inventory** — stock status (in/low/out), category filter, reorder alerts banner, reorder button on low items.
+  - **Asset Tracker** — grid/list view toggle (AnimatePresence), status/category, serial numbers, assignment tracking.
+  - **Maintenance** — priority filter tabs, 4-step status tracker per request, critical escalation, new request modal.
+  - **Purchase Orders** — expandable line item detail, approval workflow, approve/reject actions, status filter.
+  - **Inspections** — templates grid, score bar component (animated on mount), passed/failed detail, run inspection button.
+  - **Client Portal** — animated progress bars, milestone countdown, budget vs. billed, expandable message thread.
+  - **Booking** — 7-day week strip, service catalog, time slot picker, form submit with success animation.
+  - **Proposals** — pipeline sidebar with value per stage, expandable services table, status-aware action buttons.
+  - **Support Tickets** — SLA tracking, dual filter (status + priority), hover action buttons, ticket creation modal.
+  - **Vendor Directory** — preferred vendor highlighting, star ratings, category filter, add vendor modal.
+  - **Order Tracking** — 6-stage animated pipeline tracker per order, delivery alert banner, tracking numbers.
+  - **Loyalty Program** — tier system (Bronze→Platinum), points progress bars, rewards catalog, transaction history.
+- **All 16 added to portfolio.ts** — with full descriptions, capabilities, tech choices. Category: systems or platforms. `status: "demo"`, `isDemo: true`.
+- **Main builtbybas:** `bbbprojects/**` excluded from tsconfig.json. 163/163 tests, 56-route build (40 original + 16 new demo portfolio SSG paths). tsc clean.
+- **Demo platform build:** 17 routes (home + 16 systems). tsc clean. ESLint config set to warn on unused vars (demo code pattern).
+- **pnpm workspace:** Added `"bbbprojects/demos"` to `pnpm-workspace.yaml` packages list.
+- **Not yet committed** — commit and push before next session.
+
 ---
 
 ### What's Next
 
+**BBB Demo Platform — Next Steps (top priority):**
+1. Commit and push all Session 24 changes (main + bbbprojects/demos)
+2. Deploy `bbbprojects/demos/` to VPS — add PM2 process on port 3010, add Nginx server block for `demos.builtbybas.com`
+3. Wire portfolio links in builtbybas.com — update portfolio entries with real demo URLs once deployed
+4. Take screenshots of each demo and add to `public/portfolio/demos/` — wire `image` + `gallery` fields
+5. Polish pass on demos — add missing pages (detail views per item), more animation variety
+
 **Portfolio:**
-1. Wire up KAR CRM images (`image` + `gallery` fields in portfolio.ts) and add health grades
-2. Rename/fix double-extension files: `colourparloreditstylist.webp.png` → decide if they go in gallery
-3. Delete `portfolio - Shortcut.lnk` from colourparlor folder
+6. Wire up KAR CRM images (`image` + `gallery` fields in portfolio.ts) and add real health grades
+7. Delete `portfolio - Shortcut.lnk` from colourparlor folder (Windows shortcut, never commit)
+8. Fix SSH key on local dev machine so deploys don't require Hostinger terminal
 
 **Phase 6 — Client Portal:**
-4. Client-facing portal (project status, invoices, communication)
-5. Invoice PDF generation
-6. Email notifications for invoice/proposal status changes
+9. Client-facing portal (project status, invoices, communication)
+10. Invoice PDF generation
+11. Email notifications for invoice/proposal status changes
 
 **Improvements:**
-7. Fix SSH key access from local dev machine to VPS (currently using HTTPS workaround)
-8. Run `pm2 startup && pm2 save` on VPS for auto-restart on reboot
+12. Fix SSH key access from local dev machine to VPS (currently using HTTPS workaround)
+13. Run `pm2 startup && pm2 save` on VPS for auto-restart on reboot
 
 ### Notes
 
