@@ -71,6 +71,46 @@ const demoComponents: Record<string, React.ComponentType> = {
   "bbb-loyalty": dynamic(() =>
     import("@/components/portfolio/demos/LoyaltyDemo").then((m) => ({ default: m.LoyaltyDemo })),
   ),
+  // Industry demos — Service
+  "bbb-shopboard": dynamic(() =>
+    import("@/components/portfolio/demos/ShopBoardDemo").then((m) => ({ default: m.ShopBoardDemo })),
+  ),
+  "bbb-ledgerdesk": dynamic(() =>
+    import("@/components/portfolio/demos/LedgerDeskDemo").then((m) => ({ default: m.LedgerDeskDemo })),
+  ),
+  "bbb-ticketflow": dynamic(() =>
+    import("@/components/portfolio/demos/TicketFlowDemo").then((m) => ({ default: m.TicketFlowDemo })),
+  ),
+  "bbb-dispatchpro": dynamic(() =>
+    import("@/components/portfolio/demos/DispatchProDemo").then((m) => ({ default: m.DispatchProDemo })),
+  ),
+  "bbb-pawschedule": dynamic(() =>
+    import("@/components/portfolio/demos/PawScheduleDemo").then((m) => ({ default: m.PawScheduleDemo })),
+  ),
+  "bbb-filingdesk": dynamic(() =>
+    import("@/components/portfolio/demos/FilingDeskDemo").then((m) => ({ default: m.FilingDeskDemo })),
+  ),
+  // Industry demos — Storefront
+  "bbb-shelfwise": dynamic(() =>
+    import("@/components/portfolio/demos/ShelfWiseDemo").then((m) => ({ default: m.ShelfWiseDemo })),
+  ),
+  "bbb-sweetcounter": dynamic(() =>
+    import("@/components/portfolio/demos/SweetCounterDemo").then((m) => ({ default: m.SweetCounterDemo })),
+  ),
+  "bbb-cornerkeep": dynamic(() =>
+    import("@/components/portfolio/demos/CornerKeepDemo").then((m) => ({ default: m.CornerKeepDemo })),
+  ),
+  // Industry demos — Education
+  "bbb-classpulse": dynamic(() =>
+    import("@/components/portfolio/demos/ClassPulseDemo").then((m) => ({ default: m.ClassPulseDemo })),
+  ),
+  "bbb-studypath": dynamic(() =>
+    import("@/components/portfolio/demos/StudyPathDemo").then((m) => ({ default: m.StudyPathDemo })),
+  ),
+  // Industry demos — UD/UDL
+  "bbb-accesslens": dynamic(() =>
+    import("@/components/portfolio/demos/AccessLensDemo").then((m) => ({ default: m.AccessLensDemo })),
+  ),
 };
 
 interface DemoRendererProps {

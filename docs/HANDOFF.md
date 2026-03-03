@@ -1,8 +1,8 @@
 # BuiltByBas — Handoff Document
 
-> **Last Updated:** 2026-03-03 (Session 25)
-> **Status:** LIVE AT builtbybas.com — Portfolio demo overhaul IN PROGRESS. Phase 0-2 complete (quick fixes + color shift + subcategories). 3 of 12 new industry demos built (ShopBoard, LedgerDesk, TicketFlow). 9 remaining. Main: 163/163 tests, 56-route build, tsc clean.
-> **Next Session:** Continue building demos 4-12 (ShelfWise, SweetCounter, CornerKeep, DispatchPro, PawSchedule, FilingDesk, ClassPulse, StudyPath, AccessLens), then wire portfolio entries + DemoRenderer mappings
+> **Last Updated:** 2026-03-03 (Session 26)
+> **Status:** LIVE AT builtbybas.com — Portfolio demo overhaul COMPLETE. All 12 new industry demos built, wired into DemoRenderer + portfolio entries. 4 new subcategories (Service, Storefront, Education, UD/UDL). LIVE tab filtered to status=live only. Main: 163/163 tests, 68-route build (42 portfolio paths), tsc clean.
+> **Next Session:** Deploy to VPS, take screenshots, wire portfolio images. Then BBB demo platform deployment (port 3010, demos.builtbybas.com).
 
 ---
 
@@ -534,34 +534,41 @@ Dark, premium, cutting-edge. The site itself IS the portfolio piece. Every inter
 - **TypeScript fixes:** Fixed `demoCardHover.whileHover` → `.hover` across all 3 demos. Fixed `color="orange"` → `"amber"` for DemoStatCard. Fixed onClick type mismatch in LedgerDeskDemo.
 - **Verification:** 163/163 tests pass. tsc clean. Build clean (56 routes).
 
+**Session 26 (Portfolio Demo Overhaul — 9 Remaining Demos + Wiring):**
+
+- **Demo 4: ShelfWiseDemo.tsx** — Maplewood Community Library. Catalog, Patrons, Overdue tabs. 10 books, 6 patrons. Checkout with patron selector, return, hold, search/filter by genre, fine payment. Mahogany/amber palette.
+- **Demo 5: SweetCounterDemo.tsx** — Sugar & Spark Candy Co POS. Quick Sale (grid+cart), Catalog (table+filters), Gift Boxes ($5 fee), Customers tabs. 12 products, 4 customers. 9.75% tax, low-stock pulse. Candy pink/rose palette.
+- **Demo 6: CornerKeepDemo.tsx** — Hernandez Family Market. Register, Inventory (margin calc), Customer Tabs, Deliveries tabs. 15 items, 4 customer tabs, 3 deliveries. Expiry checking. Terracotta/orange palette.
+- **Demo 7: DispatchProDemo.tsx** — Summit Plumbing & Heating. 4-column dispatch kanban, Tech Status, Address History tabs. 8 service calls, 4 technicians. Emergency pulsing. Pipe blue palette.
+- **Demo 8: PawScheduleDemo.tsx** — Wagging Tails Pet Spa. Today's Schedule (by groomer), Pet Profiles (expandable), Boarding (12-kennel grid), Vaccinations tabs. 8 pets, 6 appointments, 5 boarding. Soft lavender/violet palette.
+- **Demo 9: FilingDeskDemo.tsx** — Bridgewater Tax Services. Pipeline (6-stage), Document Tracker (progress bars), Deadline (countdown to April 15), Calculator (fee ranges) tabs. 10 clients, YoY comparisons. IRS navy palette.
+- **Demo 10: ClassPulseDemo.tsx** — Mrs. Torres's 4th Grade. Attendance, Gradebook, Behavior, Groups tabs. 12 students. Inline grade editing, behavior log, auto-grouping by performance. Teal palette.
+- **Demo 11: StudyPathDemo.tsx** — Student Progress Dashboard. Overview (GPA), Assignments (filter by status), Study Log (bar chart), What-If (GPA sliders) tabs. 6 courses, 15 assignments. AP weighting. Indigo palette.
+- **Demo 12: AccessLensDemo.tsx** — Universal Design for Learning Toolkit. Learner Profiles, Accommodation Map, UDL Strategies, Compliance tabs. 8 learners, 4 teachers, 12 strategies. Strategy suggestions, documentation toggle. Teal palette.
+- **DemoRenderer wiring:** Added all 12 new slugs to `DemoRenderer.tsx` with dynamic imports (bbb-shopboard through bbb-accesslens).
+- **Portfolio entries:** Added all 12 concept entries to `portfolio.ts` with full descriptions, capabilities, colorAccents.
+- **Type fix:** Fixed `onClick` type mismatch in `AccessLensDemo.tsx` — wrapped `DemoGlassButton` in stopPropagation div.
+- **LIVE tab filter:** Updated `getProjectsByCategory("all")` to require `p.status === "live"` — removes in-progress projects (Marketing Reset, Small Business Web Co) from the showcase tab.
+- **KAR CRM status:** Changed from `"live"` to `"in-progress"` — not publicly deployed yet (local IP only), should not appear in LIVE tab.
+- **Verification:** 163/163 tests pass. tsc clean. Build clean (68 routes, 42 portfolio paths).
+
 ---
 
 ### What's Next
 
-**Portfolio Demo Overhaul — Continue (top priority):**
-1. Build remaining 9 demos (in this order):
-   - ShelfWise (Community Library System — storefront)
-   - SweetCounter (Candy Shop POS — storefront)
-   - CornerKeep (General Store Inventory — storefront)
-   - DispatchPro (Plumbing/HVAC Dispatch — service)
-   - PawSchedule (Pet Grooming & Boarding — service)
-   - FilingDesk (Tax Preparer Tracker — service)
-   - ClassPulse (Teacher Classroom Dashboard — education)
-   - StudyPath (Student Progress Dashboard — education)
-   - AccessLens (UDL Toolkit — udl)
-2. Add all 12 portfolio entries to `portfolio.ts` with full descriptions, capabilities, scope
-3. Register all 12 in `DemoRenderer.tsx` with dynamic imports
-4. Final verification: all tests pass, build clean, tsc clean, every interaction tested
+**Deploy + Screenshots (top priority):**
+1. Deploy updated main to VPS — commit, push, redeploy
+2. Take screenshots of all 12 new demos + existing demos for portfolio images
+3. Wire `image` + `gallery` fields in `portfolio.ts` with screenshot paths
 
 **BBB Demo Platform:**
-5. Deploy `bbbprojects/demos/` to VPS — add PM2 process on port 3010, Nginx for `demos.builtbybas.com`
-6. Wire portfolio links with real demo URLs once deployed
-7. Take screenshots and wire `image` + `gallery` fields
+4. Deploy `bbbprojects/demos/` to VPS — add PM2 process on port 3010, Nginx for `demos.builtbybas.com`
+5. Wire portfolio links with real demo URLs once deployed
 
 **Portfolio:**
-8. Wire up KAR CRM images and add real health grades
-9. Delete `portfolio - Shortcut.lnk` from colourparlor folder (Windows shortcut, never commit)
-10. Fix SSH key on local dev machine so deploys don't require Hostinger terminal
+6. KAR CRM — deploy to VPS, add images, health grades, change status to "live" when ready
+7. Delete `portfolio - Shortcut.lnk` from colourparlor folder (Windows shortcut, never commit)
+8. Fix SSH key on local dev machine so deploys don't require Hostinger terminal
 
 **Phase 6 — Client Portal:**
 11. Client-facing portal (project status, invoices, communication)
