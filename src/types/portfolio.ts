@@ -1,4 +1,4 @@
-export type PortfolioCategory = "websites" | "platforms" | "software" | "animation";
+export type PortfolioCategory = "websites" | "platforms" | "systems" | "animation";
 
 export interface PortfolioProject {
   id: string;

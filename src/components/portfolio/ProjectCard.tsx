@@ -49,6 +49,30 @@ export function ProjectCard({ project }: ProjectCardProps) {
     <>
       {/* Preview Area */}
       <div className="relative">
+        {/* Category banner */}
+        {catMeta && (
+          <div className={cn("flex items-center justify-between px-4 py-2 text-xs font-semibold uppercase tracking-widest rounded-t-xl", catMeta.color)}>
+            <span>{catMeta.label}</span>
+            <span
+              className={cn(
+                "rounded-full px-2.5 py-0.5 text-xs font-medium",
+                badge.className,
+              )}
+            >
+              {badge.label}
+            </span>
+          </div>
+        )}
+        {!catMeta && (
+          <span
+            className={cn(
+              "absolute left-3 top-3 z-20 rounded-full px-2.5 py-0.5 text-xs font-medium backdrop-blur-sm",
+              badge.className,
+            )}
+          >
+            {badge.label}
+          </span>
+        )}
         {hasGallery ? (
           <ProjectCardGallery
             images={galleryImages}
@@ -56,7 +80,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
             colorAccent={project.colorAccent}
           />
         ) : (
-          <div className={cn("relative aspect-video overflow-hidden rounded-t-xl bg-gradient-to-br", gradient)}>
+          <div className={cn("relative aspect-video overflow-hidden bg-gradient-to-br", gradient)}>
             {project.image ? (
               <Image
                 src={project.image}
@@ -69,24 +93,6 @@ export function ProjectCard({ project }: ProjectCardProps) {
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.05),transparent_60%)]" />
             )}
           </div>
-        )}
-        <span
-          className={cn(
-            "absolute left-3 top-3 z-20 rounded-full px-2.5 py-0.5 text-xs font-medium backdrop-blur-sm",
-            badge.className,
-          )}
-        >
-          {badge.label}
-        </span>
-        {catMeta && (
-          <span
-            className={cn(
-              "absolute right-3 top-3 z-20 rounded-full px-2.5 py-0.5 text-xs font-medium backdrop-blur-sm",
-              catMeta.color,
-            )}
-          >
-            {catMeta.label}
-          </span>
         )}
       </div>
 
