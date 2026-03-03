@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 
 const demoComponents: Record<string, React.ComponentType> = {
+  // Animation demos
   "motion-gallery": dynamic(() =>
     import("@/components/portfolio/demos/MotionGallery").then((m) => ({ default: m.MotionGallery })),
   ),
@@ -20,6 +21,55 @@ const demoComponents: Record<string, React.ComponentType> = {
   ),
   "scroll-animations": dynamic(() =>
     import("@/components/portfolio/demos/ScrollAnimations").then((m) => ({ default: m.ScrollAnimations })),
+  ),
+  // BBB business system demos
+  "bbb-intranet": dynamic(() =>
+    import("@/components/portfolio/demos/IntranetDemo").then((m) => ({ default: m.IntranetDemo })),
+  ),
+  "bbb-filing": dynamic(() =>
+    import("@/components/portfolio/demos/FilingDemo").then((m) => ({ default: m.FilingDemo })),
+  ),
+  "bbb-meeting-rooms": dynamic(() =>
+    import("@/components/portfolio/demos/MeetingRoomsDemo").then((m) => ({ default: m.MeetingRoomsDemo })),
+  ),
+  "bbb-help-desk": dynamic(() =>
+    import("@/components/portfolio/demos/HelpDeskDemo").then((m) => ({ default: m.HelpDeskDemo })),
+  ),
+  "bbb-inventory": dynamic(() =>
+    import("@/components/portfolio/demos/InventoryDemo").then((m) => ({ default: m.InventoryDemo })),
+  ),
+  "bbb-assets": dynamic(() =>
+    import("@/components/portfolio/demos/AssetsDemo").then((m) => ({ default: m.AssetsDemo })),
+  ),
+  "bbb-maintenance": dynamic(() =>
+    import("@/components/portfolio/demos/MaintenanceDemo").then((m) => ({ default: m.MaintenanceDemo })),
+  ),
+  "bbb-purchase-orders": dynamic(() =>
+    import("@/components/portfolio/demos/PurchaseOrdersDemo").then((m) => ({ default: m.PurchaseOrdersDemo })),
+  ),
+  "bbb-inspections": dynamic(() =>
+    import("@/components/portfolio/demos/InspectionsDemo").then((m) => ({ default: m.InspectionsDemo })),
+  ),
+  "bbb-client-portal": dynamic(() =>
+    import("@/components/portfolio/demos/ClientPortalDemo").then((m) => ({ default: m.ClientPortalDemo })),
+  ),
+  "bbb-booking": dynamic(() =>
+    import("@/components/portfolio/demos/BookingDemo").then((m) => ({ default: m.BookingDemo })),
+  ),
+  "bbb-proposals": dynamic(() =>
+    import("@/components/portfolio/demos/ProposalsDemo").then((m) => ({ default: m.ProposalsDemo })),
+  ),
+  "bbb-support": dynamic(() =>
+    import("@/components/portfolio/demos/SupportDemo").then((m) => ({ default: m.SupportDemo })),
+  ),
+  "bbb-vendors": dynamic(() =>
+    import("@/components/portfolio/demos/VendorsDemo").then((m) => ({ default: m.VendorsDemo })),
+  ),
+  "bbb-order-tracking": dynamic(() =>
+    import("@/components/portfolio/demos/OrderTrackingDemo").then((m) => ({ default: m.OrderTrackingDemo })),
+  ),
+  "bbb-loyalty": dynamic(() =>
+    import("@/components/portfolio/demos/LoyaltyDemo").then((m) => ({ default: m.LoyaltyDemo })),
   ),
 };
 
