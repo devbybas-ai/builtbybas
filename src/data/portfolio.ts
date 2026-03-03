@@ -496,6 +496,7 @@ export const projects: PortfolioProject[] = [
     title: "Company Intranet",
     subtitle: "All-in-one company hub with announcements, directory, and docs",
     category: "concept",
+    subcategory: "office",
     description:
       "A full-featured company intranet that centralizes everything your team needs in one place. Includes a tabbed interface for announcements (pinned + categorized), employee directory with profile modals and department filtering, document library with type-based search, quick link launcher, today's schedule at a glance, and a notices sidebar. Designed for businesses that are tired of information scattered across Slack, email, and shared drives.",
     capabilities: [
@@ -529,6 +530,7 @@ export const projects: PortfolioProject[] = [
     title: "Document Filing System",
     subtitle: "Organized file management with search, folders, and tags",
     category: "concept",
+    subcategory: "office",
     description:
       "A structured document management system that replaces the chaos of shared drives and email attachments. Features an organized folder structure by department, file type filtering (PDF, DOC, XLSX, images, presentations), tag-based organization, upload workflow, and a clean search interface. Every document is findable in seconds, not minutes.",
     capabilities: [
@@ -552,6 +554,7 @@ export const projects: PortfolioProject[] = [
     title: "Meeting Room Booking",
     subtitle: "Resource scheduling with real-time availability and booking",
     category: "concept",
+    subcategory: "office",
     description:
       "A room and resource booking system that shows real-time availability, lets staff book rooms instantly, and prevents double-booking. Includes a visual room grid with capacity, amenities, and availability status, an upcoming bookings list, and a booking modal with attendee limits and scheduling validation.",
     capabilities: [
@@ -575,6 +578,7 @@ export const projects: PortfolioProject[] = [
     title: "Internal Help Desk",
     subtitle: "Employee support ticketing with priority and assignment tracking",
     category: "concept",
+    subcategory: "office",
     description:
       "An internal IT and facilities help desk that tracks support requests from submission to resolution. Features priority-based ticket management (critical to low), category tagging (IT, Facilities, Software), assignee tracking, real-time status filtering, and a ticket creation modal. Eliminates the 'did anyone see my email?' problem.",
     capabilities: [
@@ -600,6 +604,7 @@ export const projects: PortfolioProject[] = [
     title: "Inventory System",
     subtitle: "Stock tracking with low-stock alerts and reorder management",
     category: "concept",
+    subcategory: "operations",
     description:
       "A full inventory management system that tracks stock levels, triggers low-stock alerts, and manages reorder workflows. Features a visual stock status system (in-stock, low-stock, out-of-stock), category filtering, location tracking, unit cost management, and a one-click reorder button for items below minimum threshold. Built for operations teams that need real visibility into what they have and what they're about to run out of.",
     capabilities: [
@@ -623,6 +628,7 @@ export const projects: PortfolioProject[] = [
     title: "Asset Tracker",
     subtitle: "Company asset registry with assignments and maintenance status",
     category: "concept",
+    subcategory: "operations",
     description:
       "A complete asset tracking system that knows what you own, who has it, and whether it's working. Features a dual grid/list view, asset status management (active, available, in maintenance), assignment tracking with department context, serial number logging, and value tracking. Switch views with an animated toggle — see your assets the way you think.",
     capabilities: [
@@ -646,6 +652,7 @@ export const projects: PortfolioProject[] = [
     title: "Maintenance Request System",
     subtitle: "Work order management with priority queuing and scheduling",
     category: "concept",
+    subcategory: "operations",
     description:
       "A maintenance request and work order system built for facilities teams. Features priority-based request management (critical through low), multi-stage tracking (pending, scheduled, in-progress, completed), vendor/assignee management, category-based routing, and a visual 4-step status tracker per request. Critical requests get immediate visual escalation.",
     capabilities: [
@@ -669,6 +676,7 @@ export const projects: PortfolioProject[] = [
     title: "Purchase Order System",
     subtitle: "PO creation, approval workflows, and vendor management",
     category: "concept",
+    subcategory: "operations",
     description:
       "A purchase order management system that brings structure to buying decisions. Features PO creation with line-item detail, multi-stage approval workflows (pending, approved, received, rejected), expandable line item summaries, approver tracking, and department attribution. Replaces the 'just use email' purchase approval process that loses requests and creates audit nightmares.",
     capabilities: [
@@ -692,6 +700,7 @@ export const projects: PortfolioProject[] = [
     title: "Inspection & Audit Checklist",
     subtitle: "Compliance tracking with scored reports and template management",
     category: "concept",
+    subcategory: "operations",
     description:
       "A digital inspection and compliance system that replaces paper checklists with tracked, scored reports. Features reusable inspection templates (safety, sanitation, security, fleet), scheduled frequency tracking, inspector assignment, and animated score bars that visually communicate pass/fail status. Every inspection produces a permanent record with a percentage score and passed/failed item count.",
     capabilities: [
@@ -717,6 +726,7 @@ export const projects: PortfolioProject[] = [
     title: "Client Portal",
     subtitle: "Project transparency with progress, messages, and billing",
     category: "concept",
+    subcategory: "client",
     description:
       "A client-facing project portal that gives clients real visibility into their projects without requiring constant status update calls. Features animated progress bars per project, milestone tracking with countdown warnings, budget vs. billed breakdown with visual indicators, phase status, and an expandable message thread. Clients can see exactly where their project stands — and feel confident it's moving forward.",
     capabilities: [
@@ -740,6 +750,7 @@ export const projects: PortfolioProject[] = [
     title: "Booking & Appointment System",
     subtitle: "Service scheduling with availability, calendar, and confirmations",
     category: "concept",
+    subcategory: "client",
     description:
       "A full appointment scheduling system for service businesses. Features a 7-day week calendar strip with animated day selection, service catalog with pricing and duration, real-time availability slots, confirmation management, and a one-page booking form. Clients book their own appointments — no back-and-forth emails, no scheduling calls, no double-booking.",
     capabilities: [
@@ -763,6 +774,7 @@ export const projects: PortfolioProject[] = [
     title: "Estimate & Proposal Portal",
     subtitle: "Client-facing proposals with digital acceptance and pipeline tracking",
     category: "concept",
+    subcategory: "client",
     description:
       "A proposal management system that takes estimates from draft to accepted with full pipeline visibility. Features service-by-service breakdowns, expandable line item tables, status-aware action buttons (send, accept, invoice), and a pipeline sidebar that visualizes proposal value at each stage. Proposals are professional, trackable, and close faster when clients can see exactly what they're buying.",
     capabilities: [
@@ -786,6 +798,7 @@ export const projects: PortfolioProject[] = [
     title: "Support Ticket Portal",
     subtitle: "Customer support with SLA tracking and status transparency",
     category: "concept",
+    subcategory: "client",
     description:
       "A customer-facing support ticket system that brings accountability to client communications. Features SLA tracking with time-based urgency indicators, dual filter bars (status + priority), assignee tracking, category-based routing, and a ticket creation modal with visual priority selection. Clients submit once and get transparent status — no chasing, no wondering.",
     capabilities: [
@@ -811,6 +824,7 @@ export const projects: PortfolioProject[] = [
     title: "Vendor & Supplier Directory",
     subtitle: "Supplier profiles with ratings, spend tracking, and contact management",
     category: "concept",
+    subcategory: "specialty",
     description:
       "A vendor management system that centralizes all supplier relationships. Features rated vendor profiles, preferred vendor designation with visual hierarchy, total spend tracking, category-based filtering, contact information, and an add vendor workflow. Preferred vendors get a cyan accent treatment — your team always knows who the go-to suppliers are.",
     capabilities: [
@@ -834,6 +848,7 @@ export const projects: PortfolioProject[] = [
     title: "Order Tracking Dashboard",
     subtitle: "Real-time order pipeline with animated shipment stage tracking",
     category: "concept",
+    subcategory: "specialty",
     description:
       "An order status dashboard that gives purchasing teams live visibility into every active order. Features a visual 6-stage pipeline tracker per order (ordered → confirmed → processing → shipped → out-for-delivery → delivered) with animated stage dots, delivery alerts for same-day arrivals, tracking number display, and value-per-order tracking. No more logging into 5 different vendor portals to check shipment status.",
     capabilities: [
@@ -857,6 +872,7 @@ export const projects: PortfolioProject[] = [
     title: "Loyalty Program Tracker",
     subtitle: "Points, tiers, rewards catalog, and transaction history",
     category: "concept",
+    subcategory: "specialty",
     description:
       "A full loyalty program management system that tracks members through a tiered rewards structure (Bronze, Silver, Gold, Platinum). Features animated progress bars to next tier, points earn/redeem transaction history, a rewards catalog with availability management, and a tier breakdown sidebar with perks. Turns one-time clients into long-term advocates with a transparent, gamified rewards experience.",
     capabilities: [
@@ -882,6 +898,7 @@ export const projects: PortfolioProject[] = [
     title: "Motion Gallery",
     subtitle: "Interactive animation specimens you can touch and trigger",
     category: "concept",
+    subcategory: "animation",
     description:
       "A curated gallery of interactive animation specimens showcasing spring physics, scroll-linked effects, stagger reveals, morphing shapes, gesture interactions, and loading patterns. Each specimen is a hands-on playground — drag, scroll, hover, and trigger to feel the motion design in action.",
     capabilities: [
@@ -904,6 +921,7 @@ export const projects: PortfolioProject[] = [
     title: "Kinetic Typography",
     subtitle: "Text animation lab with replay controls",
     category: "concept",
+    subcategory: "animation",
     description:
       "A showcase of text animation techniques: word-by-word reveals, character cascades, typewriter effects, gradient sweeps, split-flips, wave motion, and blur-in transitions. Each technique is isolated in its own specimen with a replay button so you can study the timing and easing.",
     capabilities: [
@@ -925,6 +943,7 @@ export const projects: PortfolioProject[] = [
     title: "Micro-Interactions",
     subtitle: "UI feedback patterns that make interfaces feel alive",
     category: "concept",
+    subcategory: "animation",
     description:
       "A collection of polished micro-interaction patterns: toggle switches with spring physics, animated success checkmarks, like buttons with particle bursts, notification bells with shake and badge animations, SVG progress rings, expandable cards, material ripple effects, and magnetic hover buttons. Each specimen demonstrates a production-ready UI pattern.",
     capabilities: [
@@ -947,6 +966,7 @@ export const projects: PortfolioProject[] = [
     title: "Layout Animations",
     subtitle: "Smooth transitions between UI states and arrangements",
     category: "concept",
+    subcategory: "animation",
     description:
       "Showcasing Framer Motion's layout animation system: shared layout tabs with sliding indicators, drag-to-reorder lists, grid-to-list view transitions, animated accordions, digit-flip counters, and 3D flip cards. These patterns demonstrate how to make UI state changes feel smooth and intentional.",
     capabilities: [
@@ -969,6 +989,7 @@ export const projects: PortfolioProject[] = [
     title: "SVG & Path Animations",
     subtitle: "Vector graphics brought to life with motion",
     category: "concept",
+    subcategory: "animation",
     description:
       "A deep dive into SVG animation techniques: logo path drawing with fill reveal, icon morphing between shapes, animated checkmark sequences, generative sine waves, segmented and orbital SVG spinners, handwriting path effects, and spring-animated bar charts. All rendered as scalable vector graphics.",
     capabilities: [
@@ -991,6 +1012,7 @@ export const projects: PortfolioProject[] = [
     title: "Scroll Animations",
     subtitle: "Scroll-driven effects and viewport-triggered reveals",
     category: "concept",
+    subcategory: "animation",
     description:
       "Interactive scroll-based animation specimens: multi-speed parallax layers, smooth scroll progress bars, directional scroll reveals with useInView, counting number counters triggered on viewport entry, and sticky navigation that tracks scroll position. Each specimen contains its own scrollable area to demonstrate the technique.",
     capabilities: [
@@ -1026,3 +1048,11 @@ export function getProjectsByCategory(
 export function getCategoryMeta(id: PortfolioCategory): PortfolioCategoryMeta | undefined {
   return categoryMeta.find((c) => c.id === id);
 }
+
+export const conceptSubcategories = [
+  { id: "office", label: "Office" },
+  { id: "operations", label: "Operations" },
+  { id: "client", label: "Client-Facing" },
+  { id: "specialty", label: "Specialty" },
+  { id: "animation", label: "Animation" },
+] as const;

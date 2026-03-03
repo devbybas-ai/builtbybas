@@ -32,6 +32,7 @@ export interface PortfolioProject {
   challenge?: string;
   approach?: string;
   techChoices?: { tech: string; reason: string }[];
+  subcategory?: string;
 }
 
 export interface PortfolioCategoryMeta {
