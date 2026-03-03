@@ -9,6 +9,21 @@ export type ServiceIcon =
   | "layers"
   | "cpu";
 
+export interface WalkthroughStep {
+  phase: string;
+  icon: string;
+  title: string;
+  description: string;
+  deliverables: string[];
+  duration: string;
+}
+
+export interface ServiceWalkthrough {
+  tagline: string;
+  steps: WalkthroughStep[];
+  cta: string;
+}
+
 export interface Service {
   id: string;
   title: string;
@@ -17,4 +32,5 @@ export interface Service {
   icon: ServiceIcon;
   features: string[];
   category: "web" | "software" | "ai";
+  walkthrough?: ServiceWalkthrough;
 }

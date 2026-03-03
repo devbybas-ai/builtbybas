@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion, useMotionValue, useTransform } from "framer-motion";
-import { Check } from "lucide-react";
+import { Check, ChevronRight } from "lucide-react";
 import { springs } from "@/lib/motion";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { ServiceIcon } from "@/components/public-site/ServiceIcon";
@@ -10,9 +10,10 @@ import type { Service } from "@/types/services";
 
 interface ServiceCardProps {
   service: Service;
+  onClick?: () => void;
 }
 
-export function ServiceCard({ service }: ServiceCardProps) {
+export function ServiceCard({ service, onClick }: ServiceCardProps) {
   const shouldReduceMotion = useReducedMotion();
   const mouseX = useMotionValue(0.5);
   const mouseY = useMotionValue(0.5);
@@ -31,10 +32,28 @@ export function ServiceCard({ service }: ServiceCardProps) {
     mouseY.set(0.5);
   }
 
+  function handleKeyDown(e: React.KeyboardEvent) {
+    if (onClick && (e.key === "Enter" || e.key === " ")) {
+      e.preventDefault();
+      onClick();
+    }
+  }
+
+  const interactive = !!onClick;
+
   if (shouldReduceMotion) {
     return (
-      <div className="glass-card-hover flex h-full flex-col p-6">
-        <CardContent service={service} />
+      <div
+        className={`glass-card-hover flex h-full flex-col p-6 ${interactive ? "cursor-pointer" : ""}`}
+        onClick={onClick}
+        onKeyDown={handleKeyDown}
+        role={interactive ? "button" : undefined}
+        tabIndex={interactive ? 0 : undefined}
+        aria-label={
+          interactive ? `Learn more about ${service.title}` : undefined
+        }
+      >
+        <CardContent service={service} hasWalkthrough={interactive} />
       </div>
     );
   }
@@ -53,19 +72,32 @@ export function ServiceCard({ service }: ServiceCardProps) {
       }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
+      onClick={onClick}
+      onKeyDown={handleKeyDown}
+      role={interactive ? "button" : undefined}
+      tabIndex={interactive ? 0 : undefined}
+      aria-label={
+        interactive ? `Learn more about ${service.title}` : undefined
+      }
       style={{
         rotateX,
         rotateY,
         transformPerspective: 800,
       }}
-      className="glass-card flex h-full flex-col p-6"
+      className={`glass-card flex h-full flex-col p-6 ${interactive ? "cursor-pointer" : ""}`}
     >
-      <CardContent service={service} />
+      <CardContent service={service} hasWalkthrough={interactive} />
     </motion.div>
   );
 }
 
-function CardContent({ service }: { service: Service }) {
+function CardContent({
+  service,
+  hasWalkthrough,
+}: {
+  service: Service;
+  hasWalkthrough: boolean;
+}) {
   return (
     <>
       <ServiceIcon icon={service.icon} />
@@ -94,15 +126,23 @@ function CardContent({ service }: { service: Service }) {
         ))}
       </ul>
 
-      <Link
-        href="/intake"
-        className="mt-6 inline-flex items-center text-sm font-medium text-primary transition-colors hover:text-cyan-hover"
-      >
-        Get Started
-        <span className="ml-1" aria-hidden="true">
-          &rarr;
+      {hasWalkthrough ? (
+        <span className="mt-6 inline-flex items-center text-sm font-medium text-primary transition-colors hover:text-cyan-hover">
+          See Our Process
+          <ChevronRight className="ml-1 h-4 w-4" aria-hidden="true" />
         </span>
-      </Link>
+      ) : (
+        <Link
+          href="/intake"
+          className="mt-6 inline-flex items-center text-sm font-medium text-primary transition-colors hover:text-cyan-hover"
+          onClick={(e) => e.stopPropagation()}
+        >
+          Get Started
+          <span className="ml-1" aria-hidden="true">
+            &rarr;
+          </span>
+        </Link>
+      )}
     </>
   );
 }
