@@ -1,8 +1,8 @@
 # BuiltByBas — Handoff Document
 
-> **Last Updated:** 2026-03-03 (Session 24)
-> **Status:** LIVE AT builtbybas.com — All 16 BBB demo systems BUILT. `bbbprojects/demos/` is a standalone Next.js app (port 3010) with all 16 systems compiled and running. All 16 added to portfolio.ts. Main: 163/163 tests, 56-route build. Demo platform: 17-route build (home + 16 systems). tsc clean both.
-> **Next Session:** Deploy the demo platform to VPS on a subdomain (demos.builtbybas.com or similar), wire portfolio links, start Phase 6 (Client Portal) or continue demo polish
+> **Last Updated:** 2026-03-03 (Session 25)
+> **Status:** LIVE AT builtbybas.com — Portfolio demo overhaul IN PROGRESS. Phase 0-2 complete (quick fixes + color shift + subcategories). 3 of 12 new industry demos built (ShopBoard, LedgerDesk, TicketFlow). 9 remaining. Main: 163/163 tests, 56-route build, tsc clean.
+> **Next Session:** Continue building demos 4-12 (ShelfWise, SweetCounter, CornerKeep, DispatchPro, PawSchedule, FilingDesk, ClassPulse, StudyPath, AccessLens), then wire portfolio entries + DemoRenderer mappings
 
 ---
 
@@ -521,30 +521,56 @@ Dark, premium, cutting-edge. The site itself IS the portfolio piece. Every inter
 - **pnpm workspace:** Added `"bbbprojects/demos"` to `pnpm-workspace.yaml` packages list.
 - **Not yet committed** — commit and push before next session.
 
+**Session 25 (Portfolio Demo Overhaul — Color Shift + 3 New Industry Demos):**
+
+- **Plan created:** Molecular-granularity plan for 12 new industry-specific demos across 4 new subcategories (Service, Storefront, Education, UD/UDL). Full buyer personas, pain points, palettes, wireframes, data models, interaction specs per demo. Plan file: `C:\Users\basro\.claude\plans\crystalline-gathering-meadow.md`.
+- **Phase 0A — Filter rename:** "ALL" tab → "LIVE" in `ProjectFilter.tsx`. Internal value stays `"all"`, only display label changed.
+- **Phase 0B — Capability fix:** Changed "AI Fit Scoring" → "AI Summarizations" on All Beauty Hair Studio in `portfolio.ts`.
+- **Phase 1 — Color shift:** Shifted shared demo components from electric cyan to warmer sky blue. `DemoGlassButton.tsx`: `cyan-400` → `sky-500/sky-400`. `DemoSearchBar.tsx`: `cyan-400` → `sky-500`. `DemoPageHeader.tsx`: added `blue` color option to type and colorMap.
+- **Phase 2 — Subcategories:** Added `service`, `storefront`, `education`, `udl` to `conceptSubcategories` in `portfolio.ts`.
+- **Demo 1: ShopBoardDemo.tsx** — Ironside Motors auto repair work order board. Kanban with 5 status columns, 4-bay grid, labor timers, parts tracking, search, new work order modal. Amber/steel palette. 348 lines.
+- **Demo 2: LedgerDeskDemo.tsx** — Clearview Bookkeeping client ledger. 3-tab layout (Roster, Ledger, Deadlines). 6 clients, 8 journal entries (balanced debits/credits), 5 deadlines with urgency. Navy/blue palette. 275 lines.
+- **Demo 3: TicketFlowDemo.tsx** — Rosie's Corner Diner kitchen display. 4-tab layout (Tickets, Table Map, 86 Board, Sales). Live 1-second timers, 8 tickets, 12-table grid, 86'd items. Red/yellow diner palette. 304 lines.
+- **TypeScript fixes:** Fixed `demoCardHover.whileHover` → `.hover` across all 3 demos. Fixed `color="orange"` → `"amber"` for DemoStatCard. Fixed onClick type mismatch in LedgerDeskDemo.
+- **Verification:** 163/163 tests pass. tsc clean. Build clean (56 routes).
+
 ---
 
 ### What's Next
 
-**BBB Demo Platform — Next Steps (top priority):**
-1. Commit and push all Session 24 changes (main + bbbprojects/demos)
-2. Deploy `bbbprojects/demos/` to VPS — add PM2 process on port 3010, add Nginx server block for `demos.builtbybas.com`
-3. Wire portfolio links in builtbybas.com — update portfolio entries with real demo URLs once deployed
-4. Take screenshots of each demo and add to `public/portfolio/demos/` — wire `image` + `gallery` fields
-5. Polish pass on demos — add missing pages (detail views per item), more animation variety
+**Portfolio Demo Overhaul — Continue (top priority):**
+1. Build remaining 9 demos (in this order):
+   - ShelfWise (Community Library System — storefront)
+   - SweetCounter (Candy Shop POS — storefront)
+   - CornerKeep (General Store Inventory — storefront)
+   - DispatchPro (Plumbing/HVAC Dispatch — service)
+   - PawSchedule (Pet Grooming & Boarding — service)
+   - FilingDesk (Tax Preparer Tracker — service)
+   - ClassPulse (Teacher Classroom Dashboard — education)
+   - StudyPath (Student Progress Dashboard — education)
+   - AccessLens (UDL Toolkit — udl)
+2. Add all 12 portfolio entries to `portfolio.ts` with full descriptions, capabilities, scope
+3. Register all 12 in `DemoRenderer.tsx` with dynamic imports
+4. Final verification: all tests pass, build clean, tsc clean, every interaction tested
+
+**BBB Demo Platform:**
+5. Deploy `bbbprojects/demos/` to VPS — add PM2 process on port 3010, Nginx for `demos.builtbybas.com`
+6. Wire portfolio links with real demo URLs once deployed
+7. Take screenshots and wire `image` + `gallery` fields
 
 **Portfolio:**
-6. Wire up KAR CRM images (`image` + `gallery` fields in portfolio.ts) and add real health grades
-7. Delete `portfolio - Shortcut.lnk` from colourparlor folder (Windows shortcut, never commit)
-8. Fix SSH key on local dev machine so deploys don't require Hostinger terminal
+8. Wire up KAR CRM images and add real health grades
+9. Delete `portfolio - Shortcut.lnk` from colourparlor folder (Windows shortcut, never commit)
+10. Fix SSH key on local dev machine so deploys don't require Hostinger terminal
 
 **Phase 6 — Client Portal:**
-9. Client-facing portal (project status, invoices, communication)
-10. Invoice PDF generation
-11. Email notifications for invoice/proposal status changes
+11. Client-facing portal (project status, invoices, communication)
+12. Invoice PDF generation
+13. Email notifications for invoice/proposal status changes
 
 **Improvements:**
-12. Fix SSH key access from local dev machine to VPS (currently using HTTPS workaround)
-13. Run `pm2 startup && pm2 save` on VPS for auto-restart on reboot
+14. Fix SSH key access from local dev machine to VPS (currently using HTTPS workaround)
+15. Run `pm2 startup && pm2 save` on VPS for auto-restart on reboot
 
 ### Notes
 

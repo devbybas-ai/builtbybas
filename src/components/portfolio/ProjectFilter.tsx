@@ -14,7 +14,7 @@ interface ProjectFilterProps {
 }
 
 const allCategories = [
-  { id: "all" as const, label: "All" },
+  { id: "all" as const, label: "Live" },
   ...categoryMeta.map((c) => ({ id: c.id, label: c.label })),
 ];
 

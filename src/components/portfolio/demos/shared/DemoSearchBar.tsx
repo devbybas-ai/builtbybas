@@ -19,7 +19,7 @@ export function DemoSearchBar({ value, onChange, placeholder = "Search..." }: De
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="w-full demo-glass rounded-lg pl-8 pr-8 py-2 text-sm text-white placeholder-white/20 outline-none focus:border-cyan-400/30 transition-colors"
+        className="w-full demo-glass rounded-lg pl-8 pr-8 py-2 text-sm text-white placeholder-white/20 outline-none focus:border-sky-500/30 transition-colors"
         style={{ border: "1px solid rgba(255,255,255,0.08)" }}
       />
       {value && (

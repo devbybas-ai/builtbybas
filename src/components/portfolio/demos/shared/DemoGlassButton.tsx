@@ -16,7 +16,7 @@ interface DemoGlassButtonProps {
 }
 
 const variants = {
-  primary: "bg-cyan-400/15 hover:bg-cyan-400/25 text-cyan-400 border-cyan-400/30",
+  primary: "bg-sky-500/15 hover:bg-sky-500/25 text-sky-400 border-sky-500/30",
   secondary: "bg-white/5 hover:bg-white/10 text-white/70 hover:text-white border-white/10",
   danger: "bg-rose-500/15 hover:bg-rose-500/25 text-rose-400 border-rose-500/30",
   ghost: "bg-transparent hover:bg-white/5 text-white/50 hover:text-white border-transparent",

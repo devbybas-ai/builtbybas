@@ -8,7 +8,7 @@ interface DemoPageHeaderProps {
   title: string;
   subtitle?: string;
   icon: LucideIcon;
-  color?: "cyan" | "violet" | "emerald" | "amber" | "rose";
+  color?: "cyan" | "violet" | "emerald" | "amber" | "rose" | "blue";
   action?: React.ReactNode;
 }
 
@@ -18,6 +18,7 @@ const colorMap = {
   emerald: { icon: "text-emerald-400", bg: "rgba(16,185,129,0.1)", ring: "rgba(16,185,129,0.3)" },
   amber: { icon: "text-amber-400", bg: "rgba(245,158,11,0.1)", ring: "rgba(245,158,11,0.3)" },
   rose: { icon: "text-rose-400", bg: "rgba(244,63,94,0.1)", ring: "rgba(244,63,94,0.3)" },
+  blue: { icon: "text-blue-400", bg: "rgba(59,130,246,0.1)", ring: "rgba(59,130,246,0.3)" },
 };
 
 export function DemoPageHeader({ title, subtitle, icon: Icon, color = "cyan", action }: DemoPageHeaderProps) {

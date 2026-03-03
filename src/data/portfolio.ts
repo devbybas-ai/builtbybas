@@ -191,7 +191,7 @@ export const projects: PortfolioProject[] = [
     capabilities: [
       "Personal Brand Platform",
       "7-Step Client Intake",
-      "AI Fit Scoring",
+      "AI Summarizations",
       "Kanban Pipeline",
       "Client CRM",
       "Multi-Business Admin",
@@ -1054,5 +1054,9 @@ export const conceptSubcategories = [
   { id: "operations", label: "Operations" },
   { id: "client", label: "Client-Facing" },
   { id: "specialty", label: "Specialty" },
+  { id: "service", label: "Service" },
+  { id: "storefront", label: "Storefront" },
+  { id: "education", label: "Education" },
+  { id: "udl", label: "UD/UDL" },
   { id: "animation", label: "Animation" },
 ] as const;
