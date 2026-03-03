@@ -13,8 +13,8 @@ import { demoStaggerContainer, demoStaggerItem, demoFadeUp, demoSprings } from "
 import { demoGetRelativeTime, demoGetInitials } from "@/lib/demo-utils";
 import { announcements, employees, companyDocs, intranetNotifications } from "@/data/demo-seed";
 
-// Meridian card style — slate, not glassmorphism
-const mc = "bg-slate-800/50 border border-slate-700/40 rounded-lg";
+// Meridian corporate card — deep navy, soft shadow, rounded
+const mc = "bg-[#162033] border border-[#1e3050] rounded-xl shadow-sm shadow-black/20";
 
 const categoryColors: Record<string, string> = {
   Company: "text-blue-300 bg-blue-400/15", HR: "text-violet-300 bg-violet-400/15",
@@ -94,36 +94,40 @@ export function IntranetDemo() {
 
   return (
     <DemoPageWrapper>
-      {/* Meridian branded shell */}
-      <div className="bg-slate-900/80 rounded-2xl border border-slate-700/30 overflow-hidden shadow-2xl shadow-blue-950/20">
+      {/* Meridian corporate shell */}
+      <div className="bg-[#0d1626] rounded-2xl border border-[#1a2a44] overflow-hidden shadow-2xl shadow-black/30">
 
-        {/* ── Blue gradient header bar ── */}
-        <div className="bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-500 px-5 py-3">
+        {/* ── Corporate header bar — solid navy ── */}
+        <div className="bg-[#0f1d35] border-b border-[#1a2a44] px-6 py-3.5">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-white/20 backdrop-blur flex items-center justify-center">
-                <Building2 className="w-4.5 h-4.5 text-white" />
+              <div className="w-8 h-8 rounded-lg bg-blue-500 flex items-center justify-center">
+                <Building2 className="w-4 h-4 text-white" />
               </div>
-              <div>
+              <div className="border-r border-[#1a2a44] pr-4">
                 <div className="text-sm font-bold text-white tracking-wide">MERIDIAN</div>
-                <div className="text-[10px] text-blue-100/60">Company Intranet</div>
               </div>
+              <nav className="hidden sm:flex items-center gap-1 text-xs">
+                <span className="px-2.5 py-1 rounded-md bg-blue-500/15 text-blue-300 font-medium">Home</span>
+                <span className="px-2.5 py-1 rounded-md text-slate-400 hover:text-slate-200 cursor-pointer transition-colors">People</span>
+                <span className="px-2.5 py-1 rounded-md text-slate-400 hover:text-slate-200 cursor-pointer transition-colors">Docs</span>
+                <span className="px-2.5 py-1 rounded-md text-slate-400 hover:text-slate-200 cursor-pointer transition-colors">Apps</span>
+              </nav>
             </div>
             <div className="flex items-center gap-3">
-              <span className="text-xs text-blue-100/70 hidden sm:block">Good morning, Sarah</span>
-              <div className="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center text-[10px] font-bold text-white">SK</div>
+              <div className="w-7 h-7 rounded-full bg-blue-500/20 border border-blue-400/30 flex items-center justify-center text-[10px] font-bold text-blue-300">SK</div>
               <div className="relative">
                 <motion.button onClick={() => setShowNotifs(!showNotifs)} whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} className="relative">
-                  <Bell className="w-4.5 h-4.5 text-white/80 hover:text-white" />
+                  <Bell className="w-4.5 h-4.5 text-slate-400 hover:text-slate-200" />
                   {activeNotifs.length > 0 && (
-                    <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-rose-400 rounded-full text-[8px] flex items-center justify-center text-white font-bold">{activeNotifs.length}</span>
+                    <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-blue-500 rounded-full text-[8px] flex items-center justify-center text-white font-bold">{activeNotifs.length}</span>
                   )}
                 </motion.button>
                 <AnimatePresence>
                   {showNotifs && (
                     <motion.div
                       initial={{ opacity: 0, y: -8, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: -8, scale: 0.95 }}
-                      transition={demoSprings.snappy} className={`absolute right-0 top-8 w-72 ${mc} p-3 z-50 space-y-2 bg-slate-800 border-slate-600/50`}
+                      transition={demoSprings.snappy} className="absolute right-0 top-8 w-72 bg-[#162033] border border-[#1e3050] rounded-xl shadow-lg shadow-black/40 p-3 z-50 space-y-2"
                     >
                       <div className="text-xs font-semibold text-slate-300 mb-1">Notifications</div>
                       {activeNotifs.length === 0 ? (
@@ -147,35 +151,45 @@ export function IntranetDemo() {
         </div>
 
         {/* ── Content area ── */}
-        <div className="p-5 space-y-5">
+        <div className="p-6 space-y-6">
 
-          {/* Stats row — custom Meridian style, no shared DemoStatCard */}
-          <motion.div variants={demoStaggerContainer} initial="hidden" animate="visible" className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+          {/* Welcome banner */}
+          <motion.div variants={demoFadeUp} className="flex items-center justify-between">
+            <div>
+              <h2 className="text-lg font-semibold text-white">Good morning, Sarah</h2>
+              <p className="text-sm text-slate-400 mt-0.5">Tuesday, March 11, 2026 — Here&apos;s what&apos;s happening at Meridian today.</p>
+            </div>
+            <div className="hidden sm:flex items-center gap-1.5 text-[10px] text-slate-500">
+              <div className="w-2 h-2 rounded-full bg-emerald-400" />
+              <span>{employees.filter((e) => e.status === "online").length} online</span>
+            </div>
+          </motion.div>
+
+          {/* KPI strip */}
+          <motion.div variants={demoStaggerContainer} initial="hidden" animate="visible" className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {[
-              { icon: Users, label: "Team Members", value: employees.length, accent: "text-blue-400", bg: "bg-blue-500/10" },
-              { icon: Megaphone, label: "Announcements", value: announcements.length, accent: "text-violet-400", bg: "bg-violet-500/10", extra: `${acknowledged.size} read` },
-              { icon: FolderOpen, label: "Documents", value: companyDocs.length, accent: "text-emerald-400", bg: "bg-emerald-500/10" },
-              { icon: Briefcase, label: "Departments", value: new Set(employees.map((e) => e.dept)).size, accent: "text-amber-400", bg: "bg-amber-500/10" },
+              { icon: Users, label: "Team Members", value: employees.length, accent: "text-blue-400", border: "border-t-blue-500" },
+              { icon: Megaphone, label: "Announcements", value: announcements.length, accent: "text-violet-400", border: "border-t-violet-500", extra: `${acknowledged.size} read` },
+              { icon: FolderOpen, label: "Documents", value: companyDocs.length, accent: "text-emerald-400", border: "border-t-emerald-500" },
+              { icon: Briefcase, label: "Departments", value: new Set(employees.map((e) => e.dept)).size, accent: "text-amber-400", border: "border-t-amber-500" },
             ].map((s) => (
-              <motion.div key={s.label} variants={demoStaggerItem} className={`${mc} p-4`}>
-                <div className={`w-8 h-8 rounded-lg ${s.bg} flex items-center justify-center mb-3`}>
+              <motion.div key={s.label} variants={demoStaggerItem} className={`${mc} p-4 border-t-2 ${s.border}`}>
+                <div className="flex items-center justify-between mb-3">
                   <s.icon className={`w-4 h-4 ${s.accent}`} />
+                  {s.extra && <span className="text-[10px] text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded-full">↑ {s.extra}</span>}
                 </div>
                 <div className="text-2xl font-bold text-white">{s.value}</div>
-                <div className="flex items-center gap-2">
-                  <span className="text-[11px] text-slate-400">{s.label}</span>
-                  {s.extra && <span className="text-[10px] text-emerald-400/80 bg-emerald-400/10 px-1.5 py-0.5 rounded-full">↑ {s.extra}</span>}
-                </div>
+                <div className="text-[11px] text-slate-400 mt-0.5">{s.label}</div>
               </motion.div>
             ))}
           </motion.div>
 
           {/* Main content grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2 space-y-4">
 
-              {/* Tab bar — slate segmented control */}
-              <motion.div variants={demoFadeUp} className="flex items-center gap-1 bg-slate-800/40 border border-slate-700/30 rounded-lg p-1">
+              {/* Tab bar — corporate segmented control */}
+              <motion.div variants={demoFadeUp} className="flex items-center gap-1 bg-[#0d1626] border border-[#1a2a44] rounded-xl p-1">
                 {([
                   { key: "announcements" as TabKey, label: "Announcements", icon: Megaphone, count: announcements.length },
                   { key: "directory" as TabKey, label: "Directory", icon: Users, count: employees.length },
@@ -184,11 +198,11 @@ export function IntranetDemo() {
                   const active = activeTab === tab.key;
                   const Icon = tab.icon;
                   return (
-                    <button key={tab.key} onClick={() => setActiveTab(tab.key)} className={`relative flex-1 flex items-center justify-center gap-1.5 py-2 rounded-md text-xs font-medium transition-colors ${active ? "text-blue-300" : "text-slate-500 hover:text-slate-300"}`}>
-                      {active && <motion.div layoutId="meridian-tab" className="absolute inset-0 bg-blue-500/15 border border-blue-400/20 rounded-md" transition={demoSprings.snappy} />}
+                    <button key={tab.key} onClick={() => setActiveTab(tab.key)} className={`relative flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-xs font-medium transition-colors ${active ? "text-white" : "text-slate-500 hover:text-slate-300"}`}>
+                      {active && <motion.div layoutId="meridian-tab" className="absolute inset-0 bg-[#162033] border border-[#1e3050] rounded-lg shadow-sm shadow-black/20" transition={demoSprings.snappy} />}
                       <Icon size={13} className="relative" />
                       <span className="relative">{tab.label}</span>
-                      <span className={`relative text-[9px] px-1.5 py-0.5 rounded-full ${active ? "bg-blue-400/20 text-blue-300" : "bg-slate-700/50 text-slate-500"}`}>{tab.count}</span>
+                      <span className={`relative text-[9px] px-1.5 py-0.5 rounded-full ${active ? "bg-blue-500/20 text-blue-300" : "bg-[#162033] text-slate-500"}`}>{tab.count}</span>
                     </button>
                   );
                 })}
@@ -266,10 +280,10 @@ export function IntranetDemo() {
                       <div className="relative flex-1">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
                         <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search people..."
-                          className="w-full bg-slate-800/60 border border-slate-700/40 rounded-lg py-2 pl-9 pr-3 text-sm text-slate-200 placeholder:text-slate-500 outline-none focus:border-blue-500/50" style={{ colorScheme: "dark" }} />
+                          className="w-full bg-[#0d1626] border border-[#1a2a44] rounded-xl py-2.5 pl-9 pr-3 text-sm text-slate-200 placeholder:text-slate-500 outline-none focus:border-blue-500/40 transition-colors" style={{ colorScheme: "dark" }} />
                       </div>
-                      <select value={deptFilter} onChange={(e) => setDeptFilter(e.target.value)} className="bg-slate-800/60 border border-slate-700/40 rounded-lg px-3 py-2 text-xs text-slate-300 outline-none focus:border-blue-500/50" style={{ colorScheme: "dark" }}>
-                        {depts.map((d) => <option key={d} value={d} style={{ background: "#1e293b" }}>{d}</option>)}
+                      <select value={deptFilter} onChange={(e) => setDeptFilter(e.target.value)} className="bg-[#0d1626] border border-[#1a2a44] rounded-xl px-3 py-2.5 text-xs text-slate-300 outline-none focus:border-blue-500/40 transition-colors" style={{ colorScheme: "dark" }}>
+                        {depts.map((d) => <option key={d} value={d} style={{ background: "#0d1626" }}>{d}</option>)}
                       </select>
                     </div>
                     <motion.div variants={demoStaggerContainer} initial="hidden" animate="visible" className="space-y-2">
@@ -305,7 +319,7 @@ export function IntranetDemo() {
                   <motion.div key="docs" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={demoSprings.smooth} className="space-y-3">
                     <div className="flex flex-wrap gap-1.5">
                       {docCategories.map((cat) => (
-                        <button key={cat} onClick={() => setDocFilter(cat)} className={`text-[10px] font-medium px-2.5 py-1 rounded-full border transition-colors ${docFilter === cat ? "bg-blue-500/20 text-blue-300 border-blue-400/30" : "bg-slate-800/50 text-slate-500 border-slate-700/40 hover:border-slate-600"}`}>
+                        <button key={cat} onClick={() => setDocFilter(cat)} className={`text-[10px] font-medium px-3 py-1.5 rounded-lg border transition-colors ${docFilter === cat ? "bg-blue-500/15 text-blue-300 border-blue-500/30" : "bg-[#0d1626] text-slate-500 border-[#1a2a44] hover:border-[#2a3a54]"}`}>
                           {cat}
                         </button>
                       ))}
@@ -423,7 +437,7 @@ export function IntranetDemo() {
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setSelectedEmployee(null)}>
               <motion.div
                 initial={{ opacity: 0, scale: 0.92, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.92, y: 20 }}
-                transition={demoSprings.smooth} className="bg-slate-800 border border-slate-700/50 rounded-2xl p-6 w-full max-w-sm shadow-xl" onClick={(e) => e.stopPropagation()}
+                transition={demoSprings.smooth} className="bg-[#162033] border border-[#1e3050] rounded-2xl p-6 w-full max-w-sm shadow-2xl shadow-black/40" onClick={(e) => e.stopPropagation()}
               >
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center gap-3">
@@ -431,14 +445,14 @@ export function IntranetDemo() {
                       <motion.div className="w-14 h-14 rounded-full flex items-center justify-center text-xl font-bold bg-blue-500/20 text-blue-300" animate={{ scale: [1, 1.05, 1] }} transition={{ duration: 2, repeat: Infinity }}>
                         {demoGetInitials(selectedEmployee.name)}
                       </motion.div>
-                      <div className={`absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full border-2 border-slate-800 ${sc.dot}`} />
+                      <div className={`absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full border-2 border-[#162033] ${sc.dot}`} />
                     </div>
                     <div>
                       <h2 className="font-bold text-slate-100">{selectedEmployee.name}</h2>
                       <p className="text-xs text-slate-400">{selectedEmployee.title}</p>
                       <div className="flex items-center gap-2 mt-1">
-                        <span className="text-[9px] px-2 py-0.5 rounded-full text-blue-300 bg-blue-500/15 font-medium">{selectedEmployee.dept}</span>
-                        <span className={`text-[9px] px-2 py-0.5 rounded-full ${sc.text} bg-slate-700/50 font-medium`}>{sc.label}</span>
+                        <span className="text-[9px] px-2 py-0.5 rounded-md text-blue-300 bg-blue-500/15 font-medium">{selectedEmployee.dept}</span>
+                        <span className={`text-[9px] px-2 py-0.5 rounded-md ${sc.text} bg-[#0d1626] font-medium`}>{sc.label}</span>
                       </div>
                     </div>
                   </div>
@@ -462,10 +476,10 @@ export function IntranetDemo() {
                   })}
                 </div>
                 <div className="flex gap-2 mt-5">
-                  <motion.button onClick={() => setSelectedEmployee(null)} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="flex-1 flex items-center justify-center gap-2 bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 border border-blue-400/30 rounded-lg py-2 text-sm font-medium transition-colors">
+                  <motion.button onClick={() => setSelectedEmployee(null)} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="flex-1 flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-600 text-white rounded-xl py-2.5 text-sm font-medium transition-colors">
                     <Mail size={14} /> Email
                   </motion.button>
-                  <motion.button onClick={() => setSelectedEmployee(null)} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="flex-1 flex items-center justify-center gap-2 bg-slate-700/50 hover:bg-slate-700 text-slate-300 hover:text-slate-100 border border-slate-600/40 rounded-lg py-2 text-sm font-medium transition-colors">
+                  <motion.button onClick={() => setSelectedEmployee(null)} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="flex-1 flex items-center justify-center gap-2 bg-[#0d1626] hover:bg-[#1a2a44] text-slate-300 hover:text-white border border-[#1e3050] rounded-xl py-2.5 text-sm font-medium transition-colors">
                     <Phone size={14} /> Call
                   </motion.button>
                 </div>
