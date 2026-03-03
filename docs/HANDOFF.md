@@ -1,8 +1,8 @@
 # BuiltByBas — Handoff Document
 
-> **Last Updated:** 2026-03-01 (Session 20)
-> **Status:** LIVE AT builtbybas.com — Hero animation overhaul: center hub energize pulse on particle arrival, organic PCB chip activity with permanent right-angle traces, progress-bar data flow from hub to opposite-side chips. Hero subtitle updated. 163 tests, 50-route build.
-> **Next Session:** Client portal, invoice PDF generation, SSH key fix for local dev machine
+> **Last Updated:** 2026-03-03 (Session 21)
+> **Status:** LIVE AT builtbybas.com — Portfolio grades updated with real Lighthouse data, CRM images added, BuiltByBas wordmark with cyan neon glow, brand assets committed. 163 tests, 40-route build.
+> **Next Session:** Wire up KAR CRM images + grades, client portal, invoice PDF generation, SSH key fix for local dev machine
 
 ---
 
@@ -444,20 +444,45 @@ Dark, premium, cutting-edge. The site itself IS the portfolio piece. Every inter
 - `pnpm build` — 50 routes, 0 type errors
 - Production ready for deploy
 
+**Session 21 (Portfolio Grades + Brand Wordmark):**
+
+- **Real Lighthouse grades imported:** Updated `portfolio.ts` health scores for 3 projects with verified Lighthouse audit results:
+  - The Colour Parlor: 100/100/100/100 — desktop + mobile (both perfect). All healthChecklist items set to true.
+  - Orca Child in the Wild: 100/96/96/100 — Best Practices + SEO perfect, Performance 96 mobile/100 desktop, Accessibility 96 both.
+  - Praxis Library: 100/98/97/100 — Best Practices + SEO perfect, Accessibility 98 both, Performance 97 mobile/100 desktop.
+- **BuiltByBas grades confirmed:** 100/100/100/100 — already correct, verified by user.
+- **KAR CRM images added:** 9 screenshots added to `public/portfolio/CRM/` — not yet wired to portfolio.ts (no `image`/`gallery` fields yet).
+- **BuiltByBas wordmark:** `Built` (cyan) `By` (white) `Bas` (cyan) with static neon text-shadow glow (`neon-text` CSS class). Applied to PublicHeader and PublicFooter. No pulse animation on the wordmark.
+- **BrandIcon SVG component:** Created `src/components/brand/BrandIcon.tsx` — stacked isometric PCB layers with cyan glow, white "B". Saved for future use but not currently applied.
+- **Logo asset:** `public/logo/builtbybaslogo.png` — transparent background logo committed as brand asset.
+- **CSS additions:** `neon-text` class (static text-shadow glow) and `neon-text-pulse` keyframe added to `globals.css`.
+- Commits: `d754561` (grades + CRM images), `1e275cd` (wordmark + brand assets). Pushed to GitHub.
+- **Build:** 163/163 tests, 40-route build clean.
+
+**Leftover untracked files (not committed — needs decision):**
+- `public/portfolio/colourparlor/colourparloreditstylist.webp.png` — double extension, not wired to gallery
+- `public/portfolio/colourparlor/colourparloreditstylistb.webp.png` — same
+- `public/portfolio/colourparlor/lighthousescore.png` / `lighthousescoremobile.png` — Lighthouse audit refs
+- `public/portfolio/colourparlor/treemap.png` / `inline.png` — JS bundle audit artifacts
+- `public/portfolio/colourparlor/portfolio - Shortcut.lnk` — Windows shortcut, delete this
+
+---
+
 ### What's Next
 
-**Phase 6 — Client Portal:**
-1. Client-facing portal (project status, invoices, communication)
-2. Invoice PDF generation
-3. Email notifications for invoice/proposal status changes
+**Portfolio:**
+1. Wire up KAR CRM images (`image` + `gallery` fields in portfolio.ts) and add health grades
+2. Rename/fix double-extension files: `colourparloreditstylist.webp.png` → decide if they go in gallery
+3. Delete `portfolio - Shortcut.lnk` from colourparlor folder
 
-**Portfolio Enhancements:**
-4. Gallery screenshots for remaining projects (All Beauty, Praxis Library, Colour Parlor — currently single image)
-5. Screenshots for KAR CRM once it's back up
+**Phase 6 — Client Portal:**
+4. Client-facing portal (project status, invoices, communication)
+5. Invoice PDF generation
+6. Email notifications for invoice/proposal status changes
 
 **Improvements:**
-6. Fix SSH key access from local dev machine to VPS (currently using HTTPS workaround)
-7. Run `pm2 startup && pm2 save` on VPS for auto-restart on reboot
+7. Fix SSH key access from local dev machine to VPS (currently using HTTPS workaround)
+8. Run `pm2 startup && pm2 save` on VPS for auto-restart on reboot
 
 ### Notes
 
