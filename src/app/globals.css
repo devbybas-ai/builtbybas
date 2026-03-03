@@ -185,6 +185,13 @@
     animation: neon-pulse 3s ease-in-out infinite;
   }
 
+  .neon-text {
+    text-shadow:
+      0 0 8px rgba(0, 212, 255, 0.8),
+      0 0 20px rgba(0, 212, 255, 0.5),
+      0 0 40px rgba(0, 212, 255, 0.25);
+  }
+
   .text-gradient {
     background: linear-gradient(135deg, #00D4FF 0%, #0EA5E9 50%, #00D4FF 100%);
     -webkit-background-clip: text;
@@ -258,6 +265,22 @@
       0 0 18px rgba(0, 212, 255, 0.5),
       0 0 36px rgba(0, 212, 255, 0.3),
       0 0 60px rgba(0, 212, 255, 0.15);
+  }
+}
+
+@keyframes neon-text-pulse {
+  0%,
+  100% {
+    text-shadow:
+      0 0 8px rgba(0, 212, 255, 0.8),
+      0 0 20px rgba(0, 212, 255, 0.5),
+      0 0 40px rgba(0, 212, 255, 0.25);
+  }
+  50% {
+    text-shadow:
+      0 0 12px rgba(0, 212, 255, 1),
+      0 0 30px rgba(0, 212, 255, 0.7),
+      0 0 60px rgba(0, 212, 255, 0.4);
   }
 }
 

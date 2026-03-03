@@ -22,9 +22,9 @@ export function PublicHeader() {
       >
         <Link
           href="/"
-          className="text-xl font-bold tracking-tight text-foreground"
+          className="neon-text text-xl font-bold tracking-tight text-foreground"
         >
-          Built<span className="text-primary">By</span>Bas
+          <span className="text-primary">Built</span>By<span className="text-primary">Bas</span>
         </Link>
 
         {/* Desktop nav */}

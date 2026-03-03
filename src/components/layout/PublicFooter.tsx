@@ -15,13 +15,10 @@ export function PublicFooter() {
           <div>
             <Link
               href="/"
-              className="text-xl font-bold tracking-tight text-foreground"
+              className="neon-text text-xl font-bold tracking-tight text-foreground"
             >
-              Built<span className="text-primary">By</span>Bas
+              <span className="text-primary">Built</span>By<span className="text-primary">Bas</span>
             </Link>
-            <p className="mt-2 text-sm text-muted-foreground">
-              Veteran-backed custom software &amp; web development.
-            </p>
           </div>
 
           <nav aria-label="Footer navigation">
