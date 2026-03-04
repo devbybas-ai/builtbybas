@@ -36,8 +36,14 @@ const mockAnalysis: IntakeAnalysis = {
     businessSize: "6-20",
     website: "https://acme.com",
     yearsInBusiness: "5",
-    selectedServices: ["marketing-websites"],
-    serviceAnswers: {},
+    selectedServices: ["marketing-website"],
+    serviceAnswers: {
+      "marketing-website": {
+        aboutBusiness: "We are a professional consulting firm serving mid-market companies.",
+        currentChallenge: "Our current site is outdated and doesn't generate leads.",
+        successVision: "We want a site that positions us as industry leaders and drives inbound.",
+      },
+    },
     timeline: "1-3-months",
     budgetRange: "5k-15k",
     designPreference: "modern",
@@ -45,6 +51,9 @@ const mockAnalysis: IntakeAnalysis = {
     additionalNotes: "Looking for a complete refresh",
     howDidYouHear: "referral",
     preferredContact: "email",
+    brandColors: "",
+    competitorSites: "",
+    inspirationSites: "",
   },
   clientProfile: {
     businessMaturity: { score: 70, label: "High", signals: ["Established business"] },
@@ -59,15 +68,15 @@ const mockAnalysis: IntakeAnalysis = {
       serviceTitle: "Marketing Websites",
       fitScore: 90,
       fitLabel: "Strong Fit",
-      reasons: ["Direct match to selected service", "Budget aligns with range"],
+      reasons: ["Directly selected service", "Budget aligns with range"],
       estimatedRange: "$2,500 - $8,000",
       isPrimary: true,
     },
     {
       serviceId: "crm-systems",
       serviceTitle: "CRM Systems",
-      fitScore: 40,
-      fitLabel: "Partial Fit",
+      fitScore: 55,
+      fitLabel: "Good Fit",
       reasons: ["Could benefit from client tracking"],
       estimatedRange: "$8,000 - $25,000",
       isPrimary: false,
@@ -117,7 +126,7 @@ describe("proposal-generator", () => {
       expect(result.content).toContain("## Executive Summary");
       expect(result.services.length).toBeGreaterThan(0);
       expect(result.estimatedBudgetCents).toBeGreaterThan(0);
-      expect(result.timeline).toBe("4-6 weeks");
+      expect(result.timeline).toBe("3-5 weeks");
     });
 
     it("includes all major sections in content", () => {
@@ -133,10 +142,16 @@ describe("proposal-generator", () => {
       expect(result.content).toContain("## Terms");
     });
 
-    it("only includes services with fitScore >= 50", () => {
+    it("only includes services the client selected", () => {
       const result = generateProposal(mockAnalysis, mockServices);
       expect(result.services.length).toBe(1);
       expect(result.services[0].serviceId).toBe("marketing-websites");
+    });
+
+    it("shows unselected high-fit services as future opportunities", () => {
+      const result = generateProposal(mockAnalysis, mockServices);
+      expect(result.content).toContain("## Future Opportunities");
+      expect(result.content).toContain("CRM Systems");
     });
 
     it("includes company name in content", () => {
@@ -150,10 +165,9 @@ describe("proposal-generator", () => {
       expect(result.content).toContain("SEO optimization");
     });
 
-    it("includes timeline phases", () => {
+    it("includes timeline phases from selected services", () => {
       const result = generateProposal(mockAnalysis, mockServices);
-      expect(result.content).toContain("Phase 1: Website Design & Development");
-      expect(result.content).toContain("4-6 weeks");
+      expect(result.content).toContain("Phase 1: Marketing Websites (3-5 weeks)");
     });
 
     it("includes RAI footer", () => {
@@ -166,6 +180,20 @@ describe("proposal-generator", () => {
       expect(result.content).toContain("Professional Services");
       expect(result.content).toContain("6-20 people");
       expect(result.content).toContain("1-3 months");
+    });
+
+    it("personalizes scope with client answers", () => {
+      const result = generateProposal(mockAnalysis, mockServices);
+      expect(result.content).toContain("**Your business:**");
+      expect(result.content).toContain("professional consulting firm");
+      expect(result.content).toContain("**The challenge:**");
+      expect(result.content).toContain("**Your vision:**");
+    });
+
+    it("investment matches selected services only", () => {
+      const result = generateProposal(mockAnalysis, mockServices);
+      // Midpoint of $2,500 - $8,000 = $5,250
+      expect(result.estimatedBudgetCents).toBe(525000);
     });
   });
 

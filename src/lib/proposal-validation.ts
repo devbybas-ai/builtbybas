@@ -25,17 +25,27 @@ export const createProposalSchema = z.object({
   validUntil: z.iso.datetime().optional(),
 });
 
-export const updateProposalSchema = z.object({
-  title: z.string().min(1).max(255).optional(),
-  summary: z.string().min(1).max(2000).optional(),
-  content: z.string().min(1).max(100000).optional(),
-  services: z.array(proposalServiceSchema).optional(),
-  estimatedBudgetCents: z.number().int().min(0).nullable().optional(),
-  timeline: z.string().max(255).nullable().optional(),
-  validUntil: z.iso.datetime().nullable().optional(),
-  status: z.enum(["draft", "reviewed", "sent", "accepted", "rejected"]).optional(),
-  rejectionReason: z.string().max(2000).nullable().optional(),
-});
+export const updateProposalSchema = z
+  .object({
+    title: z.string().min(1).max(255).optional(),
+    summary: z.string().min(1).max(2000).optional(),
+    content: z.string().min(1).max(100000).optional(),
+    services: z.array(proposalServiceSchema).optional(),
+    estimatedBudgetCents: z.number().int().min(0).nullable().optional(),
+    timeline: z.string().max(255).nullable().optional(),
+    validUntil: z.iso.datetime().nullable().optional(),
+    status: z
+      .enum(["draft", "reviewed", "sent", "accepted", "rejected"])
+      .optional(),
+    rejectionReason: z.string().max(2000).nullable().optional(),
+  })
+  .refine(
+    (data) =>
+      data.status !== "rejected" ||
+      (typeof data.rejectionReason === "string" &&
+        data.rejectionReason.trim().length > 0),
+    { message: "Rejection reason is required when rejecting a proposal" },
+  );
 
 export const sendProposalSchema = z.object({
   recipientEmail: z.email("Valid email is required"),

@@ -86,23 +86,68 @@ export function ProposalDetailView({
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState("");
 
+  // Rejection dialog
+  const [showRejectDialog, setShowRejectDialog] = useState(false);
+  const [rejectReason, setRejectReason] = useState("");
+  const [rejectError, setRejectError] = useState("");
+
+  // Delete dialog
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
   const statusMeta = getProposalStatusMeta(proposal.status);
   const isExpired =
     proposal.validUntil && new Date(proposal.validUntil) < new Date();
 
   const canEdit = ["draft", "reviewed"].includes(proposal.status);
 
-  async function updateStatus(status: string) {
+  async function updateStatus(status: string, extra?: Record<string, unknown>) {
     setUpdating(true);
     try {
       await fetch(`/api/proposals/${proposal.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status }),
+        body: JSON.stringify({ status, ...extra }),
       });
       router.refresh();
     } finally {
       setUpdating(false);
+    }
+  }
+
+  function handleStatusClick(status: string) {
+    if (status === "rejected") {
+      setRejectReason("");
+      setRejectError("");
+      setShowRejectDialog(true);
+    } else {
+      updateStatus(status);
+    }
+  }
+
+  async function handleReject() {
+    if (!rejectReason.trim()) {
+      setRejectError("Please provide a reason for rejecting this proposal.");
+      return;
+    }
+    setRejectError("");
+    setShowRejectDialog(false);
+    await updateStatus("rejected", { rejectionReason: rejectReason.trim() });
+  }
+
+  async function handleDelete() {
+    setDeleting(true);
+    try {
+      const res = await fetch(`/api/proposals/${proposal.id}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      if (data.success) {
+        router.push("/admin/proposals");
+      }
+    } finally {
+      setDeleting(false);
+      setShowDeleteDialog(false);
     }
   }
 
@@ -225,6 +270,12 @@ export function ProposalDetailView({
           </p>
         </div>
         <div className="flex items-center gap-3">
+          <button
+            onClick={() => setShowDeleteDialog(true)}
+            className="rounded-lg border border-red-500/20 bg-red-500/10 px-4 py-1.5 text-sm font-medium text-red-400 transition-colors hover:bg-red-500/20"
+          >
+            Delete
+          </button>
           {canEdit && !editing && (
             <button
               onClick={startEditing}
@@ -431,7 +482,7 @@ export function ProposalDetailView({
           />
         ) : (
           <div
-            className="proposal-content mt-4 prose prose-invert prose-sm max-w-none"
+            className="proposal-content mt-4"
             dangerouslySetInnerHTML={{
               __html: markdownToHtml(proposal.content),
             }}
@@ -475,7 +526,7 @@ export function ProposalDetailView({
           {PROPOSAL_STATUSES.map((s) => (
             <button
               key={s.value}
-              onClick={() => updateStatus(s.value)}
+              onClick={() => handleStatusClick(s.value)}
               disabled={updating || s.value === proposal.status}
               className={cn(
                 "rounded-full px-3 py-1 text-xs font-medium transition-colors disabled:opacity-40",
@@ -590,6 +641,79 @@ export function ProposalDetailView({
             Proposal sent successfully.
           </p>
         </GlassCard>
+      )}
+
+      {/* Delete Confirmation Dialog */}
+      {showDeleteDialog && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+          <div className="w-full max-w-md rounded-xl border border-white/10 bg-[#0A0A0F] p-6 shadow-2xl">
+            <h2 className="text-lg font-semibold text-red-400">
+              Delete Proposal
+            </h2>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Are you sure you want to permanently delete this proposal? This
+              action cannot be undone.
+            </p>
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                onClick={() => setShowDeleteDialog(false)}
+                className="rounded-lg border border-white/10 px-4 py-2 text-sm font-medium transition-colors hover:bg-white/10"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDelete}
+                disabled={deleting}
+                className="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-red-700 disabled:opacity-50"
+              >
+                {deleting ? "Deleting..." : "Delete Permanently"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Rejection Reason Dialog */}
+      {showRejectDialog && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+          <div className="w-full max-w-md rounded-xl border border-white/10 bg-[#0A0A0F] p-6 shadow-2xl">
+            <h2 className="text-lg font-semibold text-red-400">
+              Reject Proposal
+            </h2>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Please explain why this proposal is being rejected. This reason
+              will be recorded for reference.
+            </p>
+            <textarea
+              value={rejectReason}
+              onChange={(e) => setRejectReason(e.target.value)}
+              rows={4}
+              placeholder="Reason for rejection..."
+              className="mt-4 w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm focus:border-red-500 focus:outline-none"
+              autoFocus
+            />
+            {rejectError && (
+              <p className="mt-2 text-sm text-red-400" role="alert">
+                {rejectError}
+              </p>
+            )}
+            <div className="mt-4 flex justify-end gap-3">
+              <button
+                onClick={() => setShowRejectDialog(false)}
+                className="rounded-lg border border-white/10 px-4 py-2 text-sm font-medium transition-colors hover:bg-white/10"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleReject}
+                disabled={updating}
+                className="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-red-700 disabled:opacity-50"
+              >
+                {updating ? "Rejecting..." : "Reject Proposal"}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </>
   );

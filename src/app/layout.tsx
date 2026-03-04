@@ -47,6 +47,11 @@ export default function RootLayout({
     <html lang="en" className={`dark ${inter.variable}`}>
       <head>
         <JsonLd data={getOrganizationSchema()} />
+        <script
+          defer
+          src="https://analytics.builtbybas.com/script.js"
+          data-website-id="1ff108d4-6963-4543-a838-a0d62a6ae979"
+        />
       </head>
       <body className="min-h-screen bg-background font-sans text-foreground antialiased">
         <SkipToContent />

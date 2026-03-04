@@ -1,4 +1,5 @@
-import type { IntakeAnalysis, ServiceRecommendation, PathForward } from "@/types/intake-analysis";
+import type { IntakeAnalysis, ServiceRecommendation } from "@/types/intake-analysis";
+import type { IntakeFormData } from "@/types/intake";
 import type { Service } from "@/types/services";
 import type { ProposalService } from "@/types/proposal";
 
@@ -11,39 +12,82 @@ interface GeneratedProposal {
   timeline: string;
 }
 
+/** Maps intake form service IDs → service data IDs */
+const INTAKE_TO_SERVICE_ID: Record<string, string> = {
+  "marketing-website": "marketing-websites",
+  "website-redesign": "website-redesigns",
+  "landing-page": "landing-pages",
+  "business-dashboard": "business-dashboards",
+  "client-portal": "client-portals",
+  ecommerce: "e-commerce",
+  "crm-system": "crm-systems",
+  "full-platform": "full-operations-platform",
+  "ai-tools": "ai-powered-tools",
+};
+
+/** Reverse mapping: service data ID → intake ID */
+const SERVICE_TO_INTAKE_ID: Record<string, string> = Object.fromEntries(
+  Object.entries(INTAKE_TO_SERVICE_ID).map(([k, v]) => [v, k]),
+);
+
+/** Estimated duration per service (matches intake-scoring.ts) */
+const SERVICE_DURATION: Record<string, string> = {
+  "landing-pages": "1-2 weeks",
+  "marketing-websites": "3-5 weeks",
+  "website-redesigns": "3-5 weeks",
+  "e-commerce": "6-10 weeks",
+  "business-dashboards": "4-8 weeks",
+  "client-portals": "4-8 weeks",
+  "crm-systems": "6-10 weeks",
+  "full-operations-platform": "12-20 weeks",
+  "ai-powered-tools": "8-14 weeks",
+};
+
 /**
  * Algorithmically generates a professional proposal from intake analysis data.
  * Uses templates populated with real data — no AI API calls.
+ *
+ * Only includes services the client actually selected. Additional
+ * recommendations appear as "Future Opportunities" for upsell.
  */
 export function generateProposal(
   analysis: IntakeAnalysis,
-  serviceCatalog: Service[]
+  serviceCatalog: Service[],
 ): GeneratedProposal {
   const company = analysis.formData.company || "your company";
-  const recommendedServices = analysis.serviceRecommendations.filter(
-    (r) => r.fitScore >= 50
-  );
-  const recommendedPath = analysis.pathsForward.find((p) => p.recommended) ??
-    analysis.pathsForward[0];
 
-  const proposalServices = buildProposalServices(
-    recommendedServices,
-    serviceCatalog,
-    recommendedPath
+  // Only include services the client actually selected
+  const selectedDataIds = analysis.formData.selectedServices
+    .map((id) => INTAKE_TO_SERVICE_ID[id])
+    .filter((id): id is string => id !== undefined);
+
+  const selectedServices = analysis.serviceRecommendations.filter((r) =>
+    selectedDataIds.includes(r.serviceId),
   );
+
+  // Additional recommendations (not selected but high fit) for upsell
+  const additionalRecommendations = analysis.serviceRecommendations.filter(
+    (r) => !selectedDataIds.includes(r.serviceId) && r.fitScore >= 50,
+  );
+
+  const proposalServices = buildProposalServices(selectedServices, serviceCatalog);
   const estimatedBudgetCents = proposalServices.reduce(
     (sum, s) => sum + s.estimatedPriceCents,
-    0
+    0,
   );
+  const timeline = computeTimeline(selectedServices);
 
   const sections = [
-    buildExecutiveSummary(analysis, company, recommendedPath),
+    buildExecutiveSummary(analysis, company, selectedServices, estimatedBudgetCents, timeline),
     buildUnderstandingNeeds(analysis, company),
-    buildScopeOfWork(recommendedServices, serviceCatalog),
-    buildTimeline(recommendedPath),
+    buildScopeOfWork(selectedServices, serviceCatalog, analysis.formData),
+    buildTimelineSection(selectedServices, timeline),
     buildInvestment(proposalServices, estimatedBudgetCents),
-    buildIncluded(recommendedServices, serviceCatalog),
-    buildNotIncluded(recommendedServices),
+    buildIncluded(selectedServices, serviceCatalog),
+    buildNotIncluded(selectedServices),
+    ...(additionalRecommendations.length > 0
+      ? [buildFutureOpportunities(additionalRecommendations)]
+      : []),
     buildNextSteps(company),
     buildTerms(),
   ];
@@ -54,25 +98,23 @@ export function generateProposal(
     content: sections.join("\n\n"),
     services: proposalServices,
     estimatedBudgetCents,
-    timeline: recommendedPath?.estimatedTimeline ??
-      analysis.summary.estimatedTotalTimeline,
+    timeline,
   };
 }
 
 function buildProposalServices(
   recommendations: ServiceRecommendation[],
   catalog: Service[],
-  path: PathForward | undefined
 ): ProposalService[] {
   return recommendations.map((rec) => {
     const catalogEntry = catalog.find((s) => s.id === rec.serviceId);
-    const phase = path?.phases.find((p) => p.services.includes(rec.serviceId));
+    const duration = SERVICE_DURATION[rec.serviceId] ?? "TBD";
     return {
       serviceId: rec.serviceId,
       serviceName: rec.serviceTitle,
       description: catalogEntry?.description ?? rec.reasons.join(". "),
       estimatedPriceCents: parseMidpointCents(rec.estimatedRange),
-      estimatedTimeline: phase?.duration ?? "TBD",
+      estimatedTimeline: duration,
     };
   });
 }
@@ -80,36 +122,28 @@ function buildProposalServices(
 function buildExecutiveSummary(
   analysis: IntakeAnalysis,
   company: string,
-  path: PathForward | undefined
+  selectedServices: ServiceRecommendation[],
+  totalCents: number,
+  timeline: string,
 ): string {
-  const { complexityScore, summary } = analysis;
-  const serviceCount = analysis.serviceRecommendations.filter(
-    (r) => r.fitScore >= 50
-  ).length;
+  const { complexityScore } = analysis;
+  const serviceCount = selectedServices.length;
+  const serviceNames = selectedServices.map((s) => s.serviceTitle);
 
   const lines = [
     `## Executive Summary`,
     ``,
-    `This proposal outlines a custom ${summary.projectType.toLowerCase()} solution for **${company}**. Based on our analysis of your needs, we recommend a ${complexityScore.label.toLowerCase()}-complexity engagement delivering ${serviceCount} integrated service${serviceCount !== 1 ? "s" : ""}.`,
+    `This proposal outlines a custom ${serviceNames.join(" and ").toLowerCase()} solution for **${company}**. Based on our analysis of your needs, we recommend a ${complexityScore.label.toLowerCase()}-complexity engagement delivering ${serviceCount} integrated service${serviceCount !== 1 ? "s" : ""}.`,
     ``,
+    `The estimated investment is **${formatCents(totalCents)}** with a delivery timeline of **${timeline}**.`,
   ];
-
-  if (path) {
-    lines.push(
-      `Our recommended approach is the **${path.name}** — ${path.description.charAt(0).toLowerCase()}${path.description.slice(1)} This positions ${company} for growth with an estimated investment of **${path.estimatedInvestment}** over **${path.estimatedTimeline}**.`
-    );
-  } else {
-    lines.push(
-      `The estimated total investment is **${summary.estimatedTotalInvestment}** with a timeline of **${summary.estimatedTotalTimeline}**.`
-    );
-  }
 
   return lines.join("\n");
 }
 
 function buildUnderstandingNeeds(
   analysis: IntakeAnalysis,
-  company: string
+  company: string,
 ): string {
   const { formData, clientProfile } = analysis;
   const selectedServices = formData.selectedServices ?? [];
@@ -131,7 +165,9 @@ function buildUnderstandingNeeds(
     lines.push(`- **Years in business:** ${formData.yearsInBusiness}`);
   }
   if (selectedServices.length > 0) {
-    lines.push(`- **Services requested:** ${selectedServices.length} service${selectedServices.length !== 1 ? "s" : ""}`);
+    lines.push(
+      `- **Services requested:** ${selectedServices.length} service${selectedServices.length !== 1 ? "s" : ""}`,
+    );
   }
   if (formData.timeline) {
     lines.push(`- **Preferred timeline:** ${formatTimeline(formData.timeline)}`);
@@ -142,7 +178,7 @@ function buildUnderstandingNeeds(
 
   lines.push(``);
   lines.push(
-    `Your project readiness score is **${clientProfile.projectReadiness.label}** and your scope clarity is **${clientProfile.scopeClarity.label}**, which gives us confidence in delivering a well-defined engagement.`
+    `Your project readiness score is **${clientProfile.projectReadiness.label}** and your scope clarity is **${clientProfile.scopeClarity.label}**, which gives us confidence in delivering a well-defined engagement.`,
   );
 
   return lines.join("\n");
@@ -150,24 +186,55 @@ function buildUnderstandingNeeds(
 
 function buildScopeOfWork(
   recommendations: ServiceRecommendation[],
-  catalog: Service[]
+  catalog: Service[],
+  formData: IntakeFormData,
 ): string {
   const lines = [
     `## Scope of Work`,
     ``,
-    `Below is a breakdown of each recommended service, what it includes, and why it fits your needs.`,
+    `Below is a detailed breakdown of each service, tailored to what you've told us about your business.`,
   ];
 
   for (const rec of recommendations) {
     const catalogEntry = catalog.find((s) => s.id === rec.serviceId);
+    const intakeId = SERVICE_TO_INTAKE_ID[rec.serviceId];
+    const answers = intakeId ? formData.serviceAnswers[intakeId] : undefined;
+
     lines.push(``);
     lines.push(`### ${rec.serviceTitle}`);
     lines.push(``);
 
+    // Personalize with the client's own words
+    if (answers) {
+      const about = getAnswerText(answers, "aboutBusiness");
+      const challenge =
+        getAnswerText(answers, "currentChallenge") ??
+        getAnswerText(answers, "biggestFrustration") ??
+        getAnswerText(answers, "currentTracking") ??
+        getAnswerText(answers, "currentProcess") ??
+        getAnswerText(answers, "currentCommunication") ??
+        getAnswerText(answers, "currentSelling") ??
+        getAnswerText(answers, "fallingThroughCracks") ??
+        getAnswerText(answers, "biggestPainPoint") ??
+        getAnswerText(answers, "timeWasters");
+      const vision = getAnswerText(answers, "successVision");
+
+      if (about) {
+        lines.push(`**Your business:** ${truncateAnswer(about)}`);
+        lines.push(``);
+      }
+      if (challenge) {
+        lines.push(`**The challenge:** ${truncateAnswer(challenge)}`);
+        lines.push(``);
+      }
+      if (vision) {
+        lines.push(`**Your vision:** ${truncateAnswer(vision)}`);
+        lines.push(``);
+      }
+    }
+
     if (catalogEntry) {
-      lines.push(catalogEntry.description);
-      lines.push(``);
-      lines.push(`**Deliverables:**`);
+      lines.push(`**What we'll build:**`);
       for (const feature of catalogEntry.features) {
         lines.push(`- ${feature}`);
       }
@@ -189,30 +256,35 @@ function buildScopeOfWork(
   return lines.join("\n");
 }
 
-function buildTimeline(path: PathForward | undefined): string {
-  if (!path || path.phases.length === 0) {
+function buildTimelineSection(
+  selectedServices: ServiceRecommendation[],
+  totalTimeline: string,
+): string {
+  if (selectedServices.length === 0) {
     return [
       `## Timeline`,
       ``,
-      `A detailed timeline will be developed during the project planning phase based on the final scope of work.`,
+      `A detailed timeline will be developed during the project planning phase.`,
     ].join("\n");
   }
+
+  const isMultiPhase = selectedServices.length > 1;
 
   const lines = [
     `## Timeline`,
     ``,
-    `We recommend the **${path.name}** approach, completed in ${path.phases.length} phase${path.phases.length !== 1 ? "s" : ""} over **${path.estimatedTimeline}**.`,
+    isMultiPhase
+      ? `We recommend a phased approach, completed in ${selectedServices.length} phases over **${totalTimeline}**.`
+      : `Estimated delivery: **${totalTimeline}**.`,
   ];
 
-  for (const phase of path.phases) {
+  for (let i = 0; i < selectedServices.length; i++) {
+    const svc = selectedServices[i];
+    const duration = SERVICE_DURATION[svc.serviceId] ?? "TBD";
     lines.push(``);
-    lines.push(`### Phase ${phase.order}: ${phase.title} (${phase.duration})`);
+    lines.push(`### Phase ${i + 1}: ${svc.serviceTitle} (${duration})`);
     lines.push(``);
-    lines.push(phase.description);
-    if (phase.services.length > 0) {
-      lines.push(``);
-      lines.push(`**Services in this phase:** ${phase.services.join(", ")}`);
-    }
+    lines.push(`Design, build, and launch your ${svc.serviceTitle.toLowerCase()}.`);
   }
 
   return lines.join("\n");
@@ -220,7 +292,7 @@ function buildTimeline(path: PathForward | undefined): string {
 
 function buildInvestment(
   services: ProposalService[],
-  totalCents: number
+  totalCents: number,
 ): string {
   const lines = [
     `## Investment`,
@@ -233,14 +305,14 @@ function buildInvestment(
 
   for (const svc of services) {
     lines.push(
-      `| ${svc.serviceName} | ${formatCents(svc.estimatedPriceCents)} | ${svc.estimatedTimeline} |`
+      `| ${svc.serviceName} | ${formatCents(svc.estimatedPriceCents)} | ${svc.estimatedTimeline} |`,
     );
   }
 
   lines.push(`| **Total** | **${formatCents(totalCents)}** | |`);
   lines.push(``);
   lines.push(
-    `*These are estimated figures based on the scope outlined above. Final pricing will be confirmed after the project planning phase.*`
+    `*These are estimated figures based on the scope outlined above. Final pricing will be confirmed after the project planning phase.*`,
   );
 
   return lines.join("\n");
@@ -248,12 +320,9 @@ function buildInvestment(
 
 function buildIncluded(
   recommendations: ServiceRecommendation[],
-  catalog: Service[]
+  catalog: Service[],
 ): string {
-  const lines = [
-    `## What's Included`,
-    ``,
-  ];
+  const lines = [`## What's Included`, ``];
 
   const allFeatures: string[] = [];
   for (const rec of recommendations) {
@@ -293,11 +362,35 @@ function buildNotIncluded(recommendations: ServiceRecommendation[]): string {
   ];
 
   const hasNoEcommerce = !recommendations.some(
-    (r) => r.serviceId === "e-commerce"
+    (r) => r.serviceId === "e-commerce",
   );
   if (hasNoEcommerce) {
     lines.push(`- E-commerce and payment processing integration`);
   }
+
+  return lines.join("\n");
+}
+
+function buildFutureOpportunities(
+  recommendations: ServiceRecommendation[],
+): string {
+  const lines = [
+    `## Future Opportunities`,
+    ``,
+    `Based on your business profile, we also see potential value in these services for future phases:`,
+    ``,
+  ];
+
+  for (const rec of recommendations) {
+    lines.push(
+      `- **${rec.serviceTitle}** (${rec.fitLabel}) — ${rec.reasons[0] ?? "Aligns with your business needs"}`,
+    );
+  }
+
+  lines.push(``);
+  lines.push(
+    `*These are not included in this proposal but can be discussed as your business grows.*`,
+  );
 
   return lines.join("\n");
 }
@@ -344,6 +437,30 @@ export function parseMidpointCents(range: string): number {
   return Math.round(((low + high) / 2) * 100);
 }
 
+function computeTimeline(selectedServices: ServiceRecommendation[]): string {
+  if (selectedServices.length === 0) return "TBD";
+
+  let totalMinWeeks = 0;
+  let totalMaxWeeks = 0;
+
+  for (const svc of selectedServices) {
+    const dur = SERVICE_DURATION[svc.serviceId];
+    if (dur) {
+      const match = dur.match(/(\d+)-(\d+)/);
+      if (match) {
+        totalMinWeeks += parseInt(match[1], 10);
+        totalMaxWeeks += parseInt(match[2], 10);
+      }
+    }
+  }
+
+  if (totalMinWeeks === 0) return "TBD";
+  if (totalMaxWeeks <= 8) return `${totalMinWeeks}-${totalMaxWeeks} weeks`;
+  const minMonths = Math.ceil(totalMinWeeks / 4);
+  const maxMonths = Math.ceil(totalMaxWeeks / 4);
+  return `${minMonths}-${maxMonths} months`;
+}
+
 function formatCents(cents: number): string {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -388,4 +505,19 @@ function formatBudgetRange(budget: string): string {
     "30k+": "$30,000+",
   };
   return map[budget] ?? budget;
+}
+
+function getAnswerText(
+  answers: Record<string, string | string[]>,
+  key: string,
+): string | null {
+  const val = answers[key];
+  if (typeof val === "string" && val.trim().length > 0) return val.trim();
+  if (Array.isArray(val) && val.length > 0) return val.join(", ");
+  return null;
+}
+
+function truncateAnswer(text: string, maxLength = 200): string {
+  if (text.length <= maxLength) return text;
+  return text.slice(0, maxLength).replace(/\s+\S*$/, "") + "...";
 }

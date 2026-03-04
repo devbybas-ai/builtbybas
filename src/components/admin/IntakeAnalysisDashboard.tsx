@@ -6,6 +6,8 @@ import { GlassCard } from "@/components/shared/GlassCard";
 import { ComplexityGauge } from "./ComplexityGauge";
 import { ScoreBar } from "./ScoreBar";
 import type { IntakeAnalysis } from "@/types/intake-analysis";
+import type { IntakeFormData } from "@/types/intake";
+import { getServiceModule } from "@/data/intake-questions";
 
 /** Convert camelCase or kebab-case key to a readable label */
 function formatKey(key: string): string {
@@ -82,6 +84,115 @@ function RawField({ label, value }: { label: string; value: unknown }) {
   );
 }
 
+/** Key answer fields to extract from service answers, in priority order */
+const CHALLENGE_KEYS = [
+  "currentChallenge",
+  "biggestFrustration",
+  "currentTracking",
+  "fallingThroughCracks",
+  "currentProcess",
+  "currentCommunication",
+  "currentSelling",
+  "biggestPainPoint",
+  "timeWasters",
+  "biggestBlindSpot",
+];
+
+function getAnswer(
+  answers: Record<string, string | string[]> | undefined,
+  key: string,
+): string | null {
+  if (!answers) return null;
+  const val = answers[key];
+  if (typeof val === "string" && val.trim().length > 0) return val.trim();
+  if (Array.isArray(val) && val.length > 0) return val.join(", ");
+  return null;
+}
+
+function getFirstAnswer(
+  answers: Record<string, string | string[]> | undefined,
+  keys: string[],
+): string | null {
+  if (!answers) return null;
+  for (const key of keys) {
+    const val = getAnswer(answers, key);
+    if (val) return val;
+  }
+  return null;
+}
+
+/** Intake Brief — what the client asked for and why */
+function IntakeBrief({ formData }: { formData: IntakeFormData }) {
+  const services = formData.selectedServices;
+  if (services.length === 0) return null;
+
+  return (
+    <GlassCard as="section">
+      <h2 className="text-lg font-semibold">What They Asked For & Why</h2>
+      <div className="mt-4 space-y-6">
+        {services.map((serviceId) => {
+          const module = getServiceModule(serviceId);
+          const answers = formData.serviceAnswers[serviceId];
+          const about = getAnswer(answers, "aboutBusiness");
+          const challenge = getFirstAnswer(answers, CHALLENGE_KEYS);
+          const vision = getAnswer(answers, "successVision");
+          const mostImportant = getAnswer(answers, "mostImportant");
+
+          return (
+            <div key={serviceId} className="rounded-lg border border-white/10 bg-white/[0.02] p-4">
+              <h3 className="font-semibold text-primary">
+                {module?.serviceLabel ?? formatKey(serviceId)}
+              </h3>
+
+              {about && (
+                <div className="mt-3">
+                  <p className="text-xs font-medium text-muted-foreground">Their Business</p>
+                  <p className="mt-1 text-sm text-foreground leading-relaxed">{about}</p>
+                </div>
+              )}
+
+              {challenge && (
+                <div className="mt-3">
+                  <p className="text-xs font-medium text-amber-400">The Problem</p>
+                  <p className="mt-1 text-sm text-foreground leading-relaxed">{challenge}</p>
+                </div>
+              )}
+
+              {vision && (
+                <div className="mt-3">
+                  <p className="text-xs font-medium text-emerald-400">Their Vision</p>
+                  <p className="mt-1 text-sm text-foreground leading-relaxed">{vision}</p>
+                </div>
+              )}
+
+              {mostImportant && (
+                <div className="mt-3">
+                  <p className="text-xs font-medium text-cyan-400">Most Important</p>
+                  <p className="mt-1 text-sm text-foreground leading-relaxed">{mostImportant}</p>
+                </div>
+              )}
+
+              {!about && !challenge && !vision && (
+                <p className="mt-2 text-sm text-muted-foreground/60">
+                  No detailed answers provided for this service.
+                </p>
+              )}
+            </div>
+          );
+        })}
+
+        {/* Additional context from general form fields */}
+        {formData.additionalNotes && (
+          <div className="rounded-lg border border-white/5 bg-white/[0.01] p-4">
+            <p className="text-xs font-medium text-muted-foreground">Additional Notes</p>
+            <p className="mt-1 text-sm text-foreground leading-relaxed">{formData.additionalNotes}</p>
+          </div>
+        )}
+      </div>
+    </GlassCard>
+  );
+}
+
 interface IntakeAnalysisDashboardProps {
   analysis: IntakeAnalysis;
 }
@@ -134,6 +245,9 @@ export function IntakeAnalysisDashboard({ analysis }: IntakeAnalysisDashboardPro
           </div>
         </div>
       </GlassCard>
+
+      {/* What They Asked For & Why */}
+      <IntakeBrief formData={formData} />
 
       {/* Flags */}
       {flags.length > 0 && (

@@ -124,13 +124,30 @@ describe("proposal-validation", () => {
       ).toBe(true);
     });
 
-    it("accepts rejection reason", () => {
+    it("accepts rejection with reason", () => {
       expect(
         updateProposalSchema.safeParse({
           status: "rejected",
           rejectionReason: "Budget too high",
         }).success
       ).toBe(true);
+    });
+
+    it("rejects rejection without reason", () => {
+      expect(
+        updateProposalSchema.safeParse({
+          status: "rejected",
+        }).success
+      ).toBe(false);
+    });
+
+    it("rejects rejection with empty reason", () => {
+      expect(
+        updateProposalSchema.safeParse({
+          status: "rejected",
+          rejectionReason: "   ",
+        }).success
+      ).toBe(false);
     });
   });
 

@@ -124,6 +124,51 @@ export async function GET(
   }
 }
 
+export async function DELETE(
+  _request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const auth = await requireAdmin();
+  if ("error" in auth) return auth.error;
+
+  const { id } = await params;
+  if (!/^[a-f0-9-]+$/i.test(id)) {
+    return NextResponse.json(
+      { success: false, error: "Invalid client ID" },
+      { status: 400 }
+    );
+  }
+
+  try {
+    // Delete related records first (notes, pipeline history)
+    await db
+      .delete(clientNotes)
+      .where(eq(clientNotes.clientId, id));
+    await db
+      .delete(pipelineHistory)
+      .where(eq(pipelineHistory.clientId, id));
+
+    const [deleted] = await db
+      .delete(clients)
+      .where(eq(clients.id, id))
+      .returning({ id: clients.id });
+
+    if (!deleted) {
+      return NextResponse.json(
+        { success: false, error: "Client not found" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({ success: true });
+  } catch {
+    return NextResponse.json(
+      { success: false, error: "Failed to delete client" },
+      { status: 500 }
+    );
+  }
+}
+
 export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }

@@ -479,7 +479,7 @@ export function scoreServiceRecommendations(fd: IntakeFormData): ServiceRecommen
     const keywordScore = Math.min(25, keywordHits * 5);
     if (keywordScore > 0) {
       fitScore += keywordScore;
-      reasons.push(`${keywordHits} capability(ies) align with your needs`);
+      reasons.push(`${keywordHits} ${keywordHits === 1 ? "capability aligns" : "capabilities align"} with your needs`);
     }
 
     // Budget fit (0-20)

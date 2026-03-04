@@ -78,6 +78,43 @@ export async function GET(
   }
 }
 
+export async function DELETE(
+  _request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const auth = await requireAdmin();
+  if ("error" in auth) return auth.error;
+
+  const { id } = await params;
+  if (!/^[a-f0-9-]+$/i.test(id)) {
+    return NextResponse.json(
+      { success: false, error: "Invalid proposal ID" },
+      { status: 400 }
+    );
+  }
+
+  try {
+    const [deleted] = await db
+      .delete(proposals)
+      .where(eq(proposals.id, id))
+      .returning({ id: proposals.id });
+
+    if (!deleted) {
+      return NextResponse.json(
+        { success: false, error: "Proposal not found" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({ success: true });
+  } catch {
+    return NextResponse.json(
+      { success: false, error: "Failed to delete proposal" },
+      { status: 500 }
+    );
+  }
+}
+
 export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }

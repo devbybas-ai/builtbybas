@@ -57,6 +57,10 @@ export function ClientDetailDashboard({
   const [noteType, setNoteType] = useState<ClientNoteType>("general");
   const [isSavingNote, setIsSavingNote] = useState(false);
 
+  // Delete dialog
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+
   const stageMeta = getStageMeta(client.pipelineStage);
   const nextStage = stageMeta
     ? PIPELINE_STAGES.find((s) => s.order === stageMeta.order + 1)
@@ -76,6 +80,22 @@ export function ClientDetailDashboard({
       }
     } finally {
       setIsAdvancing(false);
+    }
+  }
+
+  async function handleDelete() {
+    setIsDeleting(true);
+    try {
+      const res = await fetch(`/api/clients/${client.id}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      if (data.success) {
+        router.push("/admin/clients");
+      }
+    } finally {
+      setIsDeleting(false);
+      setShowDeleteDialog(false);
     }
   }
 
@@ -116,16 +136,25 @@ export function ClientDetailDashboard({
             )}
           </div>
         </div>
-        {nextStage && (
+        <div className="flex items-center gap-3">
           <button
-            onClick={handleAdvanceStage}
-            disabled={isAdvancing}
-            className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-colors hover:bg-cyan-hover disabled:opacity-50"
+            onClick={() => setShowDeleteDialog(true)}
+            className="rounded-lg border border-red-500/20 bg-red-500/10 px-4 py-2 text-sm font-medium text-red-400 transition-colors hover:bg-red-500/20"
             type="button"
           >
-            {isAdvancing ? "Moving..." : `Move to ${nextStage.label}`}
+            Delete
           </button>
-        )}
+          {nextStage && (
+            <button
+              onClick={handleAdvanceStage}
+              disabled={isAdvancing}
+              className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-colors hover:bg-cyan-hover disabled:opacity-50"
+              type="button"
+            >
+              {isAdvancing ? "Moving..." : `Move to ${nextStage.label}`}
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Contact & Business */}
@@ -307,6 +336,40 @@ export function ClientDetailDashboard({
             ))}
           </div>
         </GlassCard>
+      )}
+
+      {/* Delete Confirmation Dialog */}
+      {showDeleteDialog && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+          <div className="w-full max-w-md rounded-xl border border-white/10 bg-[#0A0A0F] p-6 shadow-2xl">
+            <h2 className="text-lg font-semibold text-red-400">
+              Delete Client
+            </h2>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Are you sure you want to permanently delete{" "}
+              <strong className="text-foreground">{client.name}</strong>? This
+              will also delete all their notes and pipeline history. This action
+              cannot be undone.
+            </p>
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                onClick={() => setShowDeleteDialog(false)}
+                className="rounded-lg border border-white/10 px-4 py-2 text-sm font-medium transition-colors hover:bg-white/10"
+                type="button"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDelete}
+                disabled={isDeleting}
+                className="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-red-700 disabled:opacity-50"
+                type="button"
+              >
+                {isDeleting ? "Deleting..." : "Delete Permanently"}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
