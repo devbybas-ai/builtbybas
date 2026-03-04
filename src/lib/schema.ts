@@ -462,6 +462,22 @@ export const invoiceItemsRelations = relations(invoiceItems, ({ one }) => ({
   }),
 }));
 
+// ============================================
+// Site Settings (key-value)
+// ============================================
+
+export const siteSettings = pgTable("site_settings", {
+  key: varchar("key", { length: 100 }).primaryKey(),
+  value: jsonb("value").notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+});
+
+// ============================================
+// Relations
+// ============================================
+
 export const proposalsRelations = relations(proposals, ({ one }) => ({
   client: one(clients, {
     fields: [proposals.clientId],
