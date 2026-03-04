@@ -43,6 +43,13 @@
       "when": 1772408219599,
       "tag": "0005_military_black_widow",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1772585370573,
+      "tag": "0006_sweet_vertigo",
+      "breakpoints": true
     }
   ]
 }

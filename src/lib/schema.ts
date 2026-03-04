@@ -166,6 +166,14 @@ export const clientNotes = pgTable(
 // Intake Submissions
 // ============================================
 
+export const intakeStatusEnum = pgEnum("intake_status", [
+  "new",
+  "reviewed",
+  "accepted",
+  "rejected",
+  "converted",
+]);
+
 export const intakeSubmissions = pgTable(
   "intake_submissions",
   {
@@ -178,6 +186,7 @@ export const intakeSubmissions = pgTable(
     company: varchar("company", { length: 255 }).notNull(),
     complexityScore: integer("complexity_score"),
     primaryService: varchar("primary_service", { length: 255 }),
+    status: intakeStatusEnum("status").notNull().default("new"),
     formData: jsonb("form_data").notNull(),
     analysis: jsonb("analysis").notNull(),
     createdAt: timestamp("created_at", { withTimezone: true })
@@ -187,6 +196,7 @@ export const intakeSubmissions = pgTable(
   (table) => [
     index("idx_intake_submissions_email").on(table.email),
     index("idx_intake_submissions_submitted_at").on(table.submittedAt),
+    index("idx_intake_submissions_status").on(table.status),
   ]
 );
 

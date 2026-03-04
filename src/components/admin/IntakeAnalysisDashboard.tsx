@@ -142,13 +142,20 @@ export function IntakeAnalysisDashboard({ analysis }: IntakeAnalysisDashboardPro
               key={i}
               className={cn(
                 "rounded-lg border px-4 py-3 text-sm",
+                flag.type === "rai-concern" && "border-red-500/50 bg-red-500/20 text-red-200 ring-1 ring-red-500/30",
                 flag.type === "warning" && "border-amber-500/30 bg-amber-500/10 text-amber-300",
                 flag.type === "opportunity" && "border-emerald-500/30 bg-emerald-500/10 text-emerald-300",
                 flag.type === "info" && "border-cyan-500/30 bg-cyan-500/10 text-cyan-300",
               )}
             >
               <span className="mr-2 font-medium uppercase">
-                {flag.type === "warning" ? "Heads Up" : flag.type === "opportunity" ? "Opportunity" : "Note"}:
+                {flag.type === "rai-concern"
+                  ? "RAI Red Flag"
+                  : flag.type === "warning"
+                    ? "Heads Up"
+                    : flag.type === "opportunity"
+                      ? "Opportunity"
+                      : "Note"}:
               </span>
               {flag.message}
             </div>

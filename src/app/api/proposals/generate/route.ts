@@ -32,13 +32,14 @@ export async function POST(request: NextRequest) {
 
   const { intakeSubmissionId, clientId } = parsed.data;
 
-  const analysis = await getSubmission(intakeSubmissionId);
-  if (!analysis) {
+  const row = await getSubmission(intakeSubmissionId);
+  if (!row) {
     return NextResponse.json(
       { success: false, error: "Intake submission not found" },
       { status: 404 }
     );
   }
+  const analysis = row.analysis;
 
   // Resolve client — use provided ID or find from intake
   let resolvedClientId = clientId;

@@ -22,6 +22,7 @@ import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
 import { ServiceIcon } from "@/components/public-site/ServiceIcon";
 import { WalkthroughProgress } from "@/components/public-site/WalkthroughProgress";
 import type { Service } from "@/types/services";
+import { toIntakeId } from "@/data/service-id-map";
 
 // ============================================================
 // Step icon mapping
@@ -308,7 +309,7 @@ export function ServiceWalkthroughOverlay({
 
             {isLastStep ? (
               <Link
-                href="/intake"
+                href={`/intake?service=${toIntakeId(service.id) ?? service.id}`}
                 className="btn-shine inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-background transition-colors hover:bg-primary/90"
               >
                 {walkthrough.cta}

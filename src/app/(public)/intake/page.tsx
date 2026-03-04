@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import { PublicHeader } from "@/components/layout/PublicHeader";
 import { PublicFooter } from "@/components/layout/PublicFooter";
@@ -30,7 +31,9 @@ export default function IntakePage() {
         </section>
 
         <section className="px-4 pb-24 sm:px-6 lg:px-8">
-          <IntakeForm />
+          <Suspense>
+            <IntakeForm />
+          </Suspense>
         </section>
       </main>
       <PublicFooter />

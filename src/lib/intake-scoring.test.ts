@@ -660,3 +660,76 @@ describe("analyzeIntake (integration)", () => {
     expect(analysis.serviceRecommendations.length).toBeGreaterThanOrEqual(1);
   });
 });
+
+// ---------------------------------------------------------------------------
+// RAI Screening
+// ---------------------------------------------------------------------------
+
+describe("RAI concern flagging", () => {
+  it("flags surveillance / tracking without consent", () => {
+    const fd = createFormData({
+      additionalNotes: "I want to secretly monitor my employees without them knowing",
+    });
+    const analysis = analyzeIntake(fd);
+    const raiFlags = analysis.flags.filter((f) => f.type === "rai-concern");
+    expect(raiFlags.length).toBeGreaterThanOrEqual(1);
+    expect(raiFlags[0].message).toContain("surveillance");
+  });
+
+  it("flags deceptive practices like fake reviews", () => {
+    const fd = createFormData({
+      serviceAnswers: {
+        "marketing-website": {
+          notes: "I need a system to generate fake reviews for my business",
+        },
+      },
+    });
+    const analysis = analyzeIntake(fd);
+    const raiFlags = analysis.flags.filter((f) => f.type === "rai-concern");
+    expect(raiFlags.length).toBeGreaterThanOrEqual(1);
+    expect(raiFlags[0].message).toContain("deceptive");
+  });
+
+  it("flags dark patterns", () => {
+    const fd = createFormData({
+      additionalNotes: "Make it impossible to unsubscribe once they sign up",
+    });
+    const analysis = analyzeIntake(fd);
+    const raiFlags = analysis.flags.filter((f) => f.type === "rai-concern");
+    expect(raiFlags.length).toBeGreaterThanOrEqual(1);
+    expect(raiFlags[0].message).toContain("dark pattern");
+  });
+
+  it("flags exploitation of vulnerable populations", () => {
+    const fd = createFormData({
+      additionalNotes: "We want to target children with gambling features",
+    });
+    const analysis = analyzeIntake(fd);
+    const raiFlags = analysis.flags.filter((f) => f.type === "rai-concern");
+    expect(raiFlags.length).toBeGreaterThanOrEqual(1);
+  });
+
+  it("does NOT flag legitimate business requests", () => {
+    const fd = createFormData({
+      additionalNotes: "We need a professional website to attract more customers to our salon",
+      serviceAnswers: {
+        "marketing-website": {
+          aboutBusiness: "We run a hair salon and want to grow our client base",
+          idealCustomer: "Women aged 25-55 looking for premium hair services",
+        },
+      },
+    });
+    const analysis = analyzeIntake(fd);
+    const raiFlags = analysis.flags.filter((f) => f.type === "rai-concern");
+    expect(raiFlags).toHaveLength(0);
+  });
+
+  it("does NOT flag legitimate tracking/analytics requests", () => {
+    const fd = createFormData({
+      additionalNotes: "We need Google Analytics tracking and conversion tracking on our site",
+    });
+    const analysis = analyzeIntake(fd);
+    const raiFlags = analysis.flags.filter((f) => f.type === "rai-concern");
+    expect(raiFlags).toHaveLength(0);
+  });
+});

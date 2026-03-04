@@ -32,15 +32,15 @@ export async function POST(request: NextRequest) {
   const { intakeSubmissionId } = parsed.data;
 
   try {
-    const submission = await getSubmission(intakeSubmissionId);
-    if (!submission) {
+    const row = await getSubmission(intakeSubmissionId);
+    if (!row) {
       return NextResponse.json(
         { success: false, error: "Intake submission not found" },
         { status: 404 }
       );
     }
 
-    const { formData } = submission;
+    const { formData } = row.analysis;
 
     const [client] = await db
       .insert(clients)

@@ -52,12 +52,26 @@ function clearDraft() {
   }
 }
 
-export function useIntakeForm() {
+export interface UseIntakeFormOptions {
+  preselectedService?: string;
+}
+
+export function useIntakeForm(options: UseIntakeFormOptions = {}) {
+  const { preselectedService } = options;
+  const skipServiceSelection = !!preselectedService;
+
   const [state, setState] = useState<IntakeFormState>(() => {
     const draft = loadDraft();
+    const base = draft ? { ...INITIAL_FORM_DATA, ...draft } : { ...INITIAL_FORM_DATA };
+
+    // If a service was preselected via query param, set it
+    if (preselectedService && base.selectedServices.length === 0) {
+      base.selectedServices = [preselectedService];
+    }
+
     return {
       currentStep: 0,
-      formData: draft ? { ...INITIAL_FORM_DATA, ...draft } : INITIAL_FORM_DATA,
+      formData: base,
       errors: {},
       isSubmitting: false,
       isComplete: false,
@@ -66,8 +80,8 @@ export function useIntakeForm() {
 
   // Dynamic step list based on selected services
   const steps: StepConfig[] = useMemo(
-    () => buildSteps(state.formData.selectedServices),
-    [state.formData.selectedServices],
+    () => buildSteps(state.formData.selectedServices, skipServiceSelection),
+    [state.formData.selectedServices, skipServiceSelection],
   );
 
   const totalSteps = steps.length;
@@ -174,7 +188,7 @@ export function useIntakeForm() {
       const nextIdx = Math.min(prev.currentStep + 1, totalSteps - 1);
 
       // When service selection changes, ensure we don't go past new bounds
-      const newSteps = buildSteps(prev.formData.selectedServices);
+      const newSteps = buildSteps(prev.formData.selectedServices, skipServiceSelection);
       const bounded = Math.min(nextIdx, newSteps.length - 1);
 
       return {

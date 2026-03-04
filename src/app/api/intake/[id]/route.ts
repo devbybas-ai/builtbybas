@@ -15,16 +15,19 @@ export async function GET(
   }
 
   try {
-    const submission = await getSubmission(id);
+    const row = await getSubmission(id);
 
-    if (!submission) {
+    if (!row) {
       return NextResponse.json(
         { success: false, error: "Submission not found" },
         { status: 404 },
       );
     }
 
-    return NextResponse.json({ success: true, data: submission });
+    return NextResponse.json({
+      success: true,
+      data: { ...row.analysis, status: row.status },
+    });
   } catch {
     return NextResponse.json(
       { success: false, error: "Failed to retrieve submission" },

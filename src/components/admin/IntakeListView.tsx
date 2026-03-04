@@ -4,7 +4,7 @@ import { useState, useMemo } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { GlassCard } from "@/components/shared/GlassCard";
-import type { IntakeAnalysis } from "@/types/intake-analysis";
+import type { IntakeSubmissionRow, IntakeStatus } from "@/lib/intake-storage";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -13,9 +13,10 @@ import type { IntakeAnalysis } from "@/types/intake-analysis";
 type SortKey = "date" | "complexity" | "name";
 type SortDir = "asc" | "desc";
 type ComplexityFilter = "all" | "Simple" | "Moderate" | "Complex" | "Enterprise";
+type StatusFilter = "all" | IntakeStatus;
 
 interface IntakeListViewProps {
-  submissions: IntakeAnalysis[];
+  submissions: IntakeSubmissionRow[];
 }
 
 // ---------------------------------------------------------------------------
@@ -42,6 +43,14 @@ function getComplexityBadge(label: string) {
   }
 }
 
+const STATUS_BADGE: Record<IntakeStatus, { label: string; color: string }> = {
+  new: { label: "New", color: "bg-blue-500/20 text-blue-400" },
+  reviewed: { label: "Reviewed", color: "bg-amber-500/20 text-amber-400" },
+  accepted: { label: "Accepted", color: "bg-emerald-500/20 text-emerald-400" },
+  rejected: { label: "Rejected", color: "bg-red-500/20 text-red-400" },
+  converted: { label: "Converted", color: "bg-cyan-500/20 text-cyan-400" },
+};
+
 // ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
@@ -49,6 +58,7 @@ function getComplexityBadge(label: string) {
 export function IntakeListView({ submissions }: IntakeListViewProps) {
   const [complexityFilter, setComplexityFilter] =
     useState<ComplexityFilter>("all");
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [serviceFilter, setServiceFilter] = useState("all");
   const [sortKey, setSortKey] = useState<SortKey>("date");
   const [sortDir, setSortDir] = useState<SortDir>("desc");
@@ -57,8 +67,10 @@ export function IntakeListView({ submissions }: IntakeListViewProps) {
   // Derive available services for filter dropdown
   const availableServices = useMemo(() => {
     const set = new Set<string>();
-    for (const s of submissions) {
-      const primary = s.serviceRecommendations.find((r) => r.isPrimary);
+    for (const row of submissions) {
+      const primary = row.analysis.serviceRecommendations.find(
+        (r) => r.isPrimary,
+      );
       if (primary) set.add(primary.serviceTitle);
     }
     return [...set].sort();
@@ -71,7 +83,7 @@ export function IntakeListView({ submissions }: IntakeListViewProps) {
       total > 0
         ? Math.round(
             (submissions.reduce(
-              (sum, s) => sum + s.complexityScore.overall,
+              (sum, row) => sum + row.analysis.complexityScore.overall,
               0,
             ) /
               total) *
@@ -79,31 +91,52 @@ export function IntakeListView({ submissions }: IntakeListViewProps) {
           ) / 10
         : 0;
 
-    const complexityCounts = { Simple: 0, Moderate: 0, Complex: 0, Enterprise: 0 };
-    for (const s of submissions) {
-      const label = getComplexityLabel(s.complexityScore.overall);
+    const complexityCounts = {
+      Simple: 0,
+      Moderate: 0,
+      Complex: 0,
+      Enterprise: 0,
+    };
+    const statusCounts: Record<IntakeStatus, number> = {
+      new: 0,
+      reviewed: 0,
+      accepted: 0,
+      rejected: 0,
+      converted: 0,
+    };
+    for (const row of submissions) {
+      const label = getComplexityLabel(row.analysis.complexityScore.overall);
       complexityCounts[label as keyof typeof complexityCounts]++;
+      statusCounts[row.status]++;
     }
 
-    return { total, avgComplexity, complexityCounts };
+    return { total, avgComplexity, complexityCounts, statusCounts };
   }, [submissions]);
 
   // Filter and sort
   const filtered = useMemo(() => {
     let result = [...submissions];
 
+    // Status filter
+    if (statusFilter !== "all") {
+      result = result.filter((row) => row.status === statusFilter);
+    }
+
     // Complexity filter
     if (complexityFilter !== "all") {
       result = result.filter(
-        (s) =>
-          getComplexityLabel(s.complexityScore.overall) === complexityFilter,
+        (row) =>
+          getComplexityLabel(row.analysis.complexityScore.overall) ===
+          complexityFilter,
       );
     }
 
     // Service filter
     if (serviceFilter !== "all") {
-      result = result.filter((s) => {
-        const primary = s.serviceRecommendations.find((r) => r.isPrimary);
+      result = result.filter((row) => {
+        const primary = row.analysis.serviceRecommendations.find(
+          (r) => r.isPrimary,
+        );
         return primary?.serviceTitle === serviceFilter;
       });
     }
@@ -112,10 +145,10 @@ export function IntakeListView({ submissions }: IntakeListViewProps) {
     if (search.trim()) {
       const q = search.toLowerCase();
       result = result.filter(
-        (s) =>
-          s.formData.name.toLowerCase().includes(q) ||
-          s.formData.company.toLowerCase().includes(q) ||
-          s.formData.email.toLowerCase().includes(q),
+        (row) =>
+          row.analysis.formData.name.toLowerCase().includes(q) ||
+          row.analysis.formData.company.toLowerCase().includes(q) ||
+          row.analysis.formData.email.toLowerCase().includes(q),
       );
     }
 
@@ -125,21 +158,33 @@ export function IntakeListView({ submissions }: IntakeListViewProps) {
       switch (sortKey) {
         case "date":
           cmp =
-            new Date(a.submittedAt).getTime() -
-            new Date(b.submittedAt).getTime();
+            new Date(a.analysis.submittedAt).getTime() -
+            new Date(b.analysis.submittedAt).getTime();
           break;
         case "complexity":
-          cmp = a.complexityScore.overall - b.complexityScore.overall;
+          cmp =
+            a.analysis.complexityScore.overall -
+            b.analysis.complexityScore.overall;
           break;
         case "name":
-          cmp = a.formData.name.localeCompare(b.formData.name);
+          cmp = a.analysis.formData.name.localeCompare(
+            b.analysis.formData.name,
+          );
           break;
       }
       return sortDir === "desc" ? -cmp : cmp;
     });
 
     return result;
-  }, [submissions, complexityFilter, serviceFilter, sortKey, sortDir, search]);
+  }, [
+    submissions,
+    statusFilter,
+    complexityFilter,
+    serviceFilter,
+    sortKey,
+    sortDir,
+    search,
+  ]);
 
   function toggleSort(key: SortKey) {
     if (sortKey === key) {
@@ -167,23 +212,24 @@ export function IntakeListView({ submissions }: IntakeListViewProps) {
             </span>
           </p>
         </GlassCard>
-        {(
-          ["Simple", "Moderate", "Complex"] as const
-        ).map((label) => (
-          <GlassCard key={label} className="px-4 py-3">
-            <p className="text-xs text-muted-foreground">{label}+</p>
-            <p className="text-2xl font-bold">
-              {label === "Simple"
-                ? summaryStats.total
-                : label === "Moderate"
-                  ? summaryStats.complexityCounts.Moderate +
-                    summaryStats.complexityCounts.Complex +
-                    summaryStats.complexityCounts.Enterprise
-                  : summaryStats.complexityCounts.Complex +
-                    summaryStats.complexityCounts.Enterprise}
-            </p>
-          </GlassCard>
-        ))}
+        <GlassCard className="px-4 py-3">
+          <p className="text-xs text-muted-foreground">New</p>
+          <p className="text-2xl font-bold text-blue-400">
+            {summaryStats.statusCounts.new}
+          </p>
+        </GlassCard>
+        <GlassCard className="px-4 py-3">
+          <p className="text-xs text-muted-foreground">Accepted</p>
+          <p className="text-2xl font-bold text-emerald-400">
+            {summaryStats.statusCounts.accepted}
+          </p>
+        </GlassCard>
+        <GlassCard className="px-4 py-3">
+          <p className="text-xs text-muted-foreground">Converted</p>
+          <p className="text-2xl font-bold text-cyan-400">
+            {summaryStats.statusCounts.converted}
+          </p>
+        </GlassCard>
       </div>
 
       {/* Filters + Sort */}
@@ -196,6 +242,31 @@ export function IntakeListView({ submissions }: IntakeListViewProps) {
           placeholder="Search name, company, email..."
           className="h-9 w-full rounded-lg border border-white/10 bg-white/5 px-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary/50 focus:outline-none sm:w-64"
         />
+
+        {/* Status filter */}
+        <div className="flex items-center gap-1.5">
+          {(
+            ["all", "new", "reviewed", "accepted", "rejected", "converted"] as const
+          ).map((f) => {
+            const badge = f === "all" ? null : STATUS_BADGE[f];
+            return (
+              <button
+                key={f}
+                onClick={() => setStatusFilter(f)}
+                className={cn(
+                  "rounded-full px-3 py-1 text-xs font-medium transition-colors",
+                  statusFilter === f
+                    ? badge
+                      ? badge.color
+                      : "bg-primary/20 text-primary"
+                    : "bg-white/5 text-muted-foreground hover:bg-white/10",
+                )}
+              >
+                {f === "all" ? "All" : STATUS_BADGE[f].label}
+              </button>
+            );
+          })}
+        </div>
 
         {/* Complexity filter */}
         <div className="flex items-center gap-1.5">
@@ -212,7 +283,7 @@ export function IntakeListView({ submissions }: IntakeListViewProps) {
                   : "bg-white/5 text-muted-foreground hover:bg-white/10",
               )}
             >
-              {f === "all" ? "All" : f}
+              {f === "all" ? "All Complexity" : f}
             </button>
           ))}
         </div>
@@ -253,7 +324,9 @@ export function IntakeListView({ submissions }: IntakeListViewProps) {
             >
               {label}
               {sortKey === key && (
-                <span className="ml-1">{sortDir === "desc" ? "↓" : "↑"}</span>
+                <span className="ml-1">
+                  {sortDir === "desc" ? "\u2193" : "\u2191"}
+                </span>
               )}
             </button>
           ))}
@@ -267,9 +340,11 @@ export function IntakeListView({ submissions }: IntakeListViewProps) {
 
       {/* Submission List */}
       <div className="mt-4 space-y-2">
-        {filtered.map((s) => {
+        {filtered.map((row) => {
+          const s = row.analysis;
           const primary = s.serviceRecommendations.find((r) => r.isPrimary);
           const label = getComplexityLabel(s.complexityScore.overall);
+          const statusBadge = STATUS_BADGE[row.status];
 
           return (
             <Link key={s.id} href={`/admin/intake/${s.id}`}>
@@ -283,6 +358,14 @@ export function IntakeListView({ submissions }: IntakeListViewProps) {
                       <h3 className="truncate text-sm font-semibold text-foreground">
                         {s.formData.name}
                       </h3>
+                      <span
+                        className={cn(
+                          "inline-flex shrink-0 items-center rounded-full px-2 py-0.5 text-[10px] font-semibold",
+                          statusBadge.color,
+                        )}
+                      >
+                        {statusBadge.label}
+                      </span>
                       <span
                         className={cn(
                           "inline-flex shrink-0 items-center rounded-full px-2 py-0.5 text-[10px] font-semibold",

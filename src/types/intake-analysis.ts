@@ -66,7 +66,7 @@ export interface PathPhase {
 }
 
 export interface AnalysisFlag {
-  type: "warning" | "opportunity" | "info";
+  type: "warning" | "opportunity" | "info" | "rai-concern";
   message: string;
 }
 

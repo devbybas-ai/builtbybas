@@ -4,6 +4,18 @@ import { intakeSubmissions } from "./schema";
 import { encrypt, encryptAnalysisPii, decryptAnalysisPii } from "./encryption";
 import type { IntakeAnalysis } from "@/types/intake-analysis";
 
+export type IntakeStatus =
+  | "new"
+  | "reviewed"
+  | "accepted"
+  | "rejected"
+  | "converted";
+
+export interface IntakeSubmissionRow {
+  analysis: IntakeAnalysis;
+  status: IntakeStatus;
+}
+
 export async function saveSubmission(
   analysis: IntakeAnalysis,
 ): Promise<void> {
@@ -28,25 +40,51 @@ export async function saveSubmission(
 
 export async function getSubmission(
   id: string,
-): Promise<IntakeAnalysis | null> {
+): Promise<IntakeSubmissionRow | null> {
   if (!/^[a-f0-9-]+$/i.test(id)) return null;
 
   const [row] = await db
-    .select({ analysis: intakeSubmissions.analysis })
+    .select({
+      analysis: intakeSubmissions.analysis,
+      status: intakeSubmissions.status,
+    })
     .from(intakeSubmissions)
     .where(eq(intakeSubmissions.id, id))
     .limit(1);
 
   if (!row) return null;
 
-  return decryptAnalysisPii(row.analysis as IntakeAnalysis);
+  return {
+    analysis: decryptAnalysisPii(row.analysis as IntakeAnalysis),
+    status: row.status,
+  };
 }
 
-export async function listSubmissions(): Promise<IntakeAnalysis[]> {
+export async function listSubmissions(): Promise<IntakeSubmissionRow[]> {
   const rows = await db
-    .select({ analysis: intakeSubmissions.analysis })
+    .select({
+      analysis: intakeSubmissions.analysis,
+      status: intakeSubmissions.status,
+    })
     .from(intakeSubmissions)
     .orderBy(desc(intakeSubmissions.submittedAt));
 
-  return rows.map((r) => decryptAnalysisPii(r.analysis as IntakeAnalysis));
+  return rows.map((r) => ({
+    analysis: decryptAnalysisPii(r.analysis as IntakeAnalysis),
+    status: r.status,
+  }));
+}
+
+export async function updateIntakeStatus(
+  id: string,
+  status: IntakeStatus,
+): Promise<boolean> {
+  if (!/^[a-f0-9-]+$/i.test(id)) return false;
+
+  const result = await db
+    .update(intakeSubmissions)
+    .set({ status })
+    .where(eq(intakeSubmissions.id, id));
+
+  return (result.rowCount ?? 0) > 0;
 }

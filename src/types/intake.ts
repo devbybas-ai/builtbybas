@@ -77,12 +77,20 @@ export interface StepConfig {
   serviceId?: string;
 }
 
-export function buildSteps(selectedServices: string[]): StepConfig[] {
-  const steps: StepConfig[] = [
-    { type: "service-selection", label: "Services" },
+export function buildSteps(
+  selectedServices: string[],
+  skipServiceSelection = false,
+): StepConfig[] {
+  const steps: StepConfig[] = [];
+
+  if (!skipServiceSelection) {
+    steps.push({ type: "service-selection", label: "Services" });
+  }
+
+  steps.push(
     { type: "contact", label: "Contact Info" },
     { type: "business", label: "Your Business" },
-  ];
+  );
 
   for (const serviceId of selectedServices) {
     const label = SERVICE_LABELS[serviceId] ?? serviceId;

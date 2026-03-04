@@ -6,7 +6,7 @@ import { getSubmission } from "@/lib/intake-storage";
 import { db } from "@/lib/db";
 import { clients } from "@/lib/schema";
 import { IntakeAnalysisDashboard } from "@/components/admin/IntakeAnalysisDashboard";
-import { GenerateProposalButton } from "@/components/admin/GenerateProposalButton";
+import { IntakeActionBar } from "@/components/admin/IntakeActionBar";
 
 export const metadata: Metadata = {
   title: "Intake Analysis",
@@ -26,13 +26,13 @@ export default async function AdminIntakeDetailPage({
     notFound();
   }
 
-  const submission = await getSubmission(id);
+  const row = await getSubmission(id);
 
-  if (!submission) {
+  if (!row) {
     notFound();
   }
 
-  // Look up linked client for proposal generation
+  // Look up linked client
   const [linkedClient] = await db
     .select({ id: clients.id })
     .from(clients)
@@ -41,21 +41,24 @@ export default async function AdminIntakeDetailPage({
 
   return (
     <>
-      <div className="mb-6 flex items-center justify-between">
+      <div className="mb-4">
         <Link
           href="/admin/intake"
           className="inline-flex items-center text-sm text-muted-foreground transition-colors hover:text-foreground"
         >
           &larr; Back to submissions
         </Link>
-        {linkedClient && (
-          <GenerateProposalButton
-            intakeSubmissionId={id}
-            clientId={linkedClient.id}
-          />
-        )}
       </div>
-      <IntakeAnalysisDashboard analysis={submission} />
+
+      <IntakeActionBar
+        intakeId={id}
+        initialStatus={row.status}
+        linkedClientId={linkedClient?.id ?? null}
+      />
+
+      <div className="mt-6">
+        <IntakeAnalysisDashboard analysis={row.analysis} />
+      </div>
     </>
   );
 }

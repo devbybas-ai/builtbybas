@@ -1,8 +1,8 @@
 # BuiltByBas — Handoff Document
 
-> **Last Updated:** 2026-03-03 (Session 26)
-> **Status:** LIVE AT builtbybas.com — Portfolio demo overhaul COMPLETE. All 12 new industry demos built, wired into DemoRenderer + portfolio entries. 4 new subcategories (Service, Storefront, Education, UD/UDL). LIVE tab filtered to status=live only. Main: 163/163 tests, 68-route build (42 portfolio paths), tsc clean.
-> **Next Session:** Deploy to VPS, take screenshots, wire portfolio images. Then BBB demo platform deployment (port 3010, demos.builtbybas.com).
+> **Last Updated:** 2026-03-03 (Session 27)
+> **Status:** LIVE AT builtbybas.com — Intake system overhaul Phase 1+2 COMPLETE. Backend workflow (accept/reject/convert/propose), service-specific intake entry with query param deep linking, deeper 8-12 question modules for all 9 services, RAI red-flag screening on all intakes. Service walkthrough CTAs now link directly to `/intake?service=X`. Main: 169/169 tests, 68-route build, tsc clean.
+> **Next Session:** Run Drizzle migration for `intake_status` column, deploy to VPS, then Phase 3 (auto-generated follow-up questions, SME best practice analysis, enhanced proposal generation).
 
 ---
 
@@ -552,23 +552,55 @@ Dark, premium, cutting-edge. The site itself IS the portfolio piece. Every inter
 - **KAR CRM status:** Changed from `"live"` to `"in-progress"` — not publicly deployed yet (local IP only), should not appear in LIVE tab.
 - **Verification:** 163/163 tests pass. tsc clean. Build clean (68 routes, 42 portfolio paths).
 
+**Session 27 (Service Walkthrough + Intake Overhaul Phase 1+2 + RAI Screening):**
+
+- **Service Walkthrough Overlays:** Built full-page walkthrough modal for all 9 services — 5-phase process (Discovery, Design, Build, Launch, Support) with deliverables, duration, progress bar, keyboard nav. Components: `ServiceWalkthroughOverlay.tsx`, `WalkthroughProgress.tsx`. Hooks: `useFocusTrap.ts`, `useBodyScrollLock.ts`. Service cards now clickable with `onClick` handler.
+- **Walkthrough data:** Added `walkthrough` property to all 9 services in `services.ts` (~530 lines of content). Types: `WalkthroughStep`, `ServiceWalkthrough` in `types/services.ts`.
+- **Intake Backend Workflow (Phase 1):**
+  - Added `intakeStatusEnum` (`new`/`reviewed`/`accepted`/`rejected`/`converted`) + `status` column to `intakeSubmissions` schema
+  - Created `PATCH /api/intake/[id]/status` route (auth-guarded)
+  - Built `IntakeActionBar.tsx` (~210 lines) — context-sensitive buttons based on status (accept, reject, convert to client, generate proposal)
+  - Wired into intake detail page, replacing `GenerateProposalButton`
+  - Updated `IntakeListView.tsx` with status badges (color-coded) + status filter bar
+  - Updated `intake-storage.ts` return types to `IntakeSubmissionRow { analysis, status }`
+  - Fixed type errors in convert route and proposals generate route
+- **Service-Specific Intake Entry (Phase 2):**
+  - Created `service-id-map.ts` — bidirectional mapping between 9 service data IDs and intake IDs
+  - Rewrote all 9 service intake question modules — deeper questions (8-12 each) structured around: Your Business, The Problem, The Vision, Project Specifics
+  - Updated `buildSteps()` with `skipServiceSelection` parameter
+  - Updated `useIntakeForm` to accept `preselectedService` option
+  - `IntakeForm.tsx` now reads `?service=` query param via `useSearchParams()`
+  - Added `<Suspense>` boundary to intake page
+  - Walkthrough CTA now links to `/intake?service=<id>` (auto-selects service, skips service selection step)
+- **RAI Red-Flag Screening:**
+  - Added `"rai-concern"` flag type to `AnalysisFlag`
+  - Built `screenForRaiConcerns()` — scans all intake text for 8 categories: surveillance, deception, discrimination, data harvesting, dark patterns, exploitation of vulnerable populations, illegal content, circumventing laws
+  - RAI flags render in bright red with ring highlight in admin dashboard
+  - 6 new tests: catches unethical asks, passes legitimate business requests
+- **VPS PM2 auto-restart:** Bas ran `pm2 startup && pm2 save` — both builtbybas and colourparlor now auto-restart on VPS reboot.
+- **Memory correction:** Bas is NOT a veteran. BuiltByBas is veteran-backed and funded.
+- **Verification:** 169/169 tests pass (+6 RAI tests). tsc clean. Build clean.
+- **IMPORTANT:** Drizzle migration for `intake_status` enum + `status` column has NOT been generated/pushed yet. Must run before deploying Phase 1 backend changes.
+
 ---
 
 ### What's Next
 
-**Deploy + Screenshots (top priority):**
-1. Deploy updated main to VPS — commit, push, redeploy
-2. Take screenshots of all 12 new demos + existing demos for portfolio images
-3. Wire `image` + `gallery` fields in `portfolio.ts` with screenshot paths
+**Immediate — Before Deploy:**
+1. Run Drizzle migration: `npx drizzle-kit generate` + `npx drizzle-kit push` for `intake_status` column
+2. Commit + push all Session 27 changes
+3. Deploy to VPS (Bas runs manually from Hostinger terminal)
 
-**BBB Demo Platform:**
-4. Deploy `bbbprojects/demos/` to VPS — add PM2 process on port 3010, Nginx for `demos.builtbybas.com`
-5. Wire portfolio links with real demo URLs once deployed
+**Phase 3 — Enhanced Analysis + Follow-Up Questions:**
+4. Auto-generate 3-5 follow-up questions after intake scan (based on gaps, vague answers, SME best practices)
+5. SME best practice analysis per service (recommended tech stack, hardware/security, compliance, industry standards)
+6. Feed follow-up answers + SME recommendations into proposal generator for richer proposals
+7. Display follow-up questions + SME analysis in admin intake detail page
 
 **Portfolio:**
-6. KAR CRM — deploy to VPS, add images, health grades, change status to "live" when ready
-7. Delete `portfolio - Shortcut.lnk` from colourparlor folder (Windows shortcut, never commit)
-8. Fix SSH key on local dev machine so deploys don't require Hostinger terminal
+8. Take screenshots of all demos, wire portfolio images
+9. BBB demo platform deployment (port 3010, demos.builtbybas.com)
+10. KAR CRM — deploy to VPS, add to portfolio when ready
 
 **Phase 6 — Client Portal:**
 11. Client-facing portal (project status, invoices, communication)
@@ -576,8 +608,8 @@ Dark, premium, cutting-edge. The site itself IS the portfolio piece. Every inter
 13. Email notifications for invoice/proposal status changes
 
 **Improvements:**
-14. Fix SSH key access from local dev machine to VPS (currently using HTTPS workaround)
-15. Run `pm2 startup && pm2 save` on VPS for auto-restart on reboot
+14. Fix SSH key access from local dev machine to VPS
+15. Delete `portfolio - Shortcut.lnk` from colourparlor folder
 
 ### Notes
 

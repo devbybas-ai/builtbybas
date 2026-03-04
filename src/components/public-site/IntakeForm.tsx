@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, ArrowRight, Send } from "lucide-react";
 import { springs } from "@/lib/motion";
@@ -9,6 +9,8 @@ import { useIntakeForm } from "@/hooks/useIntakeForm";
 import { IntakeProgress } from "@/components/public-site/IntakeProgress";
 import { IntakeStep } from "@/components/public-site/IntakeStep";
 import { cn } from "@/lib/utils";
+import { toIntakeId } from "@/data/service-id-map";
+import { getServiceModule } from "@/data/intake-questions";
 
 const slideVariants = {
   enter: (direction: number) => ({
@@ -27,7 +29,15 @@ const slideVariants = {
 
 export function IntakeForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const shouldReduceMotion = useReducedMotion();
+
+  // Resolve ?service= query param (accepts both service data ID and intake ID)
+  const serviceParam = searchParams.get("service");
+  const preselectedService = serviceParam
+    ? (toIntakeId(serviceParam) ?? (getServiceModule(serviceParam) ? serviceParam : undefined))
+    : undefined;
+
   const {
     currentStep,
     totalSteps,
@@ -42,7 +52,7 @@ export function IntakeForm() {
     nextStep,
     prevStep,
     submitForm,
-  } = useIntakeForm();
+  } = useIntakeForm({ preselectedService });
 
   const isLastStep = currentStep === totalSteps - 1;
 
