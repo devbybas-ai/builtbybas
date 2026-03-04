@@ -15,15 +15,16 @@ function formatKey(key: string): string {
     .replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
-/** Render a single field from the raw submission data */
+/** Render a single field from the raw submission data.
+ *  Uses div/span instead of dt/dd to avoid invalid nesting when recursive. */
 function RawField({ label, value }: { label: string; value: unknown }) {
   const displayLabel = formatKey(label);
 
   if (value == null || value === "") {
     return (
       <div>
-        <dt className="text-xs font-medium text-muted-foreground">{displayLabel}</dt>
-        <dd className="text-sm text-muted-foreground/60">—</dd>
+        <span className="block text-xs font-medium text-muted-foreground">{displayLabel}</span>
+        <span className="block text-sm text-muted-foreground/60">—</span>
       </div>
     );
   }
@@ -31,8 +32,8 @@ function RawField({ label, value }: { label: string; value: unknown }) {
   if (Array.isArray(value)) {
     return (
       <div>
-        <dt className="text-xs font-medium text-muted-foreground">{displayLabel}</dt>
-        <dd className="mt-1 flex flex-wrap gap-1.5">
+        <span className="block text-xs font-medium text-muted-foreground">{displayLabel}</span>
+        <div className="mt-1 flex flex-wrap gap-1.5">
           {value.length === 0 ? (
             <span className="text-sm text-muted-foreground/60">—</span>
           ) : (
@@ -45,7 +46,7 @@ function RawField({ label, value }: { label: string; value: unknown }) {
               </span>
             ))
           )}
-        </dd>
+        </div>
       </div>
     );
   }
@@ -54,12 +55,12 @@ function RawField({ label, value }: { label: string; value: unknown }) {
     const entries = Object.entries(value as Record<string, unknown>);
     return (
       <div>
-        <dt className="text-xs font-medium text-muted-foreground">{displayLabel}</dt>
-        <dd className="mt-2 space-y-3 rounded-lg border border-white/5 bg-white/[0.02] p-3">
+        <span className="block text-xs font-medium text-muted-foreground">{displayLabel}</span>
+        <div className="mt-2 space-y-3 rounded-lg border border-white/5 bg-white/[0.02] p-3">
           {entries.map(([subKey, subVal]) => (
             <RawField key={subKey} label={subKey} value={subVal} />
           ))}
-        </dd>
+        </div>
       </div>
     );
   }
@@ -67,16 +68,16 @@ function RawField({ label, value }: { label: string; value: unknown }) {
   if (typeof value === "boolean") {
     return (
       <div>
-        <dt className="text-xs font-medium text-muted-foreground">{displayLabel}</dt>
-        <dd className="text-sm text-foreground">{value ? "Yes" : "No"}</dd>
+        <span className="block text-xs font-medium text-muted-foreground">{displayLabel}</span>
+        <span className="block text-sm text-foreground">{value ? "Yes" : "No"}</span>
       </div>
     );
   }
 
   return (
     <div>
-      <dt className="text-xs font-medium text-muted-foreground">{displayLabel}</dt>
-      <dd className="text-sm text-foreground">{String(value)}</dd>
+      <span className="block text-xs font-medium text-muted-foreground">{displayLabel}</span>
+      <span className="block text-sm text-foreground">{String(value)}</span>
     </div>
   );
 }
@@ -293,11 +294,11 @@ export function IntakeAnalysisDashboard({ analysis }: IntakeAnalysisDashboardPro
         </button>
 
         {showRaw && (
-          <dl className="mt-4 space-y-4">
+          <div className="mt-4 space-y-4">
             {Object.entries(formData).map(([key, value]) => (
               <RawField key={key} label={key} value={value} />
             ))}
-          </dl>
+          </div>
         )}
       </GlassCard>
     </div>
