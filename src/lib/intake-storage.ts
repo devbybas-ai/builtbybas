@@ -88,3 +88,13 @@ export async function updateIntakeStatus(
 
   return (result.rowCount ?? 0) > 0;
 }
+
+export async function deleteSubmission(id: string): Promise<boolean> {
+  if (!/^[a-f0-9-]+$/i.test(id)) return false;
+
+  const result = await db
+    .delete(intakeSubmissions)
+    .where(eq(intakeSubmissions.id, id));
+
+  return (result.rowCount ?? 0) > 0;
+}

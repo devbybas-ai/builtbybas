@@ -84,6 +84,29 @@ export function IntakeActionBar({
     }
   }
 
+  async function deleteIntake() {
+    if (!confirm("Are you sure you want to delete this submission? This cannot be undone.")) {
+      return;
+    }
+    setLoading("delete");
+    setError("");
+    try {
+      const res = await fetch(`/api/intake/${intakeId}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      if (data.success) {
+        router.push("/admin/intake");
+      } else {
+        setError(data.error || "Failed to delete");
+      }
+    } catch {
+      setError("Network error");
+    } finally {
+      setLoading("");
+    }
+  }
+
   async function generateProposal() {
     setLoading("proposal");
     setError("");
@@ -219,6 +242,18 @@ export function IntakeActionBar({
             View Client
           </a>
         )}
+
+        {/* Delete — always available, pushed right */}
+        <div className="ml-auto">
+          <button
+            type="button"
+            onClick={deleteIntake}
+            disabled={isLoading}
+            className="rounded-lg bg-red-500/5 px-3 py-1.5 text-xs font-medium text-red-400/70 transition-colors hover:bg-red-500/15 hover:text-red-400 disabled:opacity-50"
+          >
+            {loading === "delete" ? "Deleting..." : "Delete"}
+          </button>
+        </div>
       </div>
 
       {error && (
