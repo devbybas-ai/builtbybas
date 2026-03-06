@@ -215,7 +215,7 @@ export function ServiceWalkthroughOverlay({
           </div>
 
           {/* ---- Step Content ---- */}
-          <div className="relative min-h-0 flex-1 overflow-y-auto px-5 py-4">
+          <div className="relative min-h-0 flex-1 overflow-y-auto overflow-x-hidden px-5 py-4">
             <AnimatePresence mode="wait" custom={direction}>
               <motion.div
                 key={currentStep}

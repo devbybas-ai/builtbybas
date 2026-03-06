@@ -1,8 +1,29 @@
 # BuiltByBas — Handoff Document
 
-> **Last Updated:** 2026-03-06 (Session 33)
-> **Status:** LIVE AT builtbybas.com — Session 31 deployed (commit `5dbfa4e`). 202 tests pass. Session 33 changes ready to commit + deploy. Production DB updated (responded_at, nudged_at, response_token columns added).
-> **Next Session:** Commit + deploy Session 33 changes, fix drizzle migration journal sync, modular AI provider architecture, Umami security, intake form quality.
+> **Last Updated:** 2026-03-06 (Session 34)
+> **Status:** LIVE AT builtbybas.com — Session 31 deployed (commit `5dbfa4e`). Sessions 33-34 pushed to remote (`733f875`+), pending VPS deploy + DB migration (`drizzle/0008_pale_felicia_hardy.sql`).
+> **Next Session:** Deploy to VPS (git pull + pnpm drizzle-kit push + pnpm build + pm2 restart), fix drizzle migration journal sync, modular AI provider architecture, Umami security, intake form quality.
+
+## Session 34 Changes (2026-03-06)
+
+**Admin BCC on All Client Emails:**
+- Added `ADMIN_EMAIL` export to `src/lib/email.ts` (reads from `ADMIN_EMAIL` env var)
+- Proposal send route (`src/app/api/proposals/[id]/send/route.ts`) now BCCs admin on every email
+- Nudge route (`src/app/api/proposals/[id]/nudge/route.ts`) now BCCs admin on every email
+- Confirmed working: nudge email received at `bas.rosario@gmail.com` via BCC
+- `ADMIN_EMAIL=bas.rosario@gmail.com` already set in local and production `.env.local`
+
+**Service Walkthrough — Scrollbar Fix:**
+- Added `overflow-x-hidden` to step content container in `ServiceWalkthroughOverlay.tsx`
+- Eliminates horizontal scrollbar flash during step slide animations
+
+**Intake Form — Scroll to Top on Step Change:**
+- `nextStep()` and `prevStep()` in `src/hooks/useIntakeForm.ts` now call `window.scrollTo({ top: 0, behavior: "smooth" })`
+- Form always starts at the top when navigating between steps
+
+**Housekeeping:**
+- Installed `tsx` as dev dependency (was referenced in `db:seed` script but not installed)
+- Pushed commits `5182191` (Session 33) and `733f875` (admin BCC) to remote
 
 ## Session 33 Changes (2026-03-06)
 

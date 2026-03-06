@@ -197,6 +197,8 @@ export function useIntakeForm(options: UseIntakeFormOptions = {}) {
         errors: {},
       };
     });
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, [validateCurrentStep, totalSteps]);
 
   const prevStep = useCallback(() => {
@@ -205,6 +207,8 @@ export function useIntakeForm(options: UseIntakeFormOptions = {}) {
       currentStep: Math.max(prev.currentStep - 1, 0),
       errors: {},
     }));
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
   const goToStep = useCallback(
