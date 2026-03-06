@@ -44,6 +44,141 @@ const SERVICE_DURATION: Record<string, string> = {
 };
 
 /**
+ * Keywords in intake answers that signal premium scope for each service.
+ * Each hit pushes the estimate higher within (or above) the base price range.
+ */
+const SCOPE_PREMIUM_KEYWORDS: Record<string, string[]> = {
+  "e-commerce": [
+    "configurator", "3d", "augmented reality", " ar ", "real-time preview",
+    "erp", "enterprise resource", "subscription", "recurring", "marketplace",
+    "multi-vendor", "wholesale", "b2b", "multi-currency", "international",
+    "custom dimension", "personali", "membership", "loyalty program",
+  ],
+  "crm-systems": [
+    "automation", "workflow engine", "api integration", "multi-team",
+    "multi-location", "ai scoring", "machine learning", "predictive",
+    "multi-tenant", "white label", "custom pipeline", "territory",
+  ],
+  "marketing-websites": [
+    "multilingual", "multi-language", "membership", "gated content",
+    "video production", "animation", "interactive", "headless cms",
+    "blog platform", "multi-site", "personali",
+  ],
+  "website-redesigns": [
+    "multilingual", "migration", "multi-site", "headless",
+    "interactive", "animation", "personali", "membership",
+  ],
+  "client-portals": [
+    "real-time", "video", "chat", "multi-tenant", "white label",
+    "api integration", "mobile app", "offline", "file sharing",
+    "custom workflow", "approval flow",
+  ],
+  "business-dashboards": [
+    "real-time", "machine learning", "predictive", "multi-source",
+    "etl", "data warehouse", "custom report", "embed", "white label",
+    "geospatial", "map", "alert",
+  ],
+  "ai-powered-tools": [
+    "fine-tune", "training data", "custom model", "nlp", "computer vision",
+    "voice", "multi-modal", "real-time", "agent", "autonomous",
+    "document processing", "ocr",
+  ],
+  "full-operations-platform": [
+    "multi-location", "franchise", "white label", "api marketplace",
+    "custom workflow", "enterprise", "sso", "audit trail", "compliance",
+  ],
+  "landing-pages": [
+    "interactive", "calculator", "quiz", "multi-variant", "video",
+    "animation", "personali",
+  ],
+};
+
+/** Map budget range keys to their floor dollar value */
+function parseBudgetFloor(budgetRange: string): number {
+  const map: Record<string, number> = {
+    "1k-5k": 1000,
+    "5k-15k": 5000,
+    "15k-30k": 15000,
+    "30k+": 30000,
+  };
+  return map[budgetRange] ?? 0;
+}
+
+/** Parse a price range string into [low, high] dollar amounts */
+function parseRangeDollars(range: string): [number, number] {
+  const numbers = range.match(/[\d,]+/g);
+  if (!numbers || numbers.length < 2) return [0, 0];
+  return [
+    parseInt(numbers[0].replace(/,/g, ""), 10),
+    parseInt(numbers[1].replace(/,/g, ""), 10),
+  ];
+}
+
+/**
+ * Compute a scope-aware price for a service based on the full intake analysis.
+ *
+ * Instead of always using the midpoint of the service price range, this
+ * positions the estimate within (or above) the range based on:
+ *   1. Complexity score — higher overall score = higher in range
+ *   2. Scope premium keywords — specific high-cost features push price up
+ *   3. Client budget signal — if stated budget exceeds range, don't underprice
+ *   4. Multi-service integration — additional services add overhead
+ */
+export function computeScopedPriceCents(
+  rec: ServiceRecommendation,
+  analysis: IntakeAnalysis,
+): number {
+  const [low, high] = parseRangeDollars(rec.estimatedRange);
+  if (low === 0 && high === 0) return 0;
+
+  // Base position from complexity (0.3 at score 0, 0.8 at score 10)
+  const complexity = analysis.complexityScore.overall;
+  let position = 0.3 + (complexity / 10) * 0.5;
+
+  // Scope premium keywords from service-specific answers + additional notes
+  const intakeId = SERVICE_TO_INTAKE_ID[rec.serviceId];
+  const answers = intakeId ? analysis.formData.serviceAnswers[intakeId] : undefined;
+  const parts: string[] = [];
+  if (answers) {
+    for (const val of Object.values(answers)) {
+      if (typeof val === "string") parts.push(val);
+      else if (Array.isArray(val)) parts.push(val.join(" "));
+    }
+  }
+  if (analysis.formData.additionalNotes) parts.push(analysis.formData.additionalNotes);
+  const scopeText = parts.join(" ").toLowerCase();
+
+  const premiumKeywords = SCOPE_PREMIUM_KEYWORDS[rec.serviceId] ?? [];
+  let premiumHits = 0;
+  for (const kw of premiumKeywords) {
+    if (scopeText.includes(kw)) premiumHits++;
+  }
+  position += premiumHits * 0.1;
+
+  // Budget signal — if client budget floor exceeds service range high, scale up
+  const budgetFloor = parseBudgetFloor(analysis.formData.budgetRange);
+  if (budgetFloor > high) {
+    position += 0.2;
+  } else if (budgetFloor > (low + high) / 2) {
+    position += 0.1;
+  }
+
+  // Multi-service integration overhead
+  const serviceCount = analysis.formData.selectedServices.length;
+  if (serviceCount > 1) {
+    position += 0.05 * (serviceCount - 1);
+  }
+
+  // Cap: can extend up to 1.5x the range width above the low end
+  const cappedPosition = Math.min(position, 1.5);
+  const price = low + (high - low) * cappedPosition;
+
+  // Round to nearest $250
+  const rounded = Math.round(price / 250) * 250;
+  return rounded * 100;
+}
+
+/**
  * Algorithmically generates a professional proposal from intake analysis data.
  * Uses templates populated with real data — no AI API calls.
  *
@@ -70,7 +205,7 @@ export function generateProposal(
     (r) => !selectedDataIds.includes(r.serviceId) && r.fitScore >= 50,
   );
 
-  const proposalServices = buildProposalServices(selectedServices, serviceCatalog);
+  const proposalServices = buildProposalServices(selectedServices, serviceCatalog, analysis);
   const estimatedBudgetCents = proposalServices.reduce(
     (sum, s) => sum + s.estimatedPriceCents,
     0,
@@ -105,6 +240,7 @@ export function generateProposal(
 function buildProposalServices(
   recommendations: ServiceRecommendation[],
   catalog: Service[],
+  analysis: IntakeAnalysis,
 ): ProposalService[] {
   return recommendations.map((rec) => {
     const catalogEntry = catalog.find((s) => s.id === rec.serviceId);
@@ -113,7 +249,7 @@ function buildProposalServices(
       serviceId: rec.serviceId,
       serviceName: rec.serviceTitle,
       description: catalogEntry?.description ?? rec.reasons.join(". "),
-      estimatedPriceCents: parseMidpointCents(rec.estimatedRange),
+      estimatedPriceCents: computeScopedPriceCents(rec, analysis),
       estimatedTimeline: duration,
     };
   });

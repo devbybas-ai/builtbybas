@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { generateProposal, parseMidpointCents } from "./proposal-generator";
+import { generateProposal, parseMidpointCents, computeScopedPriceCents } from "./proposal-generator";
 import type { IntakeAnalysis } from "@/types/intake-analysis";
 import type { Service } from "@/types/services";
 
@@ -212,6 +212,107 @@ describe("proposal-generator", () => {
 
     it("returns 0 for empty string", () => {
       expect(parseMidpointCents("")).toBe(0);
+    });
+  });
+
+  describe("computeScopedPriceCents", () => {
+    it("returns midpoint for moderate complexity with no premium signals", () => {
+      // Complexity 4, no premium keywords, budget within range, 1 service
+      const rec = mockAnalysis.serviceRecommendations[0]; // marketing-websites $2,500-$8,000
+      const result = computeScopedPriceCents(rec, mockAnalysis);
+      // position = 0.3 + (4/10)*0.5 = 0.5 → price = 2500 + 5500*0.5 = $5,250
+      expect(result).toBe(525000);
+    });
+
+    it("prices higher for high complexity", () => {
+      const highComplexity: IntakeAnalysis = {
+        ...mockAnalysis,
+        complexityScore: { overall: 8, label: "Enterprise", factors: [] },
+      };
+      const rec = highComplexity.serviceRecommendations[0];
+      const result = computeScopedPriceCents(rec, highComplexity);
+      // position = 0.3 + (8/10)*0.5 = 0.7 → price = 2500 + 5500*0.7 = $6,350 → rounds to $6,250
+      expect(result).toBeGreaterThan(525000);
+    });
+
+    it("prices lower for simple complexity", () => {
+      const simple: IntakeAnalysis = {
+        ...mockAnalysis,
+        complexityScore: { overall: 2, label: "Simple", factors: [] },
+      };
+      const rec = simple.serviceRecommendations[0];
+      const result = computeScopedPriceCents(rec, simple);
+      // position = 0.3 + (2/10)*0.5 = 0.4 → price = 2500 + 5500*0.4 = $4,700 → rounds to $4,750
+      expect(result).toBeLessThan(525000);
+    });
+
+    it("increases price when scope premium keywords are present", () => {
+      const withKeywords: IntakeAnalysis = {
+        ...mockAnalysis,
+        serviceRecommendations: [{
+          serviceId: "e-commerce",
+          serviceTitle: "E-Commerce",
+          fitScore: 90,
+          fitLabel: "Strong Fit",
+          reasons: ["Directly selected service"],
+          estimatedRange: "$8,000 - $25,000",
+          isPrimary: true,
+        }],
+        formData: {
+          ...mockAnalysis.formData,
+          selectedServices: ["ecommerce"],
+          serviceAnswers: {
+            ecommerce: {
+              aboutBusiness: "We build custom furniture",
+              currentSelling: "We need a 3D configurator with augmented reality preview and ERP integration",
+              successVision: "70% DTC sales with a subscription loyalty program",
+            },
+          },
+          budgetRange: "30k+",
+        },
+        complexityScore: { overall: 7, label: "Complex", factors: [] },
+      };
+      const rec = withKeywords.serviceRecommendations[0];
+      const result = computeScopedPriceCents(rec, withKeywords);
+      // High complexity + 5 keyword hits + budget exceeds range + 1 service
+      // Should be well above the midpoint of $16,500
+      expect(result).toBeGreaterThan(1650000);
+      // Should not exceed 1.5x range cap: 8000 + 17000*1.5 = $33,500
+      expect(result).toBeLessThanOrEqual(3350000);
+    });
+
+    it("boosts price when client budget exceeds service range", () => {
+      const highBudget: IntakeAnalysis = {
+        ...mockAnalysis,
+        formData: { ...mockAnalysis.formData, budgetRange: "30k+" },
+      };
+      const rec = highBudget.serviceRecommendations[0]; // marketing-websites, high=$8,000
+      const result = computeScopedPriceCents(rec, highBudget);
+      // Budget floor $30K > high $8K → +0.2 boost
+      expect(result).toBeGreaterThan(525000);
+    });
+
+    it("adds integration overhead for multi-service projects", () => {
+      const multiService: IntakeAnalysis = {
+        ...mockAnalysis,
+        formData: {
+          ...mockAnalysis.formData,
+          selectedServices: ["marketing-website", "crm-system", "ecommerce"],
+        },
+      };
+      const rec = multiService.serviceRecommendations[0];
+      const single = computeScopedPriceCents(rec, mockAnalysis);
+      const multi = computeScopedPriceCents(rec, multiService);
+      // 3 services → +0.1 boost over single
+      expect(multi).toBeGreaterThan(single);
+    });
+
+    it("returns 0 for invalid range", () => {
+      const badRec = {
+        ...mockAnalysis.serviceRecommendations[0],
+        estimatedRange: "TBD",
+      };
+      expect(computeScopedPriceCents(badRec, mockAnalysis)).toBe(0);
     });
   });
 });
