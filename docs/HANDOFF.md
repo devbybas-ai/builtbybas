@@ -1,8 +1,42 @@
 # BuiltByBas — Handoff Document
 
-> **Last Updated:** 2026-03-06 (Session 34)
-> **Status:** LIVE AT builtbybas.com — Session 31 deployed (commit `5dbfa4e`). Sessions 33-34 pushed to remote (`733f875`+), pending VPS deploy + DB migration (`drizzle/0008_pale_felicia_hardy.sql`).
-> **Next Session:** Deploy to VPS (git pull + pnpm drizzle-kit push + pnpm build + pm2 restart), fix drizzle migration journal sync, modular AI provider architecture, Umami security, intake form quality.
+> **Last Updated:** 2026-03-06 (Session 35)
+> **Status:** LIVE AT builtbybas.com — Sessions 33-35 pushed to remote (`0108e47`), pending VPS deploy + DB migration (`drizzle/0008_pale_felicia_hardy.sql`).
+> **Next Session:** Deploy to VPS (git pull + pnpm install --frozen-lockfile + pnpm drizzle-kit push + pnpm build + pm2 restart), fix drizzle migration journal sync, modular AI provider architecture, Umami security, intake form quality.
+
+## Session 35 Changes (2026-03-06)
+
+**Legal Policies — 5 Public Pages (dated Jan 1, 2025):**
+- **Privacy Policy** (`/privacy`) — data collection (intake form, Umami cookieless analytics), AI processing via Anthropic, data retention periods (3yr active clients, 1yr non-client intakes, 2yr proposals), full CCPA/CPRA rights (Right to Know, Delete, Correct, Opt-Out, Non-Discrimination), children's privacy (under 16)
+- **Terms of Service** (`/terms`) — client responsibilities, IP ownership (full transfer on payment), pre-existing materials license, portfolio rights, payment terms (50% deposit, 1.5%/mo late fees, 30-day suspension), 30-day warranty period, liability cap (total project fees), indemnification, confidentiality (2yr survival), termination (client and company), force majeure, California law + AAA arbitration, mediation-first dispute resolution
+- **Cookie Policy** (`/cookies`) — single strictly necessary cookie (session_token for auth), Umami cookieless analytics disclosure, no advertising/tracking/third-party cookies, DNT compliance
+- **Refund & Cancellation Policy** (`/refund`) — non-refundable deposits (48hr grace period before work begins), cancellation table by project stage with pro-rated refunds, satisfaction guarantee, change order process, hosting cancellation (30-day notice, 2hr migration support)
+- **Responsible AI Policy** (`/ai-policy`) — human review gates (no AI output reaches clients without human approval), what data goes to AI vs what never does, Anthropic zero-retention API, bias-free scoring (protected characteristics excluded), transparency commitment, client rights (opt-out of AI, request explanations), incident response (72hr client notification), EU AI Act / CCPA / GDPR compliance
+
+**Website Footer — Policy Links:**
+- Added policy links row to `PublicFooter.tsx`: Privacy Policy, Terms of Service, Cookie Policy, Refund Policy, Responsible AI
+- Subtle styling (`text-xs text-muted-foreground/70`) below main nav links, above copyright
+
+**Professional Email Footer:**
+- New `buildEmailFooterHtml()` in `src/lib/proposal-email.ts` — shared across all outgoing emails
+- Includes: "Reviewed and approved by Bas Rosario", company name/location, contact info, policy links (Privacy, Terms, Refund, AI), copyright
+- Applied to proposal send, nudge follow-up, and intake link emails
+
+**Hero Section Cleanup:**
+- Removed CTA buttons from hero on desktop (redundant with nav "Start a Project" + "Portfolio")
+- Added mobile-only CTA buttons (`md:hidden`) — "Start a Project" (cyan, neon-glow) + "View Our Work" (darkened bg-white/20)
+- Darkened "View Our Work" button: `bg-white/5` → `bg-white/20`, hover `bg-white/35`
+- Stats bar moved up: `mt-24/mt-28` → `mt-16/mt-20`
+
+**Cascading Shine Animation:**
+- Added `--shine-delay` CSS custom property to `btn-shine::after` in `globals.css`
+- Supports staggered shine sweep across multiple buttons via inline `style` prop
+
+**Subtle PCB Background on Inner Pages:**
+- New `PageBackground` component — static SVG PCB traces at 25% opacity
+- Radial vignette keeps center clean/dark, traces peek through at page edges
+- Applied via `(public)/layout.tsx` — all public pages get it automatically
+- No animations, no JS, server-renderable (zero performance impact)
 
 ## Session 34 Changes (2026-03-06)
 
