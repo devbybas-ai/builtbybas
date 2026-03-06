@@ -248,6 +248,7 @@
     );
     transform: translateX(-100%);
     animation: btn-shine 8s ease-in-out infinite;
+    animation-delay: var(--shine-delay, 0s);
     pointer-events: none;
     border-radius: inherit;
   }

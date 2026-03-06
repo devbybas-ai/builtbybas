@@ -7,6 +7,14 @@ const footerLinks = [
   { href: "/intake", label: "Start a Project" },
 ];
 
+const policyLinks = [
+  { href: "/privacy", label: "Privacy Policy" },
+  { href: "/terms", label: "Terms of Service" },
+  { href: "/cookies", label: "Cookie Policy" },
+  { href: "/refund", label: "Refund Policy" },
+  { href: "/ai-policy", label: "Responsible AI" },
+];
+
 export function PublicFooter() {
   return (
     <footer className="border-t border-white/10 bg-background">
@@ -37,8 +45,24 @@ export function PublicFooter() {
           </nav>
         </div>
 
-        <div className="mt-8 border-t border-white/10 pt-8 text-center text-sm text-muted-foreground">
-          &copy; {new Date().getFullYear()} BuiltByBas. All rights reserved.
+        <div className="mt-8 border-t border-white/10 pt-8">
+          <nav aria-label="Policy links">
+            <ul className="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
+              {policyLinks.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="text-xs text-muted-foreground/70 transition-colors hover:text-muted-foreground"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+          <p className="mt-4 text-center text-sm text-muted-foreground">
+            &copy; {new Date().getFullYear()} BuiltByBas. All rights reserved.
+          </p>
         </div>
       </div>
     </footer>

@@ -1,8 +1,5 @@
 "use client";
 
-import Link from "next/link";
-import { motion } from "framer-motion";
-import { springs } from "@/lib/motion";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { AnimatedText } from "@/components/motion/AnimatedText";
 import { FadeIn } from "@/components/motion/FadeIn";
@@ -37,40 +34,10 @@ export function Hero() {
           </p>
         </FadeIn>
 
-        {/* CTA Buttons */}
-        <FadeIn delay={0.6} className="mt-12 sm:mt-14">
-          <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-            <motion.div
-              whileHover={shouldReduceMotion ? undefined : { scale: 1.05 }}
-              whileTap={shouldReduceMotion ? undefined : { scale: 0.95 }}
-              transition={springs.snappy}
-            >
-              <Link
-                href="/intake"
-                className="btn-shine neon-glow inline-flex h-12 items-center rounded-lg bg-primary px-8 text-base font-semibold text-primary-foreground transition-colors hover:bg-cyan-hover"
-              >
-                Start a Project
-              </Link>
-            </motion.div>
-
-            <motion.div
-              whileHover={shouldReduceMotion ? undefined : { scale: 1.05 }}
-              whileTap={shouldReduceMotion ? undefined : { scale: 0.95 }}
-              transition={springs.snappy}
-            >
-              <Link
-                href="/portfolio"
-                className="inline-flex h-12 items-center rounded-lg border border-white/10 bg-white/5 px-8 text-base font-semibold transition-colors hover:bg-white/10"
-              >
-                View Our Work
-              </Link>
-            </motion.div>
-          </div>
-        </FadeIn>
       </div>
 
       {/* Stats Bar */}
-      <div className="relative z-10 mt-24 sm:mt-28 w-full pb-12">
+      <div className="relative z-10 mt-16 sm:mt-20 w-full pb-12">
         <StatsBar />
       </div>
     </section>

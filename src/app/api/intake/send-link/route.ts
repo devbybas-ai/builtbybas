@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { z } from "zod/v4";
 import { requireAdmin } from "@/lib/api-auth";
 import { resend, EMAIL_FROM, SITE_URL } from "@/lib/email";
+import { buildEmailFooterHtml } from "@/lib/proposal-email";
 
 const sendLinkSchema = z.object({
   email: z.email(),
@@ -88,15 +89,7 @@ export async function POST(request: NextRequest) {
           </p>
         </td></tr>
 
-        <!-- Footer -->
-        <tr><td style="padding-top:24px;text-align:center;">
-          <p style="color:#52525b;font-size:12px;margin:0;">
-            BuiltByBas &middot; Custom Software &amp; Web Development
-          </p>
-          <p style="color:#3f3f46;font-size:11px;margin:8px 0 0;">
-            This email was sent because someone at BuiltByBas thought you might be interested in working together.
-          </p>
-        </td></tr>
+        ${buildEmailFooterHtml()}
       </table>
     </td></tr>
   </table>

@@ -118,16 +118,7 @@ ${responseUrl ? `<!-- Accept / Decline -->
 </table>
 </td></tr>` : ""}
 
-<!-- Footer -->
-<tr><td style="padding:24px 0 0;border-top:1px solid rgba(255,255,255,0.1);">
-  <p style="color:#a0a0a0;font-size:12px;line-height:1.5;margin:0 0 8px;">
-    <em>Reviewed and approved by Bas Rosario</em>
-  </p>
-  <p style="color:#666666;font-size:11px;margin:0;">
-    BuiltByBas &mdash; Custom Software &amp; Web Development<br/>
-    <a href="https://builtbybas.com" style="color:#00D4FF;text-decoration:none;">builtbybas.com</a>
-  </p>
-</td></tr>
+${buildEmailFooterHtml()}
 
 </table>
 </td></tr>
@@ -201,13 +192,7 @@ export function buildNudgeEmailHtml(data: NudgeEmailData): string {
   </p>
 </td></tr>
 
-<!-- Footer -->
-<tr><td style="padding:24px 0 0;border-top:1px solid rgba(255,255,255,0.1);">
-  <p style="color:#666666;font-size:11px;margin:0;">
-    BuiltByBas &mdash; Custom Software &amp; Web Development<br/>
-    <a href="https://builtbybas.com" style="color:#00D4FF;text-decoration:none;">builtbybas.com</a>
-  </p>
-</td></tr>
+${buildEmailFooterHtml()}
 
 </table>
 </td></tr>
@@ -222,4 +207,47 @@ function escapeForEmail(text: string): string {
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
+}
+
+// ============================================================
+// Professional email footer — used across all outgoing emails
+// ============================================================
+
+export function buildEmailFooterHtml(): string {
+  const siteUrl = process.env.SITE_URL ?? "https://builtbybas.com";
+
+  return `<!-- Professional Footer -->
+<tr><td style="padding:32px 0 0;border-top:1px solid rgba(255,255,255,0.1);">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+  <tr><td>
+    <p style="color:#a0a0a0;font-size:12px;line-height:1.5;margin:0 0 4px;">
+      <em>Reviewed and approved by Bas Rosario</em>
+    </p>
+    <p style="color:#ffffff;font-size:13px;font-weight:600;margin:0 0 2px;">
+      BuiltByBas
+    </p>
+    <p style="color:#a0a0a0;font-size:12px;line-height:1.5;margin:0 0 16px;">
+      Custom Software &amp; Web Development<br/>
+      California, United States<br/>
+      <a href="${siteUrl}" style="color:#00D4FF;text-decoration:none;">builtbybas.com</a>
+      &nbsp;&middot;&nbsp;
+      <a href="mailto:bas@builtbybas.com" style="color:#00D4FF;text-decoration:none;">bas@builtbybas.com</a>
+    </p>
+  </td></tr>
+  <tr><td style="padding:12px 0 0;border-top:1px solid rgba(255,255,255,0.06);">
+    <p style="color:#555555;font-size:10px;line-height:1.6;margin:0;">
+      <a href="${siteUrl}/privacy" style="color:#666666;text-decoration:none;">Privacy Policy</a>
+      &nbsp;&middot;&nbsp;
+      <a href="${siteUrl}/terms" style="color:#666666;text-decoration:none;">Terms of Service</a>
+      &nbsp;&middot;&nbsp;
+      <a href="${siteUrl}/refund" style="color:#666666;text-decoration:none;">Refund Policy</a>
+      &nbsp;&middot;&nbsp;
+      <a href="${siteUrl}/ai-policy" style="color:#666666;text-decoration:none;">Responsible AI</a>
+    </p>
+    <p style="color:#444444;font-size:10px;margin:8px 0 0;">
+      &copy; ${new Date().getFullYear()} BuiltByBas. All rights reserved.
+    </p>
+  </td></tr>
+  </table>
+</td></tr>`;
 }
