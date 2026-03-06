@@ -26,20 +26,6 @@ function getComplexityBadgeColors(label: string) {
   }
 }
 
-function getBarColor(index: number): string {
-  const colors = [
-    "bg-primary",
-    "bg-cyan-400",
-    "bg-blue-500",
-    "bg-violet-500",
-    "bg-amber-500",
-    "bg-emerald-500",
-    "bg-rose-500",
-    "bg-indigo-500",
-    "bg-orange-400",
-  ];
-  return colors[index % colors.length];
-}
 
 export default async function AdminDashboardPage() {
   const data = await getDashboardData();
@@ -133,70 +119,55 @@ export default async function AdminDashboardPage() {
 
       {/* ---- Charts Row 1: Complexity + Service Demand ---- */}
       <div className="mt-6 grid gap-4 lg:grid-cols-2">
-        {/* Complexity Distribution */}
-        <GlassCard>
+        {/* Complexity Distribution — Stacked bar + legend */}
+        <GlassCard className="flex flex-col">
           <h2 className="text-sm font-semibold text-foreground">
             Complexity Distribution
           </h2>
-          {/* Stacked bar */}
-          <div className="mt-4 flex h-8 w-full overflow-hidden rounded-lg">
-            {complexityDistribution
-              .filter((b) => b.count > 0)
-              .map((b) => (
+          {/* Stacked horizontal bar */}
+          <div className="mt-5 flex h-8 w-full overflow-hidden rounded-lg">
+            {complexityDistribution.map((b) =>
+              b.percentage > 0 ? (
                 <div
                   key={b.label}
-                  className={cn(
-                    "flex items-center justify-center text-xs font-semibold text-white transition-all",
-                    b.color,
-                  )}
+                  className={cn("flex items-center justify-center text-[10px] font-bold text-white/90 transition-all", b.color)}
                   style={{ width: `${b.percentage}%` }}
-                  title={`${b.label}: ${b.count}`}
+                  title={`${b.label}: ${b.count} (${b.percentage}%)`}
                 >
-                  {b.percentage >= 12 ? b.count : ""}
+                  {b.percentage >= 12 && b.count}
                 </div>
-              ))}
+              ) : null,
+            )}
           </div>
-          {/* Legend */}
-          <div className="mt-3 flex flex-wrap gap-x-5 gap-y-1">
+          {/* Legend grid */}
+          <div className="mt-4 grid grid-cols-4 gap-2">
             {complexityDistribution.map((b) => (
-              <div key={b.label} className="flex items-center gap-1.5">
-                <span
-                  className={cn("inline-block h-2.5 w-2.5 rounded-sm", b.color)}
-                />
-                <span className="text-xs text-muted-foreground">
-                  {b.label}{" "}
-                  <span className="font-medium text-foreground">
-                    {b.count}
-                  </span>
-                </span>
+              <div key={b.label} className="flex flex-col items-center rounded-md border border-white/5 bg-white/[0.02] py-2.5">
+                <span className="text-2xl font-bold text-foreground">{b.count}</span>
+                <span className="mt-0.5 text-[10px] text-muted-foreground">{b.label}</span>
+                <span className="text-[10px] text-muted-foreground/60">{b.percentage}%</span>
               </div>
             ))}
           </div>
         </GlassCard>
 
-        {/* Service Demand */}
+        {/* Service Demand — Grid of mini cards */}
         <GlassCard>
           <h2 className="text-sm font-semibold text-foreground">
             Service Demand
           </h2>
-          <div className="mt-4 space-y-2.5">
+          <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3">
             {serviceDemand.map((s, i) => (
-              <div key={s.service}>
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-muted-foreground">{s.service}</span>
-                  <span className="font-medium text-foreground">
-                    {s.count}
-                  </span>
-                </div>
-                <div className="mt-1 h-2 w-full overflow-hidden rounded-full bg-white/5">
-                  <div
-                    className={cn(
-                      "h-full rounded-full transition-all",
-                      getBarColor(i),
-                    )}
-                    style={{ width: `${s.percentage}%` }}
-                  />
-                </div>
+              <div
+                key={s.service}
+                className="rounded-lg border border-white/5 bg-white/[0.02] px-3 py-2.5 text-center transition-colors hover:border-white/10"
+              >
+                <p className="text-2xl font-bold" style={{ color: `hsl(${180 + i * 30}, 70%, 60%)` }}>
+                  {s.count}
+                </p>
+                <p className="mt-0.5 text-[10px] leading-tight text-muted-foreground">
+                  {s.service}
+                </p>
               </div>
             ))}
           </div>
@@ -205,65 +176,97 @@ export default async function AdminDashboardPage() {
 
       {/* ---- Charts Row 2: Budget + Industry ---- */}
       <div className="mt-6 grid gap-4 lg:grid-cols-2">
-        {/* Budget Distribution */}
+        {/* Budget Distribution — Stacked donut segments */}
         <GlassCard>
           <h2 className="text-sm font-semibold text-foreground">
             Budget Ranges
           </h2>
-          <div className="mt-4 space-y-2.5">
-            {budgetDistribution.map((b, i) => (
-              <div key={b.label}>
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-muted-foreground">{b.label}</span>
-                  <span className="font-medium text-foreground">
-                    {b.count}{" "}
-                    <span className="text-muted-foreground">
-                      ({b.percentage}%)
-                    </span>
-                  </span>
-                </div>
-                <div className="mt-1 h-2 w-full overflow-hidden rounded-full bg-white/5">
-                  <div
-                    className={cn(
-                      "h-full rounded-full transition-all",
-                      getBarColor(i + 3),
-                    )}
-                    style={{ width: `${b.percentage}%` }}
-                  />
-                </div>
-              </div>
-            ))}
+          <div className="mt-4 flex items-center gap-6">
+            {/* Ring chart */}
+            <div className="relative h-28 w-28 shrink-0">
+              <svg viewBox="0 0 36 36" className="h-full w-full -rotate-90">
+                <circle
+                  cx="18" cy="18" r="14"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                  className="text-white/5"
+                />
+                {(() => {
+                  const colors = ["#06b6d4", "#8b5cf6", "#f59e0b", "#10b981", "#f43f5e"];
+                  let offset = 0;
+                  return budgetDistribution.map((b, i) => {
+                    const segment = (
+                      <circle
+                        key={b.label}
+                        cx="18" cy="18" r="14"
+                        fill="none"
+                        stroke={colors[i % colors.length]}
+                        strokeWidth="4"
+                        strokeDasharray={`${b.percentage * 0.88} ${88 - b.percentage * 0.88}`}
+                        strokeDashoffset={-offset * 0.88}
+                        strokeLinecap="round"
+                      />
+                    );
+                    offset += b.percentage;
+                    return segment;
+                  });
+                })()}
+              </svg>
+              <span className="absolute inset-0 flex items-center justify-center text-lg font-bold text-foreground">
+                {stats.totalSubmissions}
+              </span>
+            </div>
+            {/* Legend */}
+            <div className="flex-1 space-y-2">
+              {budgetDistribution.map((b, i) => {
+                const colors = ["bg-cyan-500", "bg-violet-500", "bg-amber-500", "bg-emerald-500", "bg-rose-500"];
+                return (
+                  <div key={b.label} className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className={cn("inline-block h-2.5 w-2.5 rounded-sm", colors[i % colors.length])} />
+                      <span className="text-xs text-muted-foreground">{b.label}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-semibold text-foreground">{b.count}</span>
+                      <span className="text-[10px] text-muted-foreground">({b.percentage}%)</span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </GlassCard>
 
-        {/* Industry Mix */}
+        {/* Industry Mix — Proportional pill tags */}
         <GlassCard>
           <h2 className="text-sm font-semibold text-foreground">
             Industry Mix
           </h2>
-          <div className="mt-4 space-y-2.5">
-            {industryDistribution.map((ind, i) => (
-              <div key={ind.label}>
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-muted-foreground">{ind.label}</span>
-                  <span className="font-medium text-foreground">
-                    {ind.count}{" "}
-                    <span className="text-muted-foreground">
-                      ({ind.percentage}%)
-                    </span>
+          <div className="mt-4 flex flex-wrap gap-2">
+            {industryDistribution.map((ind, i) => {
+              const maxCount = Math.max(...industryDistribution.map((x) => x.count), 1);
+              const scale = 0.75 + (ind.count / maxCount) * 0.5;
+              return (
+                <span
+                  key={ind.label}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-white/10 px-3 py-1.5 transition-colors hover:border-white/20"
+                  style={{
+                    fontSize: `${scale * 0.75}rem`,
+                    background: `hsla(${180 + i * 40}, 60%, 50%, 0.1)`,
+                    borderColor: `hsla(${180 + i * 40}, 60%, 50%, 0.2)`,
+                  }}
+                >
+                  <span
+                    className="font-bold"
+                    style={{ color: `hsl(${180 + i * 40}, 60%, 60%)` }}
+                  >
+                    {ind.count}
                   </span>
-                </div>
-                <div className="mt-1 h-2 w-full overflow-hidden rounded-full bg-white/5">
-                  <div
-                    className={cn(
-                      "h-full rounded-full transition-all",
-                      getBarColor(i),
-                    )}
-                    style={{ width: `${ind.percentage}%` }}
-                  />
-                </div>
-              </div>
-            ))}
+                  <span className="text-muted-foreground">{ind.label}</span>
+                </span>
+              );
+            })}
           </div>
         </GlassCard>
       </div>

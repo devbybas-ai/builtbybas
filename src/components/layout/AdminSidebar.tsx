@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -15,20 +16,51 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+interface NotificationCounts {
+  intake: number;
+  proposals: number;
+  invoices: number;
+}
+
 const navItems = [
-  { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/admin/clients", label: "Clients", icon: Users },
-  { href: "/admin/pipeline", label: "Pipeline", icon: Kanban },
-  { href: "/admin/intake", label: "Intake", icon: ClipboardList },
-  { href: "/admin/projects", label: "Projects", icon: FolderOpen },
-  { href: "/admin/proposals", label: "Proposals", icon: FileText },
-  { href: "/admin/invoices", label: "Invoices", icon: Receipt },
-  { href: "/admin/analytics", label: "Analytics", icon: BarChart3 },
-  { href: "/admin/settings", label: "Settings", icon: Settings },
+  { href: "/admin", label: "Dashboard", icon: LayoutDashboard, badgeKey: null },
+  { href: "/admin/clients", label: "Clients", icon: Users, badgeKey: null },
+  { href: "/admin/pipeline", label: "Pipeline", icon: Kanban, badgeKey: null },
+  { href: "/admin/intake", label: "Intake", icon: ClipboardList, badgeKey: "intake" as const },
+  { href: "/admin/projects", label: "Projects", icon: FolderOpen, badgeKey: null },
+  { href: "/admin/proposals", label: "Proposals", icon: FileText, badgeKey: "proposals" as const },
+  { href: "/admin/invoices", label: "Invoices", icon: Receipt, badgeKey: "invoices" as const },
+  { href: "/admin/analytics", label: "Analytics", icon: BarChart3, badgeKey: null },
+  { href: "/admin/settings", label: "Settings", icon: Settings, badgeKey: null },
 ];
 
 export function AdminSidebar() {
   const pathname = usePathname();
+  const [counts, setCounts] = useState<NotificationCounts | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function fetchCounts() {
+      try {
+        const res = await fetch("/api/admin/notifications");
+        if (!res.ok) return;
+        const data = await res.json();
+        if (!cancelled) setCounts(data);
+      } catch {
+        // Silently fail — badges are non-critical
+      }
+    }
+
+    fetchCounts();
+
+    // Refresh every 60 seconds
+    const interval = setInterval(fetchCounts, 60_000);
+    return () => {
+      cancelled = true;
+      clearInterval(interval);
+    };
+  }, [pathname]);
 
   return (
     <aside className="fixed left-0 top-0 z-30 hidden h-screen w-64 flex-col border-r border-white/8 bg-sidebar md:flex">
@@ -48,6 +80,9 @@ export function AdminSidebar() {
               ? pathname === "/admin"
               : pathname.startsWith(item.href);
 
+          const badgeCount =
+            item.badgeKey && counts ? counts[item.badgeKey] : 0;
+
           return (
             <Link
               key={item.href}
@@ -62,6 +97,11 @@ export function AdminSidebar() {
             >
               <item.icon className="h-4 w-4 shrink-0" />
               {item.label}
+              {badgeCount > 0 && (
+                <span className="ml-auto flex h-5 min-w-[1.25rem] items-center justify-center rounded-full bg-primary/20 px-1.5 text-[10px] font-bold text-primary">
+                  {badgeCount}
+                </span>
+              )}
             </Link>
           );
         })}

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { getStageMeta, type PipelineStage } from "@/types/client";
+import type { PipelineStage } from "@/types/client";
 
 interface PipelineClient {
   id: string;
@@ -8,6 +8,9 @@ interface PipelineClient {
   company: string;
   email: string;
   daysInStage: number;
+  isIntake?: boolean;
+  intakeStatus?: string;
+  primaryService?: string;
 }
 
 interface PipelineColumn {
@@ -27,6 +30,12 @@ function getColumnAccent(order: number): string {
   if (order <= 10) return "border-t-amber-500";
   return "border-t-primary";
 }
+
+const INTAKE_STATUS_BADGE: Record<string, string> = {
+  new: "bg-blue-500/20 text-blue-400",
+  reviewed: "bg-amber-500/20 text-amber-400",
+  accepted: "bg-emerald-500/20 text-emerald-400",
+};
 
 export function PipelineBoard({ columns }: PipelineBoardProps) {
   return (
@@ -57,15 +66,42 @@ export function PipelineBoard({ columns }: PipelineBoardProps) {
             {col.clients.map((client) => (
               <Link
                 key={client.id}
-                href={`/admin/clients/${client.id}`}
-                className="group rounded-md border border-white/5 bg-white/[0.03] p-2.5 transition-colors hover:border-primary/30 hover:bg-white/[0.06]"
+                href={
+                  client.isIntake
+                    ? `/admin/intake/${client.id}`
+                    : `/admin/clients/${client.id}`
+                }
+                className={cn(
+                  "group rounded-md border bg-white/[0.03] p-2.5 transition-colors hover:border-primary/30 hover:bg-white/[0.06]",
+                  client.isIntake
+                    ? "border-blue-500/20"
+                    : "border-white/5"
+                )}
               >
-                <p className="text-sm font-medium group-hover:text-primary">
-                  {client.name}
-                </p>
+                <div className="flex items-center gap-1.5">
+                  <p className="truncate text-sm font-medium group-hover:text-primary">
+                    {client.name}
+                  </p>
+                  {client.isIntake && client.intakeStatus && (
+                    <span
+                      className={cn(
+                        "shrink-0 rounded-full px-1.5 py-0.5 text-[9px] font-semibold",
+                        INTAKE_STATUS_BADGE[client.intakeStatus] ??
+                          "bg-white/10 text-muted-foreground"
+                      )}
+                    >
+                      {client.intakeStatus === "new" ? "Intake" : client.intakeStatus}
+                    </span>
+                  )}
+                </div>
                 <p className="mt-0.5 truncate text-xs text-muted-foreground">
                   {client.company}
                 </p>
+                {client.primaryService && (
+                  <p className="mt-0.5 truncate text-xs text-primary/70">
+                    {client.primaryService}
+                  </p>
+                )}
                 <p className="mt-1 text-xs text-muted-foreground">
                   {client.daysInStage}d in stage
                 </p>

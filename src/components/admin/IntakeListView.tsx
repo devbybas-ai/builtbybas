@@ -30,6 +30,19 @@ function getComplexityLabel(score: number): string {
   return "Simple";
 }
 
+const BUDGET_DISPLAY: Record<string, string> = {
+  "1k-5k": "$1K - $5K",
+  "5k-15k": "$5K - $15K",
+  "15k-30k": "$15K - $30K",
+  "30k+": "$30K+",
+  unsure: "Budget TBD",
+};
+
+function formatBudget(raw: string): string {
+  if (!raw || raw === "unsure") return "Budget TBD";
+  return BUDGET_DISPLAY[raw] ?? raw;
+}
+
 function getComplexityBadge(label: string) {
   switch (label) {
     case "Enterprise":
@@ -113,47 +126,72 @@ export function IntakeListView({ submissions }: IntakeListViewProps) {
     return { total, avgComplexity, complexityCounts, statusCounts };
   }, [submissions]);
 
+  // Helper: apply all filters except the one being counted
+  const applyFilters = useMemo(() => {
+    return (rows: IntakeSubmissionRow[], skip?: "status" | "complexity" | "service") => {
+      let result = rows;
+      if (statusFilter !== "all" && skip !== "status") {
+        result = result.filter((row) => row.status === statusFilter);
+      }
+      if (complexityFilter !== "all" && skip !== "complexity") {
+        result = result.filter(
+          (row) =>
+            getComplexityLabel(row.analysis.complexityScore.overall) === complexityFilter,
+        );
+      }
+      if (serviceFilter !== "all" && skip !== "service") {
+        result = result.filter((row) => {
+          const primary = row.analysis.serviceRecommendations.find((r) => r.isPrimary);
+          return primary?.serviceTitle === serviceFilter;
+        });
+      }
+      if (search.trim()) {
+        const q = search.toLowerCase();
+        result = result.filter(
+          (row) =>
+            row.analysis.formData.name.toLowerCase().includes(q) ||
+            row.analysis.formData.company.toLowerCase().includes(q) ||
+            row.analysis.formData.email.toLowerCase().includes(q),
+        );
+      }
+      return result;
+    };
+  }, [statusFilter, complexityFilter, serviceFilter, search]);
+
+  // Counts for each filter option (excluding its own filter)
+  const statusCounts = useMemo(() => {
+    const base = applyFilters(submissions, "status");
+    const counts: Record<string, number> = { all: base.length };
+    for (const row of base) counts[row.status] = (counts[row.status] ?? 0) + 1;
+    return counts;
+  }, [submissions, applyFilters]);
+
+  const complexityCounts = useMemo(() => {
+    const base = applyFilters(submissions, "complexity");
+    const counts: Record<string, number> = { all: base.length };
+    for (const row of base) {
+      const label = getComplexityLabel(row.analysis.complexityScore.overall);
+      counts[label] = (counts[label] ?? 0) + 1;
+    }
+    return counts;
+  }, [submissions, applyFilters]);
+
+  const serviceCounts = useMemo(() => {
+    const base = applyFilters(submissions, "service");
+    const counts: Record<string, number> = { all: base.length };
+    for (const row of base) {
+      const primary = row.analysis.serviceRecommendations.find((r) => r.isPrimary);
+      if (primary) counts[primary.serviceTitle] = (counts[primary.serviceTitle] ?? 0) + 1;
+    }
+    return counts;
+  }, [submissions, applyFilters]);
+
   // Filter and sort
   const filtered = useMemo(() => {
-    let result = [...submissions];
-
-    // Status filter
-    if (statusFilter !== "all") {
-      result = result.filter((row) => row.status === statusFilter);
-    }
-
-    // Complexity filter
-    if (complexityFilter !== "all") {
-      result = result.filter(
-        (row) =>
-          getComplexityLabel(row.analysis.complexityScore.overall) ===
-          complexityFilter,
-      );
-    }
-
-    // Service filter
-    if (serviceFilter !== "all") {
-      result = result.filter((row) => {
-        const primary = row.analysis.serviceRecommendations.find(
-          (r) => r.isPrimary,
-        );
-        return primary?.serviceTitle === serviceFilter;
-      });
-    }
-
-    // Search
-    if (search.trim()) {
-      const q = search.toLowerCase();
-      result = result.filter(
-        (row) =>
-          row.analysis.formData.name.toLowerCase().includes(q) ||
-          row.analysis.formData.company.toLowerCase().includes(q) ||
-          row.analysis.formData.email.toLowerCase().includes(q),
-      );
-    }
+    let result = applyFilters(submissions);
 
     // Sort
-    result.sort((a, b) => {
+    result = [...result].sort((a, b) => {
       let cmp = 0;
       switch (sortKey) {
         case "date":
@@ -176,15 +214,17 @@ export function IntakeListView({ submissions }: IntakeListViewProps) {
     });
 
     return result;
-  }, [
-    submissions,
-    statusFilter,
-    complexityFilter,
-    serviceFilter,
-    sortKey,
-    sortDir,
-    search,
-  ]);
+  }, [submissions, applyFilters, sortKey, sortDir]);
+
+  const hasActiveFilters =
+    statusFilter !== "all" || complexityFilter !== "all" || serviceFilter !== "all" || search.trim() !== "";
+
+  function resetFilters() {
+    setStatusFilter("all");
+    setComplexityFilter("all");
+    setServiceFilter("all");
+    setSearch("");
+  }
 
   function toggleSort(key: SortKey) {
     if (sortKey === key) {
@@ -249,20 +289,25 @@ export function IntakeListView({ submissions }: IntakeListViewProps) {
             ["all", "new", "reviewed", "accepted", "rejected", "converted"] as const
           ).map((f) => {
             const badge = f === "all" ? null : STATUS_BADGE[f];
+            const count = statusCounts[f] ?? 0;
             return (
               <button
                 key={f}
                 onClick={() => setStatusFilter(f)}
+                disabled={count === 0 && f !== "all"}
                 className={cn(
                   "rounded-full px-3 py-1 text-xs font-medium transition-colors",
                   statusFilter === f
                     ? badge
                       ? badge.color
                       : "bg-primary/20 text-primary"
-                    : "bg-white/5 text-muted-foreground hover:bg-white/10",
+                    : count === 0 && f !== "all"
+                      ? "bg-white/5 text-muted-foreground/30 cursor-not-allowed"
+                      : "bg-white/5 text-muted-foreground hover:bg-white/10",
                 )}
               >
                 {f === "all" ? "All" : STATUS_BADGE[f].label}
+                {f !== "all" && <span className="ml-1 opacity-60">{count}</span>}
               </button>
             );
           })}
@@ -272,20 +317,27 @@ export function IntakeListView({ submissions }: IntakeListViewProps) {
         <div className="flex items-center gap-1.5">
           {(
             ["all", "Simple", "Moderate", "Complex", "Enterprise"] as const
-          ).map((f) => (
-            <button
-              key={f}
-              onClick={() => setComplexityFilter(f)}
-              className={cn(
-                "rounded-full px-3 py-1 text-xs font-medium transition-colors",
-                complexityFilter === f
-                  ? "bg-primary/20 text-primary"
-                  : "bg-white/5 text-muted-foreground hover:bg-white/10",
-              )}
-            >
-              {f === "all" ? "All Complexity" : f}
-            </button>
-          ))}
+          ).map((f) => {
+            const count = complexityCounts[f] ?? 0;
+            return (
+              <button
+                key={f}
+                onClick={() => setComplexityFilter(f)}
+                disabled={count === 0 && f !== "all"}
+                className={cn(
+                  "rounded-full px-3 py-1 text-xs font-medium transition-colors",
+                  complexityFilter === f
+                    ? "bg-primary/20 text-primary"
+                    : count === 0 && f !== "all"
+                      ? "bg-white/5 text-muted-foreground/30 cursor-not-allowed"
+                      : "bg-white/5 text-muted-foreground hover:bg-white/10",
+                )}
+              >
+                {f === "all" ? "All Complexity" : f}
+                {f !== "all" && <span className="ml-1 opacity-60">{count}</span>}
+              </button>
+            );
+          })}
         </div>
 
         {/* Service filter */}
@@ -295,11 +347,14 @@ export function IntakeListView({ submissions }: IntakeListViewProps) {
           className="h-9 rounded-lg border border-white/10 bg-white/5 px-3 text-sm text-foreground focus:border-primary/50 focus:outline-none"
         >
           <option value="all">All Services</option>
-          {availableServices.map((s) => (
-            <option key={s} value={s}>
-              {s}
-            </option>
-          ))}
+          {availableServices.map((s) => {
+            const count = serviceCounts[s] ?? 0;
+            return (
+              <option key={s} value={s} disabled={count === 0}>
+                {s} ({count})
+              </option>
+            );
+          })}
         </select>
 
         {/* Sort buttons */}
@@ -407,10 +462,8 @@ export function IntakeListView({ submissions }: IntakeListViewProps) {
                     {s.formData.selectedServices.length} service
                     {s.formData.selectedServices.length !== 1 ? "s" : ""}
                   </span>
-                  <span className="capitalize">
-                    {s.formData.budgetRange === "unsure"
-                      ? "Budget TBD"
-                      : s.formData.budgetRange}
+                  <span>
+                    {formatBudget(s.formData.budgetRange)}
                   </span>
                 </div>
               </GlassCard>
@@ -421,8 +474,16 @@ export function IntakeListView({ submissions }: IntakeListViewProps) {
         {filtered.length === 0 && (
           <div className="py-12 text-center">
             <p className="text-sm text-muted-foreground">
-              No submissions match your filters.
+              No submissions match your current filters.
             </p>
+            {hasActiveFilters && (
+              <button
+                onClick={resetFilters}
+                className="mt-3 rounded-full bg-primary/20 px-4 py-1.5 text-xs font-medium text-primary transition-colors hover:bg-primary/30"
+              >
+                Clear all filters
+              </button>
+            )}
           </div>
         )}
       </div>

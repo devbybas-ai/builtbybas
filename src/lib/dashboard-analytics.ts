@@ -85,6 +85,7 @@ const INDUSTRY_LABELS: Record<string, string> = {
   "home-services": "Home Services",
   healthcare: "Healthcare",
   "retail-ecommerce": "Retail / E-Commerce",
+  retail: "Retail / E-Commerce",
   "food-hospitality": "Food & Hospitality",
   "fitness-wellness": "Fitness & Wellness",
   "real-estate": "Real Estate",
@@ -92,6 +93,10 @@ const INDUSTRY_LABELS: Record<string, string> = {
   education: "Education",
   nonprofit: "Nonprofit",
   technology: "Technology",
+  "financial-services": "Financial Services",
+  legal: "Legal",
+  logistics: "Logistics & Transportation",
+  automotive: "Automotive",
   other: "Other",
 };
 
@@ -104,6 +109,20 @@ const BUDGET_LABELS: Record<string, string> = {
 };
 
 const BUDGET_ORDER = ["1k-5k", "5k-15k", "15k-30k", "30k+", "unsure"];
+
+/** Normalize budget values submitted as display labels back to short keys */
+function normalizeBudgetKey(raw: string): string {
+  if (BUDGET_ORDER.includes(raw)) return raw;
+  const lower = raw.toLowerCase().replace(/[,$\s]/g, "");
+  if (lower.includes("1000") && lower.includes("3000")) return "1k-5k";
+  if (lower.includes("1000") && lower.includes("5000")) return "1k-5k";
+  if (lower.includes("5000") && lower.includes("10000")) return "5k-15k";
+  if (lower.includes("5000") && lower.includes("15000")) return "5k-15k";
+  if (lower.includes("10000") && lower.includes("25000")) return "15k-30k";
+  if (lower.includes("15000") && lower.includes("30000")) return "15k-30k";
+  if (lower.includes("25000") || lower.includes("30000+") || lower.includes("25000+")) return "30k+";
+  return "unsure";
+}
 
 function getComplexityLabel(score: number): string {
   if (score >= 8) return "Enterprise";
@@ -231,7 +250,7 @@ export async function getDashboardData(): Promise<DashboardData> {
   // --- Budget distribution ---
   const budgetMap: Record<string, number> = {};
   for (const a of analyses) {
-    const key = a.formData.budgetRange || "unsure";
+    const key = normalizeBudgetKey(a.formData.budgetRange || "unsure");
     budgetMap[key] = (budgetMap[key] ?? 0) + 1;
   }
   const budgetDistribution: BudgetBucket[] = BUDGET_ORDER.filter(
@@ -242,16 +261,17 @@ export async function getDashboardData(): Promise<DashboardData> {
     percentage: total > 0 ? Math.round((budgetMap[key] / total) * 100) : 0,
   }));
 
-  // --- Industry distribution ---
+  // --- Industry distribution (group by resolved label) ---
   const industryMap = new Map<string, number>();
   for (const a of analyses) {
-    const key = a.formData.industry || "other";
-    industryMap.set(key, (industryMap.get(key) ?? 0) + 1);
+    const raw = a.formData.industry || "other";
+    const label = INDUSTRY_LABELS[raw.toLowerCase()] ?? raw;
+    industryMap.set(label, (industryMap.get(label) ?? 0) + 1);
   }
   const industryDistribution: IndustryBucket[] = [...industryMap.entries()]
     .sort((a, b) => b[1] - a[1])
-    .map(([key, c]) => ({
-      label: INDUSTRY_LABELS[key] ?? key,
+    .map(([label, c]) => ({
+      label,
       count: c,
       percentage: total > 0 ? Math.round((c / total) * 100) : 0,
     }));

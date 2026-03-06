@@ -151,6 +151,15 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  select {
+    color-scheme: dark;
+  }
+
+  option {
+    background-color: #1a1a2e;
+    color: #e2e8f0;
+  }
 }
 
 /* === GLASSMORPHISM UTILITIES === */

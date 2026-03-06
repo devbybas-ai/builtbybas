@@ -1,8 +1,53 @@
 # BuiltByBas — Handoff Document
 
-> **Last Updated:** 2026-03-03 (Session 27)
-> **Status:** LIVE AT builtbybas.com — Intake system overhaul Phase 1+2 COMPLETE. Backend workflow (accept/reject/convert/propose), service-specific intake entry with query param deep linking, deeper 8-12 question modules for all 9 services, RAI red-flag screening on all intakes. Service walkthrough CTAs now link directly to `/intake?service=X`. Main: 169/169 tests, 68-route build, tsc clean.
-> **Next Session:** Run Drizzle migration for `intake_status` column, deploy to VPS, then Phase 3 (auto-generated follow-up questions, SME best practice analysis, enhanced proposal generation).
+> **Last Updated:** 2026-03-06 (Session 29)
+> **Status:** LIVE AT builtbybas.com — Admin dashboard redesigned with varied chart types, pipeline shows intake submissions as leads, notification badges on sidebar, 21+ test intake submissions across all 9 services with varied budgets/complexity. Going live polish phase.
+> **Next Session:** Fix intake list filter UX (filters AND together causing empty results — need counts on filter buttons or smarter reset), finish remaining intake test submissions, commit + deploy. Then: project prioritization suggestions on dashboard, continued polish for launch.
+
+## Session 29 Changes (2026-03-06)
+
+**Public Site (from prior context carryover):**
+- Removed watermark numbers (01-04) from all public components
+- Even card alignment — removed staggered Y offsets
+- Fixed cyan bar artifact (blur-md + overflow-hidden) across all glass cards
+- Service card banner redesign — icon + title in banner with sharp inset glow
+- Equal-height Journey cards with fleshed-out descriptions
+
+**Admin Dashboard:**
+- Redesigned 4 chart panels with visual variety:
+  - Complexity Distribution → Ring gauges (4 radial circles with percentage)
+  - Service Demand → Grid of mini cards with large count numbers
+  - Budget Ranges → Donut ring chart with legend sidebar
+  - Industry Mix → Proportional colored pill tags
+- Fixed budget range normalization — handles both short keys ("5k-15k") and display labels ("$5,000 - $10,000")
+- Fixed industry label deduplication — groups by resolved label (e.g., "financial-services" and "Financial Services" merge)
+- Added INDUSTRY_LABELS for: financial-services, legal, logistics, automotive, retail
+
+**Pipeline:**
+- Pipeline now shows unconverted intake submissions in the "Lead" column
+- Intake cards show "Intake" badge, primary service, and link to `/admin/intake/[id]`
+- Pipeline subtitle shows count of pending intakes
+
+**Admin Sidebar:**
+- Added notification badges (fetched from `/api/admin/notifications` every 60s)
+- Badges show on Intake (new count), Proposals (draft count), Invoices (overdue count)
+
+**Dark Mode Fixes:**
+- Fixed native `<select>` dropdown rendering — added global CSS `color-scheme: dark` and dark `<option>` styling
+- All admin select dropdowns now readable on dark background
+
+**Intake Test Data:**
+- 21+ complete intake submissions across all 9 service types
+- Varied budget ranges: $1K-$5K through $30K+
+- Multi-service combos for higher complexity scoring (dashboard+CRM, ecommerce+website, portal+dashboard+website, platform+AI)
+- Diverse industries: healthcare, legal, real estate, financial services, fitness, food/hospitality, retail, automotive, professional services
+
+**Known Issues / Next Session:**
+- Intake list filter UX: when multiple filters combine (e.g., "Moderate" + "CRM Systems"), results show 0 because they AND together. Need filter counts on buttons showing how many would match, or auto-reset conflicting filters.
+- Background intake submission agent may not have completed all 8 target submissions — verify count and submit remaining
+- Need to commit all changes and push
+- Project prioritization suggestions not yet added to dashboard
+- Circuit board background patches (from earlier session, user hasn't re-raised)
 
 ---
 
@@ -582,34 +627,64 @@ Dark, premium, cutting-edge. The site itself IS the portfolio piece. Every inter
 - **Verification:** 169/169 tests pass (+6 RAI tests). tsc clean. Build clean.
 - **IMPORTANT:** Drizzle migration for `intake_status` enum + `status` column has NOT been generated/pushed yet. Must run before deploying Phase 1 backend changes.
 
+**Session 28 (Client Management + VPS Infrastructure + Umami Analytics):**
+
+- **Client Delete:** Added `DELETE /api/clients/[id]` with cascading delete (notes + pipeline history first, then client). Auth-guarded, ID-validated.
+- **Client Detail Delete UI:** Delete button + confirmation dialog on `ClientDetailDashboard.tsx` — glassmorphism modal, names client being deleted, redirects to `/admin/clients` on success.
+- **Client List Overhaul:** New `ClientListView.tsx` (~187 lines) — real-time search (name, company, email, industry), industry filter pills auto-generated from data, count display with "X shown" when filtered. Rewrote `page.tsx` to use this component.
+- **Proposal Delete:** Added `DELETE /api/proposals/[id]` route + delete button with confirmation dialog on `ProposalDetailView.tsx`.
+- **Umami Analytics (Self-Hosted):**
+  - Installed Umami at `/var/www/umami` on VPS — PostgreSQL DB (`umami` user/db), built successfully
+  - Running on PM2 (port 3003, `pm2 save` for reboot persistence)
+  - All 3 sites added to Umami dashboard: builtbybas.com, thecolourparlor.com, orcachildinthewild.com
+  - Tracking script added to `src/app/layout.tsx` for builtbybas (website ID: `1ff108d4-6963-4543-a838-a0d62a6ae979`)
+  - Colour Parlor tracking ID: `ea7cf092-6712-4033-a985-bd954f2e2727` (needs adding to its layout)
+  - OCINW tracking ID: `0b3a9071-3e85-42e2-8454-46e3f27f35a2` (needs adding to its layout)
+  - Nginx server block created for `analytics.builtbybas.com` → proxy to port 3003
+  - DNS A record added (`analytics` → `72.62.200.30`) — propagating
+  - **Pending:** SSL via certbot once DNS propagates, then close port 3003 + remove Hostinger firewall rule
+- **Nginx Log Separation:** Each site now has isolated access + error logs:
+  - `/var/log/nginx/builtbybas.access.log` + `builtbybas.error.log`
+  - `/var/log/nginx/colourparlor.access.log` + `colourparlor.error.log`
+  - `/var/log/nginx/ocinw.access.log` + `ocinw.error.log`
+- **Traffic Analysis:** Analyzed raw Nginx logs — identified real visitors (iPhone via Google to colourparlor), bots (Googlebot, ClaudeBot, ChatGPT-User, CensysInspect), WordPress scanning noise (404s).
+- **Intake Analysis + Proposal Fixes:** Improved intake scoring, proposal generator, and validation.
+- **Verification:** 174/174 tests pass (+5 from prior session). tsc clean.
+
 ---
 
 ### What's Next
 
-**Immediate — Before Deploy:**
-1. Run Drizzle migration: `npx drizzle-kit generate` + `npx drizzle-kit push` for `intake_status` column
-2. Commit + push all Session 27 changes
-3. Deploy to VPS (Bas runs manually from Hostinger terminal)
+**Immediate — Umami Finalization:**
+1. Check DNS propagation: `dig analytics.builtbybas.com +short` — when it returns `72.62.200.30`:
+2. Run `certbot --nginx -d analytics.builtbybas.com` for SSL
+3. Close port 3003: `ufw deny 3003/tcp && ufw reload` + remove 3003 rule from Hostinger firewall panel
+4. Add Umami tracking scripts to colourparlor and ocinw layouts
+5. Deploy latest builtbybas code to VPS
+
+**Immediate — Before Full Deploy:**
+6. Run Drizzle migration: `npx drizzle-kit generate` + `npx drizzle-kit push` for `intake_status` column
 
 **Phase 3 — Enhanced Analysis + Follow-Up Questions:**
-4. Auto-generate 3-5 follow-up questions after intake scan (based on gaps, vague answers, SME best practices)
-5. SME best practice analysis per service (recommended tech stack, hardware/security, compliance, industry standards)
-6. Feed follow-up answers + SME recommendations into proposal generator for richer proposals
-7. Display follow-up questions + SME analysis in admin intake detail page
+7. Auto-generate 3-5 follow-up questions after intake scan (based on gaps, vague answers, SME best practices)
+8. SME best practice analysis per service (recommended tech stack, hardware/security, compliance, industry standards)
+9. Feed follow-up answers + SME recommendations into proposal generator for richer proposals
+10. Display follow-up questions + SME analysis in admin intake detail page
 
 **Portfolio:**
-8. Take screenshots of all demos, wire portfolio images
-9. BBB demo platform deployment (port 3010, demos.builtbybas.com)
-10. KAR CRM — deploy to VPS, add to portfolio when ready
+11. Take screenshots of all demos, wire portfolio images
+12. BBB demo platform deployment (port 3010, demos.builtbybas.com)
+13. KAR CRM — deploy to VPS, add to portfolio when ready
 
 **Phase 6 — Client Portal:**
-11. Client-facing portal (project status, invoices, communication)
-12. Invoice PDF generation
-13. Email notifications for invoice/proposal status changes
+14. Client-facing portal (project status, invoices, communication)
+15. Invoice PDF generation
+16. Email notifications for invoice/proposal status changes
 
 **Improvements:**
-14. Fix SSH key access from local dev machine to VPS
-15. Delete `portfolio - Shortcut.lnk` from colourparlor folder
+17. Fix SSH key access from local dev machine to VPS
+18. Delete `portfolio - Shortcut.lnk` from colourparlor folder
+19. Change Umami DB password (exposed in session — use `ALTER USER umami WITH PASSWORD 'new_password';`)
 
 ### Notes
 
