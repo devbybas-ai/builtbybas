@@ -8,7 +8,7 @@ import { CTASection } from "@/components/public-site/CTASection";
 export const metadata: Metadata = {
   title: "Our Work",
   description:
-    "Real projects, live demos. See the custom websites, platforms, and tools BuiltByBas has shipped — and try our interactive capability showcases.",
+    "Real projects, live demos. See the custom websites, platforms, and tools BuiltByBas has shipped. Try our interactive capability showcases.",
 };
 
 export default function PortfolioPage() {
@@ -24,7 +24,7 @@ export default function PortfolioPage() {
               </h1>
               <p className="mt-4 max-w-2xl text-lg text-muted-foreground">
                 Real projects, real results. Every project is custom-engineered
-                — no templates, no shortcuts.
+                with no templates and no shortcuts.
               </p>
             </FadeIn>
           </div>

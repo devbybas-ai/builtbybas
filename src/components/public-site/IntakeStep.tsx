@@ -313,7 +313,7 @@ function ServiceSelectionStep({
     <div>
       <StepHeader
         title="What Do You Need?"
-        description="Select all services that apply — your form will adapt with targeted questions for each."
+        description="Select all services that apply. Your form will adapt with targeted questions for each."
       />
       <div className="grid gap-3 sm:grid-cols-2">
         {SERVICE_MODULES.map((svc) => {

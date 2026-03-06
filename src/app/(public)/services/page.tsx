@@ -14,7 +14,7 @@ import {
 export const metadata: Metadata = {
   title: "Web Development Services",
   description:
-    "Custom websites, dashboards, portals, e-commerce, CRM systems, and AI-powered tools — precision-engineered for your business. Get a quote today.",
+    "Custom websites, dashboards, portals, e-commerce, CRM systems, and AI-powered tools. Precision-engineered for your business. Get a quote today.",
 };
 
 const faqItems = [
@@ -31,7 +31,7 @@ const faqItems = [
   {
     question: "What makes BuiltByBas different from other developers?",
     answer:
-      "BuiltByBas is a full-stack development and marketing company. We build the platform AND the growth strategy — engineering and marketing unified under one roof. Every project is custom-engineered, never templated.",
+      "BuiltByBas is a full-stack development and marketing company. We build the platform AND the growth strategy. Engineering and marketing unified under one roof. Every project is custom-engineered, never templated.",
   },
 ];
 
@@ -54,7 +54,7 @@ export default function ServicesPage() {
               Our <span className="text-gradient">Services</span>
             </h1>
             <p className="mt-4 max-w-2xl text-lg text-muted-foreground">
-              Everything your business needs to succeed online — custom-built,
+              Everything your business needs to succeed online. Custom-built,
               not templated.
             </p>
           </FadeIn>

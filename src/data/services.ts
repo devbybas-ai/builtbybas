@@ -24,7 +24,7 @@ export const services: Service[] = [
           icon: "search",
           title: "Discovery & Strategy",
           description:
-            "We dig into your business, your audience, and your competition. No guesswork — just data and direct conversation to understand exactly what your website needs to accomplish.",
+            "We dig into your business, your audience, and your competition. No guesswork, just data and direct conversation to understand exactly what your website needs to accomplish.",
           deliverables: [
             "Competitive analysis document",
             "Target audience profile",
@@ -80,7 +80,7 @@ export const services: Service[] = [
           icon: "headphones",
           title: "Post-Launch Support",
           description:
-            "We don't disappear after launch. Bug fixes, content updates, performance monitoring — your site stays healthy with dedicated post-launch support.",
+            "We don't disappear after launch. Bug fixes, content updates, performance monitoring. Your site stays healthy with dedicated post-launch support.",
           deliverables: [
             "30-day post-launch support",
             "Bug fix SLA",
@@ -116,7 +116,7 @@ export const services: Service[] = [
           icon: "search",
           title: "Audit & Analysis",
           description:
-            "We audit your current site — performance scores, SEO gaps, accessibility issues, and user pain points. We identify what to keep, what to cut, and what to rebuild from scratch.",
+            "We audit your current site: performance scores, SEO gaps, accessibility issues, and user pain points. We identify what to keep, what to cut, and what to rebuild from scratch.",
           deliverables: [
             "Full site audit report",
             "Performance benchmark",
@@ -172,7 +172,7 @@ export const services: Service[] = [
           icon: "headphones",
           title: "Post-Launch Monitoring",
           description:
-            "We watch your new site like a hawk for the first 30 days — performance metrics, search ranking changes, and user behavior analytics.",
+            "We watch your new site like a hawk for the first 30 days: performance metrics, search ranking changes, and user behavior analytics.",
           deliverables: [
             "30-day performance monitoring",
             "Search ranking tracking",
@@ -222,7 +222,7 @@ export const services: Service[] = [
           icon: "palette",
           title: "High-Conversion Layout",
           description:
-            "Every section engineered for one purpose: getting the visitor to act. Hero, social proof, benefits, objection handling, and CTA — all strategically placed.",
+            "Every section engineered for one purpose: getting the visitor to act. Hero, social proof, benefits, objection handling, and CTA, all strategically placed.",
           deliverables: [
             "Desktop & mobile mockup",
             "Copywriting framework",
@@ -300,7 +300,7 @@ export const services: Service[] = [
           icon: "search",
           title: "Requirements & Data Mapping",
           description:
-            "We map your data sources, identify key metrics, and define exactly what decisions the dashboard needs to support. No vanity metrics — only actionable intelligence.",
+            "We map your data sources, identify key metrics, and define exactly what decisions the dashboard needs to support. No vanity metrics, only actionable intelligence.",
           deliverables: [
             "Data source inventory",
             "KPI definition document",
@@ -373,7 +373,7 @@ export const services: Service[] = [
     id: "client-portals",
     title: "Client Portals",
     description:
-      "Give your clients a branded window into their projects. Track progress, share deliverables, manage invoices — all in one professional space.",
+      "Give your clients a branded window into their projects. Track progress, share deliverables, manage invoices, all in one professional space.",
     priceRange: "$4,000 - $15,000",
     icon: "users",
     features: [
@@ -392,7 +392,7 @@ export const services: Service[] = [
           icon: "search",
           title: "Client Journey Mapping",
           description:
-            "We map every touchpoint in your client relationship — onboarding, updates, deliverables, payments — and design a portal that streamlines all of it.",
+            "We map every touchpoint in your client relationship: onboarding, updates, deliverables, payments, and design a portal that streamlines all of it.",
           deliverables: [
             "Client journey map",
             "Feature prioritization matrix",
@@ -406,7 +406,7 @@ export const services: Service[] = [
           icon: "palette",
           title: "Branded Portal Design",
           description:
-            "Your portal, your brand. Custom-designed interface that feels like an extension of your business — not a generic tool.",
+            "Your portal, your brand. Custom-designed interface that feels like an extension of your business, not a generic tool.",
           deliverables: [
             "Branded portal mockups",
             "Client dashboard layouts",
@@ -420,7 +420,7 @@ export const services: Service[] = [
           icon: "hammer",
           title: "Secure Development",
           description:
-            "Authentication, encryption, role-based access — built from the ground up. Document sharing, messaging, project status, and invoicing all integrated into one platform.",
+            "Authentication, encryption, role-based access, built from the ground up. Document sharing, messaging, project status, and invoicing all integrated into one platform.",
           deliverables: [
             "Secure authentication system",
             "Project & task tracking",
@@ -465,7 +465,7 @@ export const services: Service[] = [
     id: "e-commerce",
     title: "E-Commerce",
     description:
-      "Custom storefronts that sell. Not a Shopify template — a ground-up build designed around your products, your brand, and your customers.",
+      "Custom storefronts that sell. Not a Shopify template, a ground-up build designed around your products, your brand, and your customers.",
     priceRange: "$8,000 - $25,000",
     icon: "shopping-cart",
     features: [
@@ -498,7 +498,7 @@ export const services: Service[] = [
           icon: "palette",
           title: "Storefront & Checkout Design",
           description:
-            "Product pages that convert, a checkout flow that doesn't leak — every screen designed to minimize friction and maximize sales.",
+            "Product pages that convert, a checkout flow that doesn't leak. Every screen designed to minimize friction and maximize sales.",
           deliverables: [
             "Storefront page mockups",
             "Product detail page designs",
@@ -512,7 +512,7 @@ export const services: Service[] = [
           icon: "hammer",
           title: "Store Engineering",
           description:
-            "Payment processing, inventory management, order tracking, and customer accounts — all custom-built with security and speed at the core.",
+            "Payment processing, inventory management, order tracking, and customer accounts, all custom-built with security and speed at the core.",
           deliverables: [
             "Payment gateway integration",
             "Inventory management system",
@@ -557,7 +557,7 @@ export const services: Service[] = [
     id: "crm-systems",
     title: "CRM Systems",
     description:
-      "Stop losing leads in spreadsheets. Custom CRM systems that track every client, every deal, every follow-up — built exactly for how you work.",
+      "Stop losing leads in spreadsheets. Custom CRM systems that track every client, every deal, every follow-up. Built exactly for how you work.",
     priceRange: "$8,000 - $25,000",
     icon: "database",
     features: [
@@ -576,7 +576,7 @@ export const services: Service[] = [
           icon: "search",
           title: "Workflow & Pipeline Mapping",
           description:
-            "We map your entire sales process — lead sources, qualification steps, handoff points, and follow-up cadences. Your CRM will mirror exactly how your team sells.",
+            "We map your entire sales process: lead sources, qualification steps, handoff points, and follow-up cadences. Your CRM will mirror exactly how your team sells.",
           deliverables: [
             "Sales process flowchart",
             "Pipeline stage definitions",
@@ -590,7 +590,7 @@ export const services: Service[] = [
           icon: "palette",
           title: "CRM Interface Design",
           description:
-            "Kanban boards, list views, detail pages, and dashboards — designed for speed. Your team should be able to update a deal status in two clicks.",
+            "Kanban boards, list views, detail pages, and dashboards, designed for speed. Your team should be able to update a deal status in two clicks.",
           deliverables: [
             "Pipeline board mockups",
             "Contact & deal detail pages",
@@ -649,7 +649,7 @@ export const services: Service[] = [
     id: "full-operations-platform",
     title: "Full Operations Platform",
     description:
-      "The complete package: website, CRM, client portal, invoicing, and AI tools — unified in one custom-built platform that runs your entire business.",
+      "The complete package: website, CRM, client portal, invoicing, and AI tools, unified in one custom-built platform that runs your entire business.",
     priceRange: "$15,000 - $50,000+",
     icon: "layers",
     features: [
@@ -668,7 +668,7 @@ export const services: Service[] = [
           icon: "search",
           title: "Operations Deep Dive",
           description:
-            "We audit every system your business touches — sales, operations, client management, billing, communication. Then we design a unified platform that replaces them all.",
+            "We audit every system your business touches: sales, operations, client management, billing, communication. Then we design a unified platform that replaces them all.",
           deliverables: [
             "Systems audit & gap analysis",
             "Unified platform architecture",
@@ -682,7 +682,7 @@ export const services: Service[] = [
           icon: "palette",
           title: "Platform UI/UX Design",
           description:
-            "Every module — website, CRM, portal, invoicing — designed as one cohesive experience. Consistent navigation, shared design language, and role-based views.",
+            "Every module: website, CRM, portal, invoicing, designed as one cohesive experience. Consistent navigation, shared design language, and role-based views.",
           deliverables: [
             "Module-by-module mockups",
             "Unified design system",
@@ -696,7 +696,7 @@ export const services: Service[] = [
           icon: "hammer",
           title: "Platform Engineering",
           description:
-            "Full-stack development in phases. Each module built, tested, and delivered incrementally so you get value from day one — not just at the end.",
+            "Full-stack development in phases. Each module built, tested, and delivered incrementally so you get value from day one, not just at the end.",
           deliverables: [
             "Public website module",
             "CRM & pipeline module",
@@ -710,7 +710,7 @@ export const services: Service[] = [
           icon: "rocket",
           title: "Phased Rollout",
           description:
-            "We don't flip one switch — we roll out module by module, training your team on each before moving to the next. Controlled, confident, zero chaos.",
+            "We don't flip one switch. We roll out module by module, training your team on each before moving to the next. Controlled, confident, zero chaos.",
           deliverables: [
             "Module-by-module deployment",
             "Data migration per module",
@@ -760,7 +760,7 @@ export const services: Service[] = [
           icon: "search",
           title: "AI Opportunity Assessment",
           description:
-            "We identify where AI can create real value in your business — not hype, not gimmicks. Concrete use cases with measurable ROI projections.",
+            "We identify where AI can create real value in your business, not hype, not gimmicks. Concrete use cases with measurable ROI projections.",
           deliverables: [
             "AI opportunity matrix",
             "Use case prioritization",
@@ -788,7 +788,7 @@ export const services: Service[] = [
           icon: "hammer",
           title: "AI Development & Training",
           description:
-            "Custom AI pipeline — from data ingestion to model integration to polished UI. Every output is validated, every edge case handled, every failure graceful.",
+            "Custom AI pipeline: from data ingestion to model integration to polished UI. Every output is validated, every edge case handled, every failure graceful.",
           deliverables: [
             "AI pipeline architecture",
             "Model integration & testing",
@@ -802,7 +802,7 @@ export const services: Service[] = [
           icon: "rocket",
           title: "Controlled Rollout",
           description:
-            "AI tools launch in controlled stages — small team first, then wider rollout. We monitor outputs, accuracy, and user adoption at every step.",
+            "AI tools launch in controlled stages: small team first, then wider rollout. We monitor outputs, accuracy, and user adoption at every step.",
           deliverables: [
             "Staged rollout plan",
             "Accuracy benchmarks",
@@ -816,7 +816,7 @@ export const services: Service[] = [
           icon: "headphones",
           title: "Monitor & Improve",
           description:
-            "AI gets smarter over time — with the right feedback loops. We monitor performance, refine prompts, and expand capabilities as your confidence grows.",
+            "AI gets smarter over time, with the right feedback loops. We monitor performance, refine prompts, and expand capabilities as your confidence grows.",
           deliverables: [
             "Ongoing accuracy monitoring",
             "Prompt refinement cycles",

@@ -44,7 +44,7 @@ export function ServiceCard({ service, onClick }: ServiceCardProps) {
   if (shouldReduceMotion) {
     return (
       <div
-        className={`glass-card-hover flex h-full flex-col p-6 ${interactive ? "cursor-pointer" : ""}`}
+        className={`group glass-card-hover flex h-full flex-col p-6 ${interactive ? "cursor-pointer" : ""}`}
         onClick={onClick}
         onKeyDown={handleKeyDown}
         role={interactive ? "button" : undefined}
@@ -84,7 +84,7 @@ export function ServiceCard({ service, onClick }: ServiceCardProps) {
         rotateY,
         transformPerspective: 800,
       }}
-      className={`glass-card flex h-full flex-col p-6 ${interactive ? "cursor-pointer" : ""}`}
+      className={`group glass-card relative flex h-full flex-col p-6 ${interactive ? "cursor-pointer" : ""}`}
     >
       <CardContent service={service} hasWalkthrough={interactive} />
     </motion.div>
@@ -100,16 +100,18 @@ function CardContent({
 }) {
   return (
     <>
-      <ServiceIcon icon={service.icon} />
+      {/* Banner: icon + title */}
+      <div className="flex items-center gap-3 rounded-xl bg-primary/10 p-3 transition-shadow duration-500 group-hover:shadow-[inset_0_0_0_1px_rgba(0,212,255,0.4)]">
+        <ServiceIcon icon={service.icon} bare />
+        <h3 className="text-lg font-semibold">{service.title}</h3>
+      </div>
 
-      <h3 className="mt-4 text-lg font-semibold">{service.title}</h3>
-
-      <p className="mt-2 flex-1 text-sm text-muted-foreground">
+      <p className="mt-2 flex-1 text-sm leading-relaxed text-muted-foreground">
         {service.description}
       </p>
 
       <div className="mt-4">
-        <span className="inline-flex rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+        <span className="inline-flex rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary transition-colors duration-300 group-hover:bg-primary/20">
           {service.priceRange}
         </span>
       </div>
