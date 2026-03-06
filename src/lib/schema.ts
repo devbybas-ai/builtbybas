@@ -359,9 +359,12 @@ export const proposals = pgTable(
       onDelete: "set null",
     }),
     reviewedAt: timestamp("reviewed_at", { withTimezone: true }),
+    responseToken: varchar("response_token", { length: 64 }).unique(),
+    respondedAt: timestamp("responded_at", { withTimezone: true }),
     sentAt: timestamp("sent_at", { withTimezone: true }),
     acceptedAt: timestamp("accepted_at", { withTimezone: true }),
     rejectionReason: text("rejection_reason"),
+    nudgedAt: timestamp("nudged_at", { withTimezone: true }),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
       .defaultNow(),
@@ -374,6 +377,7 @@ export const proposals = pgTable(
     index("idx_proposals_intake_submission_id").on(table.intakeSubmissionId),
     index("idx_proposals_status").on(table.status),
     index("idx_proposals_generated_by").on(table.generatedBy),
+    index("idx_proposals_response_token").on(table.responseToken),
   ]
 );
 

@@ -1,11 +1,12 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { eq } from "drizzle-orm";
+import { randomBytes } from "crypto";
 import { db } from "@/lib/db";
 import { proposals, clients, pipelineHistory } from "@/lib/schema";
 import { requireAdmin } from "@/lib/api-auth";
 import { sendProposalSchema } from "@/lib/proposal-validation";
 import { resend, EMAIL_FROM } from "@/lib/email";
-import { decrypt } from "@/lib/encryption";
+import { decrypt, hmacHash } from "@/lib/encryption";
 import { buildProposalEmailHtml } from "@/lib/proposal-email";
 
 export async function POST(
@@ -92,6 +93,11 @@ export async function POST(
     ? decrypt(proposal.clientName)
     : recipientName ?? "there";
 
+  const rawToken = randomBytes(32).toString("hex");
+  const hashedToken = hmacHash(rawToken);
+  const siteUrl = process.env.SITE_URL ?? "https://builtbybas.com";
+  const responseUrl = `${siteUrl}/proposal/${rawToken}`;
+
   const html = buildProposalEmailHtml({
     title: proposal.title,
     summary: proposal.summary,
@@ -101,6 +107,7 @@ export async function POST(
     clientName,
     clientCompany: proposal.clientCompany ?? "",
     customMessage,
+    responseUrl,
   });
 
   try {
@@ -118,12 +125,13 @@ export async function POST(
       );
     }
 
-    // Update proposal status to sent
+    // Update proposal status to sent + store response token
     await db
       .update(proposals)
       .set({
         status: "sent",
         sentAt: new Date(),
+        responseToken: hashedToken,
         updatedAt: new Date(),
       })
       .where(eq(proposals.id, id));

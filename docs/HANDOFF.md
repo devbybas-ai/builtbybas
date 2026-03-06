@@ -1,8 +1,51 @@
 # BuiltByBas — Handoff Document
 
-> **Last Updated:** 2026-03-06 (Session 31)
-> **Status:** LIVE AT builtbybas.com — Bias-free project prioritization, content-aware proposals, RAI Policy v2 (UK GDPR/EU AI Act compliant), confidentiality + privacy in every proposal. 202 tests pass. Commit pending.
-> **Next Session:** Commit + deploy to VPS, finish SSL for analytics.builtbybas.com, address intake form quality, continued polish.
+> **Last Updated:** 2026-03-06 (Session 33)
+> **Status:** LIVE AT builtbybas.com — Session 31 deployed (commit `5dbfa4e`). 202 tests pass. Session 33 changes ready to commit + deploy. Production DB updated (responded_at, nudged_at, response_token columns added).
+> **Next Session:** Commit + deploy Session 33 changes, fix drizzle migration journal sync, modular AI provider architecture, Umami security, intake form quality.
+
+## Session 33 Changes (2026-03-06)
+
+**Security Hardening — Proposal Response Flow:**
+- Fixed GET handler in `src/app/api/proposals/respond/route.ts` to use `hmacHash(token)` before DB lookup (was comparing raw token against hashed DB value)
+- Accept action now correctly advances pipeline to `proposal_accepted` stage (was using invalid `negotiation` enum)
+- Decline action sets client `status: "lost"` while keeping pipeline stage unchanged (was using invalid `lost` pipeline stage)
+
+**Proposal Detail — Accept/Decline Status:**
+- Added `respondedAt` and `nudgedAt` to admin proposal detail query (`src/app/admin/proposals/[id]/page.tsx`)
+- Added `respondedAt` and `nudgedAt` to API response (`src/app/api/proposals/[id]/route.ts`)
+- Green "Client Accepted" and red "Client Declined" banners in `ProposalDetailView.tsx`
+- `respondedAt` shown in timeline audit trail
+
+**Gentle Nudge — Follow-Up Emails:**
+- New API route `src/app/api/proposals/[id]/nudge/route.ts` — sends follow-up email for sent proposals
+- 48-hour cooldown between nudges to prevent spamming clients
+- Generates fresh response token on each nudge (invalidates old link, provides new one)
+- Smart copy based on days since sent (≤3 days, ≤7 days, 7+ days)
+- New `buildNudgeEmailHtml()` in `src/lib/proposal-email.ts`
+- "Follow Up" card in proposal detail view (only visible when status is "sent")
+
+**Public Site Polish:**
+- Hero section spacing opened up — more breathing room between subtitle, CTAs, and stats bar
+- Step indicator line in service walkthrough fixed — opaque circle backgrounds, animated gradient progress line, cyan glow on active step
+
+**Pipeline Redesign:**
+- Rewrote `PipelineBoard.tsx` from 12-column horizontal kanban to 4-phase tab layout (Inbound, Proposal, Active Work, Delivered)
+- No horizontal scrollbar — phase tabs with count badges, responsive grid within active phase
+- Auto-selects first phase that has clients
+
+**Database Migration:**
+- Generated `drizzle/0008_pale_felicia_hardy.sql` for `response_token`, `responded_at`, `nudged_at` columns + index + unique constraint
+- Applied via direct SQL (drizzle-kit migrate had conflicts with older migration). Production VPS needs same migration applied
+- **Note:** Drizzle migration journal may be out of sync — resolve before next `drizzle-kit migrate`
+
+## Session 32 Changes (2026-03-06)
+
+**Deployment + Backlog Audit:**
+- Session 31 committed (`5dbfa4e` — 9 files, 1056 insertions, 130 deletions) and deployed to VPS
+- Production database confirmed clean — no seed data, real submissions only
+- Full backlog audit completed — 20 outstanding items cataloged across 7 categories
+- Modular AI provider architecture confirmed as next major feature (swap models via config, not rewrites)
 
 ## Session 31 Changes (2026-03-06)
 
@@ -712,38 +755,40 @@ Dark, premium, cutting-edge. The site itself IS the portfolio piece. Every inter
 
 ---
 
-### What's Next
+### What's Next — Full Backlog (Session 32 Audit)
 
-**Immediate — Umami Finalization:**
-1. Check DNS propagation: `dig analytics.builtbybas.com +short` — when it returns `72.62.200.30`:
-2. Run `certbot --nginx -d analytics.builtbybas.com` for SSL
-3. Close port 3003: `ufw deny 3003/tcp && ufw reload` + remove 3003 rule from Hostinger firewall panel
-4. Add Umami tracking scripts to colourparlor and ocinw layouts
-5. Deploy latest builtbybas code to VPS
+| #   | Category       | Item                                                              | Priority | Status       | Source        |
+| --- | -------------- | ----------------------------------------------------------------- | -------- | ------------ | ------------- |
+| 1   | Infrastructure | SSL for `analytics.builtbybas.com` (certbot after DNS propagates) | High     | Blocked      | Session 28/30 |
+| 2   | Infrastructure | Close port 3003 after SSL is live                                 | High     | Blocked (#1) | Session 28    |
+| 3   | Infrastructure | Drizzle migration for `intake_status` enum on VPS                 | High     | Not started  | Session 27    |
+| 4   | Infrastructure | Fix SSH key from local dev machine to VPS                         | Medium   | Not started  | Session 14    |
+| 5   | Infrastructure | Change Umami DB password (exposed in session)                     | High     | Not started  | Session 28    |
+| 6   | Infrastructure | Add Umami tracking to colourparlor + ocinw layouts                | Low      | Not started  | Session 28    |
+| 7   | AI/Integration | Modular AI provider architecture (Claude API, swappable models)   | High     | Not started  | Session 32    |
+| 8   | AI/Integration | Auto-generate follow-up questions after intake scan               | Medium   | Not started  | Handoff plan  |
+| 9   | AI/Integration | SME best practice analysis per service                            | Medium   | Not started  | Handoff plan  |
+| 10  | AI/Integration | Feed follow-ups + SME into proposal generator                     | Medium   | Depends #8,9 | Handoff plan  |
+| 11  | Client Portal  | Client proposal accept/decline (link from email, updates admin)   | High     | Not started  | Session 32    |
+| 12  | Client Portal  | Client-facing portal (project status, invoices, comms)            | Medium   | Not started  | Phase 6 plan  |
+| 13  | Client Portal  | Invoice PDF generation                                            | Medium   | Not started  | Phase 6 plan  |
+| 14  | Client Portal  | Email notifications for invoice/proposal status changes           | Medium   | Not started  | Phase 6 plan  |
+| 15  | Portfolio      | Take screenshots of all 28 demos, wire portfolio images           | Low      | Not started  | Session 24    |
+| 16  | Portfolio      | Deploy BBB demo platform (demos.builtbybas.com, port 3010)        | Low      | Not started  | Session 24    |
+| 17  | Portfolio      | KAR CRM — deploy to VPS, add to portfolio                         | Low      | Not started  | Session 21    |
+| 18  | Forms/UX       | Intake form quality improvements                                  | Medium   | Not started  | Session 29    |
+| 19  | Cleanup        | Delete `portfolio - Shortcut.lnk` from colourparlor folder        | Low      | Not started  | Session 21    |
+| 20  | Cleanup        | Clean up "quicktest" submission from local DB                     | Low      | Not started  | Session 29    |
+| 21  | Tech Debt      | Next.js 16 middleware to proxy migration                          | Low      | Deferred     | ISS-1         |
 
-**Immediate — Before Full Deploy:**
-6. Run Drizzle migration: `npx drizzle-kit generate` + `npx drizzle-kit push` for `intake_status` column
-
-**Phase 3 — Enhanced Analysis + Follow-Up Questions:**
-7. Auto-generate 3-5 follow-up questions after intake scan (based on gaps, vague answers, SME best practices)
-8. SME best practice analysis per service (recommended tech stack, hardware/security, compliance, industry standards)
-9. Feed follow-up answers + SME recommendations into proposal generator for richer proposals
-10. Display follow-up questions + SME analysis in admin intake detail page
-
-**Portfolio:**
-11. Take screenshots of all demos, wire portfolio images
-12. BBB demo platform deployment (port 3010, demos.builtbybas.com)
-13. KAR CRM — deploy to VPS, add to portfolio when ready
-
-**Phase 6 — Client Portal:**
-14. Client-facing portal (project status, invoices, communication)
-15. Invoice PDF generation
-16. Email notifications for invoice/proposal status changes
-
-**Improvements:**
-17. Fix SSH key access from local dev machine to VPS
-18. Delete `portfolio - Shortcut.lnk` from colourparlor folder
-19. Change Umami DB password (exposed in session — use `ALTER USER umami WITH PASSWORD 'new_password';`)
+**Priority Order:**
+1. **#3, #5** — VPS migration + Umami security (quick wins, high impact)
+2. **#11** — Client proposal accept/decline flow (closes the sales loop)
+3. **#1, #2** — SSL for analytics (whenever DNS propagates)
+4. **#18** — Intake form quality
+5. **#12-14** — Client portal + invoicing (Phase 6)
+6. **#15-17** — Portfolio screenshots + demo deployment
+7. **#7-10** — Modular AI provider architecture + AI follow-ups + SME analysis (last)
 
 ### Notes
 

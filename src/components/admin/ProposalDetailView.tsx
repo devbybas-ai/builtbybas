@@ -29,7 +29,9 @@ interface ProposalData {
   reviewedAt: Date | null;
   sentAt: Date | null;
   acceptedAt: Date | null;
+  respondedAt: Date | null;
   rejectionReason: string | null;
+  nudgedAt: Date | null;
   createdAt: Date;
   updatedAt: Date;
   clientName: string | null;
@@ -90,6 +92,11 @@ export function ProposalDetailView({
   const [showRejectDialog, setShowRejectDialog] = useState(false);
   const [rejectReason, setRejectReason] = useState("");
   const [rejectError, setRejectError] = useState("");
+
+  // Nudge
+  const [nudging, setNudging] = useState(false);
+  const [nudgeError, setNudgeError] = useState("");
+  const [nudgeSuccess, setNudgeSuccess] = useState(false);
 
   // Delete dialog
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -182,6 +189,27 @@ export function ProposalDetailView({
       setSendError("Network error");
     } finally {
       setSending(false);
+    }
+  }
+
+  async function handleNudge() {
+    setNudging(true);
+    setNudgeError("");
+    setNudgeSuccess(false);
+    try {
+      const res = await fetch(`/api/proposals/${proposal.id}/nudge`, {
+        method: "POST",
+      });
+      const data = await res.json();
+      if (data.success) {
+        setNudgeSuccess(true);
+      } else {
+        setNudgeError(data.error || "Failed to send follow-up");
+      }
+    } catch {
+      setNudgeError("Network error");
+    } finally {
+      setNudging(false);
     }
   }
 
@@ -333,6 +361,48 @@ export function ProposalDetailView({
           </p>
         </GlassCard>
       </div>
+
+      {/* Client Response Banner */}
+      {proposal.status === "accepted" && proposal.respondedAt && (
+        <GlassCard className="mt-6 border-emerald-500/30 bg-emerald-500/5">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-400">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-5 w-5">
+                <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <div>
+              <p className="font-semibold text-emerald-400">Client Accepted</p>
+              <p className="text-sm text-muted-foreground">
+                Responded on {formatDate(proposal.respondedAt)}
+                {proposal.acceptedAt ? ` — Accepted ${formatDate(proposal.acceptedAt)}` : ""}
+              </p>
+            </div>
+          </div>
+        </GlassCard>
+      )}
+      {proposal.status === "rejected" && proposal.respondedAt && (
+        <GlassCard className="mt-6 border-red-500/30 bg-red-500/5">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-500/20 text-red-400">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-5 w-5">
+                <path d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />
+              </svg>
+            </div>
+            <div>
+              <p className="font-semibold text-red-400">Client Declined</p>
+              <p className="text-sm text-muted-foreground">
+                Responded on {formatDate(proposal.respondedAt)}
+              </p>
+              {proposal.rejectionReason && (
+                <p className="mt-1 text-sm text-white/70">
+                  &ldquo;{proposal.rejectionReason}&rdquo;
+                </p>
+              )}
+            </div>
+          </div>
+        </GlassCard>
+      )}
 
       {/* Edit Controls */}
       {editing && (
@@ -513,6 +583,9 @@ export function ProposalDetailView({
           {proposal.sentAt && (
             <p>Sent: {formatDate(proposal.sentAt)}</p>
           )}
+          {proposal.respondedAt && (
+            <p>Client Responded: {formatDate(proposal.respondedAt)}</p>
+          )}
           {proposal.acceptedAt && (
             <p>Accepted: {formatDate(proposal.acceptedAt)}</p>
           )}
@@ -640,6 +713,44 @@ export function ProposalDetailView({
           <p className="text-sm font-medium text-emerald-400">
             Proposal sent successfully.
           </p>
+        </GlassCard>
+      )}
+
+      {/* Gentle Nudge — only for sent proposals */}
+      {proposal.status === "sent" && (
+        <GlassCard className="mt-6 border-white/10">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-sm font-semibold">Follow Up</h2>
+              <p className="mt-1 text-xs text-muted-foreground">
+                Send a gentle reminder to the client.
+                {proposal.nudgedAt && (
+                  <> Last follow-up: {formatDate(proposal.nudgedAt)}.</>
+                )}
+              </p>
+            </div>
+            <button
+              onClick={handleNudge}
+              disabled={nudging || nudgeSuccess}
+              className="rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium transition-colors hover:bg-white/10 disabled:opacity-50"
+            >
+              {nudging
+                ? "Sending..."
+                : nudgeSuccess
+                  ? "Follow-up Sent"
+                  : "Send Gentle Nudge"}
+            </button>
+          </div>
+          {nudgeError && (
+            <p className="mt-2 text-sm text-red-400" role="alert">
+              {nudgeError}
+            </p>
+          )}
+          {nudgeSuccess && (
+            <p className="mt-2 text-sm text-emerald-400">
+              Follow-up email sent successfully.
+            </p>
+          )}
         </GlassCard>
       )}
 

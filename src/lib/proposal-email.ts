@@ -9,6 +9,7 @@ interface ProposalEmailData {
   clientName: string;
   clientCompany: string;
   customMessage?: string;
+  responseUrl?: string;
 }
 
 export function buildProposalEmailHtml(data: ProposalEmailData): string {
@@ -20,6 +21,7 @@ export function buildProposalEmailHtml(data: ProposalEmailData): string {
     timeline,
     clientName,
     customMessage,
+    responseUrl,
   } = data;
 
   const budgetDisplay = estimatedBudgetCents
@@ -96,11 +98,111 @@ ${proposalHtml}
 </table>
 </td></tr>
 
+${responseUrl ? `<!-- Accept / Decline -->
+<tr><td style="padding:0 0 24px;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;">
+<tr><td style="padding:24px;text-align:center;">
+  <p style="color:#ffffff;font-size:16px;font-weight:600;margin:0 0 8px;">Ready to move forward?</p>
+  <p style="color:#a0a0a0;font-size:14px;margin:0 0 20px;">Click below to accept or decline this proposal.</p>
+  <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 auto;">
+  <tr>
+    <td style="padding:0 8px 0 0;">
+      <a href="${responseUrl}" style="display:inline-block;padding:12px 32px;background-color:#00D4FF;color:#0A0A0F;font-size:14px;font-weight:700;text-decoration:none;border-radius:8px;">Accept Proposal</a>
+    </td>
+    <td style="padding:0 0 0 8px;">
+      <a href="${responseUrl}" style="display:inline-block;padding:12px 32px;background-color:transparent;color:#a0a0a0;font-size:14px;font-weight:600;text-decoration:none;border-radius:8px;border:1px solid rgba(255,255,255,0.2);">View &amp; Respond</a>
+    </td>
+  </tr>
+  </table>
+</td></tr>
+</table>
+</td></tr>` : ""}
+
 <!-- Footer -->
 <tr><td style="padding:24px 0 0;border-top:1px solid rgba(255,255,255,0.1);">
   <p style="color:#a0a0a0;font-size:12px;line-height:1.5;margin:0 0 8px;">
     <em>Reviewed and approved by Bas Rosario</em>
   </p>
+  <p style="color:#666666;font-size:11px;margin:0;">
+    BuiltByBas &mdash; Custom Software &amp; Web Development<br/>
+    <a href="https://builtbybas.com" style="color:#00D4FF;text-decoration:none;">builtbybas.com</a>
+  </p>
+</td></tr>
+
+</table>
+</td></tr>
+</table>
+</body>
+</html>`;
+}
+
+// ============================================================
+// Nudge / Follow-up email
+// ============================================================
+
+interface NudgeEmailData {
+  title: string;
+  clientName: string;
+  responseUrl: string;
+  daysSinceSent: number;
+}
+
+export function buildNudgeEmailHtml(data: NudgeEmailData): string {
+  const { title, clientName, responseUrl, daysSinceSent } = data;
+
+  const timeContext =
+    daysSinceSent <= 3
+      ? "I wanted to make sure this didn't get lost in your inbox."
+      : daysSinceSent <= 7
+        ? "It's been a few days since we sent over our proposal, and I wanted to follow up."
+        : "We sent over a proposal a little while ago, and I wanted to check in.";
+
+  return `<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/></head>
+<body style="margin:0;padding:0;background-color:#0A0A0F;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#0A0A0F;">
+<tr><td align="center" style="padding:40px 20px;">
+<table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;">
+
+<!-- Header -->
+<tr><td style="padding:0 0 24px;">
+  <h1 style="color:#00D4FF;font-size:24px;font-weight:700;margin:0;">BuiltByBas</h1>
+</td></tr>
+
+<!-- Body -->
+<tr><td style="padding:0 0 24px;">
+  <p style="color:#ffffff;font-size:18px;font-weight:600;margin:0 0 16px;">Hi ${escapeForEmail(clientName)},</p>
+  <p style="color:#e0e0e0;font-size:16px;line-height:1.7;margin:0 0 16px;">
+    ${timeContext}
+  </p>
+  <p style="color:#e0e0e0;font-size:16px;line-height:1.7;margin:0 0 16px;">
+    Your proposal for <strong style="color:#ffffff;">${escapeForEmail(title)}</strong> is still open and ready for your review. No rush at all &mdash; just wanted to make sure you have everything you need to make a decision.
+  </p>
+  <p style="color:#e0e0e0;font-size:16px;line-height:1.7;margin:0 0 24px;">
+    If you have any questions, or if anything in the proposal needs adjusting, I'm happy to chat.
+  </p>
+</td></tr>
+
+<!-- CTA -->
+<tr><td style="padding:0 0 24px;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;">
+<tr><td style="padding:24px;text-align:center;">
+  <a href="${responseUrl}" style="display:inline-block;padding:14px 36px;background-color:#00D4FF;color:#0A0A0F;font-size:15px;font-weight:700;text-decoration:none;border-radius:8px;">Review Proposal</a>
+</td></tr>
+</table>
+</td></tr>
+
+<!-- Sign-off -->
+<tr><td style="padding:0 0 24px;">
+  <p style="color:#e0e0e0;font-size:16px;line-height:1.7;margin:0;">
+    Looking forward to hearing from you,<br/>
+    <strong style="color:#ffffff;">Bas Rosario</strong>
+  </p>
+</td></tr>
+
+<!-- Footer -->
+<tr><td style="padding:24px 0 0;border-top:1px solid rgba(255,255,255,0.1);">
   <p style="color:#666666;font-size:11px;margin:0;">
     BuiltByBas &mdash; Custom Software &amp; Web Development<br/>
     <a href="https://builtbybas.com" style="color:#00D4FF;text-decoration:none;">builtbybas.com</a>

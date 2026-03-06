@@ -29,7 +29,7 @@ export function Hero() {
         </AnimatedText>
 
         {/* Subtitle */}
-        <FadeIn delay={0.4} className="mt-6">
+        <FadeIn delay={0.4} className="mt-8 sm:mt-10">
           <p className="mx-auto max-w-2xl text-lg text-muted-foreground sm:text-xl">
             Agency-quality software, websites, dashboards, and tools.
             <br />
@@ -38,7 +38,7 @@ export function Hero() {
         </FadeIn>
 
         {/* CTA Buttons */}
-        <FadeIn delay={0.6} className="mt-10">
+        <FadeIn delay={0.6} className="mt-12 sm:mt-14">
           <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
             <motion.div
               whileHover={shouldReduceMotion ? undefined : { scale: 1.05 }}
@@ -70,7 +70,7 @@ export function Hero() {
       </div>
 
       {/* Stats Bar */}
-      <div className="relative z-10 mt-20 w-full pb-12">
+      <div className="relative z-10 mt-24 sm:mt-28 w-full pb-12">
         <StatsBar />
       </div>
     </section>
