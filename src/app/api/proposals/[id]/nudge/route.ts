@@ -96,7 +96,7 @@ export async function POST(
   // Generate a fresh response token (invalidates the old one)
   const rawToken = randomBytes(32).toString("hex");
   const hashedToken = hmacHash(rawToken);
-  const siteUrl = process.env.SITE_URL ?? "https://builtbybas.com";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://builtbybas.com";
   const responseUrl = `${siteUrl}/proposal/${rawToken}`;
 
   const daysSinceSent = proposal.sentAt

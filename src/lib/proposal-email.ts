@@ -214,7 +214,7 @@ function escapeForEmail(text: string): string {
 // ============================================================
 
 export function buildEmailFooterHtml(): string {
-  const siteUrl = process.env.SITE_URL ?? "https://builtbybas.com";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://builtbybas.com";
 
   return `<!-- Professional Footer -->
 <tr><td style="padding:32px 0 0;border-top:1px solid rgba(255,255,255,0.1);">
