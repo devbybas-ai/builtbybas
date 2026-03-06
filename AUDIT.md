@@ -56,11 +56,20 @@
 
 ## Section 3: Issues Tracker
 
-| ID    | Severity | Category | Issue                                                            | Found   | Status | Resolution                                                                       |
-| ----- | -------- | -------- | ---------------------------------------------------------------- | ------- | ------ | -------------------------------------------------------------------------------- |
-| ISS-1 | Low      | DevOps   | Next.js 16 deprecated middleware.ts in favor of proxy convention | Build-1 | Open   | Migrate when proxy API stabilizes                                                |
-| ISS-2 | Low      | DevOps   | Local is 1 commit ahead of remote — need to git push             | Build-1 | Open   | Push at start of next session                                                    |
-| ISS-3 | Medium   | Infra    | PostgreSQL not running locally — auth routes untested end-to-end | Build-1 | Closed | PostgreSQL 17 installed, builtbybas DB created, migrations applied, owner seeded |
+| ID     | Severity | Category | Issue                                                             | Found    | Status | Resolution                                                                       |
+| ------ | -------- | -------- | ----------------------------------------------------------------- | -------- | ------ | -------------------------------------------------------------------------------- |
+| ISS-1  | Low      | DevOps   | Next.js 16 deprecated middleware.ts in favor of proxy convention  | Build-1  | Open   | Migrate when proxy API stabilizes                                                |
+| ISS-2  | Low      | DevOps   | Local is 1 commit ahead of remote - need to git push              | Build-1  | Closed | Resolved - all commits pushed                                                    |
+| ISS-3  | Medium   | Infra    | PostgreSQL not running locally - auth routes untested end-to-end  | Build-1  | Closed | PostgreSQL 17 installed, builtbybas DB created, migrations applied, owner seeded |
+| ISS-4  | Medium   | SEO      | Sitemap only had 5 static pages, missing portfolio + policy pages | Sess. 36 | Closed | Expanded to 52+ pages (10 static + all portfolio dynamically)                    |
+| ISS-5  | Medium   | SEO      | Homepage missing metadata export (title + description)            | Sess. 36 | Closed | Added Metadata export to src/app/page.tsx                                        |
+| ISS-6  | Low      | Content  | Mdashes used throughout public content (AI-stereotypical)         | Sess. 36 | Closed | Removed from all public text, intake questions, portfolio data, admin titles     |
+| ISS-7  | Medium   | Security | 3 files used undefined SITE_URL instead of NEXT_PUBLIC_SITE_URL   | Sess. 36 | Closed | Fixed in proposal send/nudge routes and email template                           |
+| ISS-8  | Medium   | Security | CSP blocked Umami analytics script (analytics.builtbybas.com)     | Sess. 36 | Closed | Added analytics domain to script-src and connect-src in next.config.ts           |
+| ISS-9  | Low      | A11y     | ProposalResponse.tsx textarea missing label, no main landmark     | Sess. 36 | Closed | Added sr-only label, converted outer divs to main elements                       |
+| ISS-10 | Low      | Content  | OG image alt text and subtitle had mdashes                        | Sess. 36 | Closed | Replaced with hyphens and periods                                                |
+| ISS-11 | Low      | Security | Umami analytics subdomain missing SSL cert                        | Sess. 36 | Closed | Let's Encrypt cert installed via certbot                                         |
+| ISS-12 | Low      | Security | Resend API key visible in .env.local (not committed)              | Sess. 36 | Open   | Rotate key - not in git but exposed in audit output                              |
 
 ---
 
@@ -100,6 +109,7 @@ Tech Debt Classes:
 | 2026-03-01 | Deploy-2 | Phase 4 Production Push | 10/10 (A+)  | Claude + Bas | Phase 4 deployed to production. DB migrations applied (drizzle-kit push). ENCRYPTION_KEY added to production env. Owner seeded on production. All admin pages verified live (dashboard, projects, invoices, analytics). 43-route production build. Public site, login, and all CRM features confirmed working at builtbybas.com.                                                                                                                                                                                                                            |
 | 2026-03-01 | Phase5   | Proposals + Revision UX | 10/10 (A+)  | Claude + Bas | Phase 5 complete: algorithmic proposal generation (no AI API), 4 API routes, 6 admin pages/components, 32 new tests (163 total), 50-route build. Mobile animation perf fixed (SVG SMIL + blur filter removal). Colour Parlor Nginx routing fixed. Revision workflows added to ProposalDetailView (title/summary/content/timeline inline editing, reviewed→draft reset for RAI) and InvoiceDetailView (line items add/remove, due date, tax rate, notes). VPS git switched to HTTPS.                                                                         |
 | 2026-03-01 | Sess. 18 | Portfolio + Animation   | 10/10 (A+)  | Claude + Bas | Portfolio image galleries: auto-cycle (5s), thumbnail click-to-swap, pause on hover, AnimatePresence crossfade, progress indicators. 17 screenshots converted PNG→WebP (4.7MB→244KB). Gallery arrays for Orca Child (9) + BuiltByBas (4). 4 new animation demos: MicroInteractions (8), LayoutAnimations (6), SVGAnimations (7), ScrollAnimations (5) — 41 total specimens across 6 pages. About page: #OneTeam→Human Oversight. Raw submission data: recursive structured display. Deployed to production (commit 92269cc). 163/163 tests, 50-route build. |
+| 2026-03-06 | Sess. 36 | Full Site Audit         | 10/10 (A+)  | Claude + Bas | Head-to-toe audit: content (mdash removal, I-to-we story arc, lift-up messaging), SEO (sitemap 5→52+ pages, homepage metadata), security (env var consistency, CSP for Umami, SSL cert), accessibility (ProposalResponse label + main landmark), RAI compliance (Section 6 added). 12 issues found, 11 closed, 1 open (API key rotation). 4 parallel audit agents: content, SEO, accessibility, security/performance. All 8 pillars verified.                                                                                                               |
 
 ---
 

@@ -81,20 +81,20 @@ export function ProposalResponse({ token }: { token: string }) {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0A0A0F] flex items-center justify-center">
+      <main className="min-h-screen bg-[#0A0A0F] flex items-center justify-center">
         <div className="text-white/50 text-lg">Loading proposal...</div>
-      </div>
+      </main>
     );
   }
 
   if (error && !proposal) {
     return (
-      <div className="min-h-screen bg-[#0A0A0F] flex items-center justify-center px-4">
+      <main className="min-h-screen bg-[#0A0A0F] flex items-center justify-center px-4">
         <div className="max-w-md w-full text-center">
           <h1 className="text-2xl font-bold text-white mb-4">Proposal Not Found</h1>
           <p className="text-white/50">{error}</p>
         </div>
-      </div>
+      </main>
     );
   }
 
@@ -107,7 +107,7 @@ export function ProposalResponse({ token }: { token: string }) {
     : null;
 
   return (
-    <div className="min-h-screen bg-[#0A0A0F]">
+    <main className="min-h-screen bg-[#0A0A0F]">
       <div className="max-w-3xl mx-auto px-4 py-12 sm:py-16">
         {/* Header */}
         <div className="mb-8">
@@ -198,7 +198,11 @@ export function ProposalResponse({ token }: { token: string }) {
                   <p className="text-white/70 text-sm mb-3">
                     We&apos;d appreciate knowing why so we can improve. This is optional.
                   </p>
+                  <label htmlFor="decline-reason" className="sr-only">
+                    Reason for declining
+                  </label>
                   <textarea
+                    id="decline-reason"
                     value={declineReason}
                     onChange={(e) => setDeclineReason(e.target.value)}
                     placeholder="Reason for declining (optional)"
@@ -229,13 +233,13 @@ export function ProposalResponse({ token }: { token: string }) {
         {/* Footer */}
         <div className="mt-8 pt-6 border-t border-white/10 text-center">
           <p className="text-white/30 text-xs">
-            BuiltByBas &mdash; Custom Software &amp; Web Development
+            BuiltByBas - Custom Software &amp; Web Development
           </p>
           <a href="https://builtbybas.com" className="text-cyan-500/50 text-xs hover:text-cyan-400 transition-colors">
             builtbybas.com
           </a>
         </div>
       </div>
-    </div>
+    </main>
   );
 }

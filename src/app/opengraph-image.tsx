@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
-export const alt = "BuiltByBas — Custom Software & Web Development";
+export const alt = "BuiltByBas - Custom Software & Web Development";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -85,7 +85,7 @@ export default function OGImage() {
               marginTop: 12,
             }}
           >
-            Custom software for your business — no templates, no shortcuts
+            Custom software for your business. No templates, no shortcuts.
           </div>
         </div>
 

@@ -1,8 +1,41 @@
 # BuiltByBas — Handoff Document
 
-> **Last Updated:** 2026-03-06 (Session 35)
-> **Status:** LIVE AT builtbybas.com — Sessions 33-35 pushed to remote (`0108e47`), pending VPS deploy + DB migration (`drizzle/0008_pale_felicia_hardy.sql`).
-> **Next Session:** Deploy to VPS (git pull + pnpm install --frozen-lockfile + pnpm drizzle-kit push + pnpm build + pm2 restart), fix drizzle migration journal sync, modular AI provider architecture, Umami security, intake form quality.
+> **Last Updated:** 2026-03-06 (Session 36)
+> **Status:** LIVE AT builtbybas.com - all changes pushed to remote. VPS needs pull for audit fixes (`48e52d5`+).
+> **Next Session:** VPS deploy (git pull + build + restart), rotate Resend API key, SMS notifications for intake submissions, modular AI provider architecture, intake form quality improvements.
+
+## Session 36 Changes (2026-03-06)
+
+**Content Overhaul - Mdash Removal + I-to-We Story Arc:**
+- Removed all AI-stereotypical mdashes from public-facing content across 28+ files
+- Implemented I-to-we story arc on About page: cards 1-3 use "I", card 4 switches to "We"
+- "Businesses Deserve Better" timeline card rewritten with lift-up messaging (no competitor bashing)
+- AboutStory, AboutValues updated for we-voice (credential cards, values section)
+- Mdashes removed from intake-questions, portfolio data, demo-seed, intake-scoring, admin titles, OG image
+
+**Full Site Audit (4 Parallel Agents):**
+- Content audit: all public text clean, no remaining mdashes in user-visible content
+- SEO audit: sitemap expanded 5 to 52+ pages, homepage metadata added
+- Accessibility audit: ProposalResponse.tsx fixed (textarea label, main landmark)
+- Security/performance audit: env var consistency fixed, CSP updated for Umami, all security controls verified strong
+
+**SEO Fixes:**
+- `src/app/sitemap.ts` - now dynamically includes all portfolio pages + 5 policy pages
+- `src/app/page.tsx` - added missing Metadata export (title + description)
+- Admin page titles: mdash replaced with hyphen across 16 files
+
+**Security Fixes:**
+- Fixed 3 files using undefined `SITE_URL` env var (now `NEXT_PUBLIC_SITE_URL`)
+- CSP in `next.config.ts` updated to allow `analytics.builtbybas.com` (script-src + connect-src)
+- Umami SSL cert installed via certbot on VPS
+- UFW rule added to block external access to port 3003 (Umami only via Nginx)
+
+**RAI Compliance:**
+- Added Section 6 to AUDIT.md with full RAI compliance audit (6 subsections)
+- RAI-POLICY.md: removed #OneTeam reference, fixed mdash on line 9
+- All human review gates verified, bias prevention confirmed, transparency checks pass
+
+**Issues Found:** 12 total (ISS-4 through ISS-12), 11 closed, 1 open (ISS-12: rotate Resend API key)
 
 ## Session 35 Changes (2026-03-06)
 
