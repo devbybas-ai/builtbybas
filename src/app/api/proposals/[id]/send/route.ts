@@ -5,7 +5,7 @@ import { db } from "@/lib/db";
 import { proposals, clients, pipelineHistory } from "@/lib/schema";
 import { requireAdmin } from "@/lib/api-auth";
 import { sendProposalSchema } from "@/lib/proposal-validation";
-import { resend, EMAIL_FROM } from "@/lib/email";
+import { resend, EMAIL_FROM, ADMIN_EMAIL } from "@/lib/email";
 import { decrypt, hmacHash } from "@/lib/encryption";
 import { buildProposalEmailHtml } from "@/lib/proposal-email";
 
@@ -114,6 +114,7 @@ export async function POST(
     const { error } = await resend.emails.send({
       from: EMAIL_FROM,
       to: recipientEmail,
+      ...(ADMIN_EMAIL ? { bcc: ADMIN_EMAIL } : {}),
       subject: `Proposal: ${proposal.title}`,
       html,
     });

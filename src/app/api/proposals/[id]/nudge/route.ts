@@ -5,7 +5,7 @@ import { db } from "@/lib/db";
 import { proposals, clients } from "@/lib/schema";
 import { requireAdmin } from "@/lib/api-auth";
 import { decrypt, hmacHash } from "@/lib/encryption";
-import { resend, EMAIL_FROM } from "@/lib/email";
+import { resend, EMAIL_FROM, ADMIN_EMAIL } from "@/lib/email";
 import { buildNudgeEmailHtml } from "@/lib/proposal-email";
 
 const NUDGE_COOLDOWN_HOURS = 48;
@@ -116,6 +116,7 @@ export async function POST(
     const { error } = await resend.emails.send({
       from: EMAIL_FROM,
       to: recipientEmail,
+      ...(ADMIN_EMAIL ? { bcc: ADMIN_EMAIL } : {}),
       subject: `Following up: ${proposal.title}`,
       html,
     });
