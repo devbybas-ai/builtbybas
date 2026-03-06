@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { computePriorityScore, getPriorityBadgeColors } from "@/lib/prioritization";
 import { GlassCard } from "@/components/shared/GlassCard";
 import type { IntakeSubmissionRow, IntakeStatus } from "@/lib/intake-storage";
 
@@ -10,7 +11,7 @@ import type { IntakeSubmissionRow, IntakeStatus } from "@/lib/intake-storage";
 // Types
 // ---------------------------------------------------------------------------
 
-type SortKey = "date" | "complexity" | "name";
+type SortKey = "date" | "complexity" | "name" | "priority";
 type SortDir = "asc" | "desc";
 type ComplexityFilter = "all" | "Simple" | "Moderate" | "Complex" | "Enterprise";
 type StatusFilter = "all" | IntakeStatus;
@@ -73,7 +74,7 @@ export function IntakeListView({ submissions }: IntakeListViewProps) {
     useState<ComplexityFilter>("all");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [serviceFilter, setServiceFilter] = useState("all");
-  const [sortKey, setSortKey] = useState<SortKey>("date");
+  const [sortKey, setSortKey] = useState<SortKey>("priority");
   const [sortDir, setSortDir] = useState<SortDir>("desc");
   const [search, setSearch] = useState("");
 
@@ -194,6 +195,11 @@ export function IntakeListView({ submissions }: IntakeListViewProps) {
     result = [...result].sort((a, b) => {
       let cmp = 0;
       switch (sortKey) {
+        case "priority":
+          cmp =
+            computePriorityScore(a.analysis).score -
+            computePriorityScore(b.analysis).score;
+          break;
         case "date":
           cmp =
             new Date(a.analysis.submittedAt).getTime() -
@@ -362,6 +368,7 @@ export function IntakeListView({ submissions }: IntakeListViewProps) {
           <span className="text-xs text-muted-foreground">Sort:</span>
           {(
             [
+              { key: "priority" as const, label: "Priority" },
               { key: "date" as const, label: "Date" },
               { key: "complexity" as const, label: "Complexity" },
               { key: "name" as const, label: "Name" },
@@ -400,6 +407,7 @@ export function IntakeListView({ submissions }: IntakeListViewProps) {
           const primary = s.serviceRecommendations.find((r) => r.isPrimary);
           const label = getComplexityLabel(s.complexityScore.overall);
           const statusBadge = STATUS_BADGE[row.status];
+          const priority = computePriorityScore(s);
 
           return (
             <Link key={s.id} href={`/admin/intake/${s.id}`}>
@@ -410,6 +418,15 @@ export function IntakeListView({ submissions }: IntakeListViewProps) {
                 <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
+                      <span
+                        className={cn(
+                          "inline-flex shrink-0 items-center rounded-full px-2 py-0.5 text-[10px] font-bold tabular-nums",
+                          getPriorityBadgeColors(priority.label),
+                        )}
+                        title={priority.factors.map((f) => `${f.name}: ${f.score}`).join(", ")}
+                      >
+                        {priority.score}
+                      </span>
                       <h3 className="truncate text-sm font-semibold text-foreground">
                         {s.formData.name}
                       </h3>

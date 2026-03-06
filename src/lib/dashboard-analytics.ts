@@ -2,8 +2,10 @@ import { count, desc, eq } from "drizzle-orm";
 import { db } from "./db";
 import { clients, intakeSubmissions, pipelineHistory } from "./schema";
 import { decryptAnalysisPii } from "./encryption";
+import { computePriorityScore } from "./prioritization";
 import type { IntakeAnalysis } from "@/types/intake-analysis";
 import type { PipelineStage } from "@/types/client";
+import type { PriorityResult } from "./prioritization";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -56,6 +58,7 @@ export interface RecentSubmission {
   primaryService: string;
   submittedAt: string;
   estimatedInvestment: string;
+  priority: PriorityResult;
 }
 
 export interface DashboardData {
@@ -297,22 +300,23 @@ export async function getDashboardData(): Promise<DashboardData> {
           : 0,
   };
 
-  // --- Recent submissions ---
-  const recentSubmissions: RecentSubmission[] = analyses
-    .slice(0, 5)
-    .map((a) => {
-      const primary = a.serviceRecommendations.find((r) => r.isPrimary);
-      return {
-        id: a.id,
-        name: a.formData.name,
-        company: a.formData.company,
-        complexityLabel: getComplexityLabel(a.complexityScore.overall),
-        complexityScore: a.complexityScore.overall,
-        primaryService: primary?.serviceTitle ?? "—",
-        submittedAt: a.submittedAt,
-        estimatedInvestment: a.summary.estimatedTotalInvestment,
-      };
-    });
+  // --- Recent submissions (sorted by priority score) ---
+  const allWithPriority = analyses.map((a) => {
+    const primary = a.serviceRecommendations.find((r) => r.isPrimary);
+    return {
+      id: a.id,
+      name: a.formData.name,
+      company: a.formData.company,
+      complexityLabel: getComplexityLabel(a.complexityScore.overall),
+      complexityScore: a.complexityScore.overall,
+      primaryService: primary?.serviceTitle ?? "—",
+      submittedAt: a.submittedAt,
+      estimatedInvestment: a.summary.estimatedTotalInvestment,
+      priority: computePriorityScore(a),
+    };
+  });
+  allWithPriority.sort((a, b) => b.priority.score - a.priority.score);
+  const recentSubmissions = allWithPriority.slice(0, 5);
 
   return {
     stats,

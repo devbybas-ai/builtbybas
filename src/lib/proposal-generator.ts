@@ -262,17 +262,29 @@ function buildExecutiveSummary(
   totalCents: number,
   timeline: string,
 ): string {
-  const { complexityScore } = analysis;
-  const serviceCount = selectedServices.length;
   const serviceNames = selectedServices.map((s) => s.serviceTitle);
+  const serviceList = serviceNames.length <= 2
+    ? serviceNames.join(" and ").toLowerCase()
+    : `${serviceNames.slice(0, -1).join(", ").toLowerCase()}, and ${serviceNames[serviceNames.length - 1].toLowerCase()}`;
+
+  // Pull the client's own vision to lead with
+  const visionSnippet = extractFirstVision(analysis.formData);
 
   const lines = [
     `## Executive Summary`,
     ``,
-    `This proposal outlines a custom ${serviceNames.join(" and ").toLowerCase()} solution for **${company}**. Based on our analysis of your needs, we recommend a ${complexityScore.label.toLowerCase()}-complexity engagement delivering ${serviceCount} integrated service${serviceCount !== 1 ? "s" : ""}.`,
-    ``,
-    `The estimated investment is **${formatCents(totalCents)}** with a delivery timeline of **${timeline}**.`,
   ];
+
+  if (visionSnippet) {
+    lines.push(
+      `You told us what success looks like: "${truncateAnswer(visionSnippet, 150)}." This proposal is built around making that happen.`,
+    );
+    lines.push(``);
+  }
+
+  lines.push(
+    `We're proposing a custom ${serviceList} build for **${company}**. The estimated investment is **${formatCents(totalCents)}** over **${timeline}**. Below is exactly what's included, why we're recommending it, and what you can expect at every stage.`,
+  );
 
   return lines.join("\n");
 }
@@ -282,40 +294,52 @@ function buildUnderstandingNeeds(
   company: string,
 ): string {
   const { formData, clientProfile } = analysis;
-  const selectedServices = formData.selectedServices ?? [];
 
   const lines = [
-    `## Understanding Your Needs`,
+    `## What We Understand`,
     ``,
-    `After reviewing your intake submission, here is what we understand about **${company}** and your project:`,
+    `Here's what we took away from your intake — we want to make sure we're on the same page before anything else.`,
     ``,
   ];
 
-  if (formData.industry) {
-    lines.push(`- **Industry:** ${formatIndustry(formData.industry)}`);
-  }
-  if (formData.businessSize) {
-    lines.push(`- **Team size:** ${formatBusinessSize(formData.businessSize)}`);
-  }
-  if (formData.yearsInBusiness) {
-    lines.push(`- **Years in business:** ${formData.yearsInBusiness}`);
-  }
-  if (selectedServices.length > 0) {
-    lines.push(
-      `- **Services requested:** ${selectedServices.length} service${selectedServices.length !== 1 ? "s" : ""}`,
-    );
-  }
-  if (formData.timeline) {
-    lines.push(`- **Preferred timeline:** ${formatTimeline(formData.timeline)}`);
-  }
-  if (formData.budgetRange) {
-    lines.push(`- **Budget range:** ${formatBudgetRange(formData.budgetRange)}`);
+  // Pull the "about business" answer from their first service
+  const aboutBusiness = extractFirstAnswer(formData, [
+    "aboutBusiness",
+  ]);
+  if (aboutBusiness) {
+    lines.push(`**About ${company}:** ${truncateAnswer(aboutBusiness, 250)}`);
+    lines.push(``);
   }
 
-  lines.push(``);
-  lines.push(
-    `Your project readiness score is **${clientProfile.projectReadiness.label}** and your scope clarity is **${clientProfile.scopeClarity.label}**, which gives us confidence in delivering a well-defined engagement.`,
-  );
+  // Pull their main challenge
+  const challenge = extractFirstAnswer(formData, [
+    "currentChallenge", "biggestFrustration", "currentTracking",
+    "currentProcess", "currentCommunication", "currentSelling",
+    "fallingThroughCracks", "biggestPainPoint", "timeWasters",
+  ]);
+  if (challenge) {
+    lines.push(`**The problem you described:** ${truncateAnswer(challenge, 250)}`);
+    lines.push(``);
+  }
+
+  // Business context snapshot
+  const contextParts: string[] = [];
+  if (formData.industry) contextParts.push(formatIndustry(formData.industry));
+  if (formData.businessSize) contextParts.push(`${formatBusinessSize(formData.businessSize)} team`);
+  if (formData.yearsInBusiness) contextParts.push(`${formData.yearsInBusiness} years in business`);
+  if (contextParts.length > 0) {
+    lines.push(`**At a glance:** ${contextParts.join(" · ")}. Timeline: ${formatTimeline(formData.timeline)}. Budget: ${formatBudgetRange(formData.budgetRange)}.`);
+    lines.push(``);
+  }
+
+  // Readiness assessment — honest, not flattering
+  if (clientProfile.projectReadiness.score >= 70 && clientProfile.scopeClarity.score >= 70) {
+    lines.push(`You came in well-prepared — clear requirements, defined budget, and specific goals. That means we can move efficiently and spend less time on discovery.`);
+  } else if (clientProfile.projectReadiness.score >= 40) {
+    lines.push(`You've given us a solid foundation to work from. There are some details we'll want to nail down together during our kickoff call, but nothing that blocks us from getting started.`);
+  } else {
+    lines.push(`There are some areas where we'll need to dig deeper together before development begins — that's normal at this stage. Our kickoff call will be focused on filling in those gaps so we build exactly the right thing.`);
+  }
 
   return lines.join("\n");
 }
@@ -326,9 +350,9 @@ function buildScopeOfWork(
   formData: IntakeFormData,
 ): string {
   const lines = [
-    `## Scope of Work`,
+    `## What We're Building`,
     ``,
-    `Below is a detailed breakdown of each service, tailored to what you've told us about your business.`,
+    `Here's exactly what's in this proposal — each service is scoped around what you told us about your business, not a one-size-fits-all template.`,
   ];
 
   for (const rec of recommendations) {
@@ -340,9 +364,8 @@ function buildScopeOfWork(
     lines.push(`### ${rec.serviceTitle}`);
     lines.push(``);
 
-    // Personalize with the client's own words
+    // Ground every section in the client's own words
     if (answers) {
-      const about = getAnswerText(answers, "aboutBusiness");
       const challenge =
         getAnswerText(answers, "currentChallenge") ??
         getAnswerText(answers, "biggestFrustration") ??
@@ -355,41 +378,102 @@ function buildScopeOfWork(
         getAnswerText(answers, "timeWasters");
       const vision = getAnswerText(answers, "successVision");
 
-      if (about) {
-        lines.push(`**Your business:** ${truncateAnswer(about)}`);
-        lines.push(``);
-      }
       if (challenge) {
-        lines.push(`**The challenge:** ${truncateAnswer(challenge)}`);
+        lines.push(`**What you told us isn't working:** "${truncateAnswer(challenge, 250)}"`);
         lines.push(``);
       }
       if (vision) {
-        lines.push(`**Your vision:** ${truncateAnswer(vision)}`);
+        lines.push(`**What success looks like to you:** "${truncateAnswer(vision, 250)}"`);
         lines.push(``);
       }
     }
 
     if (catalogEntry) {
-      lines.push(`**What we'll build:**`);
+      lines.push(`**Here's what we'll deliver to get you there:**`);
       for (const feature of catalogEntry.features) {
         lines.push(`- ${feature}`);
       }
     }
 
     lines.push(``);
-    lines.push(`**Fit:** ${rec.fitLabel} (${rec.fitScore}/100)`);
-    lines.push(`**Estimated investment:** ${rec.estimatedRange}`);
+    lines.push(`**Service fit:** ${rec.fitLabel} (${rec.fitScore}/100) — ${rec.estimatedRange}`);
 
-    if (rec.reasons.length > 0) {
-      lines.push(``);
-      lines.push(`**Why this service:**`);
-      for (const reason of rec.reasons) {
-        lines.push(`- ${reason}`);
-      }
+    lines.push(``);
+    lines.push(`**Why this service:**`);
+    const whyReasons = buildWhyThisService(rec, formData);
+    for (const reason of whyReasons) {
+      lines.push(`- ${reason}`);
     }
   }
 
   return lines.join("\n");
+}
+
+/**
+ * Builds informative, client-specific "Why this service" reasons.
+ * Pulls from the client's actual intake answers to ground every statement
+ * in real context — no generic sales copy, no exaggeration.
+ */
+function buildWhyThisService(
+  rec: ServiceRecommendation,
+  formData: IntakeFormData,
+): string[] {
+  const reasons: string[] = [];
+  const intakeId = SERVICE_TO_INTAKE_ID[rec.serviceId];
+  const answers = intakeId ? formData.serviceAnswers[intakeId] : undefined;
+
+  // 1. What problem does this solve? (from their challenge/frustration answers)
+  if (answers) {
+    const challenge =
+      getAnswerText(answers, "currentChallenge") ??
+      getAnswerText(answers, "biggestFrustration") ??
+      getAnswerText(answers, "currentTracking") ??
+      getAnswerText(answers, "currentProcess") ??
+      getAnswerText(answers, "currentCommunication") ??
+      getAnswerText(answers, "currentSelling") ??
+      getAnswerText(answers, "fallingThroughCracks") ??
+      getAnswerText(answers, "biggestPainPoint") ??
+      getAnswerText(answers, "timeWasters");
+
+    if (challenge) {
+      reasons.push(`Addresses what you described: "${truncateAnswer(challenge, 120)}"`);
+    }
+
+    // 2. What outcome did they envision? (from their success vision)
+    const vision = getAnswerText(answers, "successVision");
+    if (vision) {
+      reasons.push(`Designed to deliver your goal: "${truncateAnswer(vision, 120)}"`);
+    }
+
+    // 3. What specific capability did they request? (from mostImportant or unique answers)
+    const priority =
+      getAnswerText(answers, "mostImportant") ??
+      getAnswerText(answers, "uniqueValue") ??
+      getAnswerText(answers, "uniqueAdvantage");
+    if (priority) {
+      reasons.push(`Your stated priority: "${truncateAnswer(priority, 120)}"`);
+    }
+  }
+
+  // 4. Service fit context (from scoring engine, but rephrased to be informative)
+  if (rec.fitScore >= 75) {
+    reasons.push(`Strong alignment (${rec.fitScore}/100) between your requirements and this service's capabilities`);
+  } else if (rec.fitScore >= 50) {
+    reasons.push(`Good alignment (${rec.fitScore}/100) with your stated needs — some details to refine during planning`);
+  }
+
+  // 5. Budget compatibility (factual, not persuasive)
+  const budgetReason = rec.reasons.find((r) => r.includes("Budget"));
+  if (budgetReason) {
+    reasons.push(budgetReason);
+  }
+
+  // Fallback: if no intake answers available, use the scoring reasons
+  if (reasons.length === 0) {
+    return rec.reasons;
+  }
+
+  return reasons;
 }
 
 function buildTimelineSection(
@@ -410,8 +494,8 @@ function buildTimelineSection(
     `## Timeline`,
     ``,
     isMultiPhase
-      ? `We recommend a phased approach, completed in ${selectedServices.length} phases over **${totalTimeline}**.`
-      : `Estimated delivery: **${totalTimeline}**.`,
+      ? `We'll work through this in ${selectedServices.length} phases over **${totalTimeline}**. Each phase delivers something usable — you won't wait until the end to see results.`
+      : `Estimated delivery: **${totalTimeline}** from kickoff to launch.`,
   ];
 
   for (let i = 0; i < selectedServices.length; i++) {
@@ -420,7 +504,7 @@ function buildTimelineSection(
     lines.push(``);
     lines.push(`### Phase ${i + 1}: ${svc.serviceTitle} (${duration})`);
     lines.push(``);
-    lines.push(`Design, build, and launch your ${svc.serviceTitle.toLowerCase()}.`);
+    lines.push(`Design, build, test, and launch your ${svc.serviceTitle.toLowerCase()}. You'll review progress at each milestone before we move forward.`);
   }
 
   return lines.join("\n");
@@ -433,7 +517,7 @@ function buildInvestment(
   const lines = [
     `## Investment`,
     ``,
-    `Below is the estimated investment for each service in this proposal.`,
+    `Here's the breakdown. No hidden fees, no surprises — what you see is what you pay.`,
     ``,
     `| Service | Estimated Investment | Timeline |`,
     `| --- | --- | --- |`,
@@ -535,15 +619,15 @@ function buildNextSteps(company: string): string {
   return [
     `## Next Steps`,
     ``,
-    `Ready to move forward? Here's what happens next:`,
+    `Here's exactly what happens from here:`,
     ``,
-    `1. **Review this proposal** — Take your time to review the scope, timeline, and investment.`,
-    `2. **Accept the proposal** — Reply to confirm you'd like to proceed.`,
-    `3. **Kickoff call** — We'll schedule a 30-minute call to align on priorities and timeline.`,
-    `4. **Project planning** — We finalize the detailed project plan, milestones, and deliverables.`,
-    `5. **Work begins** — Development starts according to the agreed timeline.`,
+    `1. **Review this proposal** — Take your time. If anything doesn't make sense or doesn't match what you're looking for, let us know.`,
+    `2. **Let's talk** — We'll hop on a call to answer questions, refine the scope if needed, and make sure we're aligned.`,
+    `3. **Accept and kick off** — Once you're confident, we lock in the scope and get started.`,
+    `4. **You'll see progress early** — We don't disappear for weeks. You'll see working progress and have a say at every milestone.`,
+    `5. **Launch and support** — We deliver, walk you through everything, and stick around for 30 days after launch to make sure it's solid.`,
     ``,
-    `We're excited about the opportunity to work with **${company}** and build something that makes a real impact on your business.`,
+    `We're ready when you are. Looking forward to building something great for **${company}**.`,
   ].join("\n");
 }
 
@@ -557,9 +641,19 @@ function buildTerms(): string {
     `- **Timeline:** Timelines are estimates and may adjust based on feedback cycles and content delivery.`,
     `- **Ownership:** All source code, designs, and deliverables are transferred to the client upon final payment.`,
     ``,
+    `## Confidentiality`,
+    ``,
+    `This proposal and all information contained herein is confidential and proprietary to BuiltByBas. It is provided solely for the intended recipient's evaluation of the proposed engagement. You agree not to share, distribute, reproduce, or disclose this proposal or any of its contents to any third party without prior written consent from BuiltByBas.`,
+    ``,
+    `All business information, pricing, methodologies, and technical approaches described in this proposal are trade secrets of BuiltByBas and are protected as such.`,
+    ``,
+    `## Privacy Policy`,
+    ``,
+    `BuiltByBas is committed to protecting your privacy in accordance with applicable data protection laws, including the General Data Protection Regulation (GDPR), the California Consumer Privacy Act (CCPA), and equivalent international privacy frameworks. The personal and business information you provided through our intake process is used exclusively for preparing this proposal and delivering the services described. We will never sell, share, or disclose your information to third parties without your explicit consent. All data is stored securely with encryption at rest and in transit. You have the right to access, correct, or request deletion of your personal data at any time by contacting us directly at privacy@builtbybas.com.`,
+    ``,
     `---`,
     ``,
-    `*Reviewed and approved by Bas Rosario*`,
+    `*Reviewed and approved by Bas Rosario, BuiltByBas*`,
   ].join("\n");
 }
 
@@ -650,6 +744,26 @@ function getAnswerText(
   const val = answers[key];
   if (typeof val === "string" && val.trim().length > 0) return val.trim();
   if (Array.isArray(val) && val.length > 0) return val.join(", ");
+  return null;
+}
+
+/** Extract the first successVision answer across all service modules */
+function extractFirstVision(formData: IntakeFormData): string | null {
+  for (const answers of Object.values(formData.serviceAnswers)) {
+    const vision = getAnswerText(answers, "successVision");
+    if (vision) return vision;
+  }
+  return null;
+}
+
+/** Extract the first matching answer across all service modules */
+function extractFirstAnswer(formData: IntakeFormData, keys: string[]): string | null {
+  for (const answers of Object.values(formData.serviceAnswers)) {
+    for (const key of keys) {
+      const val = getAnswerText(answers, key);
+      if (val) return val;
+    }
+  }
   return null;
 }
 

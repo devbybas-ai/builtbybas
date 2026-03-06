@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { getDashboardData } from "@/lib/dashboard-analytics";
+import { getPriorityBadgeColors } from "@/lib/prioritization";
 import { GlassCard } from "@/components/shared/GlassCard";
 import { StageBadge } from "@/components/admin/StageBadge";
 import { SendIntakeLinkButton } from "@/components/admin/SendIntakeLinkButton";
@@ -271,10 +272,15 @@ export default async function AdminDashboardPage() {
         </GlassCard>
       </div>
 
-      {/* ---- Recent Submissions ---- */}
+      {/* ---- Top Priority Submissions ---- */}
       <div className="mt-6">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold">Recent Submissions</h2>
+          <div>
+            <h2 className="text-lg font-semibold">Top Priority</h2>
+            <p className="text-xs text-muted-foreground">
+              Ranked by readiness, scope clarity, engagement, timeline &amp; risk — never by industry, size, or budget amount
+            </p>
+          </div>
           <Link
             href="/admin/intake"
             className="text-sm text-primary hover:underline"
@@ -291,6 +297,14 @@ export default async function AdminDashboardPage() {
             >
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
+                  <span
+                    className={cn(
+                      "inline-flex shrink-0 items-center rounded-full px-2 py-0.5 text-[10px] font-bold tabular-nums",
+                      getPriorityBadgeColors(s.priority.label),
+                    )}
+                  >
+                    {s.priority.score}
+                  </span>
                   <p className="truncate text-sm font-medium">{s.name}</p>
                   <span
                     className={cn(

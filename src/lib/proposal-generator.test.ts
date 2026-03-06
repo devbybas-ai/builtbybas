@@ -132,8 +132,8 @@ describe("proposal-generator", () => {
     it("includes all major sections in content", () => {
       const result = generateProposal(mockAnalysis, mockServices);
       expect(result.content).toContain("## Executive Summary");
-      expect(result.content).toContain("## Understanding Your Needs");
-      expect(result.content).toContain("## Scope of Work");
+      expect(result.content).toContain("## What We Understand");
+      expect(result.content).toContain("## What We're Building");
       expect(result.content).toContain("## Timeline");
       expect(result.content).toContain("## Investment");
       expect(result.content).toContain("## What's Included");
@@ -175,19 +175,18 @@ describe("proposal-generator", () => {
       expect(result.content).toContain("Reviewed and approved by Bas Rosario");
     });
 
-    it("includes client profile data", () => {
+    it("includes client profile data in at-a-glance format", () => {
       const result = generateProposal(mockAnalysis, mockServices);
       expect(result.content).toContain("Professional Services");
       expect(result.content).toContain("6-20 people");
-      expect(result.content).toContain("1-3 months");
+      expect(result.content).toContain("At a glance");
     });
 
     it("personalizes scope with client answers", () => {
       const result = generateProposal(mockAnalysis, mockServices);
-      expect(result.content).toContain("**Your business:**");
+      expect(result.content).toContain("**What you told us isn't working:**");
       expect(result.content).toContain("professional consulting firm");
-      expect(result.content).toContain("**The challenge:**");
-      expect(result.content).toContain("**Your vision:**");
+      expect(result.content).toContain("**What success looks like to you:**");
     });
 
     it("investment matches selected services only", () => {

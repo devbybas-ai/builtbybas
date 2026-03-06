@@ -1,8 +1,67 @@
 # BuiltByBas — Handoff Document
 
-> **Last Updated:** 2026-03-06 (Session 29)
-> **Status:** LIVE AT builtbybas.com — Admin dashboard redesigned with varied chart types, pipeline shows intake submissions as leads, notification badges on sidebar, 21+ test intake submissions across all 9 services with varied budgets/complexity. Going live polish phase.
-> **Next Session:** Fix intake list filter UX (filters AND together causing empty results — need counts on filter buttons or smarter reset), finish remaining intake test submissions, commit + deploy. Then: project prioritization suggestions on dashboard, continued polish for launch.
+> **Last Updated:** 2026-03-06 (Session 31)
+> **Status:** LIVE AT builtbybas.com — Bias-free project prioritization, content-aware proposals, RAI Policy v2 (UK GDPR/EU AI Act compliant), confidentiality + privacy in every proposal. 202 tests pass. Commit pending.
+> **Next Session:** Commit + deploy to VPS, finish SSL for analytics.builtbybas.com, address intake form quality, continued polish.
+
+## Session 31 Changes (2026-03-06)
+
+**Project Prioritization — Bias-Free by Design:**
+- New `src/lib/prioritization.ts` — 6 weighted factors: Project Readiness (25%), Budget Alignment (20%), Scope Clarity (20%), Engagement Level (15%), Timeline Feasibility (10%), Risk Assessment (10%)
+- Explicitly excludes: client name, email domain, industry, company size, budget amount, demographics
+- 21 new tests including bias prevention tests (same score for different industries, company sizes, names, email domains)
+- Admin dashboard "Top Priority" section — submissions ranked by priority score with color-coded badges
+- Intake list view — default sort changed to priority, priority badges with tooltip factor breakdown
+
+**Content-Aware Proposals:**
+- Executive Summary leads with client's vision quote via `extractFirstVision()`
+- "What We Understand" section pulls actual intake answers (challenge, vision, business context)
+- "At a glance" format for client profile (industry, team size, timeline)
+- `buildWhyThisService()` generates compelling service justifications from client's own words
+- Per-service scope shows "What you told us isn't working" and "What success looks like to you"
+- Timeline and Investment sections rewritten in Bas's conversational voice
+
+**Confidentiality + Privacy in Every Proposal:**
+- Terms section includes Confidentiality statement (trade secrets, no sharing without consent)
+- Privacy Policy footer (GDPR, CCPA, international frameworks, `privacy@builtbybas.com`)
+
+**RAI Policy v2 — Global Compliance:**
+- Complete rewrite of `RAI-POLICY.md` (~330 lines)
+- Covers: UK GDPR, EU GDPR, EU AI Act, UK ICO guidance, CCPA/CPRA, OECD AI Principles, UNESCO AI Ethics, Equality Act 2010, UK Children's Code, COPPA
+- 11 sections: Scope, AI Use Cases, Human Review Gates, Data Protection, Transparency, Fairness/Bias Prevention, Security, Incident Response, Accountability, Children's Data, Contact
+- AI risk classification: all use cases "limited risk" under EU AI Act
+- Meaningful human oversight requirements per UK ICO
+- Data subject rights table with 30-day response commitment
+- Incident response protocol with ICO notification within 72 hours
+
+**Test Results:** 202/202 passing (21 new prioritization tests)
+
+## Session 30 Changes (2026-03-06)
+
+**Proposal Generator — Scope-Aware Pricing:**
+- Replaced flat midpoint pricing with `computeScopedPriceCents()` — positions price within (or above) service range based on:
+  - Complexity score (higher complexity → higher in range)
+  - Scope premium keywords per service (e.g., "3D configurator", "augmented reality", "ERP integration" for e-commerce)
+  - Client budget signal (if budget exceeds service range, price adjusts upward)
+  - Multi-service integration overhead (+5% per additional service)
+  - Cap at 1.5x top of range to prevent runaway pricing
+- Added `SCOPE_PREMIUM_KEYWORDS` covering all 9 services with domain-specific high-cost feature lists
+- Nordic Nest E-Commerce example: was $16.5K (dead midpoint), now ~$29-33K (scope-aware for 3D configurator + AR + ERP)
+- 7 new tests for `computeScopedPriceCents` — total tests: 181
+
+**Intake List Filter UX:**
+- Added cross-filter counting — each filter group shows how many results each option would produce given other active filters
+- Filter buttons display counts in parentheses, disabled when count is 0
+- "Clear all filters" button appears on empty filtered results
+- Prevents confusing "0 of 19 submissions" scenario
+
+**Admin Dashboard — Complexity Distribution Chart:**
+- Replaced ring gauge visualization with stacked horizontal bar + 4-column legend grid
+- Better visual alignment and readability
+
+**DNS:**
+- analytics.builtbybas.com A record added to Hostinger DNS (→ 72.62.200.30), propagating
+- Once resolved: `sudo certbot --nginx -d analytics.builtbybas.com` then `sudo ufw delete allow 3003`
 
 ## Session 29 Changes (2026-03-06)
 
