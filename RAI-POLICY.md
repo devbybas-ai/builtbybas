@@ -6,7 +6,7 @@
 > **Owner:** Bas Rosario, BuiltByBas
 > **Review Cycle:** Quarterly or upon any change in AI usage
 >
-> Every AI feature has a human review gate. AI assists — it does not decide.
+> Every AI feature has a human review gate. AI assists. It does not decide.
 > Source of truth: `.claude/SITE-HEALTH-PLAN.md` (RAI Standards section)
 >
 > This policy is designed to comply with: UK GDPR, EU General Data Protection Regulation (GDPR), EU AI Act (2024), UK ICO AI and Data Protection guidance, California Consumer Privacy Act (CCPA/CPRA), and internationally recognized AI ethics frameworks including the OECD AI Principles and UNESCO Recommendation on AI Ethics.
@@ -141,7 +141,7 @@ BuiltByBas honors the following rights for all users, regardless of jurisdiction
 
 ### 5.1 Client-Facing Transparency
 
-- The `/about` page discloses AI as part of the #OneTeam approach
+- The `/about` page discloses AI as part of the Human + AI approach
 - Every proposal includes: "Reviewed and approved by Bas Rosario, BuiltByBas"
 - Client portal does not expose raw AI output — only human-approved content
 - If a client asks "did AI help with this?" the answer is always honest

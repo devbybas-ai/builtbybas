@@ -47,7 +47,7 @@ export const projects: PortfolioProject[] = [
     subtitle: "Dual-salon platform with real-time stylist management",
     category: "websites",
     description:
-      "We designed and built a dual-location salon platform for The Colour Parlor, serving both Wildomar and Menifee, California. The owner runs two salon locations and needed one unified site — not two separate hosting plans. We built a split-site landing page that serves both locations under one roof, with a custom admin backend that lets the owner add or remove stylists, update services and pricing, and swap stylists between salons in real time. No more calling a freelancer every time something changes.",
+      "We designed and built a dual-location salon platform for The Colour Parlor, serving both Wildomar and Menifee, California. The owner runs two salon locations and needed one unified site - not two separate hosting plans. We built a split-site landing page that serves both locations under one roof, with a custom admin backend that lets the owner add or remove stylists, update services and pricing, and swap stylists between salons in real time. No more calling a freelancer every time something changes.",
     capabilities: [
       "Dual-Location Split Site",
       "Real-Time Stylist Management",
@@ -96,11 +96,11 @@ export const projects: PortfolioProject[] = [
       "Mobile-first responsive design for on-the-go booking",
     ],
     challenge:
-      "The Colour Parlor had a branded but outdated website and was at the mercy of freelancers who charged every time the owner needed to update pricing, change the service menu, or adjust the stylist lineup. With two salon locations in Wildomar and Menifee, California, the owner was facing two separate hosting plans and two sites to maintain. Stylists move between locations, and the old setup had no way to reflect that — a stylist could be working at one salon but only listed on the other's page.",
+      "The Colour Parlor had a branded but outdated website and was at the mercy of freelancers who charged every time the owner needed to update pricing, change the service menu, or adjust the stylist lineup. With two salon locations in Wildomar and Menifee, California, the owner was facing two separate hosting plans and two sites to maintain. Stylists move between locations, and the old setup had no way to reflect that - a stylist could be working at one salon but only listed on the other's page.",
     approach:
-      "Through collaborative conversations, we designed a split-site landing page that serves both the Wildomar and Menifee locations under one domain and one hosting plan — eliminating the double cost. The custom admin backend puts the owner in full control: add or remove stylists, update services and pricing, and swap stylists between the two California salons in real time. A stylist can appear on both salon pages simultaneously or be moved exclusively to one location with a single toggle. No more paying a freelancer $100 to change a phone number. The owner manages everything herself.",
+      "Through collaborative conversations, we designed a split-site landing page that serves both the Wildomar and Menifee locations under one domain and one hosting plan - eliminating the double cost. The custom admin backend puts the owner in full control: add or remove stylists, update services and pricing, and swap stylists between the two California salons in real time. A stylist can appear on both salon pages simultaneously or be moved exclusively to one location with a single toggle. No more paying a freelancer $100 to change a phone number. The owner manages everything herself.",
     techChoices: [
-      { tech: "Custom Design", reason: "A salon's brand is visual — the premium teal aesthetic and split-site layout for two locations couldn't be achieved with any template" },
+      { tech: "Custom Design", reason: "A salon's brand is visual - the premium teal aesthetic and split-site layout for two locations couldn't be achieved with any template" },
       { tech: "Admin Panel", reason: "The core problem was dependency on freelancers. A custom backend gives the owner full control over stylists, services, and pricing without touching code" },
       { tech: "SEO", reason: "Local search drives salon traffic. We optimized for both salon locations so Wildomar and Menifee each rank in their own service area" },
       { tech: "Responsive CSS", reason: "Most clients browse on their phone while deciding where to go. Mobile-first ensures the booking flow works on any device" },
@@ -171,9 +171,9 @@ export const projects: PortfolioProject[] = [
     challenge:
       "A youth-run 501(c)(3) conservation nonprofit needed a digital home that could recruit volunteers (many under 18, requiring parental consent), accept donations, and educate the public about Southern California marine life. The organization serves a bilingual community, so English-only wasn't an option. Previous attempts at a web presence were basic and didn't reflect the professionalism of the mission.",
     approach:
-      "We built a platform that takes the organization seriously despite its young founders. The bilingual system isn't an afterthought — it's native, with every page fully translated. The parental consent workflow solves a real legal requirement for minor volunteers. NOAA API integration gives visitors live environmental data, making the site a resource people return to. The ocean-inspired design — coastal photography, tidal color palette, smooth wave animations — reinforces the mission on every page.",
+      "We built a platform that takes the organization seriously despite its young founders. The bilingual system isn't an afterthought - it's native, with every page fully translated. The parental consent workflow solves a real legal requirement for minor volunteers. NOAA API integration gives visitors live environmental data, making the site a resource people return to. The ocean-inspired design - coastal photography, tidal color palette, smooth wave animations - reinforces the mission on every page.",
     techChoices: [
-      { tech: "Next.js", reason: "Server-side rendering for SEO ensures the nonprofit shows up in search. Static generation keeps hosting costs near zero — critical for a nonprofit budget" },
+      { tech: "Next.js", reason: "Server-side rendering for SEO ensures the nonprofit shows up in search. Static generation keeps hosting costs near zero - critical for a nonprofit budget" },
       { tech: "TypeScript", reason: "Strict typing prevents bugs in complex workflows like parental consent forms and donation processing where errors aren't acceptable" },
       { tech: "Tailwind CSS", reason: "Rapid iteration on the ocean-inspired design system while keeping the bundle small. Dark/light mode is built into the utility classes" },
       { tech: "Framer Motion", reason: "Smooth wave-like animations and theme transitions bring the ocean conservation mission to life without hurting performance" },
@@ -187,7 +187,7 @@ export const projects: PortfolioProject[] = [
     subtitle: "From Wix template to full business operating system",
     category: "platforms",
     description:
-      "Karli had a Wix template. Now she has a business operating system. We built her a personal brand site that leads with her story and philosophy, a 7-step new client intake form that qualifies every lead before they ever book, and a full admin CRM with kanban pipeline, AI-powered fit scoring, and a 10-stage client journey tracker. Before: a slow template, manual inquiries, zero pipeline visibility. After: a platform that runs the business — from the first impression on the homepage to the final follow-up logged in the CRM.",
+      "Karli had a Wix template. Now she has a business operating system. We built her a personal brand site that leads with her story and philosophy, a 7-step new client intake form that qualifies every lead before they ever book, and a full admin CRM with kanban pipeline, AI-powered fit scoring, and a 10-stage client journey tracker. Before: a slow template, manual inquiries, zero pipeline visibility. After: a platform that runs the business - from the first impression on the homepage to the final follow-up logged in the CRM.",
     capabilities: [
       "Personal Brand Platform",
       "7-Step Client Intake",
@@ -227,23 +227,23 @@ export const projects: PortfolioProject[] = [
     scope: [
       "Personal brand website built around Karli Rosario's story, philosophy, and creative journey",
       "7-step new client intake form: About You, Your Hair, Personality, History, Goals, Photos, Review",
-      "Inclusive intake design with optional pronouns field — no required demographics",
+      "Inclusive intake design with optional pronouns field - no required demographics",
       "Admin CRM dashboard with live metrics: total clients, revenue, testimonials, upcoming sessions",
       "Kanban pipeline: Inquiry → Consultation Scheduled → Consultation Complete → Active Client → Follow-Up",
       "10-stage client journey tracker per record with key dates for every milestone",
-      "AI-powered fit scoring per client: Service Fit, Readiness, Engagement — with Accept/Decline workflow",
+      "AI-powered fit scoring per client: Service Fit, Readiness, Engagement - with Accept/Decline workflow",
       "Multi-business admin supporting Hair Studio and Marketing Reset under a single login",
       "Prompt Library for AI-assisted client communication",
     ],
     challenge:
-      "What she had: a generic Wix template that looked like every other salon online, a clunky booking flow, and zero backend. Inquiries came in through a basic contact form and were managed in a notebook. There was no intake process, no pipeline, no way to see revenue or client status at a glance. The site buried her story — her journey from performer to stylist, her philosophy, her approach to client relationships. None of it showed up. She was paying monthly Wix fees for a site that actively undersold her.",
+      "What she had: a generic Wix template that looked like every other salon online, a clunky booking flow, and zero backend. Inquiries came in through a basic contact form and were managed in a notebook. There was no intake process, no pipeline, no way to see revenue or client status at a glance. The site buried her story - her journey from performer to stylist, her philosophy, her approach to client relationships. None of it showed up. She was paying monthly Wix fees for a site that actively undersold her.",
     approach:
-      "What she got: a complete business platform in two parts. On the front — a personal brand site that leads with her voice: 'I design hair that works with your life.' Her journey from performer to stylist, her philosophy, her client relationships — all front and center. A 7-step intake form qualifies every new client before they ever book, collecting hair history, personality, goals, and reference photos so Karli arrives at every consultation already prepared. On the back — a full CRM: real-time dashboard, kanban pipeline from inquiry to follow-up, AI-generated fit scores (Service Fit, Readiness, Engagement), and a 10-stage client journey tracker with key dates logged at every milestone. Multi-business support means the same system expands to Marketing Reset without a new build. She went from notebook to command center.",
+      "What she got: a complete business platform in two parts. On the front - a personal brand site that leads with her voice: 'I design hair that works with your life.' Her journey from performer to stylist, her philosophy, her client relationships - all front and center. A 7-step intake form qualifies every new client before they ever book, collecting hair history, personality, goals, and reference photos so Karli arrives at every consultation already prepared. On the back - a full CRM: real-time dashboard, kanban pipeline from inquiry to follow-up, AI-generated fit scores (Service Fit, Readiness, Engagement), and a 10-stage client journey tracker with key dates logged at every milestone. Multi-business support means the same system expands to Marketing Reset without a new build. She went from notebook to command center.",
     techChoices: [
-      { tech: "Next.js", reason: "SSR for the public site's SEO, server components for the secure admin backend — all under one domain with no separate deploy" },
+      { tech: "Next.js", reason: "SSR for the public site's SEO, server components for the secure admin backend - all under one domain with no separate deploy" },
       { tech: "TypeScript", reason: "A 7-step intake form with conditional logic across fields, AI scoring inputs, and multi-business data requires type safety at every layer" },
       { tech: "Tailwind CSS", reason: "The warm cream-and-sage palette is built with design tokens applied consistently across the public site and admin dashboard without duplicate stylesheets" },
-      { tech: "PostgreSQL", reason: "Client records, 7-step intake responses, pipeline stages, and 10-point journey timestamps are relational data — ACID transactions protect every record" },
+      { tech: "PostgreSQL", reason: "Client records, 7-step intake responses, pipeline stages, and 10-point journey timestamps are relational data - ACID transactions protect every record" },
       { tech: "Custom CRM", reason: "No off-the-shelf tool supports a 10-stage custom pipeline, AI fit scoring, and multi-business views specific to how Karli's operation actually runs" },
       { tech: "AI Integration", reason: "Fit scoring across Service Fit, Readiness, and Engagement gives Karli an objective read on every new client before committing a session slot" },
     ],
@@ -257,7 +257,7 @@ export const projects: PortfolioProject[] = [
     subtitle: "Marketing strategy redesign company built from the ground up",
     category: "platforms",
     description:
-      "A full-brand partnership building a marketing strategy company from scratch. Marketing Reset helps businesses rethink and redesign their marketing approach with data-driven strategies, competitive analysis, and clear execution plans. We are building the complete digital platform — brand identity, client onboarding, strategy delivery system, and results dashboards. Everything custom, everything aligned to conversion.",
+      "A full-brand partnership building a marketing strategy company from scratch. Marketing Reset helps businesses rethink and redesign their marketing approach with data-driven strategies, competitive analysis, and clear execution plans. We are building the complete digital platform - brand identity, client onboarding, strategy delivery system, and results dashboards. Everything custom, everything aligned to conversion.",
     capabilities: [
       "Brand Identity",
       "Strategy Platform",
@@ -278,7 +278,7 @@ export const projects: PortfolioProject[] = [
     subtitle: "Complete $500 web solutions for businesses getting started",
     category: "platforms",
     description:
-      "A partnership brand delivering complete web solutions at an accessible price point. Small Business Web Co provides businesses with a professional website, hosting, and launch package for $500 — no hidden fees, no upselling. We are building the platform that powers the entire operation: client intake, template customization engine, automated deployment pipeline, and ongoing hosting management. Making quality accessible.",
+      "A partnership brand delivering complete web solutions at an accessible price point. Small Business Web Co provides businesses with a professional website, hosting, and launch package for $500 - no hidden fees, no upselling. We are building the platform that powers the entire operation: client intake, template customization engine, automated deployment pipeline, and ongoing hosting management. Making quality accessible.",
     capabilities: [
       "Automated Deployment",
       "Template Engine",
@@ -357,15 +357,15 @@ export const projects: PortfolioProject[] = [
       "Quiz system for testing AI literacy knowledge",
     ],
     challenge:
-      "The AI education space is fragmented — scattered blog posts, paywalled courses, and jargon-heavy documentation that excludes beginners and neurodivergent learners. There was no single, free, comprehensive resource that treated AI literacy as a public good. The founder needed a platform that could house thousands of terms, dozens of interactive tools, and still be accessible to someone who learns differently.",
+      "The AI education space is fragmented - scattered blog posts, paywalled courses, and jargon-heavy documentation that excludes beginners and neurodivergent learners. There was no single, free, comprehensive resource that treated AI literacy as a public good. The founder needed a platform that could house thousands of terms, dozens of interactive tools, and still be accessible to someone who learns differently.",
     approach:
-      "We built a platform-scale reference tool, not a blog. The search system handles 5,000+ terms with instant results. Interactive tools like the Prompt Analyzer and Persona Architect teach by doing, not just reading. The neurodivergence hub was designed with input from ADHD and autism communities — adjustable text, high contrast, read-aloud, and reduced cognitive load layouts. Accessibility isn't a checkbox here; it's the core design principle.",
+      "We built a platform-scale reference tool, not a blog. The search system handles 5,000+ terms with instant results. Interactive tools like the Prompt Analyzer and Persona Architect teach by doing, not just reading. The neurodivergence hub was designed with input from ADHD and autism communities - adjustable text, high contrast, read-aloud, and reduced cognitive load layouts. Accessibility isn't a checkbox here; it's the core design principle.",
     techChoices: [
       { tech: "Next.js", reason: "Static generation for 5,000+ term pages means instant load times and zero server cost per page view. Dynamic routes handle the interactive tools" },
       { tech: "TypeScript", reason: "With 5,000+ content entries and multiple tool interfaces, type safety prevents data shape mismatches that would break the search or tool outputs" },
       { tech: "Tailwind CSS", reason: "Utility-first approach made it possible to build adjustable text sizing and high-contrast modes without maintaining separate stylesheets" },
       { tech: "Search Engine", reason: "Custom fuzzy search across 5,000+ terms with weighted relevance scoring. No external search service dependency keeps the platform free" },
-      { tech: "Accessibility Tools", reason: "Built-in text scaling, contrast modes, and read-aloud aren't plugins — they're first-class features because the target audience needs them" },
+      { tech: "Accessibility Tools", reason: "Built-in text scaling, contrast modes, and read-aloud aren't plugins - they're first-class features because the target audience needs them" },
     ],
   },
   {
@@ -375,7 +375,7 @@ export const projects: PortfolioProject[] = [
     subtitle: "The agency platform you are looking at right now",
     category: "platforms",
     description:
-      "This very site — a full-stack agency platform with glassmorphism design system, particle-driven hero animations, multi-step intake form with algorithmic analysis engine, admin dashboard with scoring visualizations, and a live portfolio system. Built on Next.js with TypeScript strict mode, custom authentication, and a complete design token system. Every component is accessible, every animation respects reduced motion preferences.",
+      "This very site - a full-stack agency platform with glassmorphism design system, particle-driven hero animations, multi-step intake form with algorithmic analysis engine, admin dashboard with scoring visualizations, and a live portfolio system. Built on Next.js with TypeScript strict mode, custom authentication, and a complete design token system. Every component is accessible, every animation respects reduced motion preferences.",
     capabilities: [
       "Design System",
       "Animation Engine",
@@ -426,14 +426,14 @@ export const projects: PortfolioProject[] = [
       "Custom authentication with RBAC (owner, team, client roles)",
     ],
     challenge:
-      "Most agencies either look generic (template site, stock photos, no personality) or premium but hollow (flashy but no real backend). BuiltByBas needed to be both — a site that makes visitors think 'this guy is elite' AND a full operational platform that runs the actual business. Every client touchpoint from first visit to final invoice had to flow through one custom system. No Salesforce, no QuickBooks, no stitching together 5 SaaS tools.",
+      "Most agencies either look generic (template site, stock photos, no personality) or premium but hollow (flashy but no real backend). BuiltByBas needed to be both - a site that makes visitors think 'this guy is elite' AND a full operational platform that runs the actual business. Every client touchpoint from first visit to final invoice had to flow through one custom system. No Salesforce, no QuickBooks, no stitching together 5 SaaS tools.",
     approach:
-      "We built everything in one Next.js monorepo — public site, admin CRM, and client portal under one roof. The glassmorphism design system with 2026 animation techniques IS the portfolio piece; the site sells itself. The algorithmic intake engine scores every lead automatically so Bas can prioritize intelligently. The proposal generator creates structured proposals from intake data without AI API calls — instant, deterministic, and free. The invoice system closes the loop from lead to revenue, all in one platform.",
+      "We built everything in one Next.js monorepo - public site, admin CRM, and client portal under one roof. The glassmorphism design system with 2026 animation techniques IS the portfolio piece; the site sells itself. The algorithmic intake engine scores every lead automatically so Bas can prioritize intelligently. The proposal generator creates structured proposals from intake data without AI API calls - instant, deterministic, and free. The invoice system closes the loop from lead to revenue, all in one platform.",
     techChoices: [
-      { tech: "Next.js", reason: "One framework for three applications — public site (SSR/SSG for SEO), admin dashboard (server components for security), and client portal (authenticated routes). No separate frontend/backend deploy" },
+      { tech: "Next.js", reason: "One framework for three applications - public site (SSR/SSG for SEO), admin dashboard (server components for security), and client portal (authenticated routes). No separate frontend/backend deploy" },
       { tech: "TypeScript", reason: "Strict mode with zero 'any' types. When you're building auth, invoicing, and proposal systems, type safety catches bugs that would cost real money" },
-      { tech: "Tailwind CSS 4", reason: "Design tokens for the glassmorphism system — bg-white/5, backdrop-blur-xl, border-white/10 are reused everywhere. v4's native CSS cascade layers keep specificity clean" },
-      { tech: "Framer Motion", reason: "Spring physics, scroll-driven animations, page transitions, gesture support. The animation layer IS the competitive advantage — it demonstrates what BuiltByBas can build" },
+      { tech: "Tailwind CSS 4", reason: "Design tokens for the glassmorphism system - bg-white/5, backdrop-blur-xl, border-white/10 are reused everywhere. v4's native CSS cascade layers keep specificity clean" },
+      { tech: "Framer Motion", reason: "Spring physics, scroll-driven animations, page transitions, gesture support. The animation layer IS the competitive advantage - it demonstrates what BuiltByBas can build" },
       { tech: "PostgreSQL", reason: "Multi-user CRM with ACID transactions, JSONB for flexible intake data, and indexed queries. Production-grade from day one, not a toy database" },
       { tech: "Zod", reason: "Runtime validation on every API endpoint. Every form submission, every PATCH request, every query parameter is validated before it touches the database" },
     ],
@@ -447,7 +447,7 @@ export const projects: PortfolioProject[] = [
     subtitle: "Full client relationship management system",
     category: "systems",
     description:
-      "A complete CRM system built from the ground up for real business operations. Features pipeline management with visual deal tracking, client contact database, activity logging, task management, and reporting dashboards. Designed for speed and simplicity — no bloat, no unnecessary features, just the tools a business actually needs to manage client relationships and close deals.",
+      "A complete CRM system built from the ground up for real business operations. Features pipeline management with visual deal tracking, client contact database, activity logging, task management, and reporting dashboards. Designed for speed and simplicity - no bloat, no unnecessary features, just the tools a business actually needs to manage client relationships and close deals.",
     capabilities: [
       "Pipeline Management",
       "Contact Database",
@@ -475,19 +475,19 @@ export const projects: PortfolioProject[] = [
       "RESTful API for all CRUD operations",
     ],
     challenge:
-      "Off-the-shelf CRMs like Salesforce and HubSpot are bloated, expensive, and force businesses into workflows that don't match how they actually operate. The client needed a CRM that does exactly what they need — pipeline tracking, contact management, activity logging — without paying $50/user/month for features they'll never use.",
+      "Off-the-shelf CRMs like Salesforce and HubSpot are bloated, expensive, and force businesses into workflows that don't match how they actually operate. The client needed a CRM that does exactly what they need - pipeline tracking, contact management, activity logging - without paying $50/user/month for features they'll never use.",
     approach:
       "We built a lean CRM focused on speed and simplicity. The pipeline view gives instant visibility into every deal stage. Activity logging creates an automatic paper trail without manual data entry. The reporting dashboard shows conversion rates and revenue forecasts from real data. Every feature exists because it solves a daily workflow problem, not because a product manager added it to a feature comparison chart.",
     techChoices: [
       { tech: "React", reason: "Component-based architecture for the pipeline board, contact cards, and activity feeds. Real-time UI updates when deals move through stages" },
       { tech: "TypeScript", reason: "Type safety across the full stack ensures contact records, deal amounts, and activity logs maintain data integrity" },
       { tech: "Node.js", reason: "Same language front-to-back. Fast development cycles when the backend team and frontend team are the same person" },
-      { tech: "Database", reason: "Relational database for structured CRM data — contacts, deals, activities all linked with foreign keys and indexed for fast queries" },
+      { tech: "Database", reason: "Relational database for structured CRM data - contacts, deals, activities all linked with foreign keys and indexed for fast queries" },
       { tech: "REST API", reason: "Clean CRUD endpoints that could power a mobile app or third-party integration if the business grows beyond the web interface" },
     ],
   },
 
-  // === BBB DEMO SYSTEMS — 16 Interactive Business Tools ===
+  // === BBB DEMO SYSTEMS - 16 Interactive Business Tools ===
 
   // --- Office / Internal ---
   {
@@ -521,8 +521,8 @@ export const projects: PortfolioProject[] = [
       "Today's schedule preview with color-coded events",
       "Notices sidebar for time-sensitive alerts",
     ],
-    challenge: "Companies of 5–100 people don't need a $50,000 intranet — they need the core features that save time every day: one place to find announcements, reach a coworker, or access a document without asking in Slack.",
-    approach: "We built a focused intranet with the features that actually get used — not a bloated portal nobody opens. Three tabs cover 80% of daily needs. The quick links handle the other 20%. Fully deployable as a standalone app for any team.",
+    challenge: "Companies of 5–100 people don't need a $50,000 intranet - they need the core features that save time every day: one place to find announcements, reach a coworker, or access a document without asking in Slack.",
+    approach: "We built a focused intranet with the features that actually get used - not a bloated portal nobody opens. Three tabs cover 80% of daily needs. The quick links handle the other 20%. Fully deployable as a standalone app for any team.",
   },
   {
     id: "bbb-filing",
@@ -630,7 +630,7 @@ export const projects: PortfolioProject[] = [
     category: "concept",
     subcategory: "operations",
     description:
-      "A complete asset tracking system that knows what you own, who has it, and whether it's working. Features a dual grid/list view, asset status management (active, available, in maintenance), assignment tracking with department context, serial number logging, and value tracking. Switch views with an animated toggle — see your assets the way you think.",
+      "A complete asset tracking system that knows what you own, who has it, and whether it's working. Features a dual grid/list view, asset status management (active, available, in maintenance), assignment tracking with department context, serial number logging, and value tracking. Switch views with an animated toggle - see your assets the way you think.",
     capabilities: [
       "Grid & List Views",
       "Status Management",
@@ -728,7 +728,7 @@ export const projects: PortfolioProject[] = [
     category: "concept",
     subcategory: "client",
     description:
-      "A client-facing project portal that gives clients real visibility into their projects without requiring constant status update calls. Features animated progress bars per project, milestone tracking with countdown warnings, budget vs. billed breakdown with visual indicators, phase status, and an expandable message thread. Clients can see exactly where their project stands — and feel confident it's moving forward.",
+      "A client-facing project portal that gives clients real visibility into their projects without requiring constant status update calls. Features animated progress bars per project, milestone tracking with countdown warnings, budget vs. billed breakdown with visual indicators, phase status, and an expandable message thread. Clients can see exactly where their project stands - and feel confident it's moving forward.",
     capabilities: [
       "Progress Tracking",
       "Milestone Countdown",
@@ -752,7 +752,7 @@ export const projects: PortfolioProject[] = [
     category: "concept",
     subcategory: "client",
     description:
-      "A full appointment scheduling system for service businesses. Features a 7-day week calendar strip with animated day selection, service catalog with pricing and duration, real-time availability slots, confirmation management, and a one-page booking form. Clients book their own appointments — no back-and-forth emails, no scheduling calls, no double-booking.",
+      "A full appointment scheduling system for service businesses. Features a 7-day week calendar strip with animated day selection, service catalog with pricing and duration, real-time availability slots, confirmation management, and a one-page booking form. Clients book their own appointments - no back-and-forth emails, no scheduling calls, no double-booking.",
     capabilities: [
       "Week Calendar View",
       "Service Catalog",
@@ -800,7 +800,7 @@ export const projects: PortfolioProject[] = [
     category: "concept",
     subcategory: "client",
     description:
-      "A customer-facing support ticket system that brings accountability to client communications. Features SLA tracking with time-based urgency indicators, dual filter bars (status + priority), assignee tracking, category-based routing, and a ticket creation modal with visual priority selection. Clients submit once and get transparent status — no chasing, no wondering.",
+      "A customer-facing support ticket system that brings accountability to client communications. Features SLA tracking with time-based urgency indicators, dual filter bars (status + priority), assignee tracking, category-based routing, and a ticket creation modal with visual priority selection. Clients submit once and get transparent status - no chasing, no wondering.",
     capabilities: [
       "SLA Tracking",
       "Priority Management",
@@ -826,7 +826,7 @@ export const projects: PortfolioProject[] = [
     category: "concept",
     subcategory: "specialty",
     description:
-      "A vendor management system that centralizes all supplier relationships. Features rated vendor profiles, preferred vendor designation with visual hierarchy, total spend tracking, category-based filtering, contact information, and an add vendor workflow. Preferred vendors get a cyan accent treatment — your team always knows who the go-to suppliers are.",
+      "A vendor management system that centralizes all supplier relationships. Features rated vendor profiles, preferred vendor designation with visual hierarchy, total spend tracking, category-based filtering, contact information, and an add vendor workflow. Preferred vendors get a cyan accent treatment - your team always knows who the go-to suppliers are.",
     capabilities: [
       "Vendor Profiles",
       "Star Ratings",
@@ -900,7 +900,7 @@ export const projects: PortfolioProject[] = [
     category: "concept",
     subcategory: "service",
     description:
-      "A live work order board for Ironside Motors, a 4-bay auto repair shop. Technicians see every vehicle in the pipeline — intake, diagnosis, in-progress, and ready. New work orders drop in with customer info, VIN, and service notes. Drag jobs between bays, mark stages complete, and track repair status in real time. Built for shops that still run on clipboards and whiteboards.",
+      "A live work order board for Ironside Motors, a 4-bay auto repair shop. Technicians see every vehicle in the pipeline - intake, diagnosis, in-progress, and ready. New work orders drop in with customer info, VIN, and service notes. Drag jobs between bays, mark stages complete, and track repair status in real time. Built for shops that still run on clipboards and whiteboards.",
     capabilities: [
       "Work Order Pipeline",
       "Bay Assignment",
@@ -946,7 +946,7 @@ export const projects: PortfolioProject[] = [
     category: "concept",
     subcategory: "service",
     description:
-      "A kitchen display system for Rosie's Corner Diner. Orders flow in from the floor — each ticket shows the table number, server, items with modifications, and a live cook timer. Kitchen staff bump tickets through stages (new → cooking → ready), and servers see pickup alerts. Built for restaurants that need order visibility without a $10K POS system.",
+      "A kitchen display system for Rosie's Corner Diner. Orders flow in from the floor - each ticket shows the table number, server, items with modifications, and a live cook timer. Kitchen staff bump tickets through stages (new → cooking → ready), and servers see pickup alerts. Built for restaurants that need order visibility without a $10K POS system.",
     capabilities: [
       "Kitchen Display",
       "Order Pipeline",
@@ -1184,7 +1184,7 @@ export const projects: PortfolioProject[] = [
     category: "concept",
     subcategory: "animation",
     description:
-      "A curated gallery of interactive animation specimens showcasing spring physics, scroll-linked effects, stagger reveals, morphing shapes, gesture interactions, and loading patterns. Each specimen is a hands-on playground — drag, scroll, hover, and trigger to feel the motion design in action.",
+      "A curated gallery of interactive animation specimens showcasing spring physics, scroll-linked effects, stagger reveals, morphing shapes, gesture interactions, and loading patterns. Each specimen is a hands-on playground - drag, scroll, hover, and trigger to feel the motion design in action.",
     capabilities: [
       "Spring Physics",
       "Scroll Effects",

@@ -2,13 +2,13 @@
  * Service-specific intake question modules.
  *
  * Each service has 8-12 deep, meaningful questions structured around:
- *   1. Your Business — who you are, who your customers are
- *   2. The Problem — what's not working, what you've tried
- *   3. The Vision — what success looks like, what changes
- *   4. Project Specifics — service-specific technical needs
+ *   1. Your Business - who you are, who your customers are
+ *   2. The Problem - what's not working, what you've tried
+ *   3. The Vision - what success looks like, what changes
+ *   4. Project Specifics - service-specific technical needs
  *
  * These questions are designed to build a complete picture of the client,
- * their business, and how we can deliver real impact — not just specs.
+ * their business, and how we can deliver real impact - not just specs.
  */
 
 export type QuestionType =
@@ -45,12 +45,12 @@ const marketingWebsite: ServiceModule = {
   serviceId: "marketing-website",
   serviceLabel: "Marketing Website",
   icon: "Globe",
-  tagline: "Tell us about your business — we'll build the website it deserves.",
+  tagline: "Tell us about your business - we'll build the website it deserves.",
   questions: [
     // Your Business
     {
       id: "aboutBusiness",
-      label: "Tell us about your business — what do you do and who do you serve?",
+      label: "Tell us about your business - what do you do and who do you serve?",
       type: "textarea",
       placeholder:
         "What you offer, your story, the kind of people or businesses you help...",
@@ -120,11 +120,11 @@ const marketingWebsite: ServiceModule = {
       type: "radio",
       required: true,
       options: [
-        { value: "1-3", label: "1-3 (simple — Home, About, Contact)" },
-        { value: "4-7", label: "4-7 (standard — Home, About, Services, Portfolio, Contact)" },
+        { value: "1-3", label: "1-3 (simple - Home, About, Contact)" },
+        { value: "4-7", label: "4-7 (standard - Home, About, Services, Portfolio, Contact)" },
         { value: "8-15", label: "8-15 (comprehensive)" },
         { value: "15+", label: "15+ (large site)" },
-        { value: "unsure", label: "Not sure — help me decide" },
+        { value: "unsure", label: "Not sure - help me decide" },
       ],
     },
     {
@@ -133,15 +133,15 @@ const marketingWebsite: ServiceModule = {
       type: "radio",
       required: true,
       options: [
-        { value: "yes", label: "Yes — all ready to go" },
-        { value: "some", label: "Some — need help with the rest" },
-        { value: "no", label: "No — starting from scratch" },
+        { value: "yes", label: "Yes - all ready to go" },
+        { value: "some", label: "Some - need help with the rest" },
+        { value: "no", label: "No - starting from scratch" },
       ],
     },
     {
       id: "inspirationSites",
       label:
-        "Share any websites you admire — we want to understand your taste.",
+        "Share any websites you admire - we want to understand your taste.",
       type: "textarea",
       placeholder:
         "URLs and what you like about them (design, feel, functionality)...",
@@ -164,7 +164,7 @@ const websiteRedesign: ServiceModule = {
     {
       id: "aboutBusiness",
       label:
-        "Tell us about your business — what do you do, and how has it evolved since your current site was built?",
+        "Tell us about your business - what do you do, and how has it evolved since your current site was built?",
       type: "textarea",
       placeholder:
         "New services, new audience, rebranding, growth that outpaced your site...",
@@ -266,7 +266,7 @@ const landingPage: ServiceModule = {
   serviceId: "landing-page",
   serviceLabel: "Landing Page",
   icon: "Target",
-  tagline: "One page, one goal — let's make it convert.",
+  tagline: "One page, one goal - let's make it convert.",
   questions: [
     // Your Business
     {
@@ -354,7 +354,7 @@ const landingPage: ServiceModule = {
         { value: "reviews", label: "Online reviews (Google, Yelp)" },
         { value: "case-studies", label: "Case studies or results" },
         { value: "numbers", label: "Stats (clients served, years in business)" },
-        { value: "none", label: "Not yet — need help building credibility" },
+        { value: "none", label: "Not yet - need help building credibility" },
       ],
     },
     {
@@ -363,8 +363,8 @@ const landingPage: ServiceModule = {
       type: "radio",
       required: true,
       options: [
-        { value: "yes", label: "Yes — it feeds into an existing process" },
-        { value: "no", label: "No — this is standalone" },
+        { value: "yes", label: "Yes - it feeds into an existing process" },
+        { value: "no", label: "No - this is standalone" },
         { value: "building", label: "I'm building the funnel now" },
       ],
     },
@@ -385,7 +385,7 @@ const businessDashboard: ServiceModule = {
     {
       id: "aboutBusiness",
       label:
-        "Walk us through your business — what do you do and how does your team operate day to day?",
+        "Walk us through your business - what do you do and how does your team operate day to day?",
       type: "textarea",
       placeholder:
         "Your industry, services, team structure, how decisions get made...",
@@ -423,7 +423,7 @@ const businessDashboard: ServiceModule = {
     {
       id: "successVision",
       label:
-        "If you could open this dashboard every morning and see exactly what you need — what would that look like?",
+        "If you could open this dashboard every morning and see exactly what you need - what would that look like?",
       type: "textarea",
       placeholder:
         "The metrics, the layout, the feeling of being in control...",
@@ -463,8 +463,8 @@ const businessDashboard: ServiceModule = {
       type: "radio",
       required: true,
       options: [
-        { value: "yes", label: "Yes — role-based access needed" },
-        { value: "no", label: "No — everyone sees the same data" },
+        { value: "yes", label: "Yes - role-based access needed" },
+        { value: "no", label: "No - everyone sees the same data" },
         { value: "unsure", label: "Not sure yet" },
       ],
     },
@@ -474,7 +474,7 @@ const businessDashboard: ServiceModule = {
       type: "radio",
       required: true,
       options: [
-        { value: "critical", label: "Yes — mobile is critical" },
+        { value: "critical", label: "Yes - mobile is critical" },
         { value: "nice-to-have", label: "Nice to have but not essential" },
         { value: "desktop-only", label: "Desktop only is fine" },
       ],
@@ -508,7 +508,7 @@ const clientPortal: ServiceModule = {
     {
       id: "aboutBusiness",
       label:
-        "Tell us about your business — what do you do and how do you work with clients?",
+        "Tell us about your business - what do you do and how do you work with clients?",
       type: "textarea",
       placeholder:
         "Your services, how long client engagements last, what the relationship looks like...",
@@ -586,7 +586,7 @@ const clientPortal: ServiceModule = {
       type: "radio",
       required: true,
       options: [
-        { value: "yes", label: "Yes — online payment required" },
+        { value: "yes", label: "Yes - online payment required" },
         { value: "view-only", label: "View invoices but pay separately" },
         { value: "no", label: "No invoicing in the portal" },
       ],
@@ -627,7 +627,7 @@ const ecommerce: ServiceModule = {
     {
       id: "aboutBusiness",
       label:
-        "Tell us about your business — what do you sell and what's the story behind it?",
+        "Tell us about your business - what do you sell and what's the story behind it?",
       type: "textarea",
       placeholder:
         "Your products, your brand story, why customers choose you...",
@@ -721,7 +721,7 @@ const ecommerce: ServiceModule = {
       required: true,
       options: [
         { value: "yes-all", label: "Yes, all products photographed" },
-        { value: "yes-some", label: "Some — need help with the rest" },
+        { value: "yes-some", label: "Some - need help with the rest" },
         { value: "no", label: "No professional photos yet" },
       ],
     },
@@ -751,7 +751,7 @@ const crmSystem: ServiceModule = {
     {
       id: "aboutBusiness",
       label:
-        "Walk us through your business — what do you do and how do you find clients?",
+        "Walk us through your business - what do you do and how do you find clients?",
       type: "textarea",
       placeholder:
         "Your services, how leads come in, your sales process...",
@@ -780,7 +780,7 @@ const crmSystem: ServiceModule = {
     {
       id: "idealSalesProcess",
       label:
-        "Describe your ideal sales process — from first contact to signed deal.",
+        "Describe your ideal sales process - from first contact to signed deal.",
       type: "textarea",
       placeholder:
         "Lead comes in → qualify → send proposal → follow up → close → onboard...",
@@ -823,7 +823,7 @@ const crmSystem: ServiceModule = {
       type: "radio",
       required: true,
       options: [
-        { value: "yes", label: "Yes — essential" },
+        { value: "yes", label: "Yes - essential" },
         { value: "nice-to-have", label: "Nice to have" },
         { value: "no", label: "No" },
       ],
@@ -855,13 +855,13 @@ const fullPlatform: ServiceModule = {
   serviceId: "full-platform",
   serviceLabel: "Full Operations Platform",
   icon: "Layers",
-  tagline: "Tell us about your entire operation — we'll digitize it.",
+  tagline: "Tell us about your entire operation - we'll digitize it.",
   questions: [
     // Your Business
     {
       id: "aboutBusiness",
       label:
-        "Walk us through your entire business operation — from how work comes in to how it gets delivered.",
+        "Walk us through your entire business operation - from how work comes in to how it gets delivered.",
       type: "textarea",
       placeholder:
         "Your services, team structure, workflow, how you manage projects, billing, communication...",
@@ -933,9 +933,9 @@ const fullPlatform: ServiceModule = {
       type: "radio",
       required: true,
       options: [
-        { value: "yes-essential", label: "Yes — essential for our clients" },
+        { value: "yes-essential", label: "Yes - essential for our clients" },
         { value: "yes-nice", label: "Nice to have" },
-        { value: "internal-only", label: "No — internal tool only" },
+        { value: "internal-only", label: "No - internal tool only" },
       ],
     },
     {
@@ -944,7 +944,7 @@ const fullPlatform: ServiceModule = {
       type: "radio",
       required: true,
       options: [
-        { value: "yes-lots", label: "Yes — significant data to migrate" },
+        { value: "yes-lots", label: "Yes - significant data to migrate" },
         { value: "yes-some", label: "Some data to import" },
         { value: "fresh-start", label: "Starting fresh" },
       ],
@@ -983,7 +983,7 @@ const aiPoweredTools: ServiceModule = {
     {
       id: "aboutBusiness",
       label:
-        "Tell us about your business — what do you do and who do you serve?",
+        "Tell us about your business - what do you do and who do you serve?",
       type: "textarea",
       placeholder:
         "Your industry, services, team size, the work that fills your days...",
@@ -1035,9 +1035,9 @@ const aiPoweredTools: ServiceModule = {
       type: "radio",
       required: true,
       options: [
-        { value: "low-risk", label: "Low risk — minor inconvenience" },
-        { value: "medium-risk", label: "Medium risk — could impact decisions" },
-        { value: "high-risk", label: "High risk — financial, legal, or safety implications" },
+        { value: "low-risk", label: "Low risk - minor inconvenience" },
+        { value: "medium-risk", label: "Medium risk - could impact decisions" },
+        { value: "high-risk", label: "High risk - financial, legal, or safety implications" },
       ],
     },
     {
@@ -1046,9 +1046,9 @@ const aiPoweredTools: ServiceModule = {
       type: "radio",
       required: true,
       options: [
-        { value: "always", label: "Yes — always review before publishing" },
+        { value: "always", label: "Yes - always review before publishing" },
         { value: "sometimes", label: "For high-stakes outputs only" },
-        { value: "no", label: "No — fully automated is fine" },
+        { value: "no", label: "No - fully automated is fine" },
       ],
     },
     {

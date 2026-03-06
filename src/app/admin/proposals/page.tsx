@@ -11,7 +11,7 @@ import { getProposalStatusMeta } from "@/types/proposal";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Proposals — BuiltByBas Admin",
+  title: "Proposals - BuiltByBas Admin",
   robots: { index: false, follow: false },
 };
 

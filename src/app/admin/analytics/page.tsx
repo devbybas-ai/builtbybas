@@ -9,7 +9,7 @@ import { formatCents } from "@/types/invoice";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Analytics — BuiltByBas Admin",
+  title: "Analytics - BuiltByBas Admin",
   robots: { index: false, follow: false },
 };
 

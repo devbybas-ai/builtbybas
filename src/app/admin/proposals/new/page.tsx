@@ -8,7 +8,7 @@ import { ProposalForm } from "@/components/admin/ProposalForm";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "New Proposal — BuiltByBas Admin",
+  title: "New Proposal - BuiltByBas Admin",
   robots: { index: false, follow: false },
 };
 

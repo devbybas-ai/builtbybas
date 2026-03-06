@@ -8,7 +8,7 @@ import { ClientListView } from "@/components/admin/ClientListView";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Clients — BuiltByBas Admin",
+  title: "Clients - BuiltByBas Admin",
   robots: { index: false, follow: false },
 };
 

@@ -10,7 +10,7 @@ import { SendIntakeLinkButton } from "@/components/admin/SendIntakeLinkButton";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Dashboard — BuiltByBas Admin",
+  title: "Dashboard - BuiltByBas Admin",
   robots: { index: false, follow: false },
 };
 

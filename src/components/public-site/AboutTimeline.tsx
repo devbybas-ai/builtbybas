@@ -16,7 +16,7 @@ const milestones = [
     label: "The Realization",
     title: "Businesses Deserve Better",
     description:
-      "Running a business today is harder than ever. Between rising costs and marketing platforms that nickel-and-dime you, most owners are left struggling just to communicate with their own customers. I saw it everywhere and I refused to just sit back and watch. I knew I could build something better, something that actually puts business owners first.",
+      "Every business deserves real tools that work as hard as they do. I saw owners spending more time fighting their software than running their companies, and I knew I could build something better. Software that fits how you actually work, at a price that respects your budget. That conviction became the foundation of everything we do.",
   },
   {
     label: "The Evolution",

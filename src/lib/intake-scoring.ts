@@ -368,10 +368,10 @@ export function scoreScopeClarity(fd: IntakeFormData): ScoredDimension {
 
   if (fd.selectedServices.length >= 1 && fd.selectedServices.length <= 2) {
     score += 25;
-    signals.push("Focused project scope — 1-2 services (+25)");
+    signals.push("Focused project scope - 1-2 services (+25)");
   } else if (fd.selectedServices.length >= 3) {
     score += 15;
-    signals.push("Broad but defined scope — 3+ services (+15)");
+    signals.push("Broad but defined scope - 3+ services (+15)");
   }
 
   const answerText = extractServiceText(fd).toLowerCase();
@@ -409,7 +409,7 @@ export function scoreBudgetAlignment(fd: IntakeFormData): ScoredDimension {
     return {
       score: 40,
       label: getScoreLabel(40),
-      signals: ["Budget not yet defined — consultation recommended"],
+      signals: ["Budget not yet defined - consultation recommended"],
     };
   }
 
@@ -439,7 +439,7 @@ export function scoreBudgetAlignment(fd: IntakeFormData): ScoredDimension {
     signals.push(`Budget covers estimated minimum (${formatMoney(minViableCost)})`);
   } else if (budgetMax >= minViableCost * 0.5) {
     score = clamp(40 + Math.round((budgetMax / minViableCost) * 40), 40, 79);
-    signals.push("Budget partially covers scope — phased approach may work");
+    signals.push("Budget partially covers scope - phased approach may work");
   } else {
     score = clamp(Math.round((budgetMax / minViableCost) * 40), 0, 39);
     signals.push(`Budget significantly below scope minimum (${formatMoney(minViableCost)})`);
@@ -804,7 +804,7 @@ function buildStrategicPhasesPath(serviceIds: string[]): PathForward {
 
   return {
     name: "Strategic Phases",
-    description: "Phased delivery — each phase delivers usable value",
+    description: "Phased delivery - each phase delivers usable value",
     phases,
     estimatedTimeline: sumDurationWeeks(serviceIds),
     estimatedInvestment: sumPriceRanges(serviceIds),
@@ -845,7 +845,7 @@ function buildQuickWinPath(
 }
 
 // ---------------------------------------------------------------------------
-// RAI Screening — Responsible AI red flags
+// RAI Screening - Responsible AI red flags
 // ---------------------------------------------------------------------------
 
 /**
@@ -954,7 +954,7 @@ function screenForRaiConcerns(fd: IntakeFormData): AnalysisFlag[] {
         matched.add(group.category);
         flags.push({
           type: "rai-concern",
-          message: `RAI Red Flag: Potential ${group.category.toLowerCase()} detected in submission — requires manual review before proceeding`,
+          message: `RAI Red Flag: Potential ${group.category.toLowerCase()} detected in submission - requires manual review before proceeding`,
         });
         break;
       }
@@ -973,55 +973,55 @@ export function generateFlags(
   complexity: ComplexityScore,
   profile: ClientProfile,
 ): AnalysisFlag[] {
-  // RAI screening runs first — ethical concerns take priority
+  // RAI screening runs first - ethical concerns take priority
   const flags: AnalysisFlag[] = screenForRaiConcerns(fd);
 
   if (profile.budgetAlignment.score < 30) {
     flags.push({
       type: "warning",
-      message: "Budget may be below minimum for requested scope — discuss phasing options",
+      message: "Budget may be below minimum for requested scope - discuss phasing options",
     });
   }
 
   if (fd.timeline === "asap" && complexity.overall >= 6) {
     flags.push({
       type: "warning",
-      message: "ASAP timeline with complex scope — set realistic expectations early",
+      message: "ASAP timeline with complex scope - set realistic expectations early",
     });
   }
 
   if (fd.budgetRange === "unsure") {
     flags.push({
       type: "warning",
-      message: "Budget undefined — lead with consultation call to scope and price",
+      message: "Budget undefined - lead with consultation call to scope and price",
     });
   }
 
   if (profile.engagementLevel.score >= 70) {
     flags.push({
       type: "opportunity",
-      message: "High engagement score — likely a serious, motivated lead",
+      message: "High engagement score - likely a serious, motivated lead",
     });
   }
 
   if (fd.selectedServices.length >= 3) {
     flags.push({
       type: "opportunity",
-      message: "Multiple services selected — potential for long-term relationship",
+      message: "Multiple services selected - potential for long-term relationship",
     });
   }
 
   if (fd.website.trim().length > 0) {
     flags.push({
       type: "info",
-      message: "Has existing site — consider migration and redirect strategy",
+      message: "Has existing site - consider migration and redirect strategy",
     });
   }
 
   if (fd.hasBrandAssets === "no") {
     flags.push({
       type: "info",
-      message: "No brand assets — branding work needed before design phase",
+      message: "No brand assets - branding work needed before design phase",
     });
   }
 

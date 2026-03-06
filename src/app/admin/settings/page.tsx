@@ -4,7 +4,7 @@ import { getSession } from "@/lib/auth";
 import { SettingsForm } from "@/components/admin/SettingsForm";
 
 export const metadata: Metadata = {
-  title: "Settings — BuiltByBas Admin",
+  title: "Settings - BuiltByBas Admin",
   robots: { index: false, follow: false },
 };
 

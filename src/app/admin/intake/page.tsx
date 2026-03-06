@@ -3,7 +3,7 @@ import { listSubmissions } from "@/lib/intake-storage";
 import { IntakeListView } from "@/components/admin/IntakeListView";
 
 export const metadata: Metadata = {
-  title: "Intake Submissions — BuiltByBas Admin",
+  title: "Intake Submissions - BuiltByBas Admin",
   robots: { index: false, follow: false },
 };
 

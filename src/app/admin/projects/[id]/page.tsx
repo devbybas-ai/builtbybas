@@ -9,7 +9,7 @@ import { ProjectDetailView } from "@/components/admin/ProjectDetailView";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Project Detail — BuiltByBas Admin",
+  title: "Project Detail - BuiltByBas Admin",
   robots: { index: false, follow: false },
 };
 

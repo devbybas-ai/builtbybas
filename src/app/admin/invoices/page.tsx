@@ -11,7 +11,7 @@ import { getInvoiceStatusMeta, formatCents } from "@/types/invoice";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Invoices — BuiltByBas Admin",
+  title: "Invoices - BuiltByBas Admin",
   robots: { index: false, follow: false },
 };
 

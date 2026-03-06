@@ -8,7 +8,7 @@ import { ProjectForm } from "@/components/admin/ProjectForm";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "New Project — BuiltByBas Admin",
+  title: "New Project - BuiltByBas Admin",
   robots: { index: false, follow: false },
 };
 

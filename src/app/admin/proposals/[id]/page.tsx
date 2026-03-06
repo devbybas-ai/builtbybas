@@ -10,7 +10,7 @@ import type { ProposalService } from "@/types/proposal";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Proposal Detail — BuiltByBas Admin",
+  title: "Proposal Detail - BuiltByBas Admin",
   robots: { index: false, follow: false },
 };
 

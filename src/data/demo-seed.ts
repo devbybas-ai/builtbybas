@@ -1,36 +1,36 @@
 // ============================================================
-// BBB Demo Platform — Seed Data
+// BBB Demo Platform - Seed Data
 // Realistic data for all 16 business systems
 // ============================================================
 
 // ---- INTRANET ----
 export const announcements = [
-  { id: "1", title: "Q1 All-Hands Meeting — March 15th", body: "Join us for our quarterly all-hands. Agenda: product roadmap, team updates, and open Q&A. Lunch provided.", author: "Sarah Kim", role: "CEO", date: "2026-03-10", pinned: true, category: "Company", reactions: [{ emoji: "👍", count: 24 }, { emoji: "❤️", count: 8 }, { emoji: "👏", count: 12 }] },
+  { id: "1", title: "Q1 All-Hands Meeting - March 15th", body: "Join us for our quarterly all-hands. Agenda: product roadmap, team updates, and open Q&A. Lunch provided.", author: "Sarah Kim", role: "CEO", date: "2026-03-10", pinned: true, category: "Company", reactions: [{ emoji: "👍", count: 24 }, { emoji: "❤️", count: 8 }, { emoji: "👏", count: 12 }] },
   { id: "2", title: "New Benefits Portal Now Live", body: "Enroll in or update your health, dental, and vision benefits through the new HR portal. Open enrollment closes March 20th.", author: "Marcus Hill", role: "HR Director", date: "2026-03-08", pinned: true, category: "HR", reactions: [{ emoji: "👍", count: 15 }, { emoji: "❤️", count: 4 }, { emoji: "👏", count: 6 }] },
-  { id: "3", title: "Office Closure — March 17th (St. Patrick's Day)", body: "The office will be closed. Remote staff should update their availability in the calendar.", author: "Office Manager", role: "Operations", date: "2026-03-07", pinned: false, category: "Operations", reactions: [{ emoji: "👍", count: 9 }, { emoji: "❤️", count: 1 }, { emoji: "👏", count: 2 }] },
+  { id: "3", title: "Office Closure - March 17th (St. Patrick's Day)", body: "The office will be closed. Remote staff should update their availability in the calendar.", author: "Office Manager", role: "Operations", date: "2026-03-07", pinned: false, category: "Operations", reactions: [{ emoji: "👍", count: 9 }, { emoji: "❤️", count: 1 }, { emoji: "👏", count: 2 }] },
   { id: "4", title: "New Hire: Jordan Walsh joins the Engineering Team", body: "Please join us in welcoming Jordan Walsh as our new Senior Frontend Engineer. Jordan comes from Stripe and specializes in React.", author: "Sarah Kim", role: "CEO", date: "2026-03-05", pinned: false, category: "People", reactions: [{ emoji: "👍", count: 18 }, { emoji: "❤️", count: 11 }, { emoji: "👏", count: 14 }] },
-  { id: "5", title: "IT Security Reminder — Enable 2FA", body: "As part of our security audit, all accounts must have 2FA enabled by March 12th. Contact IT if you need help.", author: "Derek Lam", role: "IT Security", date: "2026-03-03", pinned: false, category: "IT", reactions: [{ emoji: "👍", count: 5 }, { emoji: "❤️", count: 0 }, { emoji: "👏", count: 1 }] },
-  { id: "6", title: "Parking Lot Maintenance — Lots C & D", body: "Lots C and D will be closed March 14-16 for resurfacing. Please use the overflow lot on Main Street.", author: "Facilities", role: "Facilities", date: "2026-03-01", pinned: false, category: "Facilities", reactions: [{ emoji: "👍", count: 3 }, { emoji: "❤️", count: 0 }, { emoji: "👏", count: 0 }] },
+  { id: "5", title: "IT Security Reminder - Enable 2FA", body: "As part of our security audit, all accounts must have 2FA enabled by March 12th. Contact IT if you need help.", author: "Derek Lam", role: "IT Security", date: "2026-03-03", pinned: false, category: "IT", reactions: [{ emoji: "👍", count: 5 }, { emoji: "❤️", count: 0 }, { emoji: "👏", count: 1 }] },
+  { id: "6", title: "Parking Lot Maintenance - Lots C & D", body: "Lots C and D will be closed March 14-16 for resurfacing. Please use the overflow lot on Main Street.", author: "Facilities", role: "Facilities", date: "2026-03-01", pinned: false, category: "Facilities", reactions: [{ emoji: "👍", count: 3 }, { emoji: "❤️", count: 0 }, { emoji: "👏", count: 0 }] },
 ];
 
 export const employees = [
-  { id: "1", name: "Sarah Kim", title: "Chief Executive Officer", dept: "Executive", email: "s.kim@meridian.com", phone: "555-0101", location: "HQ — Floor 4", status: "online", avatar: "SK" },
-  { id: "2", name: "Marcus Hill", title: "HR Director", dept: "Human Resources", email: "m.hill@meridian.com", phone: "555-0102", location: "HQ — Floor 3", status: "online", avatar: "MH" },
-  { id: "3", name: "Jordan Walsh", title: "Senior Frontend Engineer", dept: "Engineering", email: "j.walsh@meridian.com", phone: "555-0103", location: "Remote — Austin, TX", status: "online", avatar: "JW" },
-  { id: "4", name: "Derek Lam", title: "IT Security Lead", dept: "IT", email: "d.lam@meridian.com", phone: "555-0104", location: "HQ — Floor 2", status: "busy", avatar: "DL" },
-  { id: "5", name: "Priya Patel", title: "Product Manager", dept: "Product", email: "p.patel@meridian.com", phone: "555-0105", location: "HQ — Floor 3", status: "online", avatar: "PP" },
-  { id: "6", name: "Carlos Mendez", title: "Sales Director", dept: "Sales", email: "c.mendez@meridian.com", phone: "555-0106", location: "HQ — Floor 2", status: "away", avatar: "CM" },
-  { id: "7", name: "Aisha Johnson", title: "Marketing Manager", dept: "Marketing", email: "a.johnson@meridian.com", phone: "555-0107", location: "Remote — Chicago, IL", status: "online", avatar: "AJ" },
-  { id: "8", name: "Tom Fischer", title: "Operations Manager", dept: "Operations", email: "t.fischer@meridian.com", phone: "555-0108", location: "HQ — Floor 1", status: "on-leave", avatar: "TF" },
-  { id: "9", name: "Elena Vasquez", title: "UX Designer", dept: "Design", email: "e.vasquez@meridian.com", phone: "555-0109", location: "Remote — Miami, FL", status: "online", avatar: "EV" },
-  { id: "10", name: "Ryan Cho", title: "Backend Engineer", dept: "Engineering", email: "r.cho@meridian.com", phone: "555-0110", location: "HQ — Floor 2", status: "online", avatar: "RC" },
-  { id: "11", name: "Natalie Brooks", title: "Customer Success Manager", dept: "Sales", email: "n.brooks@meridian.com", phone: "555-0111", location: "Remote — Denver, CO", status: "away", avatar: "NB" },
-  { id: "12", name: "James Osei", title: "Finance Analyst", dept: "Finance", email: "j.osei@meridian.com", phone: "555-0112", location: "HQ — Floor 4", status: "offline", avatar: "JO" },
+  { id: "1", name: "Sarah Kim", title: "Chief Executive Officer", dept: "Executive", email: "s.kim@meridian.com", phone: "555-0101", location: "HQ - Floor 4", status: "online", avatar: "SK" },
+  { id: "2", name: "Marcus Hill", title: "HR Director", dept: "Human Resources", email: "m.hill@meridian.com", phone: "555-0102", location: "HQ - Floor 3", status: "online", avatar: "MH" },
+  { id: "3", name: "Jordan Walsh", title: "Senior Frontend Engineer", dept: "Engineering", email: "j.walsh@meridian.com", phone: "555-0103", location: "Remote - Austin, TX", status: "online", avatar: "JW" },
+  { id: "4", name: "Derek Lam", title: "IT Security Lead", dept: "IT", email: "d.lam@meridian.com", phone: "555-0104", location: "HQ - Floor 2", status: "busy", avatar: "DL" },
+  { id: "5", name: "Priya Patel", title: "Product Manager", dept: "Product", email: "p.patel@meridian.com", phone: "555-0105", location: "HQ - Floor 3", status: "online", avatar: "PP" },
+  { id: "6", name: "Carlos Mendez", title: "Sales Director", dept: "Sales", email: "c.mendez@meridian.com", phone: "555-0106", location: "HQ - Floor 2", status: "away", avatar: "CM" },
+  { id: "7", name: "Aisha Johnson", title: "Marketing Manager", dept: "Marketing", email: "a.johnson@meridian.com", phone: "555-0107", location: "Remote - Chicago, IL", status: "online", avatar: "AJ" },
+  { id: "8", name: "Tom Fischer", title: "Operations Manager", dept: "Operations", email: "t.fischer@meridian.com", phone: "555-0108", location: "HQ - Floor 1", status: "on-leave", avatar: "TF" },
+  { id: "9", name: "Elena Vasquez", title: "UX Designer", dept: "Design", email: "e.vasquez@meridian.com", phone: "555-0109", location: "Remote - Miami, FL", status: "online", avatar: "EV" },
+  { id: "10", name: "Ryan Cho", title: "Backend Engineer", dept: "Engineering", email: "r.cho@meridian.com", phone: "555-0110", location: "HQ - Floor 2", status: "online", avatar: "RC" },
+  { id: "11", name: "Natalie Brooks", title: "Customer Success Manager", dept: "Sales", email: "n.brooks@meridian.com", phone: "555-0111", location: "Remote - Denver, CO", status: "away", avatar: "NB" },
+  { id: "12", name: "James Osei", title: "Finance Analyst", dept: "Finance", email: "j.osei@meridian.com", phone: "555-0112", location: "HQ - Floor 4", status: "offline", avatar: "JO" },
 ];
 
 export const companyDocs = [
   { id: "1", name: "Employee Handbook 2026", category: "HR", type: "PDF", size: "2.4 MB", updated: "2026-01-15", author: "Marcus Hill" },
-  { id: "2", name: "Benefits Guide — Health & Dental", category: "HR", type: "PDF", size: "1.1 MB", updated: "2026-02-01", author: "Marcus Hill" },
+  { id: "2", name: "Benefits Guide - Health & Dental", category: "HR", type: "PDF", size: "1.1 MB", updated: "2026-02-01", author: "Marcus Hill" },
   { id: "3", name: "IT Security Policy v3.2", category: "IT", type: "PDF", size: "890 KB", updated: "2026-03-01", author: "Derek Lam" },
   { id: "4", name: "Q1 2026 Company Goals", category: "Strategy", type: "DOC", size: "340 KB", updated: "2026-01-05", author: "Sarah Kim" },
   { id: "5", name: "Expense Report Template", category: "Finance", type: "XLSX", size: "128 KB", updated: "2025-12-01", author: "James Osei" },
@@ -57,7 +57,7 @@ export const folders = [
 
 export const files = [
   { id: "1", name: "Q1 Financial Report.xlsx", folder: "Finance", type: "XLSX", size: "1.2 MB", uploaded: "2026-03-10", uploadedBy: "James Osei", tags: ["quarterly", "finance", "2026"] },
-  { id: "2", name: "NDA Template — Standard.docx", folder: "Legal", type: "DOC", size: "45 KB", uploaded: "2026-03-08", uploadedBy: "Sarah Kim", tags: ["legal", "template", "nda"] },
+  { id: "2", name: "NDA Template - Standard.docx", folder: "Legal", type: "DOC", size: "45 KB", uploaded: "2026-03-08", uploadedBy: "Sarah Kim", tags: ["legal", "template", "nda"] },
   { id: "3", name: "Brand Guidelines v2.pdf", folder: "Marketing", type: "PDF", size: "5.2 MB", uploaded: "2026-02-14", uploadedBy: "Aisha Johnson", tags: ["brand", "design", "guidelines"] },
   { id: "4", name: "API Documentation v4.pdf", folder: "Engineering", type: "PDF", size: "8.7 MB", uploaded: "2026-03-07", uploadedBy: "Ryan Cho", tags: ["api", "docs", "technical"] },
   { id: "5", name: "Employee Handbook 2026.pdf", folder: "Human Resources", type: "PDF", size: "2.4 MB", uploaded: "2026-01-15", uploadedBy: "Marcus Hill", tags: ["hr", "policy", "2026"] },
@@ -79,7 +79,7 @@ export const rooms = [
 export const bookings = [
   { id: "1", roomId: "1", roomName: "The Boardroom", title: "Q1 All-Hands", organizer: "Sarah Kim", date: "2026-03-15", start: "10:00", end: "12:00", attendees: 18 },
   { id: "2", roomId: "2", roomName: "Innovation Lab", title: "Product Sprint Planning", organizer: "Priya Patel", date: "2026-03-11", start: "09:00", end: "11:00", attendees: 8 },
-  { id: "3", roomId: "3", roomName: "Focus Room A", title: "1:1 — Engineering", organizer: "Jordan Walsh", date: "2026-03-11", start: "14:00", end: "15:00", attendees: 2 },
+  { id: "3", roomId: "3", roomName: "Focus Room A", title: "1:1 - Engineering", organizer: "Jordan Walsh", date: "2026-03-11", start: "14:00", end: "15:00", attendees: 2 },
   { id: "4", roomId: "5", roomName: "The Greenhouse", title: "Design Review", organizer: "Elena Vasquez", date: "2026-03-12", start: "11:00", end: "12:30", attendees: 5 },
   { id: "5", roomId: "6", roomName: "Executive Suite", title: "Investor Call", organizer: "Sarah Kim", date: "2026-03-13", start: "15:00", end: "16:00", attendees: 4 },
 ];
@@ -111,31 +111,31 @@ export const inventoryItems = [
 
 // ---- ASSETS ----
 export const assets = [
-  { id: "AST-001", name: 'MacBook Pro 16" M3', serial: "C02XK1JQMD6M", category: "Laptop", assignedTo: "Jordan Walsh", dept: "Engineering", purchaseDate: "2024-01-15", value: 3499.00, status: "active", location: "Remote — Austin, TX" },
-  { id: "AST-002", name: 'MacBook Pro 14" M3', serial: "C02Y8KQMD6T", category: "Laptop", assignedTo: "Elena Vasquez", dept: "Design", purchaseDate: "2024-03-10", value: 2499.00, status: "active", location: "Remote — Miami, FL" },
-  { id: "AST-003", name: "iPhone 15 Pro", serial: "DNMR7KPLS2", category: "Mobile", assignedTo: "Sarah Kim", dept: "Executive", purchaseDate: "2023-10-01", value: 1199.00, status: "active", location: "HQ — Floor 4" },
+  { id: "AST-001", name: 'MacBook Pro 16" M3', serial: "C02XK1JQMD6M", category: "Laptop", assignedTo: "Jordan Walsh", dept: "Engineering", purchaseDate: "2024-01-15", value: 3499.00, status: "active", location: "Remote - Austin, TX" },
+  { id: "AST-002", name: 'MacBook Pro 14" M3', serial: "C02Y8KQMD6T", category: "Laptop", assignedTo: "Elena Vasquez", dept: "Design", purchaseDate: "2024-03-10", value: 2499.00, status: "active", location: "Remote - Miami, FL" },
+  { id: "AST-003", name: "iPhone 15 Pro", serial: "DNMR7KPLS2", category: "Mobile", assignedTo: "Sarah Kim", dept: "Executive", purchaseDate: "2023-10-01", value: 1199.00, status: "active", location: "HQ - Floor 4" },
   { id: "AST-004", name: 'Dell XPS 15"', serial: "7DX4KLP20", category: "Laptop", assignedTo: null, dept: null, purchaseDate: "2022-08-20", value: 1899.00, status: "available", location: "IT Storage" },
   { id: "AST-005", name: "Canon EOS R6 (Camera)", serial: "CAM-2024-042", category: "Equipment", assignedTo: "Aisha Johnson", dept: "Marketing", purchaseDate: "2024-06-01", value: 2499.00, status: "active", location: "Marketing Studio" },
-  { id: "AST-006", name: 'iPad Pro 12.9" (2024)', serial: "DMPJX9KQ7", category: "Tablet", assignedTo: "Priya Patel", dept: "Product", purchaseDate: "2024-02-14", value: 1299.00, status: "active", location: "HQ — Floor 3" },
-  { id: "AST-007", name: "HP LaserJet Pro (Printer)", serial: "HPL-VN12378", category: "Printer", assignedTo: null, dept: "All", purchaseDate: "2023-04-01", value: 449.00, status: "maintenance", location: "HQ — Floor 3" },
-  { id: "AST-008", name: "Cisco IP Phone 8841", serial: "CSC-P0234X", category: "Phone", assignedTo: "Carlos Mendez", dept: "Sales", purchaseDate: "2022-11-15", value: 299.00, status: "active", location: "HQ — Floor 2" },
+  { id: "AST-006", name: 'iPad Pro 12.9" (2024)', serial: "DMPJX9KQ7", category: "Tablet", assignedTo: "Priya Patel", dept: "Product", purchaseDate: "2024-02-14", value: 1299.00, status: "active", location: "HQ - Floor 3" },
+  { id: "AST-007", name: "HP LaserJet Pro (Printer)", serial: "HPL-VN12378", category: "Printer", assignedTo: null, dept: "All", purchaseDate: "2023-04-01", value: 449.00, status: "maintenance", location: "HQ - Floor 3" },
+  { id: "AST-008", name: "Cisco IP Phone 8841", serial: "CSC-P0234X", category: "Phone", assignedTo: "Carlos Mendez", dept: "Sales", purchaseDate: "2022-11-15", value: 299.00, status: "active", location: "HQ - Floor 2" },
 ];
 
 // ---- MAINTENANCE ----
 export const maintenanceRequests = [
-  { id: "MR-001", title: "HVAC Unit — Floor 3 Not Cooling", location: "3rd Floor", priority: "high", status: "in-progress", reported: "2026-03-09", assignee: "HVAC Pro Services", scheduledFor: "2026-03-11", category: "HVAC" },
-  { id: "MR-002", title: "Broken Blinds — Conference Room B", location: "2nd Floor", priority: "low", status: "pending", reported: "2026-03-10", assignee: null, scheduledFor: null, category: "Facilities" },
-  { id: "MR-003", title: "Water Leak — Server Room", location: "Basement", priority: "critical", status: "completed", reported: "2026-03-07", assignee: "QuickFix Plumbing", scheduledFor: "2026-03-07", category: "Plumbing" },
-  { id: "MR-004", title: "Elevator — Slow Response", location: "Main Elevator", priority: "medium", status: "scheduled", reported: "2026-03-08", assignee: "Otis Elevator Co.", scheduledFor: "2026-03-14", category: "Elevator" },
-  { id: "MR-005", title: "Parking Lot Lights Out — Section C", location: "Parking Lot C", priority: "medium", status: "pending", reported: "2026-03-10", assignee: null, scheduledFor: null, category: "Electrical" },
+  { id: "MR-001", title: "HVAC Unit - Floor 3 Not Cooling", location: "3rd Floor", priority: "high", status: "in-progress", reported: "2026-03-09", assignee: "HVAC Pro Services", scheduledFor: "2026-03-11", category: "HVAC" },
+  { id: "MR-002", title: "Broken Blinds - Conference Room B", location: "2nd Floor", priority: "low", status: "pending", reported: "2026-03-10", assignee: null, scheduledFor: null, category: "Facilities" },
+  { id: "MR-003", title: "Water Leak - Server Room", location: "Basement", priority: "critical", status: "completed", reported: "2026-03-07", assignee: "QuickFix Plumbing", scheduledFor: "2026-03-07", category: "Plumbing" },
+  { id: "MR-004", title: "Elevator - Slow Response", location: "Main Elevator", priority: "medium", status: "scheduled", reported: "2026-03-08", assignee: "Otis Elevator Co.", scheduledFor: "2026-03-14", category: "Elevator" },
+  { id: "MR-005", title: "Parking Lot Lights Out - Section C", location: "Parking Lot C", priority: "medium", status: "pending", reported: "2026-03-10", assignee: null, scheduledFor: null, category: "Electrical" },
   { id: "MR-006", title: "Office Kitchen Faucet Dripping", location: "3rd Floor Kitchen", priority: "low", status: "scheduled", reported: "2026-03-06", assignee: "QuickFix Plumbing", scheduledFor: "2026-03-13", category: "Plumbing" },
 ];
 
 // ---- PURCHASE ORDERS ----
 export const purchaseOrders = [
   { id: "PO-2026-001", vendor: "Logitech", items: [{ desc: "Wireless Keyboard MX Keys", qty: 20, unit: 89.99 }, { desc: "Wireless Mouse MX Master", qty: 20, unit: 79.99 }], total: 3398.00, requestedBy: "Derek Lam", dept: "IT", status: "approved", date: "2026-03-08", approvedBy: "Sarah Kim" },
-  { id: "PO-2026-002", vendor: "Herman Miller", items: [{ desc: "Aeron Chair — Size B", qty: 5, unit: 1495.00 }], total: 7475.00, requestedBy: "Tom Fischer", dept: "Operations", status: "pending", date: "2026-03-10", approvedBy: null },
-  { id: "PO-2026-003", vendor: "AWS", items: [{ desc: "Reserved Instance — r6g.2xlarge (1yr)", qty: 3, unit: 1842.00 }], total: 5526.00, requestedBy: "Ryan Cho", dept: "Engineering", status: "approved", date: "2026-03-05", approvedBy: "Sarah Kim" },
+  { id: "PO-2026-002", vendor: "Herman Miller", items: [{ desc: "Aeron Chair - Size B", qty: 5, unit: 1495.00 }], total: 7475.00, requestedBy: "Tom Fischer", dept: "Operations", status: "pending", date: "2026-03-10", approvedBy: null },
+  { id: "PO-2026-003", vendor: "AWS", items: [{ desc: "Reserved Instance - r6g.2xlarge (1yr)", qty: 3, unit: 1842.00 }], total: 5526.00, requestedBy: "Ryan Cho", dept: "Engineering", status: "approved", date: "2026-03-05", approvedBy: "Sarah Kim" },
   { id: "PO-2026-004", vendor: "Adobe", items: [{ desc: "Creative Cloud Business (10 seats)", qty: 10, unit: 84.99 }], total: 849.90, requestedBy: "Aisha Johnson", dept: "Marketing", status: "received", date: "2026-03-01", approvedBy: "Marcus Hill" },
   { id: "PO-2026-005", vendor: "Office Depot", items: [{ desc: "Copy Paper (Case)", qty: 10, unit: 49.99 }, { desc: "Printer Ink Cartridges", qty: 6, unit: 34.99 }], total: 709.84, requestedBy: "Office Manager", dept: "Operations", status: "received", date: "2026-02-28", approvedBy: "Tom Fischer" },
   { id: "PO-2026-006", vendor: "Zoom Video", items: [{ desc: "Zoom Business Plan (annual, 50 users)", qty: 1, unit: 15000.00 }], total: 15000.00, requestedBy: "Sarah Kim", dept: "Executive", status: "rejected", date: "2026-03-09", approvedBy: "James Osei" },
@@ -172,7 +172,7 @@ export const portalClients = [
     status: "review", phase: "Client Review", progress: 90, budget: 22000, billed: 18700,
     nextMilestone: "Final Sign-off", milestoneDate: "2026-03-15",
     messages: [
-      { from: "BuiltByBas", text: "Phase 2 is complete — please review and provide feedback.", date: "2026-03-08" },
+      { from: "BuiltByBas", text: "Phase 2 is complete - please review and provide feedback.", date: "2026-03-08" },
       { from: "Jessica Price", text: "Excellent work, we'll review by Friday.", date: "2026-03-09" },
     ],
   },
@@ -195,7 +195,7 @@ export const services = [
 ];
 
 export const appointments = [
-  { id: "APT-001", service: "Strategy Consultation", client: "Marcus Webb", email: "m.webb@email.com", date: "2026-03-11", time: "10:00", status: "confirmed", notes: "New client — e-commerce startup" },
+  { id: "APT-001", service: "Strategy Consultation", client: "Marcus Webb", email: "m.webb@email.com", date: "2026-03-11", time: "10:00", status: "confirmed", notes: "New client - e-commerce startup" },
   { id: "APT-002", service: "Website Audit", client: "Lisa Thornton", email: "l.thornton@email.com", date: "2026-03-11", time: "13:00", status: "confirmed", notes: "Existing site on WordPress" },
   { id: "APT-003", service: "Project Kickoff", client: "Meridian Plumbing", email: "dave@meridianplumbing.com", date: "2026-03-12", time: "09:00", status: "confirmed", notes: "" },
   { id: "APT-004", service: "Design Review", client: "Atlas Consulting", email: "j.price@atlascg.com", date: "2026-03-13", time: "14:00", status: "pending", notes: "" },
@@ -233,7 +233,7 @@ export const demoProposals = [
 
 // ---- SUPPORT TICKETS ----
 export const supportTickets = [
-  { id: "TKT-001", subject: "Can't access my account — password reset failed", client: "Dave Merritt", email: "dave@meridianplumbing.com", priority: "high", status: "open", category: "Account", created: "2026-03-10T08:30:00", assignee: "Support Team", sla: "4hr", messages: 1 },
+  { id: "TKT-001", subject: "Can't access my account - password reset failed", client: "Dave Merritt", email: "dave@meridianplumbing.com", priority: "high", status: "open", category: "Account", created: "2026-03-10T08:30:00", assignee: "Support Team", sla: "4hr", messages: 1 },
   { id: "TKT-002", subject: "Invoice shows wrong amount", client: "Jessica Price", email: "j.price@atlascg.com", priority: "medium", status: "in-progress", category: "Billing", created: "2026-03-09T14:00:00", assignee: "Billing Team", sla: "8hr", messages: 3 },
   { id: "TKT-003", subject: "Portal not loading on mobile Safari", client: "Rachel Kim", email: "r.kim@bloombotanicals.com", priority: "medium", status: "open", category: "Technical", created: "2026-03-10T11:15:00", assignee: null, sla: "8hr", messages: 0 },
   { id: "TKT-004", subject: "Request for new user account", client: "Chris Bower", email: "c.bower@summitfitness.com", priority: "low", status: "resolved", category: "Account", created: "2026-03-07T09:00:00", assignee: "Support Team", sla: "24hr", messages: 4 },
@@ -280,7 +280,7 @@ export const rewards = [
 
 export const loyaltyTransactions = [
   { id: "TXN-001", memberId: "LYL-001", type: "earn", description: "Invoice #INV-2026-012 paid", points: 850, date: "2026-03-05" },
-  { id: "TXN-002", memberId: "LYL-002", type: "earn", description: "Referral bonus — Atlas Consulting", points: 2000, date: "2026-03-09" },
+  { id: "TXN-002", memberId: "LYL-002", type: "earn", description: "Referral bonus - Atlas Consulting", points: 2000, date: "2026-03-09" },
   { id: "TXN-003", memberId: "LYL-003", type: "redeem", description: "Free Strategy Session redeemed", points: -2000, date: "2026-02-28" },
   { id: "TXN-004", memberId: "LYL-004", type: "earn", description: "Project milestone reached", points: 500, date: "2026-03-07" },
   { id: "TXN-005", memberId: "LYL-005", type: "earn", description: "New member signup bonus", points: 500, date: "2025-10-05" },

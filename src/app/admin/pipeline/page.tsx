@@ -10,7 +10,7 @@ import type { IntakeAnalysis } from "@/types/intake-analysis";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Pipeline — BuiltByBas Admin",
+  title: "Pipeline - BuiltByBas Admin",
   robots: { index: false, follow: false },
 };
 

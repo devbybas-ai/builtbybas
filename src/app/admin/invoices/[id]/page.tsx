@@ -9,7 +9,7 @@ import { InvoiceDetailView } from "@/components/admin/InvoiceDetailView";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Invoice Detail — BuiltByBas Admin",
+  title: "Invoice Detail - BuiltByBas Admin",
   robots: { index: false, follow: false },
 };
 

@@ -10,7 +10,7 @@ import { ClientDetailDashboard } from "@/components/admin/ClientDetailDashboard"
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Client Detail — BuiltByBas Admin",
+  title: "Client Detail - BuiltByBas Admin",
   robots: { index: false, follow: false },
 };
 
