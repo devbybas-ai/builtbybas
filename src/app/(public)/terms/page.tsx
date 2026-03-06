@@ -6,7 +6,7 @@ import { PublicFooter } from "@/components/layout/PublicFooter";
 export const metadata: Metadata = {
   title: "Terms of Service",
   description:
-    "BuiltByBas Terms of Service — the agreement governing your use of our website and services.",
+    "BuiltByBas Terms of Service. The agreement governing your use of our website and services.",
 };
 
 export default function TermsOfServicePage() {

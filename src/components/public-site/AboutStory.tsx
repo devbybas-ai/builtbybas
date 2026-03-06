@@ -21,13 +21,13 @@ const credentials = [
   {
     title: "Veteran-Backed",
     description:
-      "Military discipline, mission focus, and a commitment to delivering on every promise. That foundation shapes how I build.",
+      "Military discipline, mission focus, and a commitment to delivering on every promise. That foundation shapes how we build.",
     accent: "from-emerald-400 to-teal-500",
   },
   {
     title: "Business Advocate",
     description:
-      "Every client gets my full attention. No account managers, no middlemen. You talk to the person writing your code.",
+      "Every client gets our full attention. No account managers, no middlemen. You talk directly to the team building your software.",
     accent: "from-amber-400 to-orange-500",
   },
 ];
@@ -49,28 +49,27 @@ export function AboutStory() {
           <div className="space-y-6 text-muted-foreground">
             {[
               <>
-                I started BuiltByBas because I was tired of watching businesses
-                get burned. Handed cookie-cutter templates and told
-                it was &quot;custom.&quot; Ghosted by freelancers who disappear
-                after launch. Left with tools that don&apos;t actually fit
-                their business.
+                I started BuiltByBas because I believe every business deserves
+                real software built for how they actually operate. Not
+                one-size-fits-all templates. Not tools that stop working six
+                months later. Real solutions, built with care, that grow with
+                your business. That belief lit a fire.
               </>,
               <>
-                I&apos;m a veteran-backed software developer, and building
-                things is what I do best. The discipline, precision, and
-                commitment to mission that the military instills, that&apos;s
-                what I bring to every project. Not managing teams. Not padding
-                proposals. Not selling features nobody asked for. I build, and
-                I build with precision, because every line of code matters when
-                it&apos;s your business on the line.
+                The discipline, precision, and commitment to mission that the
+                military instills, that&apos;s the foundation I built on. Not
+                managing layers of people. Not padding proposals. Not selling
+                features nobody asked for. Just building with precision,
+                because every line of code matters when it&apos;s your business
+                on the line.
               </>,
               <>
-                When AI changed the game, I didn&apos;t resist it. I embraced
-                it. While others are still figuring out prompts, I&apos;m
-                shipping production code with AI as my co-pilot. That means
-                every project gets the full picture, the engineering AND the
-                marketing strategy, built by someone who understands both. AI
-                doesn&apos;t replace craftsmanship, it amplifies it.
+                When AI changed the game, that fire became a team. Now we ship
+                production code with AI as our co-pilot. Every project gets the
+                full picture, the engineering AND the marketing strategy, built
+                by a team that understands both. AI doesn&apos;t replace
+                craftsmanship, it amplifies it. What started as one
+                developer&apos;s mission is now BuiltByBas.
               </>,
             ].map((text, i) =>
               shouldReduceMotion ? (

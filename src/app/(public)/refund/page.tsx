@@ -6,7 +6,7 @@ import { PublicFooter } from "@/components/layout/PublicFooter";
 export const metadata: Metadata = {
   title: "Refund & Cancellation Policy",
   description:
-    "BuiltByBas Refund & Cancellation Policy — our fair and transparent approach to refunds, deposits, and project cancellations.",
+    "BuiltByBas Refund and Cancellation Policy. Our fair and transparent approach to refunds, deposits, and project cancellations.",
 };
 
 export default function RefundPolicyPage() {

@@ -5,7 +5,7 @@ import { PublicFooter } from "@/components/layout/PublicFooter";
 export const metadata: Metadata = {
   title: "Privacy Policy",
   description:
-    "BuiltByBas Privacy Policy — how we collect, use, and protect your personal information.",
+    "BuiltByBas Privacy Policy. How we collect, use, and protect your personal information.",
 };
 
 export default function PrivacyPolicyPage() {

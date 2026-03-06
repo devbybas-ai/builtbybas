@@ -33,7 +33,7 @@ const values = [
     icon: Sparkles,
     title: "Human + AI",
     description:
-      "I bring the vision and craft. AI brings speed and scale. Together, we deliver what neither could alone.",
+      "We bring the vision and craft. AI brings speed and scale. Together, we deliver what neither could alone.",
     accent: "from-amber-400 to-orange-500",
   },
 ];
@@ -46,7 +46,7 @@ export function AboutValues() {
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <FadeIn className="mb-16 text-center">
           <h2 className="text-3xl font-bold sm:text-4xl">
-            What I <span className="text-gradient">Stand For</span>
+            What We <span className="text-gradient">Stand For</span>
           </h2>
         </FadeIn>
 

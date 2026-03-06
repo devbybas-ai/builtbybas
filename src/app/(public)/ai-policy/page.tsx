@@ -6,7 +6,7 @@ import { PublicFooter } from "@/components/layout/PublicFooter";
 export const metadata: Metadata = {
   title: "Responsible AI Policy",
   description:
-    "BuiltByBas Responsible AI Policy — how we use artificial intelligence ethically, transparently, and with human oversight.",
+    "BuiltByBas Responsible AI Policy. How we use artificial intelligence ethically, transparently, and with human oversight.",
 };
 
 export default function AIPolicyPage() {
@@ -29,12 +29,12 @@ export default function AIPolicyPage() {
               <h2>1. Our Commitment</h2>
               <p className="mt-3">
                 BuiltByBas uses artificial intelligence as a tool to enhance our
-                services — never as a replacement for human judgment, creativity,
+                services, never as a replacement for human judgment, creativity,
                 or accountability. We believe AI should be transparent, fair,
                 and always under human control.
               </p>
               <p className="mt-2">
-                <strong>Our core principle:</strong> AI assists — it does not
+                <strong>Our core principle:</strong> AI assists. It does not
                 decide. Every AI-generated output is reviewed and approved by a
                 human before it reaches any client.
               </p>
@@ -143,7 +143,7 @@ export default function AIPolicyPage() {
                   override any AI output
                 </li>
                 <li>
-                  The human reviewer — not the AI — is accountable for the final
+                  The human reviewer, not the AI, is accountable for the final
                   product
                 </li>
               </ul>
@@ -177,7 +177,7 @@ export default function AIPolicyPage() {
               <h3 className="mt-4">AI provider data handling</h3>
               <p className="mt-2">
                 Our AI provider (Anthropic) operates under a zero-retention API
-                policy — your data is not stored by Anthropic and is not used to
+                policy. Your data is not stored by Anthropic and is not used to
                 train their models. Data is processed in real-time and discarded
                 after the response is generated.
               </p>
@@ -202,7 +202,7 @@ export default function AIPolicyPage() {
               <ul className="mt-2">
                 <li>
                   Project scoring and prioritization are based on objective
-                  criteria — readiness, scope clarity, engagement level, and
+                  criteria: readiness, scope clarity, engagement level, and
                   feasibility
                 </li>
                 <li>
@@ -237,7 +237,7 @@ export default function AIPolicyPage() {
                   approved by Bas Rosario
                 </li>
                 <li>
-                  Our scoring criteria are documented and explainable — you can
+                  Our scoring criteria are documented and explainable. You can
                   request a breakdown of how your submission was assessed
                 </li>
                 <li>
@@ -287,7 +287,7 @@ export default function AIPolicyPage() {
                 </li>
                 <li>
                   If problematic content is caught in review, it is corrected or
-                  regenerated — never sent
+                  regenerated, never sent
                 </li>
                 <li>
                   If an issue reaches a client, we will contact you directly

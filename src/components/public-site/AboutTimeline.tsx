@@ -10,25 +10,25 @@ const milestones = [
     label: "The Beginning",
     title: "Fell in Love with Code at 16",
     description:
-      "Discovered HTML, CSS, JavaScript, and Visual Basic as a teenager and was hooked. The ability to create something from nothing \u2014 to solve real problems with logic and creativity \u2014 was addictive. But life moves fast, and code stayed a passion I could never fully pursue. I learned, I tinkered, but I never had enough time to sharpen the saw.",
+      "I discovered HTML, CSS, JavaScript, and Visual Basic as a teenager and was hooked. The ability to create something from nothing, to solve real problems with logic and creativity, was addictive. But life moves fast, and code stayed a passion I could never fully pursue. I learned, I tinkered, but I never had enough time to sharpen the saw.",
   },
   {
     label: "The Realization",
     title: "Businesses Deserve Better",
     description:
-      "Watched too many businesses get overcharged for templates, abandoned after launch, and left with tools that didn\u2019t fit. Owners paying premium prices for cookie-cutter solutions that didn\u2019t serve them. Knew there had to be a better way, and that it would take someone who actually cared about the craft.",
+      "Running a business today is harder than ever. Between rising costs and marketing platforms that nickel-and-dime you, most owners are left struggling just to communicate with their own customers. I saw it everywhere and I refused to just sit back and watch. I knew I could build something better, something that actually puts business owners first.",
   },
   {
     label: "The Evolution",
     title: "AI Made the Dream Real",
     description:
-      "When AI became a true development partner, everything changed. The dream I\u2019d carried since I was 16 was suddenly within reach. I learned React, TypeScript, and modern full-stack engineering \u2014 and for the first time, I had a co-pilot that matched my ambition. AI didn\u2019t replace the craft. It gave me the time and power to finally master it.",
+      "When AI became a true development partner, everything changed. The dream I carried since I was 16 was suddenly within reach. I had the tools, and for the first time, I had the team that matched my ambition. AI didn't replace my craft. It gave me the time and the power to finally master it.",
   },
   {
     label: "Today",
     title: "BuiltByBas is Born",
     description:
-      "One developer. One AI partner. A lifetime of passion finally unleashed. BuiltByBas exists to give every business the custom software they deserve, built by someone who waited his whole life for this moment. No templates. No shortcuts. Just precision-engineered solutions from someone who lives and breathes this craft.",
+      "What started as one developer's mission is now a team. We exist to give every business the custom software they deserve, at prices that make sense. No templates. No shortcuts. No sitting back while businesses struggle. We are doing something about it.",
   },
 ];
 

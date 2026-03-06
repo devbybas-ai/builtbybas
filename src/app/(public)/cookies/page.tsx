@@ -6,7 +6,7 @@ import { PublicFooter } from "@/components/layout/PublicFooter";
 export const metadata: Metadata = {
   title: "Cookie Policy",
   description:
-    "BuiltByBas Cookie Policy — how we use cookies and tracking technologies on our website.",
+    "BuiltByBas Cookie Policy. How we use cookies and tracking technologies on our website.",
 };
 
 export default function CookiePolicyPage() {
@@ -35,7 +35,7 @@ export default function CookiePolicyPage() {
                 and the data we collect.
               </p>
               <p className="mt-2">
-                <strong>The short version:</strong> We use minimal cookies — only
+                <strong>The short version:</strong> We use minimal cookies, only
                 what is strictly necessary for the Site to function. We do not
                 use advertising cookies, tracking pixels, or cross-site
                 trackers.
@@ -116,7 +116,7 @@ export default function CookiePolicyPage() {
               </p>
               <ul className="mt-2">
                 <li>
-                  <strong>Umami does not use cookies</strong> — it is a fully
+                  <strong>Umami does not use cookies.</strong> It is a fully
                   cookieless analytics solution
                 </li>
                 <li>
@@ -128,7 +128,7 @@ export default function CookiePolicyPage() {
                 </li>
                 <li>IP addresses are not logged or stored</li>
                 <li>
-                  All data is aggregated and anonymous — we see page view counts,
+                  All data is aggregated and anonymous. We see page view counts,
                   referral sources, device types, and country-level location
                   only
                 </li>
