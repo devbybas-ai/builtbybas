@@ -184,10 +184,10 @@ export const projects: PortfolioProject[] = [
     id: "all-beauty-hair-studio",
     slug: "all-beauty-hair-studio",
     title: "All Beauty Hair Studio",
-    subtitle: "From Wix template to full business operating system",
+    subtitle: "Total redesign — from Wix template to full business operating system",
     category: "platforms",
     description:
-      "Karli had a Wix template. Now she has a business operating system. We built her a personal brand site that leads with her story and philosophy, a 7-step new client intake form that qualifies every lead before they ever book, and a full admin CRM with kanban pipeline, AI-powered fit scoring, and a 10-stage client journey tracker. Before: a slow template, manual inquiries, zero pipeline visibility. After: a platform that runs the business - from the first impression on the homepage to the final follow-up logged in the CRM.",
+      "A complete redesign from the ground up. We built a personal brand site that leads with story and philosophy, a 7-step new client intake form that qualifies every lead before they ever book, and a full admin CRM with kanban pipeline, AI-powered fit scoring, and a 10-stage client journey tracker. The platform runs the business — from the first impression on the homepage to the final follow-up logged in the CRM.",
     capabilities: [
       "Personal Brand Platform",
       "7-Step Client Intake",
@@ -197,7 +197,7 @@ export const projects: PortfolioProject[] = [
       "Multi-Business Admin",
     ],
     technologies: ["Next.js", "TypeScript", "Tailwind CSS", "PostgreSQL", "Custom CRM", "AI Integration"],
-    status: "live",
+    status: "in-progress",
     featured: true,
     url: "https://allbeautyhairstudio.com",
     colorAccent: "pink",
@@ -439,7 +439,99 @@ export const projects: PortfolioProject[] = [
     ],
   },
 
-  // === SOFTWARE ===
+  // === SYSTEMS ===
+  {
+    id: "builtbybas-backend",
+    slug: "builtbybas-backend",
+    title: "BuiltByBas Backend",
+    subtitle: "The operational engine behind the agency — CRM, proposals, invoicing, and analytics",
+    category: "systems",
+    description:
+      "The complete business operating system that runs BuiltByBas. A custom-built admin dashboard with client pipeline management, algorithmic intake scoring, proposal generation engine, invoice system with line items and tax calculations, financial analytics with revenue tracking, and role-based access control. Every client touchpoint from first inquiry to final payment flows through one unified system. No Salesforce, no QuickBooks, no stitching together third-party tools.",
+    capabilities: [
+      "Client Pipeline (Kanban)",
+      "Intake Scoring Engine",
+      "Proposal Generator",
+      "Invoice System",
+      "Financial Analytics",
+      "Role-Based Access",
+      "Notification System",
+      "Client Portal",
+    ],
+    technologies: [
+      "Next.js",
+      "TypeScript",
+      "PostgreSQL",
+      "Zod",
+      "Custom Auth",
+      "Server Components",
+    ],
+    status: "live",
+    featured: true,
+    url: "/demo",
+    colorAccent: "cyan",
+    image: "/portfolio/builtbybas/systems/bbbdashboard.png",
+    gallery: [
+      "/portfolio/builtbybas/systems/bbbdashboard2.png",
+      "/portfolio/builtbybas/systems/pipeline.png",
+      "/portfolio/builtbybas/systems/pipeline2.png",
+      "/portfolio/builtbybas/systems/pipeline3.png",
+      "/portfolio/builtbybas/systems/pipeline4.png",
+      "/portfolio/builtbybas/systems/clients.png",
+      "/portfolio/builtbybas/systems/clients2.png",
+      "/portfolio/builtbybas/systems/clients3.png",
+      "/portfolio/builtbybas/systems/intake.png",
+      "/portfolio/builtbybas/systems/intake2.png",
+      "/portfolio/builtbybas/systems/intake3.png",
+      "/portfolio/builtbybas/systems/intake4.png",
+      "/portfolio/builtbybas/systems/intake5.png",
+      "/portfolio/builtbybas/systems/proposals.png",
+      "/portfolio/builtbybas/systems/proposals2.png",
+      "/portfolio/builtbybas/systems/invoices0.png",
+      "/portfolio/builtbybas/systems/invoices1.png",
+      "/portfolio/builtbybas/systems/invoices2.png",
+      "/portfolio/builtbybas/systems/analytics.png",
+      "/portfolio/builtbybas/systems/settings.png",
+    ],
+    health: {
+      security: 100,
+      accessibility: 100,
+      performance: 100,
+      stability: 100,
+    },
+    healthChecklist: {
+      security: [true, true, true, true, true, true, true, true, true, true],
+      accessibility: [true, true, true, true, true, true, true, true, true, true],
+      performance: [true, true, true, true, true, true, true, true, true, true],
+      stability: [true, true, true, true, true, true, true, true, true, true],
+    },
+    scope: [
+      "Admin dashboard with live metrics: total clients, active projects, revenue, pending invoices",
+      "Kanban pipeline: Inquiry → Consultation → Proposal → Active → Follow-Up with drag-and-drop",
+      "10-step intake form with algorithmic analysis engine that scores every lead automatically",
+      "Fit scoring across multiple dimensions: budget alignment, project complexity, timeline feasibility",
+      "Proposal generation engine that builds structured proposals from intake data — instant, deterministic",
+      "Revision workflow for proposals with version tracking and client-facing delivery",
+      "Invoice system with line items, tax calculation, status management (draft, sent, paid, overdue)",
+      "Financial analytics dashboard with revenue tracking, monthly trends, and projection data",
+      "Role-based access control: owner, team, and client roles with route-level enforcement",
+      "Custom authentication with httpOnly cookies, bcrypt hashing, rate limiting (5 attempts / 15 min / IP)",
+      "Notification system with real-time badges for new intakes, pending proposals, and overdue invoices",
+      "Client portal for project status visibility and document access",
+    ],
+    challenge:
+      "Running a software development agency requires managing the entire client lifecycle — from the moment someone fills out an intake form to the final invoice payment. Off-the-shelf tools fragment this workflow: one tool for CRM, another for proposals, another for invoicing, another for analytics. Each has its own login, its own data format, and its own monthly fee. The data never connects. A lead in the CRM has no link to the proposal you sent or the invoice you generated. BuiltByBas needed one system that owns the entire journey.",
+    approach:
+      "We built the backend as a single Next.js application with the public site — same codebase, same deploy, zero integration overhead. The intake scoring engine evaluates every lead algorithmically so projects can be prioritized by fit, not gut feeling. The proposal generator builds structured deliverables from intake data without AI API calls — instant and free. The invoice system closes the loop from lead to revenue with line-item detail, tax calculations, and status tracking. Financial analytics aggregate everything into revenue dashboards and monthly trends. RBAC ensures the owner sees everything, team members see their assignments, and clients see only their own project status. Every API route is Zod-validated, every database query uses parameterized inputs, and every protected route checks authentication before rendering.",
+    techChoices: [
+      { tech: "Next.js", reason: "Server components for the admin dashboard mean sensitive business data never ships to the client. API routes colocated with the UI they serve — no separate backend deploy" },
+      { tech: "TypeScript", reason: "Strict mode with zero 'any' types. Invoice calculations, scoring algorithms, and auth flows demand compile-time guarantees — a wrong type in a payment amount is real money" },
+      { tech: "PostgreSQL", reason: "Relational data: clients have intakes, intakes generate proposals, proposals become invoices. Foreign keys enforce referential integrity. JSONB columns store flexible intake responses without schema sprawl" },
+      { tech: "Zod", reason: "Runtime validation on every API endpoint. Every PATCH, POST, and PUT request is validated against a schema before touching the database. Field whitelisting prevents mass assignment attacks" },
+      { tech: "Custom Auth", reason: "httpOnly cookies with bcrypt hashing. RBAC enforced at the middleware level — no auth check, no page render. Rate limiting prevents brute force. No third-party auth dependency to break or change pricing" },
+      { tech: "Server Components", reason: "Dashboard pages fetch data server-side — no loading spinners, no client-side waterfall requests. The browser receives rendered HTML with real data, making the admin feel instant" },
+    ],
+  },
   {
     id: "kar-crm",
     slug: "kar-crm",
@@ -1322,11 +1414,15 @@ export function getFeaturedProjects(): PortfolioProject[] {
   return projects.filter((p) => p.featured);
 }
 
+const statusOrder: Record<string, number> = { live: 0, "in-progress": 1, demo: 2 };
+
 export function getProjectsByCategory(
   category: PortfolioCategory | "all",
 ): PortfolioProject[] {
   if (category === "all") return projects.filter((p) => p.category !== "concept" && p.status === "live");
-  return projects.filter((p) => p.category === category);
+  return projects
+    .filter((p) => p.category === category)
+    .sort((a, b) => (statusOrder[a.status] ?? 9) - (statusOrder[b.status] ?? 9));
 }
 
 export function getCategoryMeta(id: PortfolioCategory): PortfolioCategoryMeta | undefined {
