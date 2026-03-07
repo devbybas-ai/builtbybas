@@ -17,6 +17,13 @@
 - Toned down central processor radial glow (removed pulse animation, reduced opacity)
 - Kept backdrop-blur on navigation/sticky bars (functional glassmorphism, not decorative)
 
+**About Page Copy Updates:**
+- "Veteran-Backed" credential card → "Built on Integrity" with new description
+- Removed all "veteran" references from site metadata (layout.tsx, page.tsx, json-ld.ts)
+- Updated origin story: "quality software built for how they actually operate in their daily businesses"
+- Added third story paragraph: "Human + AI" — 20+ years of dev knowledge + AI speed, delivering unique custom solutions
+- Credential cards vertically centered with story content (`items-center`)
+
 **Governance Doc Updates:**
 - Updated Pillar 8 in CLAUDE.md: renamed to "Robustness, Redundancy, Recovery, Strategy", added explicit Risk/Mitigation lines
 
@@ -26,6 +33,10 @@
 - `src/components/public-site/AboutValues.tsx` - removed blur burst from icon containers
 - `src/components/public-site/ValueProposition.tsx` - removed blur burst from icon containers
 - `src/components/public-site/HeroBackground.tsx` - removed center hub blur filter, toned down radial glow
+- `src/components/public-site/AboutStory.tsx` - story copy, Built on Integrity, Human+AI paragraph, centered grid
+- `src/app/layout.tsx` - removed veteran from meta description
+- `src/app/page.tsx` - removed veteran from meta description
+- `src/lib/json-ld.ts` - removed veteran from structured data
 - `.claude/CLAUDE.md` - updated R3S pillar definition with risk/mitigation
 - `docs/HANDOFF.md` - session 39 notes
 

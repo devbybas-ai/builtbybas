@@ -81,6 +81,16 @@ export function AboutStory() {
                 impact on your business. This is the driving force behind every
                 BuiltByBas project.
               </>,
+              <>
+                <span className="font-semibold text-foreground">
+                  Human + AI.
+                </span>{" "}
+                We bring 20+ years of development knowledge, the vision, and the
+                craft. AI brings the lightning speed and superhuman ability to
+                scale. Together, we deliver products that neither could alone.
+                And right now, we are developing unique custom solutions that
+                real businesses like yours are benefiting from today.
+              </>,
             ].map((text, i) =>
               shouldReduceMotion ? (
                 <p key={i} className="text-lg leading-relaxed">
