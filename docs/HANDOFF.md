@@ -27,7 +27,7 @@
 **Demo Data Anonymized:**
 - All client names replaced with Client 1 through Client 10
 - All phone numbers replaced with (111) 111-1111
-- All emails replaced with clientN@example.com
+- All emails replaced with `clientN@example.com`
 - All business names replaced with "[Industry] Business N" (e.g., "Wellness Business 1", "Legal Business 1")
 - Activity notes scrubbed of personal names
 
@@ -619,7 +619,7 @@ Dark, premium, cutting-edge. The site itself IS the portfolio piece. Every inter
 - **4 admin components:** `StageBadge` (colored pill by stage order), `ClientListCard` (glass card with hover), `ClientDetailDashboard` (full client view with notes form, stage advancement, pipeline history timeline), `PipelineBoard` (12-column horizontal scrollable board).
 - **4 admin pages:** `/admin/clients` (list with Add Client button), `/admin/clients/new` (form), `/admin/clients/[id]` (detail), `/admin/pipeline` (board view).
 - **Dashboard wired to real data:** `/admin/page.tsx` queries DB for active client count, pipeline count, recent clients (5), recent activity (5).
-- **Owner seeded:** `scripts/seed-owner.ts` — Bas Rosario (devbybas@gmail.com, role: owner). Added `db:seed` script.
+- **Owner seeded:** `scripts/seed-owner.ts` — Bas Rosario (`devbybas@gmail.com`, role: owner). Added `db:seed` script.
 - **Secrets tracking:** Created `secrets.md` (gitignored) — logs all local dev credentials.
 - **Hero background boost:** Bumped circuit board SVG opacity values ~2-3x in `HeroBackground.tsx` — IC chips, bus lines, traces, via holes now clearly visible.
 - **Button glow enhancement:** Enhanced `neon-glow` with pulsing animation (`neon-pulse` keyframes — breathing cyan glow). Boosted `btn-shine` streak to 50% white peak. Applied `btn-shine neon-glow` to all "Start a Project" buttons (hero, CTA section, header).
@@ -702,7 +702,7 @@ Dark, premium, cutting-edge. The site itself IS the portfolio piece. Every inter
 **Session 17 (Phase 5 — Algorithmic Proposals + Mobile Perf + Revision Workflows):**
 
 - **Mobile animation performance fix:** HeroBackground SVG was running 13 SMIL animations + 2 blur filters on mobile — main thread paint every frame. Added CSS `<style>` inside SVG with `@media (max-width: 768px), (prefers-reduced-motion: reduce)` to hide animated groups and strip blur filters on mobile. Removed `filter: blur(4px)` per-word animation from AnimatedText (kept GPU-compositable opacity+y only). Noise texture hidden on mobile (`hidden md:block`). Orb-pulse desktop-only (`motion-safe:md:animate-[...]`).
-- **Colour Parlor Nginx fix:** Direct IP access (http://72.62.200.30/) was returning 404 because colourparlor Nginx config only matched domain names. Added `default_server` to listen directive and `_` wildcard to server_name.
+- **Colour Parlor Nginx fix:** Direct IP access (`http://72.62.200.30/`) was returning 404 because colourparlor Nginx config only matched domain names. Added `default_server` to listen directive and `_` wildcard to server_name.
 - **Phase 5 — Proposal types + validation:** `src/types/proposal.ts` (ProposalStatus, ProposalService, PROPOSAL_STATUSES, getProposalStatusMeta). `src/lib/proposal-validation.ts` (4 Zod schemas: generate, create, update, send). 20 validation tests.
 - **Phase 5 — Generator engine:** `src/lib/proposal-generator.ts` — pure algorithmic template builder. Takes IntakeAnalysis + service catalog, produces structured Markdown proposal: executive summary, understanding needs, scope of work (per recommended service), timeline (from pathForward phases), investment (itemized + total), inclusions/exclusions, next steps, terms. Zero AI API calls — instant, deterministic. 12 tests.
 - **Phase 5 — Supporting utilities:** `src/lib/markdown-to-html.ts` (zero-dep MD→HTML for display/email). `src/lib/proposal-email.ts` (branded dark theme email template with inline CSS).

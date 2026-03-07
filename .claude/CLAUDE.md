@@ -66,7 +66,7 @@ If code exists: run `pnpm test` and `pnpm build` to confirm baseline before maki
 | **Domain**   | builtbybas.com                                                                                     |
 | **Audience** | Businesses of all sizes — service companies, startups, professional practices, growing enterprises |
 | **Region**   | United States (primary), global (accessible)                                                       |
-| **Repo**     | https://github.com/devbybas-ai/builtbybas (private)                                                |
+| **Repo**     | <https://github.com/devbybas-ai/builtbybas> (private)                                              |
 | **VPS**      | Hostinger — 72.62.200.30 (Ubuntu 24.04, KVM 2)                                                     |
 
 ---
@@ -200,9 +200,11 @@ From the Site Health Plan — these are NEVER allowed:
 - Merge fast. No long-running branches.
 
 ### CI/CD Pipeline (GitHub Actions)
-```
+
+```text
 lint → type-check → test → build → dependency-audit
 ```
+
 Runs on every push to main and every pull request.
 
 ### Environments
@@ -213,7 +215,8 @@ Runs on every push to main and every pull request.
 | Production  | `.env.production` | Live system (builtbybas.com) |
 
 ### Deployment
-```
+
+```bash
 git pull origin main → pnpm install --frozen-lockfile → pnpm build → pm2 restart
 ```
 
