@@ -83,12 +83,8 @@ function ValuesCard({ value, index, animated }: ValuesCardProps) {
   const card = (
     <div className="group relative h-full">
       <div className="glass-card relative h-full p-8 transition-all duration-500 hover:border-primary/30 hover:[box-shadow:0_0_30px_-5px_rgba(0,212,255,0.15)]">
-        {/* Icon with glow */}
-        <div className="relative mb-4 inline-flex">
-          <div className="absolute inset-0 rounded-lg bg-primary/20 blur-md opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-          <div className="relative inline-flex rounded-lg bg-primary/10 p-3 transition-colors duration-300 group-hover:bg-primary/20">
-            <Icon className="h-6 w-6 text-primary" />
-          </div>
+        <div className="mb-4 inline-flex rounded-lg bg-primary/10 p-3">
+          <Icon className="h-6 w-6 text-primary" />
         </div>
 
         <h3 className="mb-2 text-lg font-semibold">{value.title}</h3>

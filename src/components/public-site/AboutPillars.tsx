@@ -10,6 +10,8 @@ import {
   MousePointerClick,
   Globe,
   ServerCog,
+  AlertTriangle,
+  ShieldCheck,
 } from "lucide-react";
 import { springs, viewportOnce } from "@/lib/motion";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
@@ -20,46 +22,68 @@ const pillars: {
   icon: LucideIcon;
   title: string;
   question: string;
+  example: string;
+  risk?: string;
+  mitigation?: string;
 }[] = [
   {
     icon: Shield,
     title: "Security Minded",
     question: "Can this be exploited?",
+    example:
+      "Encrypted logins, protected data, rate-limited forms — no shortcuts on safety.",
   },
   {
     icon: Layers,
     title: "Structure",
     question: "Can someone else pick this up tomorrow?",
+    example:
+      "Clean, organized code that any developer can read, maintain, and extend.",
   },
   {
     icon: Zap,
     title: "Performance",
     question: "Does this respect the user's time and device?",
+    example:
+      "Optimized images, fast load times, and smooth interactions — even on slow connections.",
   },
   {
     icon: Users,
     title: "Inclusive",
     question: "Can everyone use this?",
+    example:
+      "Screen readers, keyboard navigation, 4.5:1 contrast — built in from day one.",
   },
   {
     icon: Scale,
     title: "Non-Bias",
     question: "Does this assume or exclude?",
+    example:
+      "Neutral language, no demographic assumptions — your product welcomes everyone.",
   },
   {
     icon: MousePointerClick,
     title: "UX Minded",
     question: "Does this feel intentional and clear?",
+    example:
+      "Loading states, error messages, confirmations — every interaction is considered.",
   },
   {
     icon: Globe,
     title: "Universal Design",
     question: "Does this work for the widest range of people without adaptation?",
+    example:
+      "Mobile, tablet, desktop — works everywhere without compromise.",
   },
   {
     icon: ServerCog,
     title: "R3S",
     question: "What happens when something fails?",
+    example:
+      "Auto-restart, error recovery, graceful fallbacks — built to stay up.",
+    risk: "Downtime, data loss, cascading failures.",
+    mitigation:
+      "PM2 auto-restart, error boundaries on every route, static fallbacks.",
   },
 ];
 
@@ -99,6 +123,9 @@ interface PillarCardProps {
     icon: LucideIcon;
     title: string;
     question: string;
+    example: string;
+    risk?: string;
+    mitigation?: string;
   };
   index: number;
   animated: boolean;
@@ -108,13 +135,10 @@ function PillarCard({ pillar, index, animated }: PillarCardProps) {
   const Icon = pillar.icon;
 
   const card = (
-    <div className="group relative h-full">
-      <div className="glass-card relative flex h-full flex-col p-6 transition-all duration-500 hover:border-primary/30 hover:[box-shadow:0_0_30px_-5px_rgba(0,212,255,0.15)]">
-        <div className="relative mb-3 inline-flex">
-          <div className="absolute inset-0 rounded-lg bg-primary/20 blur-md opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-          <div className="relative inline-flex rounded-lg bg-primary/10 p-2.5 transition-colors duration-300 group-hover:bg-primary/20">
-            <Icon className="h-5 w-5 text-primary" />
-          </div>
+    <div className="h-full">
+      <div className="glass-card relative flex h-full flex-col p-6 transition-colors duration-300 hover:border-primary/30">
+        <div className="mb-3 inline-flex rounded-lg bg-primary/10 p-2.5">
+          <Icon className="h-5 w-5 text-primary" />
         </div>
 
         <span className="text-xs font-medium uppercase tracking-widest text-primary">
@@ -124,6 +148,26 @@ function PillarCard({ pillar, index, animated }: PillarCardProps) {
         <p className="mt-2 text-sm leading-relaxed text-muted-foreground italic">
           &ldquo;{pillar.question}&rdquo;
         </p>
+        <p className="mt-3 text-xs leading-relaxed text-muted-foreground/80">
+          {pillar.example}
+        </p>
+
+        {pillar.risk && pillar.mitigation && (
+          <div className="mt-4 space-y-2 border-t border-white/5 pt-4">
+            <div className="flex items-start gap-2">
+              <AlertTriangle className="mt-0.5 h-3 w-3 shrink-0 text-amber-400" />
+              <p className="text-xs leading-relaxed text-amber-400/80">
+                {pillar.risk}
+              </p>
+            </div>
+            <div className="flex items-start gap-2">
+              <ShieldCheck className="mt-0.5 h-3 w-3 shrink-0 text-emerald-400" />
+              <p className="text-xs leading-relaxed text-emerald-400/80">
+                {pillar.mitigation}
+              </p>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

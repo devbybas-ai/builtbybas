@@ -100,12 +100,8 @@ function ValueCard({ value, index, animated }: ValueCardProps) {
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
       >
-        {/* Icon with glow ring */}
-        <div className="relative mb-4 inline-flex">
-          <div className="absolute inset-0 rounded-xl bg-primary/20 blur-md opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-          <div className="relative inline-flex rounded-xl bg-primary/10 p-3 transition-colors duration-300 group-hover:bg-primary/20">
-            <Icon className="h-6 w-6 text-primary" />
-          </div>
+        <div className="mb-4 inline-flex rounded-xl bg-primary/10 p-3">
+          <Icon className="h-6 w-6 text-primary" />
         </div>
 
         <h3 className="mb-2 text-lg font-semibold">{value.title}</h3>

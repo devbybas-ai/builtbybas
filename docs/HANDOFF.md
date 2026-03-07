@@ -1,8 +1,33 @@
 # BuiltByBas — Handoff Document
 
-> **Last Updated:** 2026-03-07 (Session 38)
-> **Status:** LIVE AT builtbybas.com - Session 38 changes uncommitted locally. VPS still needs pull for Session 37 + 38 changes.
-> **Next Session:** Commit + push Session 38 changes, VPS deploy (git pull + build + restart), rotate Resend API key, marketing push preparation, SMS notifications for intake submissions, modular AI provider architecture, intake form quality improvements.
+> **Last Updated:** 2026-03-07 (Session 39)
+> **Status:** LIVE AT builtbybas.com - Session 39 pushed to remote. VPS needs deploy: `git checkout -- next-env.d.ts && git pull && pnpm install --frozen-lockfile && pnpm build && pm2 restart builtbybas` (next-env.d.ts has local change on VPS blocking pull).
+> **Next Session:** VPS deploy, rotate Resend API key, marketing push preparation, SMS notifications for intake submissions, modular AI provider architecture, intake form quality improvements.
+
+## Session 39 Changes (2026-03-07)
+
+**Eight Pillars Redesign (About Page):**
+- Added concrete example text to every pillar card explaining what each pillar means in practice
+- R3S card gets a dedicated risk/mitigation section (amber warning + green shield icons)
+- Removed blue hover background and glow burst effect from pillar cards
+
+**Blur Burst Removal (Site-wide):**
+- Removed blur-md glow overlays from icon containers in AboutOneTeam, AboutValues, ValueProposition
+- Removed g2 blur filter from HeroBackground center hub circle
+- Toned down central processor radial glow (removed pulse animation, reduced opacity)
+- Kept backdrop-blur on navigation/sticky bars (functional glassmorphism, not decorative)
+
+**Governance Doc Updates:**
+- Updated Pillar 8 in CLAUDE.md: renamed to "Robustness, Redundancy, Recovery, Strategy", added explicit Risk/Mitigation lines
+
+**Files Changed:**
+- `src/components/public-site/AboutPillars.tsx` - examples, R3S risk/mitigation, removed glow
+- `src/components/public-site/AboutOneTeam.tsx` - removed blur burst from icon containers
+- `src/components/public-site/AboutValues.tsx` - removed blur burst from icon containers
+- `src/components/public-site/ValueProposition.tsx` - removed blur burst from icon containers
+- `src/components/public-site/HeroBackground.tsx` - removed center hub blur filter, toned down radial glow
+- `.claude/CLAUDE.md` - updated R3S pillar definition with risk/mitigation
+- `docs/HANDOFF.md` - session 39 notes
 
 ## Session 38 Changes (2026-03-07)
 

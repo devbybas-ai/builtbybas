@@ -415,7 +415,7 @@ export function HeroBackground() {
         </g>
 
         {/* Center hub */}
-        <circle ref={hubOuterRef} className="hero-filter-glow" cx="500" cy="300" r="5" fill="rgba(0, 212, 255, 0.5)" filter="url(#g2)">
+        <circle ref={hubOuterRef} className="hero-filter-glow" cx="500" cy="300" r="5" fill="rgba(0, 212, 255, 0.5)">
           <animate attributeName="fill" values="rgba(0,212,255,0.5);rgba(255,255,255,1);rgba(255,255,255,0.9);rgba(0,212,255,0.5)" keyTimes="0;0.1;0.5;1" dur="0.6s" begin="p1.end" fill="remove" />
           <animate attributeName="fill" values="rgba(0,212,255,0.5);rgba(255,255,255,1);rgba(255,255,255,0.9);rgba(0,212,255,0.5)" keyTimes="0;0.1;0.5;1" dur="0.6s" begin="p2.end" fill="remove" />
           <animate attributeName="fill" values="rgba(0,212,255,0.5);rgba(255,255,255,1);rgba(255,255,255,0.9);rgba(0,212,255,0.5)" keyTimes="0;0.1;0.5;1" dur="0.6s" begin="p3.end" fill="remove" />
@@ -576,12 +576,12 @@ export function HeroBackground() {
         </g>
       </svg>
 
-      {/* Central processor glow — static on mobile, animated on desktop */}
+      {/* Central processor area — subtle, no glow */}
       <div
-        className="absolute left-1/2 top-[65%] h-[350px] w-[350px] -translate-x-1/2 -translate-y-1/2 rounded-full md:h-[500px] md:w-[500px] motion-safe:md:animate-[orb-pulse_6s_ease-in-out_infinite]"
+        className="absolute left-1/2 top-[65%] h-[350px] w-[350px] -translate-x-1/2 -translate-y-1/2 rounded-full md:h-[500px] md:w-[500px]"
         style={{
           background:
-            "radial-gradient(circle at center, rgba(0, 212, 255, 0.08) 0%, rgba(0, 212, 255, 0.03) 40%, transparent 65%)",
+            "radial-gradient(circle at center, rgba(0, 212, 255, 0.03) 0%, transparent 50%)",
         }}
       />
 

@@ -11,12 +11,8 @@ export function AboutOneTeam() {
 
   const basCard = (
     <div className="group glass-card relative p-8 text-center transition-all duration-500 hover:border-primary/30 hover:shadow-[0_0_40px_-5px] hover:shadow-primary/15">
-      {/* Icon with glow */}
-      <div className="relative mx-auto mb-4 inline-flex">
-        <div className="absolute inset-0 rounded-xl bg-primary/20 blur-md opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-        <div className="relative inline-flex rounded-xl bg-primary/10 p-4 transition-colors duration-300 group-hover:bg-primary/20">
-          <User className="h-8 w-8 text-primary" />
-        </div>
+      <div className="mx-auto mb-4 inline-flex rounded-xl bg-primary/10 p-4">
+        <User className="h-8 w-8 text-primary" />
       </div>
 
       <h3 className="text-xl font-semibold">Bas</h3>
@@ -48,12 +44,8 @@ export function AboutOneTeam() {
 
   const claudeCard = (
     <div className="group glass-card relative p-8 text-center transition-all duration-500 hover:border-primary/30 hover:shadow-[0_0_40px_-5px] hover:shadow-primary/15">
-      {/* Icon with glow */}
-      <div className="relative mx-auto mb-4 inline-flex">
-        <div className="absolute inset-0 rounded-xl bg-primary/20 blur-md opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-        <div className="relative inline-flex rounded-xl bg-primary/10 p-4 transition-colors duration-300 group-hover:bg-primary/20">
-          <Cpu className="h-8 w-8 text-primary" />
-        </div>
+      <div className="mx-auto mb-4 inline-flex rounded-xl bg-primary/10 p-4">
+        <Cpu className="h-8 w-8 text-primary" />
       </div>
 
       <h3 className="text-xl font-semibold">Claude</h3>

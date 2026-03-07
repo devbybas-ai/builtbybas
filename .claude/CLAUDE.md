@@ -125,8 +125,10 @@ Every line of code, every component, every API route is measured against these 8
 **Universal:** Works across devices, browsers, connection speeds, and abilities.
 **This project:** Mobile-first responsive (375px base), tested at 768px (tablet) and 1440px (desktop), public site works without JavaScript (SSR), admin dashboard works on tablet viewport, reduced motion media query respected for all Framer Motion animations.
 
-### Pillar 8: R3S (Resilience, Reliability, Recoverability, Scalability)
+### Pillar 8: R3S (Robustness, Redundancy, Recovery, Strategy)
 **Universal:** What happens when something fails? Graceful degradation, error boundaries, retry logic.
+**Risk:** Downtime, data loss, cascading failures — every unhandled failure erodes user trust.
+**Mitigation:** PM2 auto-restart, error boundaries on every route, static fallback data when the database is down.
 **This project:** React error boundaries on every route, API routes return generic error messages (no stack traces), database connection pooling, PM2 process management with auto-restart, static fallback data for portfolio if database is down, session expiry handling in auth middleware.
 
 ---
