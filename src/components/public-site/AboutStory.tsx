@@ -38,38 +38,48 @@ export function AboutStory() {
   return (
     <section className="py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <FadeIn className="mb-16">
-          <h2 className="text-3xl font-bold sm:text-4xl">
-            The <span className="text-gradient">Story</span>
-          </h2>
-        </FadeIn>
-
         <div className="grid items-start gap-12 lg:grid-cols-2">
-          {/* Story text — staggered paragraph entrances */}
-          <div className="space-y-6 text-muted-foreground">
+          {/* Left column — heading, intro, story */}
+          <div className="space-y-6">
+            <FadeIn>
+              <h1 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
+                About <span className="text-gradient">BuiltByBas</span>
+              </h1>
+              <p className="mt-4 text-lg text-muted-foreground">
+                BuiltByBas is a software development company focused on
+                building{" "}
+                <span className="font-medium text-foreground">
+                  operational software systems for real-world businesses
+                </span>
+                . We design and build functional operational platforms that
+                help businesses manage workflows, data, and internal
+                processes with highly customized solutions.
+              </p>
+            </FadeIn>
+
+            <FadeIn>
+              <h2 className="pt-4 text-3xl font-bold sm:text-4xl">
+                The <span className="text-gradient">Story</span>
+              </h2>
+            </FadeIn>
+
+            <div className="space-y-6 text-muted-foreground">
             {[
               <>
                 I started BuiltByBas because I believe every business deserves
-                real software built for how they actually operate. Not
-                one-size-fits-all templates. Not tools that stop working six
-                months later. Real solutions, built with care, that grow with
-                your business. That belief lit a fire.
+                real software built for how they actually operate. Real business
+                solutions, built with security, stability, redundancy,
+                performance, and our customers in mind. This belief lit a fire
+                in me.
               </>,
               <>
-                The discipline, precision, and commitment to mission that the
-                military instills, that&apos;s the foundation I built on. Not
-                managing layers of people. Not padding proposals. Not selling
-                features nobody asked for. Just building with precision,
-                because every line of code matters when it&apos;s your business
-                on the line.
-              </>,
-              <>
-                When AI changed the game, that fire became a team. Now we ship
-                production code with AI as our co-pilot. Every project gets the
-                full picture, the engineering AND the marketing strategy, built
-                by a team that understands both. AI doesn&apos;t replace
-                craftsmanship, it amplifies it. What started as one
-                developer&apos;s mission is now BuiltByBas.
+                When AI hit the market, it completely changed the game. That
+                fire gained the backing of a team. Now we ship production code
+                applications with AI as a co-pilot. What started as one
+                developer&apos;s dream has quickly turned into our
+                company&apos;s mission: build better solutions that make real
+                impact on your business. This is the driving force behind every
+                BuiltByBas project.
               </>,
             ].map((text, i) =>
               shouldReduceMotion ? (
@@ -89,6 +99,7 @@ export function AboutStory() {
                 </motion.p>
               )
             )}
+            </div>
           </div>
 
           {/* Credential cards — stacked with stagger */}
@@ -96,7 +107,7 @@ export function AboutStory() {
             {credentials.map((cred, index) => {
               const card = (
                 <div key={cred.title} className="group relative">
-                  <div className="glass-card relative p-6 transition-all duration-500 hover:border-primary/30 hover:shadow-[0_0_30px_-5px] hover:shadow-primary/15">
+                  <div className="glass-card relative p-6 transition-all duration-500 hover:border-primary/30 hover:[box-shadow:0_0_30px_-5px_rgba(0,212,255,0.15)]">
 
                     <div className="flex items-start gap-4">
                       {/* Animated dot */}

@@ -14,15 +14,15 @@ const milestones = [
   },
   {
     label: "The Realization",
-    title: "Businesses Deserve Better",
-    description:
-      "Every business deserves real tools that work as hard as they do. I saw owners spending more time fighting their software than running their companies, and I knew I could build something better. Software that fits how you actually work, at a price that respects your budget. That conviction became the foundation of everything we do.",
-  },
-  {
-    label: "The Evolution",
     title: "AI Made the Dream Real",
     description:
       "When AI became a true development partner, everything changed. The dream I carried since I was 16 was suddenly within reach. I had the tools, and for the first time, I had the team that matched my ambition. AI didn't replace my craft. It gave me the time and the power to finally master it.",
+  },
+  {
+    label: "The Purpose",
+    title: "Businesses Deserve Better",
+    description:
+      "Every business deserves real tools that work as hard as they do. I saw owners spending more time fighting their software than running their companies, and I knew I could build something better. Software that fits how you actually work, at a price that respects your budget. That conviction became the foundation of everything we do.",
   },
   {
     label: "Today",

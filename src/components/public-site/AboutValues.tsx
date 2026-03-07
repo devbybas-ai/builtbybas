@@ -26,14 +26,14 @@ const values = [
     icon: Wrench,
     title: "Built to Last",
     description:
-      "Clean architecture, tested code, production-grade infrastructure. Your software should work for years, not months.",
+      "Clean architecture, tested code, production-grade infrastructure. Today's tech climate is moving at lightning speed. Your software is designed from the start to seamlessly integrate with future technology so your business can pivot when it really matters.",
     accent: "from-emerald-400 to-teal-500",
   },
   {
     icon: Sparkles,
     title: "Human + AI",
     description:
-      "We bring the vision and craft. AI brings speed and scale. Together, we deliver what neither could alone.",
+      "We bring 20+ years of development knowledge, the vision, and the craft. AI brings the lightning speed and superhuman ability to scale. Together, we deliver products that neither could alone. Together we develop unique custom solutions that real businesses are benefiting from today.",
     accent: "from-amber-400 to-orange-500",
   },
 ];
@@ -50,7 +50,7 @@ export function AboutValues() {
           </h2>
         </FadeIn>
 
-        <div className="grid gap-6 sm:grid-cols-2">
+        <div className="grid items-stretch gap-6 sm:grid-cols-2">
           {values.map((value, index) => (
             <ValuesCard
               key={value.title}
@@ -81,8 +81,8 @@ function ValuesCard({ value, index, animated }: ValuesCardProps) {
   const xDirections = [-40, 40, -40, 40];
 
   const card = (
-    <div className="group relative">
-      <div className="glass-card relative p-8 transition-all duration-500 hover:border-primary/30 hover:shadow-[0_0_40px_-5px] hover:shadow-primary/15">
+    <div className="group relative h-full">
+      <div className="glass-card relative h-full p-8 transition-all duration-500 hover:border-primary/30 hover:[box-shadow:0_0_30px_-5px_rgba(0,212,255,0.15)]">
         {/* Icon with glow */}
         <div className="relative mb-4 inline-flex">
           <div className="absolute inset-0 rounded-lg bg-primary/20 blur-md opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
@@ -103,6 +103,7 @@ function ValuesCard({ value, index, animated }: ValuesCardProps) {
 
   return (
     <motion.div
+      className="h-full"
       initial={{ opacity: 0, x: xDirections[index] ?? 0, y: 20 }}
       whileInView={{ opacity: 1, x: 0, y: 0 }}
       viewport={viewportOnce}
