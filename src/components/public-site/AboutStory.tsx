@@ -38,7 +38,7 @@ export function AboutStory() {
   return (
     <section className="py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid items-start gap-12 lg:grid-cols-2">
+        <div className="grid items-center gap-12 lg:grid-cols-2">
           {/* Left column — heading, intro, story */}
           <div className="space-y-6">
             <FadeIn>
@@ -67,10 +67,10 @@ export function AboutStory() {
             {[
               <>
                 I started BuiltByBas because I believe every business deserves
-                real software built for how they actually operate. Real business
-                solutions, built with security, stability, redundancy,
-                performance, and our customers in mind. This belief lit a fire
-                in me.
+                quality software built for how they actually operate in their
+                daily businesses. Real solutions, built with security,
+                stability, redundancy, performance, and with the customer in mind.
+                It was this belief that lit a fire in me to deliver.
               </>,
               <>
                 When AI hit the market, it completely changed the game. That
