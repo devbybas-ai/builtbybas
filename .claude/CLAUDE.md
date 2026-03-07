@@ -114,7 +114,7 @@ Every line of code, every component, every API route is measured against these 8
 **This project:** axe-core on every E2E test, skip-to-content link, form labels on every input, 4.5:1 contrast minimum (especially important with dark theme + cyan accents), focus indicators visible, touch targets 44x44px minimum, heading hierarchy enforced.
 
 ### Pillar 5: Non-Bias
-**Universal:** No assumptions about users based on name, location, gender, age, ability, or economic status.
+**Universal:** No assumptions about users based on name, location, gender, age, ability, or economic status. Default-deny on language: use only plain, direct words with no disputed or harmful origins. If an idiom, metaphor, or colloquialism could trace back to violence, oppression, or discrimination, replace it with clear language. Do not maintain a blocklist; instead, treat all figurative language as suspect and prefer literal alternatives.
 **This project:** Intake form uses neutral language, no required fields for optional demographics, scoring engine based on objective project fit criteria (not client characteristics), AI-generated proposals reviewed for bias before sending.
 
 ### Pillar 6: UX Minded

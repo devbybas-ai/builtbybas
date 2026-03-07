@@ -87,6 +87,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
                 alt={`${project.title} screenshot`}
                 fill
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                quality={90}
                 className="object-cover object-top"
               />
             ) : (
@@ -122,7 +123,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
         <div className="mt-4 flex items-center gap-4">
           <Link
             href={`/portfolio/${project.slug}`}
-            className="inline-flex items-center gap-1 text-sm font-medium text-primary transition-colors hover:text-cyan-hover"
+            className="inline-flex items-center gap-1 text-sm font-medium text-primary transition-all hover:text-cyan-hover hover:drop-shadow-[0_0_8px_rgba(0,212,255,0.5)]"
           >
             {project.isDemo ? "Try Demo" : "View Project"}
             <ArrowUpRight className="h-3.5 w-3.5" />
@@ -132,7 +133,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
               href={project.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 text-xs text-muted-foreground transition-colors hover:text-foreground"
+              className="inline-flex items-center gap-1 text-xs text-muted-foreground transition-all hover:text-primary hover:drop-shadow-[0_0_8px_rgba(0,212,255,0.5)]"
             >
               Visit Site
               <ExternalLink className="h-3 w-3" />

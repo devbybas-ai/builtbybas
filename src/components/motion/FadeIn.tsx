@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, type Variants } from "framer-motion";
-import { springs, viewportOnce } from "@/lib/motion";
+import { springs, viewportRepeat } from "@/lib/motion";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { cn } from "@/lib/utils";
 
@@ -48,7 +48,7 @@ export function FadeIn({
       variants={directionVariants[direction]}
       initial="hidden"
       whileInView="visible"
-      viewport={viewportOnce}
+      viewport={viewportRepeat}
       transition={{ ...springs.smooth, delay }}
       className={cn(className)}
     >

@@ -1,7 +1,7 @@
 # BuiltByBas — Site Health Audit
 
-> **Last Updated:** 2026-03-01
-> **Audit Type:** Post-Session 18 (Portfolio Galleries + Animation Demos)
+> **Last Updated:** 2026-03-07
+> **Audit Type:** Post-Session 37 (Interactive Demo Backend + WebP Conversion)
 > **Auditor:** Claude + Bas
 > **Overall Score:** 10/10 — A+
 
@@ -110,6 +110,7 @@ Tech Debt Classes:
 | 2026-03-01 | Phase5   | Proposals + Revision UX | 10/10 (A+)  | Claude + Bas | Phase 5 complete: algorithmic proposal generation (no AI API), 4 API routes, 6 admin pages/components, 32 new tests (163 total), 50-route build. Mobile animation perf fixed (SVG SMIL + blur filter removal). Colour Parlor Nginx routing fixed. Revision workflows added to ProposalDetailView (title/summary/content/timeline inline editing, reviewed→draft reset for RAI) and InvoiceDetailView (line items add/remove, due date, tax rate, notes). VPS git switched to HTTPS.                                                                         |
 | 2026-03-01 | Sess. 18 | Portfolio + Animation   | 10/10 (A+)  | Claude + Bas | Portfolio image galleries: auto-cycle (5s), thumbnail click-to-swap, pause on hover, AnimatePresence crossfade, progress indicators. 17 screenshots converted PNG→WebP (4.7MB→244KB). Gallery arrays for Orca Child (9) + BuiltByBas (4). 4 new animation demos: MicroInteractions (8), LayoutAnimations (6), SVGAnimations (7), ScrollAnimations (5) — 41 total specimens across 6 pages. About page: #OneTeam→Human Oversight. Raw submission data: recursive structured display. Deployed to production (commit 92269cc). 163/163 tests, 50-route build. |
 | 2026-03-06 | Sess. 36 | Full Site Audit         | 10/10 (A+)  | Claude + Bas | Head-to-toe audit: content (mdash removal, I-to-we story arc, lift-up messaging), SEO (sitemap 5→52+ pages, homepage metadata), security (env var consistency, CSP for Umami, SSL cert), accessibility (ProposalResponse label + main landmark), RAI compliance (Section 6 added). 12 issues found, 11 closed, 1 open (API key rotation). 4 parallel audit agents: content, SEO, accessibility, security/performance. All 8 pillars verified.                                                                                                               |
+| 2026-03-07 | Sess. 37 | Demo Backend + Perf     | 10/10 (A+)  | Claude + Bas | Interactive public demo backend (8 pages at /demo): dashboard, clients, pipeline (drag-and-drop kanban), projects, proposals, invoices, analytics. All client-side state, no auth required. Demo data math verified flawless. Real client removed from demo. Portfolio PNGs converted to WebP (61% size reduction). Case-sensitive folder fix for Linux VPS. 5 commits pushed. No new issues.                                                                                                                                                               |
 
 ---
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { springs, viewportOnce } from "@/lib/motion";
+import { springs, viewportRepeat } from "@/lib/motion";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 
 const stats = [
@@ -38,7 +38,7 @@ export function StatsBar() {
             key={stat.label}
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={viewportOnce}
+            viewport={viewportRepeat}
             transition={{ ...springs.smooth, duration: 0.5, delay: 0.7 + index * 0.1 }}
           >
             {card}

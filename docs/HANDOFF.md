@@ -1,8 +1,102 @@
 # BuiltByBas — Handoff Document
 
-> **Last Updated:** 2026-03-06 (Session 36)
-> **Status:** LIVE AT builtbybas.com - all changes pushed to remote. VPS needs pull for audit fixes (`48e52d5`+).
-> **Next Session:** VPS deploy (git pull + build + restart), rotate Resend API key, SMS notifications for intake submissions, modular AI provider architecture, intake form quality improvements.
+> **Last Updated:** 2026-03-07 (Session 38)
+> **Status:** LIVE AT builtbybas.com - Session 38 changes uncommitted locally. VPS still needs pull for Session 37 + 38 changes.
+> **Next Session:** Commit + push Session 38 changes, VPS deploy (git pull + build + restart), rotate Resend API key, marketing push preparation, SMS notifications for intake submissions, modular AI provider architecture, intake form quality improvements.
+
+## Session 38 Changes (2026-03-07)
+
+**Hero Section Overhaul:**
+- Hero section set to exact viewport height (`h-[calc(100vh-4rem)]`) so "Why BuiltByBas?" no longer peeks when scrolled to top
+- Scroll teaser pinned to bottom of hero with absolute positioning, changed to white text
+- PCB background shifted down (`translate-y-[7%]`) so center hub sits between headline and cards
+- Central processor glow orb moved down to `top-[65%]`
+- IC chips and SMD components made fully opaque (`fill="rgb(8, 18, 28)"`) with SVG render order fix (split chipGroupRef into chipPathsRef + chipRectsRef)
+- Added blinking processing LEDs to 4 select chips (fast 0.6s blink), IC 1 has 3 sequential LEDs
+- Chip glow animation preserved when traces reach chips (overlay rects render after chip bodies)
+
+**Animation Replay:**
+- All Framer Motion animations now replay when scrolling back up (`viewportRepeat` with `once: false`)
+- Applied to FadeIn, ValueProposition, CTASection, StatsBar
+
+**Content Updates:**
+- ValueProposition card updated: "Fast, Accurate, Reliable" with expanded description about AI-augmented delivery, human/code gates, documentation
+- Delivery times scaled to "2-3 weeks for most projects" across ValueProposition and Services FAQ
+- ScrollTeaser text changed to white
+
+**Demo Data Anonymized:**
+- All client names replaced with Client 1 through Client 10
+- All phone numbers replaced with (111) 111-1111
+- All emails replaced with clientN@example.com
+- All business names replaced with "[Industry] Business N" (e.g., "Wellness Business 1", "Legal Business 1")
+- Activity notes scrubbed of personal names
+
+**Portfolio Cleanup:**
+- Animation and Concept tabs hidden from portfolio filter bar
+- Animation/concept projects excluded from "Live" grid view
+- Created dedicated `/concepts` page (noindex, no nav link, direct URL only)
+- ConceptGrid component with subcategory filter for the concepts page
+
+**Visual Cleanup:**
+- Removed decorative blur orb overlays from CTA section (top-left and bottom-right corner flares)
+
+**Files Changed:**
+- `src/components/public-site/HeroBackground.tsx` - PCB position, opaque chips, LEDs, split refs
+- `src/components/public-site/Hero.tsx` - exact viewport height, absolute scroll teaser
+- `src/components/public-site/ScrollTeaser.tsx` - white text
+- `src/components/public-site/ValueProposition.tsx` - updated card copy, viewportRepeat
+- `src/components/public-site/CTASection.tsx` - removed blur orbs, viewportRepeat
+- `src/components/public-site/StatsBar.tsx` - viewportRepeat
+- `src/components/motion/FadeIn.tsx` - viewportRepeat
+- `src/lib/motion.ts` - added viewportRepeat export
+- `src/app/(public)/services/page.tsx` - updated FAQ delivery timeline
+- `src/data/demo-data.ts` - fully anonymized client data
+- `src/components/portfolio/ProjectFilter.tsx` - hidden animation/concept tabs
+- `src/components/portfolio/ConceptGrid.tsx` - new concept grid component
+- `src/app/(public)/concepts/page.tsx` - new hidden concepts page
+- `src/data/portfolio.ts` - excluded animation from "all" filter
+
+## Session 37 Changes (2026-03-07)
+
+**Interactive Public Demo Backend (`/demo`):**
+- Full 8-page demo backend at `/demo` mirroring the admin CRM without auth
+- All static mock data in `src/data/demo-data.ts` (no database, no API calls)
+- `src/app/(public)/demo/layout.tsx` with `DemoSidebar` and amber demo mode banner
+- `src/components/layout/DemoSidebar.tsx` with 8 nav items + "Start Your Project" CTA
+
+**Demo Pages (all interactive, client-side state):**
+- **Dashboard** (`/demo`) - 4 clickable stat cards routing to sections, complexity distribution bar, service demand grid, donut chart (budget ranges), industry mix cloud, top priority submissions, recent pipeline activity
+- **Clients** (`/demo/clients`) - search bar, stage filter pills with counts, sort (Recent/Name/Revenue), expandable rows with stage update buttons
+- **Pipeline** (`/demo/pipeline`) - HTML5 native drag-and-drop kanban (no extra deps), responsive 7-column grid (no horizontal scroll), click-to-move fallback, drop zone highlighting
+- **Intake** (`/demo/intake`) - already existed from prior session
+- **Projects** (`/demo/projects`) - progress +/-10% buttons, status auto-updates based on progress thresholds, "Mark as Completed" action, filter by status
+- **Proposals** (`/demo/proposals`) - status filter pills, live stats (total/won value, conversion rate), expandable rows with status transitions
+- **Invoices** (`/demo/invoices`) - "Mark as Paid" action, collection rate percentage, filter by status, expandable details
+- **Analytics** (`/demo/analytics`) - time period selector (6M/YTD/12M), hover tooltips on bar chart, period total/average computed dynamically
+
+**Demo Data Integrity:**
+- All math verified: pipeline $126,000 (exact sum of 10 cards), revenue $98,000 (sum of monthly), 50% conversion rate (2/4 proposals)
+- Real client removed: Lacy Thompson/Colour Parlor replaced with Rachel Simmons/Luxe Hair Lounge in all locations
+- No negative numbers or decline messaging - all positive growth trends
+- Proposal pricing bumped to realistic custom software values ($7,500-$24,000)
+- Cross-page consistency verified (same client appears with matching amounts across pipeline, proposals, invoices, projects)
+
+**Portfolio Updates:**
+- BuiltByBas backend portfolio item now links to `/demo` instead of `https://builtbybas.com`
+- Portfolio sorting: `statusOrder` record sorts live projects before in-progress before demo
+- All 21 portfolio screenshots converted from PNG to WebP (2.2MB to 856KB, 61% reduction)
+- Fixed case-sensitive folder naming (`Systems/` to `systems/`) for Linux VPS compatibility via two-step git mv
+
+**About Page Refresh:**
+- Content updates to about page
+- `globals.css` updates
+
+**Commits Pushed:**
+- `a5d0e4f` feat: interactive public demo backend + portfolio sort
+- `c6255bd` content: add builtbybas backend portfolio screenshots
+- `b130405` fix: lowercase portfolio image folder for Linux case-sensitivity
+- `2bce0b1` feat: about page refresh, globals.css updates, docs and knowledge base
+- `ce3b189` perf: convert portfolio screenshots from PNG to WebP (2.2MB -> 856KB)
 
 ## Session 36 Changes (2026-03-06)
 

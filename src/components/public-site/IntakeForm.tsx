@@ -141,7 +141,7 @@ export function IntakeForm() {
               onClick={handleSubmit}
               disabled={isSubmitting}
               className={cn(
-                "neon-glow inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground transition-colors",
+                "neon-glow inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground transition-all",
                 "hover:bg-cyan-hover",
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                 "disabled:cursor-not-allowed disabled:opacity-50",
@@ -155,7 +155,7 @@ export function IntakeForm() {
               type="button"
               onClick={nextStep}
               className={cn(
-                "inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground transition-colors",
+                "neon-glow inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground transition-all",
                 "hover:bg-cyan-hover",
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
               )}

@@ -21,7 +21,7 @@ const faqItems = [
   {
     question: "How long does a typical project take?",
     answer:
-      "Project timelines vary based on scope. A marketing website typically takes 2-4 weeks. Custom software platforms can take 2-6 months. We'll provide a detailed timeline in your custom proposal.",
+      "Most projects are delivered within 2-3 weeks, though timelines vary based on scope and complexity. We'll provide a detailed timeline in your custom proposal.",
   },
   {
     question: "Do you offer ongoing support after launch?",

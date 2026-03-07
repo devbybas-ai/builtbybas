@@ -82,6 +82,7 @@ export function ProjectCardGallery({ images, title, colorAccent }: ProjectCardGa
               alt={`${title} screenshot ${activeIndex + 1}`}
               fill
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              quality={90}
               className="object-cover object-top"
             />
           </motion.div>
@@ -138,6 +139,7 @@ export function ProjectCardGallery({ images, title, colorAccent }: ProjectCardGa
                 alt=""
                 fill
                 sizes="120px"
+                quality={85}
                 className="object-cover object-top"
               />
             </button>

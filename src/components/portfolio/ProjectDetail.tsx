@@ -123,11 +123,12 @@ export function ProjectDetail({
                     fill
                     sizes="(max-width: 1200px) 100vw, 1024px"
                     priority={activeIndex === 0}
+                    quality={90}
                     className="object-cover object-top"
                   />
                 </motion.div>
               </AnimatePresence>
-              <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-background/40 to-transparent" />
 
               {/* Progress indicators */}
               {!shouldReduceMotion && hasGallery && (
@@ -168,7 +169,7 @@ export function ProjectDetail({
                     )}
                     aria-label={`View screenshot ${i + 1}`}
                   >
-                    <Image src={src} alt="" fill sizes="200px" className="object-cover object-top" />
+                    <Image src={src} alt="" fill sizes="200px" quality={85} className="object-cover object-top" />
                   </button>
                 ))}
               </div>
@@ -208,7 +209,7 @@ export function ProjectDetail({
               href={project.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="btn-shine mt-6 inline-flex h-10 items-center gap-2 rounded-lg bg-primary px-6 text-sm font-semibold text-primary-foreground transition-colors hover:bg-cyan-hover"
+              className="btn-shine neon-glow mt-6 inline-flex h-10 items-center gap-2 rounded-lg bg-primary px-6 text-sm font-semibold text-primary-foreground transition-all hover:bg-cyan-hover"
             >
               Visit Live Site
               <ExternalLink className="h-4 w-4" />

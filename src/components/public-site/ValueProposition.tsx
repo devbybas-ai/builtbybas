@@ -2,7 +2,7 @@
 
 import { motion, useMotionValue, useTransform } from "framer-motion";
 import { Code2, Zap, HeartHandshake } from "lucide-react";
-import { springs, viewportOnce } from "@/lib/motion";
+import { springs, viewportRepeat } from "@/lib/motion";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { FadeIn } from "@/components/motion/FadeIn";
 import type { LucideIcon } from "lucide-react";
@@ -17,9 +17,9 @@ const values = [
   },
   {
     icon: Zap,
-    title: "Fast, Not Bloated",
+    title: "Fast, Accurate, Reliable",
     description:
-      "AI-augmented delivery in weeks, not months. One developer, zero bloated teams. You get speed without sacrificing quality.",
+      "AI-augmented delivery in 2-3 weeks for most projects — complex builds take longer. Human and code-based gates ensure accuracy. You get speed, reliability, and full documentation with every delivery.",
     accent: "from-violet-400 to-purple-500",
   },
   {
@@ -35,18 +35,18 @@ export function ValueProposition() {
   const shouldReduceMotion = useReducedMotion();
 
   return (
-    <section className="relative py-24">
+    <section id="value-proposition" className="scroll-mt-20 relative pt-8 pb-10 sm:pt-12 sm:pb-12">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <FadeIn className="mb-16 text-center">
-          <h2 className="text-3xl font-bold sm:text-4xl">
+        <FadeIn className="mb-8 text-center">
+          <h2 className="text-2xl font-bold sm:text-3xl">
             Why <span className="text-gradient">BuiltByBas</span>?
           </h2>
-          <p className="mt-4 text-lg text-muted-foreground">
+          <p className="mt-3 text-base text-muted-foreground">
             Your business deserves better than what most agencies deliver.
           </p>
         </FadeIn>
 
-        <div className="grid gap-8 md:grid-cols-3">
+        <div className="grid gap-6 md:grid-cols-3">
           {values.map((value, index) => (
             <ValueCard
               key={value.title}
@@ -96,19 +96,19 @@ function ValueCard({ value, index, animated }: ValueCardProps) {
   const content = (
     <div className="group relative h-full">
       <div
-        className="glass-card relative h-full p-8 transition-all duration-500 hover:border-primary/30 hover:shadow-[0_0_40px_-5px] hover:shadow-primary/15"
+        className="glass-card relative h-full p-6 transition-all duration-500 hover:border-primary/30 hover:shadow-[0_0_40px_-5px] hover:shadow-primary/15"
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
       >
         {/* Icon with glow ring */}
-        <div className="relative mb-5 inline-flex">
+        <div className="relative mb-4 inline-flex">
           <div className="absolute inset-0 rounded-xl bg-primary/20 blur-md opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
           <div className="relative inline-flex rounded-xl bg-primary/10 p-3 transition-colors duration-300 group-hover:bg-primary/20">
             <Icon className="h-6 w-6 text-primary" />
           </div>
         </div>
 
-        <h3 className="mb-3 text-xl font-semibold">{value.title}</h3>
+        <h3 className="mb-2 text-lg font-semibold">{value.title}</h3>
         <p className="text-sm leading-relaxed text-muted-foreground">
           {value.description}
         </p>
@@ -122,7 +122,7 @@ function ValueCard({ value, index, animated }: ValueCardProps) {
     <motion.div
       initial={{ opacity: 0, x: directions[index] ?? 0, y: 30 }}
       whileInView={{ opacity: 1, x: 0, y: 0 }}
-      viewport={viewportOnce}
+      viewport={viewportRepeat}
       transition={{ ...springs.smooth, duration: 0.7, delay: index * 0.15 }}
       style={{ rotateX, rotateY, transformPerspective: 800 }}
     >

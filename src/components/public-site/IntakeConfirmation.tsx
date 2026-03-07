@@ -93,7 +93,7 @@ export function IntakeConfirmation() {
           <div className="mt-12">
             <Link
               href="/"
-              className="inline-flex h-12 items-center rounded-lg bg-primary px-8 text-base font-semibold text-primary-foreground transition-colors hover:bg-cyan-hover"
+              className="btn-shine neon-glow inline-flex h-12 items-center rounded-lg bg-primary px-8 text-base font-semibold text-primary-foreground transition-all hover:bg-cyan-hover"
             >
               Back to Home
             </Link>

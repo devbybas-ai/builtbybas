@@ -13,9 +13,13 @@ interface ProjectFilterProps {
   onChange: (category: FilterCategory) => void;
 }
 
+const hiddenCategories = new Set(["animation", "concept"]);
+
 const allCategories = [
   { id: "all" as const, label: "Live" },
-  ...categoryMeta.map((c) => ({ id: c.id, label: c.label })),
+  ...categoryMeta
+    .filter((c) => !hiddenCategories.has(c.id))
+    .map((c) => ({ id: c.id, label: c.label })),
 ];
 
 export function ProjectFilter({ active, onChange }: ProjectFilterProps) {

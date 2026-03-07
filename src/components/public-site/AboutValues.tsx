@@ -12,7 +12,7 @@ const values = [
     icon: Shield,
     title: "Quality First",
     description:
-      "Every project is measured against 8 engineering pillars: security, performance, accessibility, and more. No shortcuts. No cutting corners.",
+      "Every project is measured against 8 engineering pillars: security, structure, performance, inclusivity, non-bias, UX design, universal design, and resilience. No shortcuts. No cutting corners.",
     accent: "from-cyan-400 to-blue-500",
   },
   {
@@ -33,7 +33,7 @@ const values = [
     icon: Sparkles,
     title: "Human + AI",
     description:
-      "We bring 20+ years of development knowledge, the vision, and the craft. AI brings the lightning speed and superhuman ability to scale. Together, we deliver products that neither could alone. Together we develop unique custom solutions that real businesses are benefiting from today.",
+      "We bring 20+ years of development knowledge, the vision, and the craft. AI brings the lightning speed and superhuman ability to scale. Together, we deliver products that neither could alone. And right now we are developing unique custom solutions that real businesses like yours are benefiting from today.",
     accent: "from-amber-400 to-orange-500",
   },
 ];

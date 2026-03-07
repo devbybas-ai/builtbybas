@@ -34,20 +34,22 @@ const particleOpposite: Record<string, string> = {
 };
 
 function useChipActivity(
-  groupRef: React.RefObject<SVGGElement | null>,
+  pathsRef: React.RefObject<SVGGElement | null>,
+  rectsRef: React.RefObject<SVGGElement | null>,
   hubOuterRef: React.RefObject<SVGCircleElement | null>,
   hubInnerRef: React.RefObject<SVGCircleElement | null>,
 ) {
   useEffect(() => {
-    const g = groupRef.current;
+    const pg = pathsRef.current;
+    const rg = rectsRef.current;
     const hubOuter = hubOuterRef.current;
     const hubInner = hubInnerRef.current;
-    if (!g || !hubOuter || !hubInner) return;
-    const svg = g.closest("svg");
+    if (!pg || !rg || !hubOuter || !hubInner) return;
+    const svg = pg.closest("svg");
     if (!svg) return;
 
-    const rects = g.querySelectorAll<SVGRectElement>("rect");
-    const paths = g.querySelectorAll<SVGPathElement>("path");
+    const rects = rg.querySelectorAll<SVGRectElement>("rect");
+    const paths = pg.querySelectorAll<SVGPathElement>("path");
     if (!rects.length || !paths.length) return;
 
     // Measure each trace path length and set up hidden dasharray
@@ -131,18 +133,19 @@ function useChipActivity(
       particles.forEach((p) => p.removeEventListener("endEvent", handler));
       timeouts.forEach(clearTimeout);
     };
-  }, [groupRef, hubOuterRef, hubInnerRef]);
+  }, [pathsRef, rectsRef, hubOuterRef, hubInnerRef]);
 }
 
 export function HeroBackground() {
-  const chipGroupRef = useRef<SVGGElement>(null);
+  const chipPathsRef = useRef<SVGGElement>(null);
+  const chipRectsRef = useRef<SVGGElement>(null);
   const hubOuterRef = useRef<SVGCircleElement>(null);
   const hubInnerRef = useRef<SVGCircleElement>(null);
-  useChipActivity(chipGroupRef, hubOuterRef, hubInnerRef);
+  useChipActivity(chipPathsRef, chipRectsRef, hubOuterRef, hubInnerRef);
 
   return (
     <div
-      className="pointer-events-none absolute inset-0 overflow-hidden"
+      className="pointer-events-none absolute inset-0 translate-y-[7%] overflow-hidden"
       aria-hidden="true"
     >
       <div
@@ -322,71 +325,61 @@ export function HeroBackground() {
         {/* ============================================ */}
         {/* IC CHIPS — scattered across board             */}
         {/* ============================================ */}
-        <g stroke="rgba(0, 212, 255, 0.12)" strokeWidth="0.7" fill="rgba(0, 212, 255, 0.06)">
-          {/* IC 1 — top-left */}
-          <rect x="70" y="55" width="35" height="50" rx="1" />
+        {/* IC pin lines — drawn first so chip bodies cover them */}
+        <g stroke="rgba(0, 212, 255, 0.12)" strokeWidth="0.7" fill="none">
+          {/* IC 1 pins */}
           <line x1="70" y1="65" x2="58" y2="65" /><line x1="70" y1="75" x2="58" y2="75" />
           <line x1="70" y1="85" x2="58" y2="85" /><line x1="70" y1="95" x2="58" y2="95" />
           <line x1="105" y1="65" x2="117" y2="65" /><line x1="105" y1="75" x2="117" y2="75" />
           <line x1="105" y1="85" x2="117" y2="85" /><line x1="105" y1="95" x2="117" y2="95" />
-          {/* IC 2 — top-center-left */}
-          <rect x="285" y="120" width="45" height="30" rx="1" />
+          {/* IC 2 pins */}
           <line x1="295" y1="120" x2="295" y2="110" /><line x1="305" y1="120" x2="305" y2="110" />
           <line x1="315" y1="120" x2="315" y2="110" /><line x1="320" y1="120" x2="320" y2="110" />
           <line x1="295" y1="150" x2="295" y2="160" /><line x1="305" y1="150" x2="305" y2="160" />
           <line x1="315" y1="150" x2="315" y2="160" /><line x1="320" y1="150" x2="320" y2="160" />
-          {/* IC 3 — top-right */}
-          <rect x="870" y="55" width="50" height="40" rx="1" />
+          {/* IC 3 pins */}
           <line x1="880" y1="55" x2="880" y2="43" /><line x1="890" y1="55" x2="890" y2="43" />
           <line x1="900" y1="55" x2="900" y2="43" /><line x1="910" y1="55" x2="910" y2="43" />
           <line x1="880" y1="95" x2="880" y2="107" /><line x1="890" y1="95" x2="890" y2="107" />
           <line x1="900" y1="95" x2="900" y2="107" /><line x1="910" y1="95" x2="910" y2="107" />
-          {/* IC 4 — right */}
-          <rect x="860" y="230" width="30" height="50" rx="1" />
+          {/* IC 4 pins */}
           <line x1="860" y1="240" x2="848" y2="240" /><line x1="860" y1="250" x2="848" y2="250" />
           <line x1="860" y1="260" x2="848" y2="260" /><line x1="860" y1="270" x2="848" y2="270" />
           <line x1="890" y1="240" x2="902" y2="240" /><line x1="890" y1="250" x2="902" y2="250" />
           <line x1="890" y1="260" x2="902" y2="260" /><line x1="890" y1="270" x2="902" y2="270" />
-          {/* IC 5 — left */}
-          <rect x="70" y="250" width="30" height="45" rx="1" />
+          {/* IC 5 pins */}
           <line x1="70" y1="260" x2="58" y2="260" /><line x1="70" y1="270" x2="58" y2="270" />
           <line x1="70" y1="280" x2="58" y2="280" />
           <line x1="100" y1="260" x2="112" y2="260" /><line x1="100" y1="270" x2="112" y2="270" />
           <line x1="100" y1="280" x2="112" y2="280" />
-          {/* IC 6 — bottom-left */}
-          <rect x="195" y="500" width="45" height="35" rx="1" />
+          {/* IC 6 pins */}
           <line x1="205" y1="500" x2="205" y2="488" /><line x1="215" y1="500" x2="215" y2="488" />
           <line x1="225" y1="500" x2="225" y2="488" /><line x1="230" y1="500" x2="230" y2="488" />
           <line x1="205" y1="535" x2="205" y2="547" /><line x1="215" y1="535" x2="215" y2="547" />
           <line x1="225" y1="535" x2="225" y2="547" /><line x1="230" y1="535" x2="230" y2="547" />
-          {/* IC 7 — bottom-right */}
-          <rect x="760" y="500" width="45" height="35" rx="1" />
+          {/* IC 7 pins */}
           <line x1="770" y1="500" x2="770" y2="488" /><line x1="780" y1="500" x2="780" y2="488" />
           <line x1="790" y1="500" x2="790" y2="488" /><line x1="795" y1="500" x2="795" y2="488" />
           <line x1="770" y1="535" x2="770" y2="547" /><line x1="780" y1="535" x2="780" y2="547" />
           <line x1="790" y1="535" x2="790" y2="547" /><line x1="795" y1="535" x2="795" y2="547" />
-          {/* IC 8 — bottom center */}
-          <rect x="430" y="440" width="40" height="30" rx="1" />
+          {/* IC 8 pins */}
           <line x1="440" y1="440" x2="440" y2="428" /><line x1="450" y1="440" x2="450" y2="428" />
           <line x1="460" y1="440" x2="460" y2="428" />
           <line x1="440" y1="470" x2="440" y2="482" /><line x1="450" y1="470" x2="450" y2="482" />
           <line x1="460" y1="470" x2="460" y2="482" />
-          {/* IC 9 — top center */}
-          <rect x="530" y="130" width="40" height="30" rx="1" />
+          {/* IC 9 pins */}
           <line x1="540" y1="130" x2="540" y2="118" /><line x1="550" y1="130" x2="550" y2="118" />
           <line x1="560" y1="130" x2="560" y2="118" />
           <line x1="540" y1="160" x2="540" y2="172" /><line x1="550" y1="160" x2="550" y2="172" />
           <line x1="560" y1="160" x2="560" y2="172" />
-          {/* IC 10 — right-bottom */}
-          <rect x="870" y="360" width="35" height="40" rx="1" />
+          {/* IC 10 pins */}
           <line x1="870" y1="370" x2="858" y2="370" /><line x1="870" y1="380" x2="858" y2="380" />
           <line x1="870" y1="390" x2="858" y2="390" />
           <line x1="905" y1="370" x2="917" y2="370" /><line x1="905" y1="380" x2="917" y2="380" />
           <line x1="905" y1="390" x2="917" y2="390" />
         </g>
-
         {/* SMD components — small rectangles scattered everywhere */}
-        <g stroke="rgba(0, 212, 255, 0.10)" strokeWidth="0.6" fill="rgba(0, 212, 255, 0.03)">
+        <g stroke="rgba(0, 212, 255, 0.10)" strokeWidth="0.6" fill="rgb(8, 18, 28)">
           <rect x="140" y="72" width="12" height="6" rx="1" /><rect x="230" y="90" width="12" height="6" rx="1" />
           <rect x="410" y="55" width="6" height="12" rx="1" /><rect x="560" y="65" width="12" height="6" rx="1" />
           <rect x="640" y="85" width="6" height="12" rx="1" /><rect x="770" y="70" width="12" height="6" rx="1" />
@@ -399,18 +392,6 @@ export function HeroBackground() {
           <rect x="140" y="500" width="12" height="6" rx="1" /><rect x="350" y="510" width="6" height="12" rx="1" />
           <rect x="560" y="505" width="12" height="6" rx="1" /><rect x="680" y="515" width="6" height="12" rx="1" />
           <rect x="860" y="500" width="12" height="6" rx="1" /><rect x="460" y="550" width="12" height="6" rx="1" />
-        </g>
-
-        {/* Data traces + chip overlays — permanent board traces that light up */}
-        <g className="hero-anim" ref={chipGroupRef}>
-          {/* Trace paths — always on the board, dim by default */}
-          {chipTargets.map((c, i) => (
-            <path key={`t${i}`} d={c.trace} fill="none" stroke="rgba(0, 212, 255, 0.06)" strokeWidth="0.8" />
-          ))}
-          {/* Chip overlays */}
-          {chipTargets.map((c, i) => (
-            <rect key={`c${i}`} x={c.x} y={c.y} width={c.w} height={c.h} rx={1} fill="rgba(0, 212, 255, 0)" stroke="none" />
-          ))}
         </g>
 
         {/* Via holes */}
@@ -475,6 +456,55 @@ export function HeroBackground() {
           <circle cx="620" cy="350" r="1.5" /><circle cx="100" cy="530" r="1.5" />
           <circle cx="250" cy="450" r="1.5" /><circle cx="900" cy="530" r="1.5" />
           <circle cx="750" cy="450" r="1.5" />
+        </g>
+
+        {/* Chip trace paths — drawn before chip bodies so chips cover them */}
+        <g className="hero-anim" ref={chipPathsRef}>
+          {chipTargets.map((c, i) => (
+            <path key={`t${i}`} d={c.trace} fill="none" stroke="rgba(0, 212, 255, 0.06)" strokeWidth="0.8" />
+          ))}
+        </g>
+
+        {/* IC chip bodies — drawn last to cover ALL lines */}
+        <g stroke="rgba(0, 212, 255, 0.12)" strokeWidth="0.7" fill="rgb(8, 18, 28)">
+          <rect x="70" y="55" width="35" height="50" rx="1" />
+          <rect x="285" y="120" width="45" height="30" rx="1" />
+          <rect x="870" y="55" width="50" height="40" rx="1" />
+          <rect x="860" y="230" width="30" height="50" rx="1" />
+          <rect x="70" y="250" width="30" height="45" rx="1" />
+          <rect x="195" y="500" width="45" height="35" rx="1" />
+          <rect x="760" y="500" width="45" height="35" rx="1" />
+          <rect x="430" y="440" width="40" height="30" rx="1" />
+          <rect x="530" y="130" width="40" height="30" rx="1" />
+          <rect x="870" y="360" width="35" height="40" rx="1" />
+        </g>
+        {/* IC chip processing LEDs */}
+        <g className="hero-anim" fill="#00D4FF">
+          <circle cx="76" cy="61" r="1.2" opacity="0">
+            <animate attributeName="opacity" values="0;0.8;0" dur="0.6s" begin="0s" repeatCount="indefinite" />
+          </circle>
+          <circle cx="82" cy="61" r="1.2" opacity="0">
+            <animate attributeName="opacity" values="0;0.8;0" dur="0.6s" begin="0.2s" repeatCount="indefinite" />
+          </circle>
+          <circle cx="88" cy="61" r="1.2" opacity="0">
+            <animate attributeName="opacity" values="0;0.8;0" dur="0.6s" begin="0.4s" repeatCount="indefinite" />
+          </circle>
+          <circle cx="876" cy="61" r="1.2" opacity="0">
+            <animate attributeName="opacity" values="0;0.8;0" dur="1.1s" begin="0.3s" repeatCount="indefinite" />
+          </circle>
+          <circle cx="866" cy="236" r="1.2" opacity="0">
+            <animate attributeName="opacity" values="0;0.8;0" dur="0.9s" begin="0.5s" repeatCount="indefinite" />
+          </circle>
+          <circle cx="436" cy="446" r="1.2" opacity="0">
+            <animate attributeName="opacity" values="0;0.8;0" dur="1s" begin="0.2s" repeatCount="indefinite" />
+          </circle>
+        </g>
+
+        {/* Chip glow overlay rects — on top of chip bodies so animation lights them up */}
+        <g className="hero-anim" ref={chipRectsRef}>
+          {chipTargets.map((c, i) => (
+            <rect key={`c${i}`} x={c.x} y={c.y} width={c.w} height={c.h} rx={1} fill="rgba(0, 212, 255, 0)" stroke="none" />
+          ))}
         </g>
 
         {/* ============================================ */}
@@ -548,7 +578,7 @@ export function HeroBackground() {
 
       {/* Central processor glow — static on mobile, animated on desktop */}
       <div
-        className="absolute left-1/2 top-1/2 h-[350px] w-[350px] -translate-x-1/2 -translate-y-1/2 rounded-full md:h-[500px] md:w-[500px] motion-safe:md:animate-[orb-pulse_6s_ease-in-out_infinite]"
+        className="absolute left-1/2 top-[65%] h-[350px] w-[350px] -translate-x-1/2 -translate-y-1/2 rounded-full md:h-[500px] md:w-[500px] motion-safe:md:animate-[orb-pulse_6s_ease-in-out_infinite]"
         style={{
           background:
             "radial-gradient(circle at center, rgba(0, 212, 255, 0.08) 0%, rgba(0, 212, 255, 0.03) 40%, transparent 65%)",

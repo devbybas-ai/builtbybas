@@ -310,7 +310,7 @@ export function ServiceWalkthroughOverlay({
             {isLastStep ? (
               <Link
                 href={`/intake?service=${toIntakeId(service.id) ?? service.id}`}
-                className="btn-shine inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-background transition-colors hover:bg-primary/90"
+                className="btn-shine neon-glow inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-background transition-all hover:bg-cyan-hover"
               >
                 {walkthrough.cta}
                 <ChevronRight className="h-4 w-4" />
@@ -319,7 +319,7 @@ export function ServiceWalkthroughOverlay({
               <button
                 type="button"
                 onClick={goNext}
-                className="flex items-center gap-1.5 rounded-lg bg-primary/10 px-4 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary/20"
+                className="flex items-center gap-1.5 rounded-lg bg-primary/10 px-4 py-2 text-sm font-medium text-primary transition-all hover:bg-primary/20 hover:shadow-[0_0_15px_rgba(0,212,255,0.3)]"
               >
                 Next
                 <ChevronRight className="h-4 w-4" />

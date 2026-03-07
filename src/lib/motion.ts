@@ -75,3 +75,4 @@ export function staggerContainer(
 // ============================================================
 
 export const viewportOnce = { once: true, margin: "0px 0px -100px 0px" } as const;
+export const viewportRepeat = { once: false, margin: "0px 0px -100px 0px" } as const;

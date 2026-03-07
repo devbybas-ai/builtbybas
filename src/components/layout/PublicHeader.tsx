@@ -40,7 +40,7 @@ export function PublicHeader() {
           ))}
           <Link
             href="/intake"
-            className="btn-shine neon-glow rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-cyan-hover"
+            className="btn-shine neon-glow inline-flex items-center rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-all hover:bg-cyan-hover"
           >
             Start a Project
           </Link>

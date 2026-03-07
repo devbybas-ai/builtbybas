@@ -1419,7 +1419,7 @@ const statusOrder: Record<string, number> = { live: 0, "in-progress": 1, demo: 2
 export function getProjectsByCategory(
   category: PortfolioCategory | "all",
 ): PortfolioProject[] {
-  if (category === "all") return projects.filter((p) => p.category !== "concept" && p.status === "live");
+  if (category === "all") return projects.filter((p) => p.category !== "concept" && p.category !== "animation" && p.status === "live");
   return projects
     .filter((p) => p.category === category)
     .sort((a, b) => (statusOrder[a.status] ?? 9) - (statusOrder[b.status] ?? 9));

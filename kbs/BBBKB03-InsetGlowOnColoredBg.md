@@ -34,7 +34,7 @@ Use **white** for inset glow effects on colored backgrounds. White creates visib
 }
 ```
 
-## Rule of Thumb
+## Quick Reference
 
 - Glow on **dark backgrounds** — use the accent color (cyan)
 - Glow on **colored backgrounds** — use white or a lighter shade

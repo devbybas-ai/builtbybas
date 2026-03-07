@@ -6,12 +6,13 @@ import { AnimatedText } from "@/components/motion/AnimatedText";
 import { FadeIn } from "@/components/motion/FadeIn";
 import { HeroBackground } from "@/components/public-site/HeroBackground";
 import { StatsBar } from "@/components/public-site/StatsBar";
+import { ScrollTeaser } from "@/components/public-site/ScrollTeaser";
 
 export function Hero() {
   const shouldReduceMotion = useReducedMotion();
 
   return (
-    <section className="relative flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center overflow-hidden px-4">
+    <section className="relative flex h-[calc(100vh-4rem)] flex-col items-center justify-center overflow-hidden px-4">
       <HeroBackground />
 
       <div className="relative z-10 mx-auto max-w-4xl text-center">
@@ -40,13 +41,13 @@ export function Hero() {
           <div className="flex flex-col items-center gap-3">
             <Link
               href="/intake"
-              className="btn-shine neon-glow inline-flex h-12 w-full max-w-xs items-center justify-center rounded-lg bg-primary px-8 text-base font-semibold text-primary-foreground transition-colors hover:bg-cyan-hover"
+              className="btn-shine neon-glow inline-flex h-12 w-full max-w-xs items-center justify-center rounded-lg bg-primary px-8 text-base font-semibold text-primary-foreground transition-all hover:bg-cyan-hover"
             >
               Start a Project
             </Link>
             <Link
               href="/portfolio"
-              className="btn-shine inline-flex h-12 w-full max-w-xs items-center justify-center rounded-lg border border-white/10 bg-white/20 px-8 text-base font-semibold transition-colors hover:bg-white/35"
+              className="btn-shine neon-glow inline-flex h-12 w-full max-w-xs items-center justify-center rounded-lg border border-white/10 bg-white/20 px-8 text-base font-semibold transition-all hover:bg-white/35"
             >
               View Our Work
             </Link>
@@ -55,8 +56,13 @@ export function Hero() {
       </div>
 
       {/* Stats Bar */}
-      <div className="relative z-10 mt-16 sm:mt-20 w-full pb-12">
+      <div className="relative z-10 mt-8 sm:mt-12 w-full pb-4">
         <StatsBar />
+      </div>
+
+      {/* Scroll teaser — pinned to bottom of hero */}
+      <div className="absolute inset-x-0 bottom-6 z-10 flex justify-center">
+        <ScrollTeaser />
       </div>
     </section>
   );
