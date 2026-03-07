@@ -19,9 +19,9 @@ const credentials = [
     accent: "from-violet-400 to-purple-500",
   },
   {
-    title: "Veteran-Backed",
+    title: "Built on Integrity",
     description:
-      "Military discipline, mission focus, and a commitment to delivering on every promise. That foundation shapes how we build.",
+      "Honest work, clear expectations, and a commitment to delivering on every promise. That foundation shapes how we build.",
     accent: "from-emerald-400 to-teal-500",
   },
   {

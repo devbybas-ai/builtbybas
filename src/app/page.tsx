@@ -10,7 +10,7 @@ import { getWebSiteSchema } from "@/lib/json-ld";
 export const metadata: Metadata = {
   title: "BuiltByBas | Custom Software and Web Development",
   description:
-    "Custom software, websites, dashboards, and business tools. Built fast, built right, built for your business. Veteran-backed. AI-powered.",
+    "Custom software, websites, dashboards, and business tools. Built fast, built right, built for your business. AI-powered.",
 };
 
 export default function HomePage() {
