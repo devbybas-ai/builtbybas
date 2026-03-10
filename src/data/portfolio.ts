@@ -618,52 +618,6 @@ export const projects: PortfolioProject[] = [
       { tech: "Server Components", reason: "Dashboard pages fetch data server-side — no loading spinners, no client-side waterfall requests. The browser receives rendered HTML with real data, making the admin feel instant" },
     ],
   },
-  {
-    id: "kar-crm",
-    slug: "kar-crm",
-    title: "KAR CRM",
-    subtitle: "Full client relationship management system",
-    category: "systems",
-    description:
-      "A complete CRM system built from the ground up for real business operations. Features pipeline management with visual deal tracking, client contact database, activity logging, task management, and reporting dashboards. Designed for speed and simplicity - no bloat, no unnecessary features, just the tools a business actually needs to manage client relationships and close deals.",
-    capabilities: [
-      "Pipeline Management",
-      "Contact Database",
-      "Activity Tracking",
-      "Task Management",
-      "Reporting",
-      "CRUD Operations",
-    ],
-    technologies: [
-      "React",
-      "TypeScript",
-      "Node.js",
-      "Database",
-      "REST API",
-    ],
-    status: "in-progress",
-    featured: false,
-    colorAccent: "emerald",
-    scope: [
-      "Visual pipeline management with drag-and-drop deal tracking",
-      "Client contact database with search and filtering",
-      "Activity logging with timestamped history",
-      "Task management with assignment and due dates",
-      "Reporting dashboards with conversion metrics",
-      "RESTful API for all CRUD operations",
-    ],
-    challenge:
-      "Off-the-shelf CRMs like Salesforce and HubSpot are bloated, expensive, and force businesses into workflows that don't match how they actually operate. The client needed a CRM that does exactly what they need - pipeline tracking, contact management, activity logging - without paying $50/user/month for features they'll never use.",
-    approach:
-      "We built a lean CRM focused on speed and simplicity. The pipeline view gives instant visibility into every deal stage. Activity logging creates an automatic paper trail without manual data entry. The reporting dashboard shows conversion rates and revenue forecasts from real data. Every feature exists because it solves a daily workflow problem, not because a product manager added it to a feature comparison chart.",
-    techChoices: [
-      { tech: "React", reason: "Component-based architecture for the pipeline board, contact cards, and activity feeds. Real-time UI updates when deals move through stages" },
-      { tech: "TypeScript", reason: "Type safety across the full stack ensures contact records, deal amounts, and activity logs maintain data integrity" },
-      { tech: "Node.js", reason: "Same language front-to-back. Fast development cycles when the backend team and frontend team are the same person" },
-      { tech: "Database", reason: "Relational database for structured CRM data - contacts, deals, activities all linked with foreign keys and indexed for fast queries" },
-      { tech: "REST API", reason: "Clean CRUD endpoints that could power a mobile app or third-party integration if the business grows beyond the web interface" },
-    ],
-  },
 
   // === BBB DEMO SYSTEMS - 16 Interactive Business Tools ===
 
