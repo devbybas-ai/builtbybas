@@ -1,8 +1,59 @@
 # BuiltByBas — Handoff Document
 
-> **Last Updated:** 2026-03-07 (Session 39)
-> **Status:** LIVE AT builtbybas.com - Session 39 pushed to remote. VPS needs deploy: `git checkout -- next-env.d.ts && git pull && pnpm install --frozen-lockfile && pnpm build && pm2 restart builtbybas` (next-env.d.ts has local change on VPS blocking pull).
-> **Next Session:** VPS deploy, rotate Resend API key, marketing push preparation, SMS notifications for intake submissions, modular AI provider architecture, intake form quality improvements.
+> **Last Updated:** 2026-03-11 (Session 40)
+> **Status:** IN PROGRESS — Mobile responsiveness overhaul. Changes NOT committed yet. Desktop is good. Mobile has one remaining bug: FadeIn/AnimatedText animations don't fire on client-side navigation (pages blank until hard refresh). The `useInView` hook fix was attempted but needs further debugging.
+> **Next Session Priority:** Fix mobile client-side navigation animation bug (FadeIn.tsx + AnimatedText.tsx), then commit all Session 40 changes, push, and deploy.
+
+## Session 40 Changes (2026-03-11)
+
+**Mobile Responsiveness Overhaul:**
+- PublicHeader redesigned: full-screen overlay mobile nav with Framer Motion animations, staggered links, active page indicator (cyan dot), body scroll lock, route-aware auto-close, animated hamburger/X toggle
+- Mobile header height reduced to h-14 (desktop stays h-16)
+- Hero section rebuilt with flexbox layout (`h-[100svh]`, `justify-between`) — all content fits in one viewport on mobile
+- Hero heading sized at `text-[2.25rem]` on mobile, subtitle flows naturally without forced `<br>`
+- Mobile CTA buttons redesigned: "Start a Project" (h-13, rounded-2xl, arrow icon) + "View Our Work" (subtle, eye icon)
+- Stats bar: 2x2 compact grid on mobile (rounded-xl, minimal borders), 4-column glass-card grid on tablet+
+- Stats: "AI / Augmented Delivery" changed to "Direct / Dev Access"
+- Mobile nav footer: quote "The best way to predict the future is to create it" + cyan divider + BuiltByBas brand
+- Desktop stats cards raised with `md:mb-36`, Learn More raised with `md:mb-[66px]` (mobile margins independent)
+
+**Viewport & Scroll Fixes:**
+- Added Next.js `viewport` export: `minimumScale: 1, maximumScale: 5` — zoom in allowed, zoom out past 100% blocked
+- `overflow-x: hidden` + `overscroll-behavior-x: none` on html/body (CSS) — no horizontal scroll
+- `overflow-x-hidden` class on both `<html>` and `<body>` elements
+- Hidden scrollbar CSS utility (`.scrollbar-none`)
+
+**Animation System Changes:**
+- Viewport detection margin reduced from `-100px` to `-40px` (motion.ts)
+- FadeIn.tsx: switched from `whileInView` to `useInView` hook + `animate` prop (attempt to fix mobile nav bug)
+- AnimatedText.tsx: same `useInView` hook refactor
+- **BUG:** Mobile client-side navigation still doesn't trigger animations — pages appear blank until hard refresh. `useInView` hook didn't fully resolve the issue. Needs further investigation.
+
+**Other Changes:**
+- CTA section mobile padding reduced (`px-5` instead of `px-8`)
+- Footer links now have proper touch targets (h-10/h-9 with padding and hover states)
+- Policy links bumped to `text-sm` on tablet+
+- HeroBackground edge fades halved on mobile (`h-16`/`w-10` vs `h-32`/`w-20`)
+
+**Files Changed:**
+- `src/components/layout/PublicHeader.tsx` — full-screen mobile nav redesign
+- `src/components/layout/PublicFooter.tsx` — touch targets, responsive text
+- `src/components/public-site/Hero.tsx` — flexbox layout, responsive sizing, mobile CTAs
+- `src/components/public-site/StatsBar.tsx` — 2x2 mobile grid, "Direct/Dev Access"
+- `src/components/public-site/CTASection.tsx` — mobile padding
+- `src/components/public-site/HeroBackground.tsx` — smaller mobile edge fades
+- `src/components/motion/FadeIn.tsx` — useInView refactor (bug: not fully working)
+- `src/components/motion/AnimatedText.tsx` — useInView refactor (bug: not fully working)
+- `src/lib/motion.ts` — viewport margin reduced to -40px
+- `src/app/layout.tsx` — viewport export, overflow-x-hidden on html+body
+- `src/app/globals.css` — horizontal scroll lock CSS, scrollbar-none utility
+
+**Known Bug (Priority for Session 41):**
+- FadeIn and AnimatedText animations don't trigger on mobile client-side navigation (Next.js Link). Elements start at `opacity: 0` and stay invisible. Hard refresh works. Root cause: IntersectionObserver (used by both `whileInView` and `useInView`) may not fire correctly on iOS Safari during Next.js App Router client-side transitions. Possible fixes to try:
+  1. Use `animate` prop directly (no intersection observer) with a `useEffect` mount check
+  2. Add `key={pathname}` to force component remount on navigation
+  3. Use `requestAnimationFrame` delay before initializing the observer
+  4. Scroll-to-top in a layout effect to force observer re-evaluation
 
 ## Session 39 Changes (2026-03-07)
 

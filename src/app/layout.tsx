@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import { SkipToContent } from "@/components/shared/SkipToContent";
 import { MotionProvider } from "@/components/motion/MotionProvider";
@@ -38,13 +38,20 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  minimumScale: 1,
+  maximumScale: 5,
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`dark ${inter.variable}`}>
+    <html lang="en" className={`dark ${inter.variable} overflow-x-hidden`}>
       <head>
         <JsonLd data={getOrganizationSchema()} />
         <script
@@ -53,7 +60,7 @@ export default function RootLayout({
           data-website-id="1ff108d4-6963-4543-a838-a0d62a6ae979"
         />
       </head>
-      <body className="min-h-screen bg-background font-sans text-foreground antialiased">
+      <body className="min-h-screen overflow-x-hidden bg-background font-sans text-foreground antialiased">
         <SkipToContent />
         <MotionProvider>
           {children}

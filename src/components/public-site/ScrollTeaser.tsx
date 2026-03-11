@@ -32,7 +32,7 @@ export function ScrollTeaser() {
       onClick={handleClick}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ delay: 1.5, duration: 0.6 }}
+      transition={{ delay: 0.6, duration: 0.5 }}
       className="flex flex-col items-center gap-1 text-white transition-colors hover:text-white/70"
       aria-label="Scroll to learn more"
     >

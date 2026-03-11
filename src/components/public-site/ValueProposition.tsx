@@ -119,7 +119,7 @@ function ValueCard({ value, index, animated }: ValueCardProps) {
       initial={{ opacity: 0, x: directions[index] ?? 0, y: 30 }}
       whileInView={{ opacity: 1, x: 0, y: 0 }}
       viewport={viewportRepeat}
-      transition={{ ...springs.smooth, duration: 0.7, delay: index * 0.15 }}
+      transition={{ ...springs.smooth, delay: index * 0.15 }}
       style={{ rotateX, rotateY, transformPerspective: 800 }}
     >
       {content}

@@ -103,7 +103,7 @@ function ValuesCard({ value, index, animated }: ValuesCardProps) {
       initial={{ opacity: 0, x: xDirections[index] ?? 0, y: 20 }}
       whileInView={{ opacity: 1, x: 0, y: 0 }}
       viewport={viewportOnce}
-      transition={{ ...springs.smooth, duration: 0.6, delay: index * 0.1 }}
+      transition={{ ...springs.smooth, delay: index * 0.1 }}
     >
       {card}
     </motion.div>

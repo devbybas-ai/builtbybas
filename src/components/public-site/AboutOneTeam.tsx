@@ -123,7 +123,7 @@ export function AboutOneTeam() {
                 initial={{ opacity: 0, x: -60 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={viewportOnce}
-                transition={{ ...springs.smooth, duration: 0.7 }}
+                transition={springs.smooth}
               >
                 {basCard}
               </motion.div>
@@ -131,7 +131,7 @@ export function AboutOneTeam() {
                 initial={{ opacity: 0, scale: 0.8 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={viewportOnce}
-                transition={{ ...springs.smooth, duration: 0.5, delay: 0.2 }}
+                transition={{ ...springs.smooth, delay: 0.2 }}
               >
                 {centerBridge}
               </motion.div>
@@ -139,7 +139,7 @@ export function AboutOneTeam() {
                 initial={{ opacity: 0, x: 60 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={viewportOnce}
-                transition={{ ...springs.smooth, duration: 0.7, delay: 0.1 }}
+                transition={{ ...springs.smooth, delay: 0.1 }}
               >
                 {claudeCard}
               </motion.div>

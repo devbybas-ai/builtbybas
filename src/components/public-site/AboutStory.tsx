@@ -81,16 +81,6 @@ export function AboutStory() {
                 impact on your business. This is the driving force behind every
                 BuiltByBas project.
               </>,
-              <>
-                <span className="font-semibold text-foreground">
-                  Human + AI.
-                </span>{" "}
-                We bring 20+ years of development knowledge, the vision, and the
-                craft. AI brings the lightning speed and superhuman ability to
-                scale. Together, we deliver products that neither could alone.
-                And right now, we are developing unique custom solutions that
-                real businesses like yours are benefiting from today.
-              </>,
             ].map((text, i) =>
               shouldReduceMotion ? (
                 <p key={i} className="text-lg leading-relaxed">
@@ -103,7 +93,7 @@ export function AboutStory() {
                   initial={{ opacity: 0, x: -30 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={viewportOnce}
-                  transition={{ ...springs.smooth, duration: 0.6, delay: i * 0.15 }}
+                  transition={{ ...springs.smooth, delay: i * 0.15 }}
                 >
                   {text}
                 </motion.p>
@@ -147,7 +137,7 @@ export function AboutStory() {
                   initial={{ opacity: 0, x: 40, y: 10 }}
                   whileInView={{ opacity: 1, x: 0, y: 0 }}
                   viewport={viewportOnce}
-                  transition={{ ...springs.smooth, duration: 0.6, delay: index * 0.12 }}
+                  transition={{ ...springs.smooth, delay: index * 0.12 }}
                 >
                   {card}
                 </motion.div>

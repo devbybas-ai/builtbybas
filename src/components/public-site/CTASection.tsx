@@ -18,7 +18,7 @@ export function CTASection({
 
   const content = (
     <div className="group relative">
-      <div className="glass-card relative px-8 py-10 text-center transition-all duration-700 hover:border-primary/20 hover:shadow-[0_0_60px_-10px] hover:shadow-primary/10 sm:px-16 sm:py-12">
+      <div className="glass-card relative px-5 py-8 text-center transition-all duration-700 hover:border-primary/20 hover:shadow-[0_0_60px_-10px] hover:shadow-primary/10 sm:px-16 sm:py-12">
         <h2 className="text-3xl font-bold sm:text-4xl">{heading}</h2>
         <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
           {description}
@@ -69,7 +69,7 @@ export function CTASection({
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={viewportRepeat}
-          transition={{ ...springs.smooth, duration: 0.8 }}
+          transition={springs.smooth}
         >
           {content}
         </motion.div>

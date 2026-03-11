@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { ArrowRight, Eye } from "lucide-react";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { AnimatedText } from "@/components/motion/AnimatedText";
 import { FadeIn } from "@/components/motion/FadeIn";
@@ -12,15 +13,19 @@ export function Hero() {
   const shouldReduceMotion = useReducedMotion();
 
   return (
-    <section className="relative flex h-[calc(100vh-4rem)] flex-col items-center justify-center overflow-hidden px-4">
+    <section className="relative flex h-[100svh] flex-col items-center justify-between overflow-hidden px-5 pb-4 pt-16 sm:px-6 sm:pb-6 md:pt-20">
       <HeroBackground />
 
-      <div className="relative z-10 mx-auto max-w-4xl text-center">
+      {/* Spacer to push content down from nav */}
+      <div className="flex-1" />
+
+      {/* Main content */}
+      <div className="relative z-10 mx-auto w-full max-w-4xl text-center">
         {/* Headline */}
         <AnimatedText
           text="Custom Solutions for"
           as="h1"
-          className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl"
+          className="text-[2.25rem] font-bold leading-tight tracking-tight sm:text-5xl md:text-6xl lg:text-7xl"
           staggerDelay={0.04}
         >
           <br />
@@ -28,40 +33,46 @@ export function Hero() {
         </AnimatedText>
 
         {/* Subtitle */}
-        <FadeIn delay={0.4} className="mt-8 sm:mt-10">
-          <p className="mx-auto max-w-2xl text-lg text-muted-foreground sm:text-xl">
+        <FadeIn delay={0.2} className="mt-4 sm:mt-10">
+          <p className="mx-auto max-w-sm text-[0.95rem] leading-relaxed text-muted-foreground sm:max-w-2xl sm:text-xl">
             Agency-quality software, websites, dashboards, and tools.
-            <br />
+            <span className="hidden sm:inline"><br /></span>
+            <span className="sm:hidden"> </span>
             Built fast, built right, built for your business.
           </p>
         </FadeIn>
 
-        {/* Mobile-only CTA buttons — desktop has these in the nav */}
-        <FadeIn delay={0.6} className="mt-10 md:hidden">
-          <div className="flex flex-col items-center gap-3">
+        {/* Mobile-only CTA buttons */}
+        <FadeIn delay={0.35} className="mt-6 w-full md:hidden">
+          <div className="mx-auto flex max-w-sm flex-col gap-2.5">
             <Link
               href="/intake"
-              className="btn-shine neon-glow inline-flex h-12 w-full max-w-xs items-center justify-center rounded-lg bg-primary px-8 text-base font-semibold text-primary-foreground transition-all hover:bg-cyan-hover"
+              className="btn-shine neon-glow group inline-flex h-13 w-full items-center justify-center gap-2 rounded-2xl bg-primary text-base font-semibold text-primary-foreground transition-all hover:bg-cyan-hover"
             >
               Start a Project
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
             </Link>
             <Link
               href="/portfolio"
-              className="btn-shine neon-glow inline-flex h-12 w-full max-w-xs items-center justify-center rounded-lg border border-white/10 bg-white/20 px-8 text-base font-semibold transition-all hover:bg-white/35"
+              className="group inline-flex h-11 w-full items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/5 text-sm font-medium text-muted-foreground backdrop-blur-sm transition-all hover:border-white/20 hover:bg-white/10 hover:text-foreground"
             >
+              <Eye className="h-4 w-4" />
               View Our Work
             </Link>
           </div>
         </FadeIn>
       </div>
 
+      {/* Flex spacer */}
+      <div className="flex-1" />
+
       {/* Stats Bar */}
-      <div className="relative z-10 mt-8 sm:mt-12 w-full pb-4">
+      <div className="relative z-10 mb-8 w-full md:mb-36">
         <StatsBar />
       </div>
 
-      {/* Scroll teaser — pinned to bottom of hero */}
-      <div className="absolute inset-x-0 bottom-6 z-10 flex justify-center">
+      {/* Scroll teaser */}
+      <div className="relative z-10 mt-3 flex justify-center md:mb-[66px] sm:mt-4">
         <ScrollTeaser />
       </div>
     </section>

@@ -101,7 +101,7 @@ function TimelineCard({ milestone, index, animated }: TimelineCardProps) {
       initial={{ opacity: 0, x: fromLeft ? -40 : 40, y: 20 }}
       whileInView={{ opacity: 1, x: 0, y: 0 }}
       viewport={viewportOnce}
-      transition={{ ...springs.smooth, duration: 0.6, delay: index * 0.12 }}
+      transition={{ ...springs.smooth, delay: index * 0.12 }}
     >
       {card}
     </motion.div>

@@ -240,6 +240,38 @@ Every decision is governed by these eight pillars. They are non-negotiable.
 | 7 | **Universal Design (UD/UDL)** | Does this work for the widest range of people without adaptation? |
 | 8 | **Robustness, Redundancy, Recovery, Strategy (R3S)** | What happens when something fails? |
 
+### Pillar 1: Security Minded
+
+No eval(), no dangerouslySetInnerHTML, no string concatenation in queries, no secrets in client code. Custom auth with httpOnly cookies, password hashing, RBAC enforcement on every admin/portal route, rate limiting on login (5 attempts / 15 min / IP), CSRF protection via origin header validation, field whitelisting on all PATCH/PUT endpoints. No raw body passed to database.
+
+### Pillar 2: Structure
+
+No file over 500 lines, one component per file, named exports match filenames, group by feature not type. Route groups for public/auth/admin/portal. Components grouped by domain. Types, utilities, and tests in dedicated directories mirroring source structure.
+
+### Pillar 3: Performance
+
+No render-blocking resources, images optimized, bundle size monitored, lazy load below-fold content. Use framework image components for all images, dynamic imports for heavy components (charts, kanban boards), server components by default (client components only when needed for interactivity), animations lazy-loaded on public pages, database queries indexed on foreign keys and search fields.
+
+### Pillar 4: Inclusive
+
+WCAG 2.1 AA compliance, semantic HTML, keyboard navigable, screen reader compatible. Accessibility testing on every E2E test, skip-to-content link, form labels on every input, 4.5:1 contrast minimum (especially important with dark themes), focus indicators visible, touch targets 44x44px minimum, heading hierarchy enforced.
+
+### Pillar 5: Non-Bias
+
+No assumptions about users based on name, location, gender, age, ability, or economic status. Default-deny on language: use only plain, direct words with no disputed or harmful origins. If an idiom, metaphor, or colloquialism could trace back to violence, oppression, or discrimination, replace it with clear language. Do not maintain a blocklist; instead, treat all figurative language as suspect and prefer literal alternatives. Intake forms use neutral language, no required fields for optional demographics, scoring engines based on objective project fit criteria (not client characteristics), AI-generated content reviewed for bias before sending.
+
+### Pillar 6: UX Minded
+
+Every interaction is intentional. Loading states, error states, empty states, success feedback. Multi-step forms with progress indicators and save-state, pipeline views with drag-and-drop, cards with hover states, toast notifications for actions, confirm dialogs for destructive actions, skeleton loaders on data-fetching pages, smooth transitions between pages.
+
+### Pillar 7: Universal Design (UD/UDL)
+
+Works across devices, browsers, connection speeds, and abilities. Mobile-first responsive (375px base), tested at tablet (768px) and desktop (1440px), public site works without JavaScript (SSR), admin dashboards work on tablet viewport, reduced motion media query respected for all animations.
+
+### Pillar 8: R3S (Robustness, Redundancy, Recovery, Strategy)
+
+What happens when something fails? Graceful degradation, error boundaries, retry logic. Risk: downtime, data loss, cascading failures -- every unhandled failure erodes user trust. Mitigation: process manager auto-restart, error boundaries on every route, static fallback data when the database is down. API routes return generic error messages (no stack traces), database connection pooling, session expiry handling in auth middleware.
+
 ### Conflict Resolution Hierarchy
 
 When pillars conflict, resolve in this order:

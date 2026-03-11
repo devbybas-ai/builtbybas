@@ -6,7 +6,7 @@ import type { Variants } from "framer-motion";
 
 export const springs = {
   snappy: { type: "spring", stiffness: 400, damping: 30 } as const,
-  smooth: { type: "spring", stiffness: 100, damping: 20 } as const,
+  smooth: { type: "spring", stiffness: 200, damping: 26 } as const,
   gentle: { type: "spring", stiffness: 80, damping: 15 } as const,
   bouncy: { type: "spring", stiffness: 300, damping: 15 } as const,
 } as const;
@@ -74,5 +74,5 @@ export function staggerContainer(
 // Viewport Detection Defaults
 // ============================================================
 
-export const viewportOnce = { once: true, margin: "0px 0px -100px 0px" } as const;
-export const viewportRepeat = { once: false, margin: "0px 0px -100px 0px" } as const;
+export const viewportOnce = { once: true, margin: "0px 0px -40px 0px" } as const;
+export const viewportRepeat = { once: false, margin: "0px 0px -40px 0px" } as const;

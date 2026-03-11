@@ -180,7 +180,7 @@ function PillarCard({ pillar, index, animated }: PillarCardProps) {
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={viewportOnce}
-      transition={{ ...springs.smooth, duration: 0.5, delay: index * 0.06 }}
+      transition={{ ...springs.smooth, delay: index * 0.06 }}
     >
       {card}
     </motion.div>

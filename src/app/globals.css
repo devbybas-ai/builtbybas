@@ -4,6 +4,13 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Lock horizontal scroll — vertical only unless user pinch-zooms */
+html, body {
+  overflow-x: hidden;
+  overscroll-behavior-x: none;
+  -webkit-overflow-scrolling: touch;
+}
+
 /* === THEME MAPPING === */
 @theme inline {
   --color-background: var(--background);
@@ -184,6 +191,15 @@
 .glass-card-hover:hover {
   border-color: rgba(0, 212, 255, 0.3);
   box-shadow: 0 0 20px rgba(0, 212, 255, 0.1);
+}
+
+/* Hide scrollbar for horizontal scroll strips */
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
 }
 
 .neon-glow {

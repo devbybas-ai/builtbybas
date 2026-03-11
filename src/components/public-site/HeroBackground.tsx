@@ -595,11 +595,11 @@ export function HeroBackground() {
         }}
       />
 
-      {/* Edge fades */}
-      <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-background via-background/60 to-transparent" />
-      <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-background via-background/60 to-transparent" />
-      <div className="absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-background to-transparent" />
-      <div className="absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-background to-transparent" />
+      {/* Edge fades — smaller on mobile */}
+      <div className="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-background via-background/60 to-transparent sm:h-32" />
+      <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-background via-background/60 to-transparent sm:h-32" />
+      <div className="absolute inset-y-0 left-0 w-10 bg-gradient-to-r from-background to-transparent sm:w-20" />
+      <div className="absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-background to-transparent sm:w-20" />
     </div>
   );
 }

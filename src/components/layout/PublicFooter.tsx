@@ -18,7 +18,7 @@ const policyLinks = [
 export function PublicFooter() {
   return (
     <footer className="border-t border-white/10 bg-background">
-      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-5 py-10 sm:px-6 sm:py-12 lg:px-8">
         <div className="flex flex-col items-center gap-8 md:flex-row md:justify-between">
           <div>
             <Link
@@ -30,12 +30,12 @@ export function PublicFooter() {
           </div>
 
           <nav aria-label="Footer navigation">
-            <ul className="flex flex-wrap items-center gap-6">
+            <ul className="flex flex-wrap items-center justify-center gap-1 sm:gap-2">
               {footerLinks.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                    className="inline-flex h-10 items-center rounded-lg px-3 text-sm text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground"
                   >
                     {link.label}
                   </Link>
@@ -47,12 +47,12 @@ export function PublicFooter() {
 
         <div className="mt-8 border-t border-white/10 pt-8">
           <nav aria-label="Policy links">
-            <ul className="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
+            <ul className="flex flex-wrap items-center justify-center gap-1 sm:gap-2">
               {policyLinks.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-xs text-muted-foreground/70 transition-colors hover:text-muted-foreground"
+                    className="inline-flex h-9 items-center rounded-lg px-2.5 text-xs text-muted-foreground/70 transition-colors hover:bg-white/5 hover:text-muted-foreground sm:text-sm"
                   >
                     {link.label}
                   </Link>
