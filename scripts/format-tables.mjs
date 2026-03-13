@@ -22,6 +22,8 @@ const FILES = [
   'RAI-POLICY.md',
   'PROJECT-SETUP.md',
   '.claude/CLAUDE.md',
+  'docs/superpowers/specs/2026-03-12-visual-identity-upgrade-design.md',
+  'docs/superpowers/specs/2026-03-12-pcb-card-connections-design.md',
 ];
 
 function formatTable(lines) {

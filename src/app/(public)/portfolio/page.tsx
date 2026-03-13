@@ -15,7 +15,7 @@ export default function PortfolioPage() {
   return (
     <>
       <PublicHeader />
-      <main id="main-content">
+      <main id="main-content" className="relative overflow-x-clip">
         <section className="pt-24 pb-12">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <FadeIn>
@@ -30,7 +30,7 @@ export default function PortfolioPage() {
           </div>
         </section>
 
-        <section className="pb-24">
+        <section className="relative pb-24">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <ProjectGrid />
           </div>

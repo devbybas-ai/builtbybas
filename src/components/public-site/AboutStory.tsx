@@ -112,8 +112,8 @@ export function AboutStory() {
                     <div className="flex items-start gap-4">
                       {/* Animated dot */}
                       <div className="relative mt-1.5 flex-shrink-0">
-                        <div className="absolute inset-0 rounded-full bg-primary/30 blur-sm opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-                        <div className="relative h-2.5 w-2.5 rounded-full bg-primary transition-transform duration-300 group-hover:scale-125" />
+                        <div className="absolute inset-0 rounded-full bg-green-400/30 blur-sm opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                        <div className="relative h-2.5 w-2.5 rounded-full bg-green-400 transition-transform duration-300 group-hover:scale-125" />
                       </div>
 
                       <div>

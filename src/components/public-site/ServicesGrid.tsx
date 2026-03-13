@@ -15,17 +15,20 @@ export function ServicesGrid() {
 
   const grid = (
     <>
-      {services.map((service) => (
-        <ServiceCard
-          key={service.id}
-          service={service}
-          onClick={
-            service.walkthrough
-              ? () => setActiveService(service)
-              : undefined
-          }
-        />
-      ))}
+      {services.map((service, index) => {
+        const card = (
+          <ServiceCard
+            key={service.id}
+            service={service}
+            onClick={
+              service.walkthrough
+                ? () => setActiveService(service)
+                : undefined
+            }
+          />
+        );
+        return card;
+      })}
     </>
   );
 

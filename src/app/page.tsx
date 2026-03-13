@@ -18,7 +18,7 @@ export default function HomePage() {
     <>
       <JsonLd data={getWebSiteSchema()} />
       <PublicHeader />
-      <main id="main-content">
+      <main id="main-content" className="relative overflow-x-clip">
         <Hero />
         <ValueProposition />
         <CTASection />

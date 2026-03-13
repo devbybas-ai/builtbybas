@@ -15,7 +15,7 @@ export default function IntakePage() {
   return (
     <>
       <PublicHeader />
-      <main id="main-content">
+      <main id="main-content" className="relative overflow-x-clip">
         <section className="pt-24 pb-8">
           <div className="mx-auto max-w-2xl px-4 text-center sm:px-6 lg:px-8">
             <FadeIn>

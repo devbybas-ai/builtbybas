@@ -16,6 +16,7 @@ html, body {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-inter);
+  --font-display: var(--font-outfit);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -56,6 +57,8 @@ html, body {
   /* === DESIGN SYSTEM TOKENS === */
   --color-cyan: var(--cyan);
   --color-cyan-hover: var(--cyan-hover);
+  --color-accent-green: #4ADE80;
+  --color-accent-green-hover: #22C55E;
   --color-glass-bg: var(--glass-bg);
   --color-glass-border: var(--glass-border);
 }
@@ -159,6 +162,10 @@ html, body {
     @apply bg-background text-foreground;
   }
 
+  h1, h2, h3 {
+    font-family: var(--font-outfit), var(--font-inter), sans-serif;
+  }
+
   select {
     color-scheme: dark;
   }
@@ -229,6 +236,23 @@ html, body {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+.text-gradient-shimmer-green {
+  background: linear-gradient(
+    135deg,
+    #4ADE80 0%,
+    #22C55E 25%,
+    #86EFAC 40%,
+    #22C55E 55%,
+    #4ADE80 100%
+  );
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: text-shimmer 8s ease-in-out infinite;
+  animation-delay: 3s;
 }
 
 .text-gradient-shimmer {

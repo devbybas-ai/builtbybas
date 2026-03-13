@@ -47,7 +47,7 @@ export default function ServicesPage() {
       />
       <JsonLd data={getFAQSchema(faqItems)} />
       <PublicHeader />
-      <main id="main-content" className="pt-24">
+      <main id="main-content" className="relative overflow-x-clip pt-24">
         <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <FadeIn className="mb-12">
             <h1 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">

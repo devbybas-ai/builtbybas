@@ -23,13 +23,14 @@ export function Hero() {
       <div className="relative z-10 mx-auto w-full max-w-4xl text-center">
         {/* Headline */}
         <AnimatedText
-          text="Custom Solutions for"
+          text="Software That Works Like"
           as="h1"
           className="text-[2.25rem] font-bold leading-tight tracking-tight sm:text-5xl md:text-6xl lg:text-7xl"
           staggerDelay={0.04}
         >
           <br />
-          <span className="text-gradient-shimmer">Your Business</span>
+          <span className="text-gradient-shimmer-green">Your Business</span>{" "}
+          <span className="text-gradient-shimmer">Does</span>
         </AnimatedText>
 
         {/* Subtitle */}
@@ -42,7 +43,27 @@ export function Hero() {
           </p>
         </FadeIn>
 
-        {/* Mobile-only CTA buttons */}
+        {/* Desktop CTA buttons */}
+        <FadeIn delay={0.35} className="mt-8 hidden md:block">
+          <div className="mx-auto flex items-center justify-center gap-4">
+            <Link
+              href="/intake"
+              className="btn-shine neon-glow group inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-primary px-8 text-base font-semibold text-primary-foreground transition-all hover:bg-cyan-hover"
+            >
+              Start a Project
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+            </Link>
+            <Link
+              href="/portfolio"
+              className="group inline-flex h-12 items-center justify-center gap-2 rounded-xl border border-green-400/20 bg-green-400/5 px-6 text-base font-medium text-green-400 backdrop-blur-sm transition-all hover:border-green-400/30 hover:bg-green-400/10 hover:text-green-300"
+            >
+              <Eye className="h-4 w-4" />
+              View Our Work
+            </Link>
+          </div>
+        </FadeIn>
+
+        {/* Mobile CTA buttons */}
         <FadeIn delay={0.35} className="mt-6 w-full md:hidden">
           <div className="mx-auto flex max-w-sm flex-col gap-2.5">
             <Link
@@ -54,7 +75,7 @@ export function Hero() {
             </Link>
             <Link
               href="/portfolio"
-              className="group inline-flex h-11 w-full items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/5 text-sm font-medium text-muted-foreground backdrop-blur-sm transition-all hover:border-white/20 hover:bg-white/10 hover:text-foreground"
+              className="group inline-flex h-11 w-full items-center justify-center gap-2 rounded-2xl border border-green-400/20 bg-green-400/5 text-sm font-medium text-green-400 backdrop-blur-sm transition-all hover:border-green-400/30 hover:bg-green-400/10 hover:text-green-300"
             >
               <Eye className="h-4 w-4" />
               View Our Work

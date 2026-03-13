@@ -18,7 +18,7 @@ export default function AboutPage() {
   return (
     <>
       <PublicHeader />
-      <main id="main-content" className="pt-24">
+      <main id="main-content" className="relative overflow-x-clip pt-24">
         <AboutStory />
         <AboutValues />
         <AboutPillars />

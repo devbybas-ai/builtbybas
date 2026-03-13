@@ -1,8 +1,232 @@
 # BuiltByBas — Handoff Document
 
-> **Last Updated:** 2026-03-11 (Session 40)
-> **Status:** IN PROGRESS — Mobile responsiveness overhaul. Changes NOT committed yet. Desktop is good. Mobile has one remaining bug: FadeIn/AnimatedText animations don't fire on client-side navigation (pages blank until hard refresh). The `useInView` hook fix was attempted but needs further debugging.
-> **Next Session Priority:** Fix mobile client-side navigation animation bug (FadeIn.tsx + AnimatedText.tsx), then commit all Session 40 changes, push, and deploy.
+> **Last Updated:** 2026-03-13 (Session 45)
+> **Status:** PCB Card Connections IMPLEMENTED — card-anchored fragments with connector traces live across 5 pages. PCBDivider removed. Visual tuning complete. Ready to commit, push, and deploy.
+> **Next Session Priority:** Commit all pending changes (Sessions 42-45). Push + deploy to VPS. Then: hero subtitle text change ("web apps"), hero background trace normalization, stats bar design upgrade.
+
+## Session 45 Changes (2026-03-13)
+
+**PCB Card Connections — IMPLEMENTED:**
+
+Executed the PCB Card Connections plan. Created `PCBConnection` wrapper component that anchors PCB fragments to specific content cards with right-angle routed connector traces.
+
+**New Files:**
+- `src/components/public-site/PCBConnection.tsx` — wrapper component: positions PCBFragment + ConnectorSVG absolutely outside card boundaries. 12 hardcoded route sets (6 variants x 2 sides). Uses `preserveAspectRatio="none"` + `vectorEffect="non-scaling-stroke"` for uniform trace width.
+- `src/components/public-site/__tests__/PCBConnection.test.tsx` — 9 tests covering rendering, accessibility, positioning, port pads (happy-dom environment)
+
+**PCBConnection Placements (edge columns only):**
+- Homepage ValueProposition: cards 0 (left, bus-cluster) and 2 (right, ic-chip)
+- Services ServicesGrid: cards 0 (left, trace-path) and 5 (right, via-cluster)
+- Portfolio ProjectGrid: the-colour-parlor (left, smd-components)
+- About AboutValues: card 1 "Transparent Always" (right, bus-cluster)
+- Intake: IntakeForm wrapper (left, ic-chip)
+
+**Floating PCBFragments Removed:**
+- Removed all standalone `<PCBFragment>` instances from 10 page files (homepage, services, portfolio, about, intake, terms, privacy, cookies, refund, ai-policy)
+- Legal/policy pages now have no PCB decorations (clean)
+- `overflow-x-clip` kept on pages with PCBConnection, removed from legal pages
+
+**PCBDivider Removed:**
+- Removed `<PCBDivider />` from homepage (2 instances) and about page (4 instances) — was overkill between sections now that cards have anchored connections
+
+**Visual Tuning (iterative with Bas):**
+- Fragment scale: 0.5 (200x140px)
+- Connector gap: 75px
+- Trace opacities: base 0.175, pulse 0.25, junctions 0.2, port pads 0.175 (dimmed 2x from initial)
+- Port pads: 5x8px rectangles (not circles)
+- Attempted recessed background on connector bridge — REVERTED (looked wrong)
+
+**ValueProposition Fix:**
+- Added `h-full` to `motion.div` wrapper in ValueCard so all 3 cards stretch to equal height
+
+**Dependencies Added:**
+- `happy-dom@20.8.4` (devDependency) — jsdom had ESM compatibility issues with vitest
+
+**Build:** TypeScript clean, 211 tests pass, Next.js build passes.
+
+## Session 44 Changes (2026-03-12)
+
+**PCB Card Connections — Design + Plan Complete:**
+
+Brainstormed and designed a new system for how PCB fragments connect to content cards. The current floating fragments (absolute-positioned in page margins) will be replaced with card-anchored connections where:
+
+- Fragments attach structurally to specific content cards via a new `PCBConnection` wrapper component
+- Connector traces use right-angle PCB routing with junction nodes at bends
+- Traces terminate at rectangular port pads on the card border (no circles)
+- Hand-picked "curated random" placements — not every card gets one, preventing pattern fatigue
+- 8 connections across 5 pages (Homepage, Services, Portfolio, About, Intake)
+- Legal/policy pages get no connections (cleaned up)
+- All 6 existing PCBFragment variants reused as-is
+
+**Documents Created:**
+- `docs/superpowers/specs/2026-03-12-pcb-card-connections-design.md` — full design spec (approved after 3 review iterations)
+- `docs/superpowers/plans/2026-03-12-pcb-card-connections.md` — implementation plan with 15 tasks across 4 chunks (approved after 2 review iterations)
+- `docs/superpowers/specs/2026-03-12-visual-identity-upgrade-design.md` — tables formatted
+
+**Additional Items Identified (not yet implemented):**
+1. Hero subtitle: add "web apps" after "software" — keep 2 rows
+2. Hero background: normalize thick traces to standard size
+3. Stats bar cards: design upgrade needed (text is perfect, visuals need work)
+
+**Files Changed:**
+- `docs/superpowers/specs/2026-03-12-pcb-card-connections-design.md` — NEW
+- `docs/superpowers/plans/2026-03-12-pcb-card-connections.md` — NEW
+- `docs/superpowers/specs/2026-03-12-visual-identity-upgrade-design.md` — table formatting
+- `scripts/format-tables.mjs` — added spec files to FILES array
+
+**Build:** No code changes — design/planning session only.
+
+## Session 43 Changes (2026-03-12)
+
+**Attempted full-page circuit board background — REVERTED:**
+
+Session 43 attempted to replace the per-page PCBFragment components with a single `SiteBackground` component (simplified circuit board grid covering the entire site) and `PCBRecess` overlays. Bas rejected this approach — it replaced the detailed, crafted PCBFragment SVGs (IC chips, vias, trace paths, connectors, recess depth effects, SMIL animations) with a generic minimal grid. The site lost its standout visual identity and looked cookie-cutter.
+
+**What was reverted:**
+- Deleted `SiteBackground.tsx` (simplified circuit board background)
+- Deleted `PCBRecess.tsx` (transparent recess overlay)
+- Removed SiteBackground import and `<SiteBackground />` from `layout.tsx`
+- Restored all PCBFragment imports and instances across 10 page files (exact Session 42 placements)
+
+**What was KEPT from Session 43:**
+- Green "Your Business" shimmer text in Hero.tsx — `text-gradient-shimmer-green` class using `#4ADE80` green instead of cyan
+- New `.text-gradient-shimmer-green` CSS class in `globals.css` (green gradient shimmer with 8s animation, 3s delay)
+
+**PCBFragment behavior change:**
+- Removed Framer Motion fade-in/fade-out animation from PCBFragment wrapper — fragments are now static `div` elements (no `motion.div`, no `initial/whileInView` opacity transitions)
+- Fragments remain fixed in position and scroll naturally with the page content
+- Internal CSS animations (trace pulses, LED glows, signal flows) still animate within each fragment
+- Removed unused `framer-motion` import from PCBFragment.tsx
+
+**Key feedback from Bas (saved to memory):**
+- "I never and I mean never want you to take the easy road. I don't care how much work we have to do or how long it will take."
+- Animation and visual identity work requires precision — broad-stroke simplifications destroy what makes the site stand out
+- The crafted PCBFragment components with their recess depth, IC chips, vias, and connector traces are a core part of the site's identity
+
+**Files Changed:**
+- `src/app/layout.tsx` — removed SiteBackground import and component
+- `src/components/public-site/PCBFragment.tsx` — removed motion.div wrapper, now static div; removed framer-motion import
+- `src/components/public-site/Hero.tsx` — "Your Business" uses `text-gradient-shimmer-green` class
+- `src/app/globals.css` — added `.text-gradient-shimmer-green` class
+- `src/app/page.tsx` — PCBFragment instances restored
+- `src/app/(public)/about/page.tsx` — 4 PCBFragment instances restored
+- `src/app/(public)/services/page.tsx` — 3 PCBFragment instances restored
+- `src/app/(public)/portfolio/page.tsx` — 3 PCBFragment instances restored
+- `src/app/(public)/intake/page.tsx` — 2 PCBFragment instances restored
+- `src/app/(public)/terms/page.tsx` — 2 PCBFragment instances restored
+- `src/app/(public)/privacy/page.tsx` — 2 PCBFragment instances restored
+- `src/app/(public)/cookies/page.tsx` — 1 PCBFragment instance restored
+- `src/app/(public)/refund/page.tsx` — 1 PCBFragment instance restored
+- `src/app/(public)/ai-policy/page.tsx` — 2 PCBFragment instances restored
+
+**Deleted Files:**
+- `src/components/public-site/SiteBackground.tsx` — removed (simplified background, rejected)
+- `src/components/public-site/PCBRecess.tsx` — removed (recess overlay concept, not needed)
+
+**Build:** TypeScript clean, Next.js build passes.
+
+## Session 42 Changes (2026-03-12)
+
+**PCB Fragment Visual Identity Upgrade — IN PROGRESS:**
+
+The PCBFragment component went through a major design evolution based on iterative feedback:
+
+1. **Started** with unscrewed panel concept (frame + screws + green circuit board substrate)
+2. **Iterated** through: green substrate removed (didn't fit dark aesthetic) → frame removed → border animations removed → recessed-only look approved
+3. **Current state**: Recessed dark interior with brighter circuit traces, animated signal pulses, and connector traces that extend toward adjacent content
+
+**Component Changes (`PCBFragment.tsx`):**
+- Removed outer panel frame, 3D bevel, and screw holes — just recessed interior
+- Removed border/edge glow animations (cyan + green pulses along edges)
+- Brightened all traces: base 0.08→0.15, pulse 0.25→0.4, junctions 0.15→0.25
+- Added `connectors` prop: `("top" | "right" | "bottom" | "left")[]` — traces that extend beyond the fragment toward content, with animated pulse and end nodes
+- Added `overflow="visible"` on SVG so connectors can extend beyond fragment bounds
+- Renamed internal `PanelSVG` to `FragmentSVG` (no longer a panel)
+- LED indicators slightly larger (r=2→2.5)
+
+**Strategic Placement Across All Pages:**
+- All fragments now use `scale` prop for varied sizes (0.3–0.55)
+- Positioned in side margins with negative offsets (`-right-8`, `-left-6`, etc.)
+- `overflow-x-clip` on all `<main>` elements to prevent horizontal scroll from overflow-visible connectors
+- `connectors` prop used on every fragment — traces reach toward content
+- Alternating left/right placement down each page
+- Different variants per page for visual variety
+
+| Page      | Fragments | Sizes      | Connectors        |
+| --------- | --------- | ---------- | ----------------- |
+| Homepage  | 2         | 0.5, 0.45  | left, right       |
+| About     | 4         | 0.55–0.35  | alternating L/R   |
+| Services  | 3         | 0.5–0.35   | left, right, left |
+| Portfolio | 3         | 0.5–0.35   | left, right, left |
+| Intake    | 2         | 0.45, 0.35 | left, right       |
+| Terms     | 2         | 0.4, 0.3   | left, right       |
+| Privacy   | 2         | 0.4, 0.3   | left, right       |
+| Cookies   | 1         | 0.4        | left              |
+| Refund    | 1         | 0.4        | left              |
+| AI Policy | 2         | 0.4, 0.3   | left, right       |
+
+**Design Principles Established:**
+- Never on top of content, never underneath
+- Fragments sit in page margins, partially off-screen
+- Connectors extend from fragment nodes toward glass cards/content, as if "powering" them
+- Style matches homepage PCBDivider aesthetic (cyan, dark, subtle)
+- All animations respect `prefers-reduced-motion`
+
+**What Still Needs Work (Next Session):**
+- Visual review on all pages — check connector alignment with actual content positions
+- May need per-page connector tuning based on visual review
+- Subtle standalone touches: micro-nodes between sections, tiny trace accents
+- The "plugged into content" concept can be enhanced with traces that visually connect to glass card borders
+- Consider a small `PCBNode` component for standalone junction points
+
+**Files Changed:**
+- `src/components/public-site/PCBFragment.tsx` — complete rewrite
+- `src/app/page.tsx` — added PCBFragment import + 2 fragments
+- `src/app/(public)/about/page.tsx` — 4 fragments, varied sizes
+- `src/app/(public)/services/page.tsx` — 3 fragments
+- `src/app/(public)/portfolio/page.tsx` — 3 fragments, restructured
+- `src/app/(public)/intake/page.tsx` — 2 fragments
+- `src/app/(public)/terms/page.tsx` — 2 fragments
+- `src/app/(public)/privacy/page.tsx` — 2 fragments, different variants
+- `src/app/(public)/cookies/page.tsx` — 1 fragment
+- `src/app/(public)/refund/page.tsx` — 1 fragment
+- `src/app/(public)/ai-policy/page.tsx` — 2 fragments
+
+## Session 41 Changes (2026-03-12)
+
+**Animation System Fix — iOS Safari Bug Resolved:**
+- Root cause: iOS Safari IntersectionObserver doesn't fire for elements already in viewport during Next.js client-side navigation, leaving content at `opacity: 0`
+- Fix: Added `requestAnimationFrame` fallback in FadeIn.tsx and AnimatedText.tsx — on mount, manually checks `getBoundingClientRect` to detect elements already in viewport, sets `mountVisible` state as fallback trigger
+- `animate={isInView || mountVisible ? "visible" : "hidden"}` — either trigger works
+
+**Animation Timing Overhaul (site-wide):**
+- Fixed spring+duration conflict in 7 components — `duration` property fights with spring `stiffness`/`damping`, causing choppy motion. Removed `duration` from all spring transitions
+- Faster spring physics: `springs.smooth` changed from `stiffness: 100, damping: 20` to `stiffness: 200, damping: 26` — snappier, settles quickly, no bounce
+- Hero subtitle delay: 0.4s → 0.2s, mobile CTA delay: 0.6s → 0.35s
+- StatsBar base delay: 0.7s → 0.4s, stagger: 0.08/0.1 → 0.06
+- ScrollTeaser delay: 1.5s → 0.6s
+- All animations now feel coordinated and responsive
+
+**Content Fix:**
+- Removed duplicate "Human + AI" paragraph from AboutStory.tsx (stays only in AboutValues card)
+
+**Files Changed:**
+- `src/components/motion/FadeIn.tsx` — iOS Safari viewport fallback
+- `src/components/motion/AnimatedText.tsx` — iOS Safari viewport fallback
+- `src/lib/motion.ts` — faster smooth spring preset
+- `src/components/public-site/Hero.tsx` — tighter animation delays
+- `src/components/public-site/StatsBar.tsx` — removed duration conflict, tighter delays
+- `src/components/public-site/CTASection.tsx` — removed duration conflict
+- `src/components/public-site/ScrollTeaser.tsx` — reduced delay
+- `src/components/public-site/AboutStory.tsx` — removed duplicate paragraph, removed duration conflict
+- `src/components/public-site/AboutOneTeam.tsx` — removed duration conflict
+- `src/components/public-site/AboutPillars.tsx` — removed duration conflict
+- `src/components/public-site/AboutTimeline.tsx` — removed duration conflict
+- `src/components/public-site/AboutValues.tsx` — removed duration conflict
+- `src/components/public-site/ValueProposition.tsx` — removed duration conflict
+
+**Other:**
+- pnpm updated from 10.10.0 to 10.32.1
 
 ## Session 40 Changes (2026-03-11)
 
@@ -23,37 +247,15 @@
 - `overflow-x-hidden` class on both `<html>` and `<body>` elements
 - Hidden scrollbar CSS utility (`.scrollbar-none`)
 
-**Animation System Changes:**
+**Animation System Changes (Session 40):**
 - Viewport detection margin reduced from `-100px` to `-40px` (motion.ts)
-- FadeIn.tsx: switched from `whileInView` to `useInView` hook + `animate` prop (attempt to fix mobile nav bug)
-- AnimatedText.tsx: same `useInView` hook refactor
-- **BUG:** Mobile client-side navigation still doesn't trigger animations — pages appear blank until hard refresh. `useInView` hook didn't fully resolve the issue. Needs further investigation.
+- FadeIn.tsx: switched from `whileInView` to `useInView` hook + `animate` prop
 
 **Other Changes:**
 - CTA section mobile padding reduced (`px-5` instead of `px-8`)
 - Footer links now have proper touch targets (h-10/h-9 with padding and hover states)
 - Policy links bumped to `text-sm` on tablet+
 - HeroBackground edge fades halved on mobile (`h-16`/`w-10` vs `h-32`/`w-20`)
-
-**Files Changed:**
-- `src/components/layout/PublicHeader.tsx` — full-screen mobile nav redesign
-- `src/components/layout/PublicFooter.tsx` — touch targets, responsive text
-- `src/components/public-site/Hero.tsx` — flexbox layout, responsive sizing, mobile CTAs
-- `src/components/public-site/StatsBar.tsx` — 2x2 mobile grid, "Direct/Dev Access"
-- `src/components/public-site/CTASection.tsx` — mobile padding
-- `src/components/public-site/HeroBackground.tsx` — smaller mobile edge fades
-- `src/components/motion/FadeIn.tsx` — useInView refactor (bug: not fully working)
-- `src/components/motion/AnimatedText.tsx` — useInView refactor (bug: not fully working)
-- `src/lib/motion.ts` — viewport margin reduced to -40px
-- `src/app/layout.tsx` — viewport export, overflow-x-hidden on html+body
-- `src/app/globals.css` — horizontal scroll lock CSS, scrollbar-none utility
-
-**Known Bug (Priority for Session 41):**
-- FadeIn and AnimatedText animations don't trigger on mobile client-side navigation (Next.js Link). Elements start at `opacity: 0` and stay invisible. Hard refresh works. Root cause: IntersectionObserver (used by both `whileInView` and `useInView`) may not fire correctly on iOS Safari during Next.js App Router client-side transitions. Possible fixes to try:
-  1. Use `animate` prop directly (no intersection observer) with a `useEffect` mount check
-  2. Add `key={pathname}` to force component remount on navigation
-  3. Use `requestAnimationFrame` delay before initializing the observer
-  4. Scroll-to-top in a layout effect to force observer re-evaluation
 
 ## Session 39 Changes (2026-03-07)
 

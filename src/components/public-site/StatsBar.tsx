@@ -49,7 +49,7 @@ export function StatsBar() {
         {stats.map((stat, index) => {
           const card = (
             <div className="group relative text-center">
-              <div className="glass-card relative px-4 py-5 transition-all duration-500 hover:border-primary/20 hover:shadow-[0_0_25px_-5px] hover:shadow-primary/10">
+              <div className="glass-card relative border-green-400/10 px-4 py-5 transition-all duration-500 hover:border-green-400/25 hover:shadow-[0_0_25px_-5px] hover:shadow-green-400/10">
                 <div className="text-2xl font-bold text-primary transition-transform duration-300 group-hover:scale-110 sm:text-3xl">
                   {stat.value}
                 </div>

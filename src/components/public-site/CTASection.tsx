@@ -11,8 +11,8 @@ interface CTASectionProps {
 }
 
 export function CTASection({
-  heading = "Ready to Build Something Great?",
-  description = "Tell us about your project and get a custom proposal within 48 hours. No templates, no surprises. Just a solution built for your business.",
+  heading = "Tell Us How Your Business Works. We'll Build the System Around It.",
+  description = "Share your project details and get a custom proposal within 48 hours. A solution designed around how your business actually operates.",
 }: CTASectionProps) {
   const shouldReduceMotion = useReducedMotion();
 

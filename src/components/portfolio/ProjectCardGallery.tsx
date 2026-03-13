@@ -62,7 +62,7 @@ export function ProjectCardGallery({ images, title, colorAccent }: ProjectCardGa
 
   return (
     <div
-      className={cn("relative overflow-hidden rounded-t-xl bg-gradient-to-br", gradient)}
+      className={cn("relative overflow-hidden bg-gradient-to-br", gradient)}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >

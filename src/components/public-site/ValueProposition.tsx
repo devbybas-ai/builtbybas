@@ -12,14 +12,14 @@ const values = [
     icon: Code2,
     title: "Custom, Not Templated",
     description:
-      "Every project built from scratch for your specific business needs. No cookie-cutter themes. No recycled designs. Just solutions that fit.",
+      "Every project built from scratch for your specific business needs. Original design, original code, tailored to fit.",
     accent: "from-cyan-400 to-blue-500",
   },
   {
     icon: Zap,
     title: "Fast, Accurate, Reliable",
     description:
-      "AI-augmented delivery in 2-3 weeks for most projects — complex builds take longer. Human and code-based gates ensure accuracy. You get speed, reliability, and full documentation with every delivery.",
+      "AI-augmented delivery in 2-3 weeks for most projects. Complex builds take longer. Human and code-based gates ensure accuracy. You get speed, reliability, and full documentation with every delivery.",
     accent: "from-violet-400 to-purple-500",
   },
   {
@@ -39,10 +39,10 @@ export function ValueProposition() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <FadeIn className="mb-8 text-center">
           <h2 className="text-2xl font-bold sm:text-3xl">
-            Why <span className="text-gradient">BuiltByBas</span>?
+            The <span className="text-gradient">BuiltByBas</span> Difference
           </h2>
           <p className="mt-3 text-base text-muted-foreground">
-            Your business deserves better than what most agencies deliver.
+            Built around your business, from the ground up.
           </p>
         </FadeIn>
 
@@ -116,6 +116,7 @@ function ValueCard({ value, index, animated }: ValueCardProps) {
 
   return (
     <motion.div
+      className="h-full"
       initial={{ opacity: 0, x: directions[index] ?? 0, y: 30 }}
       whileInView={{ opacity: 1, x: 0, y: 0 }}
       viewport={viewportRepeat}

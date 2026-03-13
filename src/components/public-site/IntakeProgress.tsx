@@ -43,12 +43,12 @@ export function IntakeProgress({ currentStep, totalSteps, steps }: IntakeProgres
       <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-white/5">
         {shouldReduceMotion ? (
           <div
-            className="h-full rounded-full bg-primary"
+            className="h-full rounded-full bg-green-400"
             style={{ width: `${progress}%` }}
           />
         ) : (
           <motion.div
-            className="h-full rounded-full bg-primary"
+            className="h-full rounded-full bg-green-400"
             initial={{ width: 0 }}
             animate={{ width: `${progress}%` }}
             transition={springs.smooth}
@@ -63,7 +63,7 @@ export function IntakeProgress({ currentStep, totalSteps, steps }: IntakeProgres
             key={i}
             className={cn(
               "h-1 flex-1 rounded-full transition-colors duration-300",
-              i <= currentStep ? "bg-primary" : "bg-white/10"
+              i <= currentStep ? "bg-green-400" : "bg-white/10"
             )}
           />
         ))}

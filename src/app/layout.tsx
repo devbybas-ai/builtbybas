@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Outfit } from "next/font/google";
 import { SkipToContent } from "@/components/shared/SkipToContent";
 import { MotionProvider } from "@/components/motion/MotionProvider";
 import { Toaster } from "@/components/ui/sonner";
@@ -11,6 +11,13 @@ const inter = Inter({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-inter",
+});
+
+const outfit = Outfit({
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["600", "700"],
+  variable: "--font-outfit",
 });
 
 export const metadata: Metadata = {
@@ -51,7 +58,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`dark ${inter.variable} overflow-x-hidden`}>
+    <html lang="en" className={`dark ${inter.variable} ${outfit.variable} overflow-x-hidden`}>
       <head>
         <JsonLd data={getOrganizationSchema()} />
         <script

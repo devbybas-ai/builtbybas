@@ -122,7 +122,7 @@ function CardContent({
             key={feature}
             className="flex items-center gap-2 text-sm text-muted-foreground"
           >
-            <Check className="h-3.5 w-3.5 shrink-0 text-primary" />
+            <Check className="h-3.5 w-3.5 shrink-0 text-green-400" />
             {feature}
           </li>
         ))}

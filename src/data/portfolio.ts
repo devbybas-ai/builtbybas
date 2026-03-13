@@ -12,7 +12,7 @@ export const categoryMeta: PortfolioCategoryMeta[] = [
     id: "platforms",
     label: "Platforms",
     description: "Full-stack web applications and tools",
-    color: "bg-violet-500/30 text-violet-300",
+    color: "bg-green-400/20 text-green-400",
     icon: "layers",
   },
   {
