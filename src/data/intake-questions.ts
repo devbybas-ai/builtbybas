@@ -3,7 +3,7 @@
  *
  * Each service has 8-12 deep, meaningful questions structured around:
  *   1. Your Business - who you are, who your customers are
- *   2. The Problem - what's not working, what you've tried
+ *   2. Where You Are Now - your current state, what you've tried
  *   3. The Vision - what success looks like, what changes
  *   4. Project Specifics - service-specific technical needs
  *
@@ -76,18 +76,18 @@ const marketingWebsite: ServiceModule = {
     // The Problem
     {
       id: "currentChallenge",
-      label: "What's not working about how you attract customers today?",
+      label: "How would you like to improve how you attract customers?",
       type: "textarea",
       placeholder:
-        "No online presence, outdated website, relying on word-of-mouth only, not showing up on Google...",
+        "Building online presence, growing beyond word-of-mouth, improving Google visibility...",
       required: true,
     },
     {
       id: "previousWebsite",
-      label: "Have you had a website before? If so, what didn't work about it?",
+      label: "Have you had a website before? If so, what would you improve about it?",
       type: "textarea",
       placeholder:
-        "Hard to update, didn't get traffic, looked unprofessional, didn't represent your brand...",
+        "Easier updates, more traffic, a more professional look, better brand representation...",
       required: false,
     },
     // The Vision
@@ -158,7 +158,7 @@ const websiteRedesign: ServiceModule = {
   serviceId: "website-redesign",
   serviceLabel: "Website Redesign",
   icon: "RefreshCw",
-  tagline: "Let's turn what's broken into something that works for you.",
+  tagline: "Let's elevate your site into something that truly works for you.",
   questions: [
     // Your Business
     {
@@ -190,10 +190,10 @@ const websiteRedesign: ServiceModule = {
     {
       id: "biggestFrustration",
       label:
-        "What frustrates you most about your current website?",
+        "What would you most like to improve about your current website?",
       type: "textarea",
       placeholder:
-        "Outdated look, slow, hard to update, doesn't convert, embarrassing to share...",
+        "Fresh design, faster speed, easier updates, better conversions, ready for a refresh...",
       required: true,
     },
     {
@@ -202,7 +202,7 @@ const websiteRedesign: ServiceModule = {
         "What feedback have you gotten from customers about your site?",
       type: "textarea",
       placeholder:
-        "Confusing navigation, can't find info, doesn't work on phone, looks old...",
+        "Easier navigation, finding info quickly, better mobile experience, a fresh modern look...",
       required: false,
     },
     // The Vision
@@ -291,10 +291,10 @@ const landingPage: ServiceModule = {
     {
       id: "currentConversion",
       label:
-        "How are you currently getting this offer in front of people? What's not working?",
+        "How are you currently getting this offer in front of people? What would you improve?",
       type: "textarea",
       placeholder:
-        "Ads that don't convert, homepage that tries to do too much, no dedicated page...",
+        "Better ad performance, a focused page for this offer, a dedicated conversion path...",
       required: true,
     },
     // The Vision
@@ -404,10 +404,10 @@ const businessDashboard: ServiceModule = {
     {
       id: "currentProcess",
       label:
-        "How do you currently track your key numbers? What's falling through the cracks?",
+        "How do you currently track your key numbers? Where would more visibility help?",
       type: "textarea",
       placeholder:
-        "Spreadsheets, manual reports, gut feeling, no visibility into...",
+        "Spreadsheets, manual reports, gut feeling, want better insight into...",
       required: true,
     },
     {
@@ -416,7 +416,7 @@ const businessDashboard: ServiceModule = {
         "What question about your business can you never get a quick answer to?",
       type: "textarea",
       placeholder:
-        "How much did we make last month? Which clients are overdue? Where are we losing time?",
+        "How much did we make last month? Which clients need attention? Where can we save time?",
       required: true,
     },
     // The Vision
@@ -527,19 +527,19 @@ const clientPortal: ServiceModule = {
     {
       id: "currentCommunication",
       label:
-        "How do you currently communicate with clients? What's messy about it?",
+        "How do you currently communicate with clients? What would you like to streamline?",
       type: "textarea",
       placeholder:
-        "Emails get lost, files scattered across platforms, clients asking for updates constantly...",
+        "Centralized communication, organized file sharing, easy client updates...",
       required: true,
     },
     {
       id: "clientFrustration",
       label:
-        "What do your clients complain about or struggle with in working with you?",
+        "What would make your clients' experience working with you even better?",
       type: "textarea",
       placeholder:
-        "Hard to find documents, don't know project status, payment confusion, too many emails...",
+        "Easy document access, clear project status, simple payments, streamlined communication...",
       required: false,
     },
     // The Vision
@@ -646,10 +646,10 @@ const ecommerce: ServiceModule = {
     {
       id: "currentSelling",
       label:
-        "How are you currently selling? What's not working about it?",
+        "How are you currently selling? What would you like to improve?",
       type: "textarea",
       placeholder:
-        "In-person only, marketplace fees too high, no online presence, current store is clunky...",
+        "In-person sales, marketplace selling, ready to expand online, looking for a better storefront...",
       required: true,
     },
     // The Vision
@@ -770,10 +770,10 @@ const crmSystem: ServiceModule = {
     {
       id: "fallingThroughCracks",
       label:
-        "What's falling through the cracks? Where do you lose deals or forget follow-ups?",
+        "Where do you see the biggest opportunity to capture more business?",
       type: "textarea",
       placeholder:
-        "Leads go cold, forget to follow up, no visibility into pipeline, lost contact info...",
+        "Faster follow-ups, better pipeline visibility, organized contacts, timely outreach...",
       required: true,
     },
     // The Vision
@@ -880,10 +880,10 @@ const fullPlatform: ServiceModule = {
     {
       id: "biggestPainPoint",
       label:
-        "What is your single biggest operational pain point right now?",
+        "What is your single biggest operational opportunity for improvement right now?",
       type: "textarea",
       placeholder:
-        "The one thing that wastes the most time, causes the most errors, or costs the most money...",
+        "The one area where better systems would save the most time, improve accuracy, or grow revenue...",
       required: true,
     },
     {
@@ -898,10 +898,10 @@ const fullPlatform: ServiceModule = {
     {
       id: "whatBreaks",
       label:
-        "When things go wrong in your operations, what typically breaks down?",
+        "What part of your operations would benefit most from being streamlined?",
       type: "textarea",
       placeholder:
-        "Communication gaps, missed deadlines, billing errors, lost files, dropped clients...",
+        "Team communication, deadline tracking, billing accuracy, file organization, client follow-through...",
       required: true,
     },
     // The Vision
@@ -911,7 +911,7 @@ const fullPlatform: ServiceModule = {
         "If we built you the perfect operations platform, what would your business look like in a year?",
       type: "textarea",
       placeholder:
-        "Everything in one place, automated workflows, real-time visibility, no more fires to put out...",
+        "Everything in one place, automated workflows, real-time visibility, smooth proactive operations...",
       required: true,
     },
     // Project Specifics

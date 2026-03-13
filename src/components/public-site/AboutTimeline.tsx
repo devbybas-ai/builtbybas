@@ -22,13 +22,13 @@ const milestones = [
     label: "The Purpose",
     title: "Businesses Deserve Better",
     description:
-      "Every business deserves real tools that work as hard as they do. I saw owners spending more time fighting their software than running their companies, and I knew I could build something better. Software that fits how you actually work, at a price that respects your budget. That conviction became the foundation of everything we do.",
+      "Every business deserves real tools that work as hard as they do. I saw an opportunity to build software that truly fits how owners run their companies. Tools designed around your workflow, at a price that respects your budget. That conviction became the foundation of everything we do.",
   },
   {
     label: "Today",
     title: "BuiltByBas is Born",
     description:
-      "What started as one developer's mission is now a team. We exist to give every business the custom software they deserve, at prices that make sense. No templates. No shortcuts. No sitting back while businesses struggle. We are doing something about it.",
+      "What started as one developer's mission is now a team. We exist to give every business the custom software they deserve, at prices that make sense. Custom-built. Hands-on. Standing with businesses every step of the way. That is what we are about.",
   },
 ];
 

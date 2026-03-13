@@ -80,7 +80,7 @@ export const services: Service[] = [
           icon: "headphones",
           title: "Post-Launch Support",
           description:
-            "We don't disappear after launch. Bug fixes, content updates, performance monitoring. Your site stays healthy with dedicated post-launch support.",
+            "We're with you after launch. Bug fixes, content updates, performance monitoring. Your site stays healthy with dedicated post-launch support.",
           deliverables: [
             "30-day post-launch support",
             "Bug fix SLA",
@@ -97,7 +97,7 @@ export const services: Service[] = [
     id: "website-redesigns",
     title: "Website Redesigns",
     description:
-      "Transform your outdated website into a modern, high-performing machine. Performance-optimized rebuilds that respect your brand while pushing it forward.",
+      "Elevate your website into a modern, high-performing machine. Performance-optimized rebuilds that respect your brand while pushing it forward.",
     priceRange: "$3,000 - $10,000",
     icon: "refresh",
     features: [
@@ -109,14 +109,14 @@ export const services: Service[] = [
     ],
     category: "web",
     walkthrough: {
-      tagline: "Your brand deserves better than 2018.",
+      tagline: "Your brand is ready for its next chapter.",
       steps: [
         {
           phase: "Discovery",
           icon: "search",
           title: "Audit & Analysis",
           description:
-            "We audit your current site: performance scores, SEO gaps, accessibility issues, and user pain points. We identify what to keep, what to cut, and what to rebuild from scratch.",
+            "We audit your current site: performance scores, SEO gaps, accessibility improvements, and user experience insights. We identify what to keep, what to refine, and what to rebuild fresh.",
           deliverables: [
             "Full site audit report",
             "Performance benchmark",
@@ -498,7 +498,7 @@ export const services: Service[] = [
           icon: "palette",
           title: "Storefront & Checkout Design",
           description:
-            "Product pages that convert, a checkout flow that doesn't leak. Every screen designed to minimize friction and maximize sales.",
+            "Product pages that convert, a seamless checkout flow. Every screen designed to minimize friction and maximize sales.",
           deliverables: [
             "Storefront page mockups",
             "Product detail page designs",
@@ -557,7 +557,7 @@ export const services: Service[] = [
     id: "crm-systems",
     title: "CRM Systems",
     description:
-      "Stop losing leads in spreadsheets. Custom CRM systems that track every client, every deal, every follow-up. Built exactly for how you work.",
+      "Capture every lead, track every deal, follow up on time. Custom CRM systems built exactly for how you work.",
     priceRange: "$8,000 - $25,000",
     icon: "database",
     features: [
@@ -710,7 +710,7 @@ export const services: Service[] = [
           icon: "rocket",
           title: "Phased Rollout",
           description:
-            "We don't flip one switch. We roll out module by module, training your team on each before moving to the next. Controlled, confident, zero chaos.",
+            "We roll out module by module, training your team on each before moving to the next. Controlled, confident, and smooth.",
           deliverables: [
             "Module-by-module deployment",
             "Data migration per module",
@@ -741,7 +741,7 @@ export const services: Service[] = [
     id: "ai-powered-tools",
     title: "AI-Powered Tools",
     description:
-      "Custom AI assistants, content generators, and automation tools that give your business an unfair advantage. Built with responsible AI principles.",
+      "Custom AI assistants, content generators, and automation tools that give your business a competitive edge. Built with responsible AI principles.",
     priceRange: "$10,000 - $40,000",
     icon: "cpu",
     features: [
@@ -760,7 +760,7 @@ export const services: Service[] = [
           icon: "search",
           title: "AI Opportunity Assessment",
           description:
-            "We identify where AI can create real value in your business, not hype, not gimmicks. Concrete use cases with measurable ROI projections.",
+            "We identify where AI can create real value in your business, real, measurable impact. Concrete use cases with measurable ROI projections.",
           deliverables: [
             "AI opportunity matrix",
             "Use case prioritization",
