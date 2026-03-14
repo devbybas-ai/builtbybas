@@ -172,7 +172,7 @@ describe("proposal-generator", () => {
 
     it("includes RAI footer", () => {
       const result = generateProposal(mockAnalysis, mockServices);
-      expect(result.content).toContain("Reviewed and approved by Bas Rosario");
+      expect(result.content).toContain("Reviewed and approved by BuiltByBas staff");
     });
 
     it("includes client profile data in at-a-glance format", () => {

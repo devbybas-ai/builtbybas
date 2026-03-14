@@ -126,8 +126,8 @@ export default function AIPolicyPage() {
               </p>
               <ul className="mt-2">
                 <li>
-                  Every proposal is read, edited, and approved by Bas Rosario
-                  before delivery
+                  Every proposal is read, edited, and approved by the
+                  BuiltByBas team before delivery
                 </li>
                 <li>
                   Every estimate is validated against real-world project
@@ -233,7 +233,7 @@ export default function AIPolicyPage() {
                 </li>
                 <li>
                   Every proposal includes a line confirming it was reviewed and
-                  approved by Bas Rosario
+                  approved by the BuiltByBas team
                 </li>
                 <li>
                   Our scoring criteria are documented and explainable. You can

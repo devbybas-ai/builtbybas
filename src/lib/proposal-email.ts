@@ -188,7 +188,7 @@ export function buildNudgeEmailHtml(data: NudgeEmailData): string {
 <tr><td style="padding:0 0 24px;">
   <p style="color:#e0e0e0;font-size:16px;line-height:1.7;margin:0;">
     Looking forward to hearing from you,<br/>
-    <strong style="color:#ffffff;">Bas Rosario</strong>
+    <strong style="color:#ffffff;">The BuiltByBas Team</strong>
   </p>
 </td></tr>
 
@@ -221,7 +221,7 @@ export function buildEmailFooterHtml(): string {
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
   <tr><td>
     <p style="color:#a0a0a0;font-size:12px;line-height:1.5;margin:0 0 4px;">
-      <em>Reviewed and approved by Bas Rosario</em>
+      <em>Reviewed and approved by BuiltByBas staff</em>
     </p>
     <p style="color:#ffffff;font-size:13px;font-weight:600;margin:0 0 2px;">
       BuiltByBas

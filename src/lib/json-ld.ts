@@ -11,8 +11,8 @@ export function getOrganizationSchema() {
     description:
       "Full-stack development and marketing company that builds custom software, websites, and growth strategies for businesses ready to grow.",
     founder: {
-      "@type": "Person",
-      name: "Bas Rosario",
+      "@type": "Organization",
+      name: "BuiltByBas",
     },
     contactPoint: {
       "@type": "ContactPoint",

@@ -653,7 +653,7 @@ function buildTerms(): string {
     ``,
     `---`,
     ``,
-    `*Reviewed and approved by Bas Rosario, BuiltByBas*`,
+    `*Reviewed and approved by BuiltByBas staff*`,
   ].join("\n");
 }
 
