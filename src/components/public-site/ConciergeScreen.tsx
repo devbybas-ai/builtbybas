@@ -34,7 +34,7 @@ export function ConciergeScreen({
 
   if (shouldReduceMotion) {
     return (
-      <div key={screenKey} className="flex h-[100svh] flex-col px-5 pb-8 pt-20">
+      <div key={screenKey} className="flex h-[100svh] flex-col px-5 pb-8 pt-20 md:px-8 md:pt-24">
         {children}
       </div>
     );
@@ -49,7 +49,7 @@ export function ConciergeScreen({
       animate="center"
       exit="exit"
       transition={springs.smooth}
-      className="flex h-[100svh] flex-col px-5 pb-8 pt-20"
+      className="flex h-[100svh] flex-col px-5 pb-8 pt-20 md:px-8 md:pt-24"
     >
       {children}
     </motion.div>

@@ -101,7 +101,7 @@ export function MobileConcierge() {
 
   return (
     <section
-      className="relative overflow-hidden md:hidden"
+      className="relative overflow-hidden"
       aria-label="Welcome \u2014 tell us what you\u2019re building"
     >
       <HeroBackground />
@@ -139,11 +139,11 @@ export function MobileConcierge() {
               <div className="flex-1" />
 
               {/* Welcome intro */}
-              <div className="relative z-10 mx-auto w-full max-w-sm text-center">
-                <h1 className="text-[1.875rem] font-bold leading-tight tracking-tight text-white sm:text-4xl">
+              <div className="relative z-10 mx-auto w-full max-w-sm text-center md:max-w-2xl">
+                <h1 className="text-[1.875rem] font-bold leading-tight tracking-tight text-white sm:text-4xl md:text-6xl lg:text-7xl">
                   {conciergeContent.welcome.headline}
                 </h1>
-                <p className="mt-4 text-base leading-relaxed text-muted-foreground">
+                <p className="mt-4 text-base leading-relaxed text-muted-foreground md:mt-6 md:text-xl">
                   {conciergeContent.welcome.subtitle}
                 </p>
               </div>
@@ -151,8 +151,9 @@ export function MobileConcierge() {
               <div className="flex-1" />
 
               {/* Subtle hint */}
-              <p className="relative z-10 pb-4 text-sm text-muted-foreground/60">
-                Tap to continue
+              <p className="relative z-10 pb-4 text-sm text-muted-foreground/60 md:pb-8">
+                <span className="md:hidden">Tap to continue</span>
+                <span className="hidden md:inline">Click to continue</span>
               </p>
             </button>
           </ConciergeScreen>
@@ -164,12 +165,12 @@ export function MobileConcierge() {
             <div className="flex-1" />
 
             {/* Question */}
-            <div className="relative z-10 mx-auto w-full max-w-sm">
-              <h1 className="text-center text-[1.875rem] font-bold leading-tight tracking-tight text-white">
+            <div className="relative z-10 mx-auto w-full max-w-sm md:max-w-lg">
+              <h1 className="text-center text-[1.875rem] font-bold leading-tight tracking-tight text-white md:text-5xl lg:text-6xl">
                 {conciergeContent.greeting.headline}
               </h1>
 
-              <div className="mt-8 flex flex-col gap-3">
+              <div className="mt-8 flex flex-col gap-3 md:mt-10 md:gap-4">
                 {conciergeContent.greeting.categories.map((cat, index) => (
                   <ConciergeOption
                     key={cat.id}
@@ -217,12 +218,12 @@ export function MobileConcierge() {
             <div className="flex-1" />
 
             {/* Follow-up question */}
-            <div className="relative z-10 mx-auto w-full max-w-sm">
-              <h2 className="text-center text-[1.875rem] font-bold leading-tight tracking-tight text-white">
+            <div className="relative z-10 mx-auto w-full max-w-sm md:max-w-lg">
+              <h2 className="text-center text-[1.875rem] font-bold leading-tight tracking-tight text-white md:text-5xl lg:text-6xl">
                 {conciergeContent.followUps[category].headline}
               </h2>
 
-              <div className="mt-8 flex flex-col gap-3">
+              <div className="mt-8 flex flex-col gap-3 md:mt-10 md:gap-4">
                 {conciergeContent.followUps[category].priorities.map(
                   (pri, index) => (
                     <ConciergeOption
@@ -246,11 +247,11 @@ export function MobileConcierge() {
         {screen === "matching" && (
           <ConciergeScreen screenKey="matching" direction={direction}>
             <div className="flex-1" />
-            <div className="relative z-10 mx-auto w-full max-w-sm text-center">
+            <div className="relative z-10 mx-auto w-full max-w-sm text-center md:max-w-lg">
               <div className="inline-block animate-pulse">
-                <div className="h-2 w-2 rounded-full bg-green-400 shadow-[0_0_12px] shadow-green-400/40" />
+                <div className="h-2 w-2 rounded-full bg-green-400 shadow-[0_0_12px] shadow-green-400/40 md:h-3 md:w-3" />
               </div>
-              <p className="mt-4 text-base text-muted-foreground">
+              <p className="mt-4 text-base text-muted-foreground md:text-lg">
                 {conciergeContent.matchingText}
               </p>
             </div>
@@ -276,14 +277,14 @@ export function MobileConcierge() {
             <div className="flex-1" />
 
             {/* Payoff content */}
-            <div className="relative z-10 mx-auto w-full max-w-sm">
+            <div className="relative z-10 mx-auto w-full max-w-sm md:max-w-lg">
               {category === "other" ? (
                 /* "Something Else" variant — no portfolio piece */
                 <div className="text-center">
                   <h2
                     ref={setFocusTarget as React.Ref<HTMLHeadingElement>}
                     tabIndex={-1}
-                    className="text-[1.875rem] font-bold leading-tight tracking-tight text-white outline-none"
+                    className="text-[1.875rem] font-bold leading-tight tracking-tight text-white outline-none md:text-4xl"
                   >
                     {conciergeContent.otherPayoff.headline}
                   </h2>
@@ -346,7 +347,7 @@ function PayoffContent({
                 alt={project.title}
                 fill
                 className="object-cover"
-                sizes="(max-width: 768px) 100vw, 400px"
+                sizes="(max-width: 768px) 100vw, 512px"
                 priority
               />
             </div>
