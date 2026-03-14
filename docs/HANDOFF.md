@@ -1,8 +1,32 @@
 # BuiltByBas — Handoff Document
 
-> **Last Updated:** 2026-03-13 (Session 46)
-> **Status:** Mobile Concierge Experience — DESIGNED & PLANNED. Spec and implementation plan written, reviewed, and committed. Ready to execute.
-> **Next Session Priority:** Execute `docs/superpowers/plans/2026-03-13-mobile-concierge.md` (9 tasks, 3 chunks) using `superpowers:subagent-driven-development`. Then: deploy to VPS.
+> **Last Updated:** 2026-03-13 (Session 47)
+> **Status:** Mobile Concierge Experience — IMPLEMENTED. 3-screen guided flow live on mobile. Desktop hero unchanged.
+> **Next Session Priority:** Extend concierge to desktop. Diversify portfolio mappings (too many point to All Beauty). Deploy to VPS.
+
+## Session 47 Changes (2026-03-13)
+
+**Mobile Concierge Experience — IMPLEMENTED:**
+
+Executed the 9-task implementation plan across 3 chunks. The mobile homepage now has a full-screen concierge flow instead of the traditional hero.
+
+**What was built:**
+- `src/lib/concierge-content.ts` — types, content map, `getPayoff()`, `getIntakeHref()`
+- `src/components/public-site/ConciergeOption.tsx` — glassmorphism tap target with green selection glow
+- `src/components/public-site/ConciergeScreen.tsx` — full-viewport animated container (spring transitions)
+- `src/components/public-site/MobileConcierge.tsx` — state machine: greeting → followup → matching → payoff
+- `src/components/public-site/Hero.tsx` — split into `<MobileConcierge />` (md:hidden) + desktop hero (hidden md:flex)
+
+**Tests:** 16 new tests (7 content map + 9 component integration). Full suite: 227/227 pass. tsc clean. Build clean.
+
+**Commits:** 7 atomic commits on `feature/mobile-concierge`, fast-forward merged to main.
+
+**Known issues for next session:**
+- 5 of 9 payoff combos map to All Beauty Hair Studio — needs more portfolio variety
+- Bas wants concierge on desktop too — not just mobile
+- Deploy to VPS pending
+
+---
 
 ## Session 46 Changes (2026-03-13)
 
