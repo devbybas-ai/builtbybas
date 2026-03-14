@@ -1,8 +1,59 @@
 # BuiltByBas — Handoff Document
 
-> **Last Updated:** 2026-03-14 (Session 49)
-> **Status:** Data packet animation complete. Welcome screen polished. Ready for deploy.
-> **Next Session Priority:** Deploy to VPS. Concierge on desktop. Diversify payoff portfolio combos.
+> **Last Updated:** 2026-03-14 (Session 50)
+> **Status:** Nav redesigned, portfolio arrows added, homepage locked, keyboard accessible. Ready for deploy.
+> **Next Session Priority:** Deploy to VPS. Diversify payoff portfolio combos (5/9 still All Beauty). Rotate Resend API key.
+
+## Session 50 Changes (2026-03-14)
+
+**Desktop Navigation Redesigned:**
+
+- Removed Services and Portfolio links from desktop nav.
+- Removed "Start a Project" CTA button from desktop nav.
+- Added centered browse prompt: "Just browsing, click here to view the BuiltByBas Portfolio." — "click here" is a cyan link to `/portfolio`.
+- Home and About links remain on the left.
+- Right spacer balances the three-zone layout (Home/About | browse prompt | spacer).
+- Mobile nav unchanged — still has all 4 links + Start a Project CTA.
+
+**Welcome Screen Copy Updates:**
+
+- Tagline line 1: "Tell Us How Your Business Works." changed to "Let's Talk About Your Business Needs."
+- Tagline line 2: "We'll Build the System Around It." changed to "Then We'll Build a System Around Them."
+- Title ("Welcome to BuiltByBas") enlarged 130%: `text-5xl` mobile, `text-6xl` sm, `text-7xl` md, `text-8xl` lg.
+- "Tap to get started" moved up 40px on mobile (`mb-10 md:mb-0`).
+- Desktop CTA updated: "Press Enter or click to get started" for keyboard users.
+
+**Portfolio Gallery Arrows:**
+
+- Added animated left/right chevron arrows to `ProjectCardGallery`.
+- Arrows appear with slide-in animation, scale on hover.
+- Click navigates forward/back through screenshots, resets auto-cycle timer.
+- Fully keyboard-accessible (`<button>` elements with `aria-label`).
+
+**Homepage Scroll Lock:**
+
+- Wrapped homepage in `fixed inset-0 overflow-hidden` — no vertical or horizontal scrolling on landing page.
+- Added `ScrollToTop` component to root layout — all pages start at the top on navigation.
+
+**Keyboard Accessibility (WCAG):**
+
+- Added global `focus-visible` ring (2px cyan, 2px offset) — visible only on keyboard navigation (Tab), hidden on mouse click.
+- Removed default `outline-ring/50` that showed on click.
+- All interactive elements across the site (buttons, links, gallery arrows, concierge options) are keyboard-navigable.
+
+**Tests:** 229/229 pass. tsc clean.
+
+**Commits this session:**
+- `0c4f0e9` feat: full-length PCB packet routes, matrix rain chips, welcome polish (session 49 changes)
+- Session 50 changes not yet committed.
+
+**Known issues for next session:**
+- 5 of 9 payoff combos still map to All Beauty Hair Studio
+- Deploy all changes to VPS
+- Rotate Resend API key
+- Marketing push, SMS notifications, modular AI provider architecture
+
+---
 
 ## Session 49 Changes (2026-03-14)
 

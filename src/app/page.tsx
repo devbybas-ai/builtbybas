@@ -12,12 +12,12 @@ export const metadata: Metadata = {
 
 export default function HomePage() {
   return (
-    <>
+    <div className="fixed inset-0 overflow-hidden">
       <JsonLd data={getWebSiteSchema()} />
       <PublicHeader />
-      <main id="main-content" className="relative overflow-x-clip">
+      <main id="main-content" className="relative h-full">
         <Hero />
       </main>
-    </>
+    </div>
   );
 }

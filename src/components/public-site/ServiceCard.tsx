@@ -110,12 +110,6 @@ function CardContent({
         {service.description}
       </p>
 
-      <div className="mt-4">
-        <span className="inline-flex rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary transition-colors duration-300 group-hover:bg-primary/20">
-          {service.priceRange}
-        </span>
-      </div>
-
       <ul className="mt-4 space-y-2">
         {service.features.slice(0, 4).map((feature) => (
           <li

@@ -51,35 +51,70 @@ export function PublicHeader() {
           className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6 md:h-16 lg:px-8"
           aria-label="Main navigation"
         >
-          {/* Desktop nav — links left, CTA right */}
+          {/* Desktop nav — links left */}
           <div className="hidden items-center gap-8 md:flex">
-            {navLinks.map((link) => (
+            <Link
+              href="/"
+              onClick={(e) => {
+                if (pathname === "/") {
+                  e.preventDefault();
+                  window.dispatchEvent(new CustomEvent("concierge-reset"));
+                }
+              }}
+              className={`text-sm transition-colors hover:text-foreground ${
+                isActive("/")
+                  ? "text-foreground font-medium"
+                  : "text-muted-foreground"
+              }`}
+            >
+              Home
+            </Link>
+            {pathname !== "/" && (
               <Link
-                key={link.href}
-                href={link.href}
-                onClick={(e) => {
-                  if (link.href === "/" && pathname === "/") {
-                    e.preventDefault();
-                    window.dispatchEvent(new CustomEvent("concierge-reset"));
-                  }
-                }}
+                href="/services"
                 className={`text-sm transition-colors hover:text-foreground ${
-                  isActive(link.href)
+                  isActive("/services")
                     ? "text-foreground font-medium"
                     : "text-muted-foreground"
                 }`}
               >
-                {link.label}
+                Services
               </Link>
-            ))}
+            )}
+            <Link
+              href="/about"
+              className={`text-sm transition-colors hover:text-foreground ${
+                isActive("/about")
+                  ? "text-foreground font-medium"
+                  : "text-muted-foreground"
+              }`}
+            >
+              About
+            </Link>
           </div>
 
-          <Link
-            href="/intake"
-            className="btn-shine neon-glow hidden items-center rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-all hover:bg-cyan-hover md:inline-flex"
-          >
-            Start a Project
-          </Link>
+          {/* Center — browse prompt (absolutely centered) */}
+          <span className="pointer-events-none absolute inset-0 hidden items-center justify-center text-sm text-muted-foreground md:flex">
+            <span className="pointer-events-auto">
+              Just browsing,{" "}
+              <Link
+                href="/portfolio"
+                className="text-primary underline underline-offset-2 transition-colors hover:text-cyan-hover"
+              >
+                click here
+              </Link>{" "}
+              to view the BuiltByBas Portfolio.
+            </span>
+          </span>
+
+          {/* Right — pricing note on non-home pages, spacer on home */}
+          {pathname !== "/" ? (
+            <span className="hidden text-sm text-muted-foreground md:inline">
+              * Pricing varies by project
+            </span>
+          ) : (
+            <div className="hidden md:block md:w-[120px]" />
+          )}
 
           {/* Mobile menu button */}
           <button

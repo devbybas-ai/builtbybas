@@ -146,32 +146,46 @@ export function MobileConcierge() {
             <button
               onClick={handleWelcomeTap}
               aria-label="Continue to get started"
-              className="flex h-full w-full flex-col items-center text-left"
+              className="flex h-full w-full flex-col items-center"
             >
-              <div className="flex-1" />
+              {/* Top spacer — pushes content to optical center */}
+              <div className="flex-[1.2]" />
 
-              {/* Welcome intro */}
-              <div className="relative z-10 mx-auto w-full max-w-md text-center md:max-w-2xl">
-                <h1 className="text-4xl font-bold leading-tight tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
-                  Welcome to<br />
+              {/* Tier 1: Brand — the hero moment */}
+              <div className="relative z-10 mx-auto w-full max-w-lg text-center md:max-w-3xl">
+                <p className="text-xs font-medium uppercase tracking-[0.3em] text-muted-foreground sm:text-sm md:text-base">
+                  Welcome to
+                </p>
+                <h1 className="mt-2 text-6xl font-bold leading-[0.95] tracking-tight text-white sm:mt-3 sm:text-7xl md:text-8xl lg:text-9xl">
                   <span className="text-primary">Built</span>By<span className="text-primary">Bas</span>
                 </h1>
-                <p className="mt-3 text-sm leading-relaxed text-muted-foreground sm:mt-4 sm:text-base md:mt-6 md:text-xl">
+              </div>
+
+              {/* Tier 2: Value prop — quiet support text */}
+              <div className="relative z-10 mx-auto mt-8 w-full max-w-sm text-center sm:mt-10 md:mt-12 md:max-w-xl">
+                <p className="text-sm leading-relaxed text-white/50 sm:text-base md:text-lg">
                   {conciergeContent.welcome.subtitle}
                 </p>
-                <p className="mt-4 text-base font-semibold leading-snug text-white sm:mt-6 sm:text-lg md:mt-8 md:text-2xl">
-                  Tell Us How Your Business Works.<br />
-                  <span className="text-primary">We&apos;ll Build the System Around It.</span>
+                <p className="mt-4 text-base font-medium leading-snug text-white/80 sm:text-lg md:mt-5 md:text-xl">
+                  Let&apos;s Talk About Your Business Needs.
+                </p>
+                <p className="mt-1 text-base font-medium leading-snug text-primary sm:text-lg md:text-xl">
+                  Then We&apos;ll Build a System Around Them.
                 </p>
               </div>
 
-              <div className="flex-1" />
+              {/* Bottom spacer */}
+              <div className="flex-[1.6]" />
 
-              {/* CTA hint — pulse to draw attention */}
-              <p className="relative z-10 animate-pulse pb-4 text-lg font-semibold text-white md:pb-8 md:text-xl">
-                <span className="md:hidden">Tap to get started</span>
-                <span className="hidden md:inline">Click to get started</span>
-              </p>
+              {/* Tier 3: CTA — anchored near bottom, distinct from content */}
+              <div className="relative z-10 mb-8 text-center sm:mb-10 md:mb-12">
+                <p className="animate-cta-glow text-lg font-bold tracking-wide sm:text-xl md:text-2xl">
+                  <span className="text-emerald-400">Click Anywhere</span>{" "}
+                  <span className="text-white/60">to</span>{" "}
+                  <span className="text-emerald-400">Get Started</span>
+                </p>
+                <div className="animate-cta-glow mx-auto mt-2.5 h-px w-20 rounded-full bg-emerald-400/60 md:w-28" />
+              </div>
             </button>
           </ConciergeScreen>
         )}

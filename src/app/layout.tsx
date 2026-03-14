@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Outfit } from "next/font/google";
 import { SkipToContent } from "@/components/shared/SkipToContent";
+import { ScrollToTop } from "@/components/shared/ScrollToTop";
 import { MotionProvider } from "@/components/motion/MotionProvider";
 import { Toaster } from "@/components/ui/sonner";
 import { JsonLd } from "@/components/shared/JsonLd";
@@ -69,6 +70,7 @@ export default function RootLayout({
       </head>
       <body className="min-h-screen overflow-x-hidden bg-background font-sans text-foreground antialiased">
         <SkipToContent />
+        <ScrollToTop />
         <MotionProvider>
           {children}
         </MotionProvider>

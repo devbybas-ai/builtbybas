@@ -149,7 +149,18 @@ html, body {
 /* === BASE STYLES === */
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply border-border;
+  }
+
+  /* Keyboard-only focus ring — visible on Tab, hidden on click */
+  :focus-visible {
+    outline: 2px solid var(--cyan);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  :focus:not(:focus-visible) {
+    outline: none;
   }
 
   html {
@@ -542,6 +553,22 @@ html, body {
 
 .proposal-content h2:first-child {
   margin-top: 0;
+}
+
+/* === CTA GLOW — stays bright, pulses brighter === */
+@keyframes cta-glow {
+  0%, 100% {
+    opacity: 1;
+    filter: brightness(1) drop-shadow(0 0 0px transparent);
+  }
+  50% {
+    opacity: 1;
+    filter: brightness(1.4) drop-shadow(0 0 12px rgba(74, 222, 128, 0.6));
+  }
+}
+
+.animate-cta-glow {
+  animation: cta-glow 2s ease-in-out infinite;
 }
 
 /* === REDUCED MOTION === */
