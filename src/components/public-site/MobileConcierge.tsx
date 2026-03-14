@@ -19,24 +19,31 @@ import {
 import { projects } from "@/data/portfolio";
 
 export function MobileConcierge() {
-  const [screen, setScreen] = useState<ScreenType>("greeting");
+  const [screen, setScreen] = useState<ScreenType>("welcome");
   const [category, setCategory] = useState<CategoryId | null>(null);
   const [priority, setPriority] = useState<PriorityId | null>(null);
   const [direction, setDirection] = useState<1 | -1>(1);
   const announcementRef = useRef<HTMLDivElement>(null);
   const focusTargetRef = useRef<HTMLElement | null>(null);
 
+  function handleWelcomeTap() {
+    setDirection(1);
+    setScreen("greeting");
+  }
+
   // Announce screen changes for screen readers
   const currentHeadline =
-    screen === "greeting"
-      ? conciergeContent.greeting.headline
-      : screen === "followup" && category
-        ? conciergeContent.followUps[category].headline
-        : screen === "matching"
-          ? conciergeContent.matchingText
-          : category === "other"
-            ? conciergeContent.otherPayoff.headline
-            : "Here\u2019s what we can do for you";
+    screen === "welcome"
+      ? conciergeContent.welcome.headline
+      : screen === "greeting"
+        ? conciergeContent.greeting.headline
+        : screen === "followup" && category
+          ? conciergeContent.followUps[category].headline
+          : screen === "matching"
+            ? conciergeContent.matchingText
+            : category === "other"
+              ? conciergeContent.otherPayoff.headline
+              : "Here\u2019s what we can do for you";
 
   // Announce headline and move focus on screen change
   useEffect(() => {
@@ -76,6 +83,10 @@ export function MobileConcierge() {
     if (screen === "payoff" && category !== "other") {
       setPriority(null);
       setScreen("followup");
+    } else if (screen === "followup" || (screen === "payoff" && category === "other")) {
+      setCategory(null);
+      setPriority(null);
+      setScreen("greeting");
     } else {
       setCategory(null);
       setPriority(null);
@@ -118,6 +129,35 @@ export function MobileConcierge() {
       </noscript>
 
       <AnimatePresence mode="wait" custom={direction}>
+        {screen === "welcome" && (
+          <ConciergeScreen screenKey="welcome" direction={direction}>
+            <button
+              onClick={handleWelcomeTap}
+              aria-label="Continue to get started"
+              className="flex h-full w-full flex-col items-center text-left"
+            >
+              <div className="flex-1" />
+
+              {/* Welcome intro */}
+              <div className="relative z-10 mx-auto w-full max-w-sm text-center">
+                <h1 className="text-[1.875rem] font-bold leading-tight tracking-tight text-white sm:text-4xl">
+                  {conciergeContent.welcome.headline}
+                </h1>
+                <p className="mt-4 text-base leading-relaxed text-muted-foreground">
+                  {conciergeContent.welcome.subtitle}
+                </p>
+              </div>
+
+              <div className="flex-1" />
+
+              {/* Subtle hint */}
+              <p className="relative z-10 pb-4 text-sm text-muted-foreground/60">
+                Tap to continue
+              </p>
+            </button>
+          </ConciergeScreen>
+        )}
+
         {screen === "greeting" && (
           <ConciergeScreen screenKey="greeting" direction={direction}>
             {/* Spacer */}

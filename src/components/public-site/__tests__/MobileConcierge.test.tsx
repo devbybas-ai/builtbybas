@@ -49,9 +49,36 @@ vi.mock("@/hooks/useReducedMotion", () => ({
 
 import { MobileConcierge } from "../MobileConcierge";
 
+/** Helper: render and tap past the welcome screen to the greeting */
+function renderAndSkipWelcome() {
+  vi.useFakeTimers();
+  render(<MobileConcierge />);
+  fireEvent.click(screen.getByLabelText("Continue to get started"));
+}
+
 describe("MobileConcierge", () => {
-  it("renders the greeting screen with all 4 categories", () => {
+  it("renders the welcome screen on initial load", () => {
     render(<MobileConcierge />);
+    expect(
+      screen.getByRole("heading", { name: "Welcome to BuiltByBas" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "Where we build solutions that work like your business does.",
+      ),
+    ).toBeInTheDocument();
+  });
+
+  it("tapping welcome screen transitions to greeting", () => {
+    render(<MobileConcierge />);
+    fireEvent.click(screen.getByLabelText("Continue to get started"));
+    expect(
+      screen.getByRole("heading", { name: "What are you building?" }),
+    ).toBeInTheDocument();
+  });
+
+  it("renders the greeting screen with all 4 categories", () => {
+    renderAndSkipWelcome();
     expect(
       screen.getByRole("heading", { name: "What are you building?" }),
     ).toBeInTheDocument();
@@ -65,21 +92,22 @@ describe("MobileConcierge", () => {
     expect(
       screen.getByLabelText("Select: Something Else"),
     ).toBeInTheDocument();
+    vi.useRealTimers();
   });
 
   it("renders the skip link to services", () => {
-    render(<MobileConcierge />);
+    renderAndSkipWelcome();
     const skipLink = screen.getByText(/browse our services/i);
     expect(skipLink).toBeInTheDocument();
     expect(skipLink.closest("a")).toHaveAttribute("href", "/services");
+    vi.useRealTimers();
   });
 
   // Note: ConciergeOption has a 150ms selection glow delay before calling onSelect.
   // Tests use vi.useFakeTimers() + act() to advance past the delay.
 
   it("shows follow-up screen when a category is selected", () => {
-    vi.useFakeTimers();
-    render(<MobileConcierge />);
+    renderAndSkipWelcome();
     fireEvent.click(screen.getByLabelText("Select: A Website"));
     act(() => {
       vi.advanceTimersByTime(200);
@@ -94,8 +122,7 @@ describe("MobileConcierge", () => {
   });
 
   it("shows matching screen then payoff when priority is selected", () => {
-    vi.useFakeTimers();
-    render(<MobileConcierge />);
+    renderAndSkipWelcome();
     fireEvent.click(screen.getByLabelText("Select: A Website"));
     act(() => {
       vi.advanceTimersByTime(200);
@@ -121,8 +148,7 @@ describe("MobileConcierge", () => {
   });
 
   it("'Something Else' skips to payoff with intake CTA", () => {
-    vi.useFakeTimers();
-    render(<MobileConcierge />);
+    renderAndSkipWelcome();
     fireEvent.click(screen.getByLabelText("Select: Something Else"));
     act(() => {
       vi.advanceTimersByTime(200);
@@ -138,8 +164,7 @@ describe("MobileConcierge", () => {
   });
 
   it("payoff CTA includes progressive profiling params", () => {
-    vi.useFakeTimers();
-    render(<MobileConcierge />);
+    renderAndSkipWelcome();
     fireEvent.click(screen.getByLabelText("Select: A Website"));
     act(() => {
       vi.advanceTimersByTime(200);
@@ -161,8 +186,7 @@ describe("MobileConcierge", () => {
   });
 
   it("back button returns to previous screen", () => {
-    vi.useFakeTimers();
-    render(<MobileConcierge />);
+    renderAndSkipWelcome();
     fireEvent.click(screen.getByLabelText("Select: A Website"));
     act(() => {
       vi.advanceTimersByTime(200);

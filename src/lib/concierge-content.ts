@@ -1,6 +1,6 @@
 // src/lib/concierge-content.ts
 
-export type ConciergeScreen = "greeting" | "followup" | "matching" | "payoff";
+export type ConciergeScreen = "welcome" | "greeting" | "followup" | "matching" | "payoff";
 
 export type CategoryId = "website" | "webapp" | "platform" | "other";
 
@@ -32,6 +32,10 @@ export interface ConciergePayoff {
 }
 
 export interface ConciergeContent {
+  welcome: {
+    headline: string;
+    subtitle: string;
+  };
   greeting: {
     headline: string;
     categories: ConciergeCategory[];
@@ -60,6 +64,10 @@ export interface ConciergeContent {
 }
 
 export const conciergeContent: ConciergeContent = {
+  welcome: {
+    headline: "Welcome to BuiltByBas",
+    subtitle: "Where we build solutions that work like your business does.",
+  },
   greeting: {
     headline: "What are you building?",
     categories: [
