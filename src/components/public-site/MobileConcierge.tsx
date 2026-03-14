@@ -59,6 +59,35 @@ export function MobileConcierge() {
   // Lock body scroll on homepage -- prevents iOS Safari touch-scroll ambiguity
   useBodyScrollLock(true);
 
+  // Arrow key navigation between concierge options
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key !== "ArrowDown" && e.key !== "ArrowUp") return;
+
+      const options = document.querySelectorAll<HTMLButtonElement>(
+        "[data-concierge-option]",
+      );
+      if (options.length === 0) return;
+
+      e.preventDefault();
+
+      const currentIndex = Array.from(options).findIndex(
+        (el) => el === document.activeElement,
+      );
+      let nextIndex: number;
+      if (e.key === "ArrowDown") {
+        nextIndex = currentIndex < options.length - 1 ? currentIndex + 1 : 0;
+      } else {
+        nextIndex = currentIndex > 0 ? currentIndex - 1 : options.length - 1;
+      }
+
+      options[nextIndex].focus();
+    }
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
   // Reset to welcome when Home is clicked from the homepage
   useEffect(() => {
     function handleReset() {

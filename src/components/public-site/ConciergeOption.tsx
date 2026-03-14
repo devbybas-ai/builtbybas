@@ -63,6 +63,7 @@ export const ConciergeOption = forwardRef<
     <button
       ref={ref}
       onClick={handleClick}
+      data-concierge-option
       aria-label={`Select: ${label}`}
       className={`group flex min-h-[48px] w-full items-center gap-4 rounded-xl border px-5 py-4 text-left backdrop-blur-sm transition-all duration-300 active:scale-[0.98] ${
         selected

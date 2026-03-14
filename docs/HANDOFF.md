@@ -1,8 +1,18 @@
 # BuiltByBas — Handoff Document
 
-> **Last Updated:** 2026-03-14 (Session 52)
-> **Status:** Full-site audit complete -- 62/62 items resolved across 8 waves. 247 tests passing (29 new API route tests). Build clean. Concierge Smart Routing plan still pending implementation.
+> **Last Updated:** 2026-03-14 (Session 53)
+> **Status:** Arrow key navigation added to concierge options. 256 tests passing. Build clean. Concierge Smart Routing plan still pending implementation.
 > **Next Session Priority:** Execute the Concierge Smart Routing implementation plan (16 tasks across 4 chunks). Then deploy everything to VPS. Rotate Resend API key (ISS-12).
+
+## Session 53 Changes (2026-03-14)
+
+**Concierge Keyboard Navigation:**
+- Added ArrowUp/ArrowDown navigation between concierge option buttons on all screens
+- Wraps around at top/bottom of list
+- Uses `data-concierge-option` attribute for DOM targeting
+- 256 tests passing
+
+---
 
 ## Session 52 Changes (2026-03-14)
 
