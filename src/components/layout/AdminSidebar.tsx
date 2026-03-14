@@ -69,7 +69,7 @@ export function AdminSidebar() {
           href="/admin"
           className="text-lg font-bold tracking-tight text-foreground"
         >
-          Built<span className="text-primary">By</span>Bas
+          <span className="text-green-400">Built</span>By<span className="text-green-400">Bas</span>
         </Link>
       </div>
 

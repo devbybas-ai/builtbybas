@@ -51,13 +51,13 @@ export function PublicHeader() {
           className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6 md:h-16 lg:px-8"
           aria-label="Main navigation"
         >
-          {/* Logo */}
+          {/* Brand */}
           <Link
             href="/"
-            className="neon-text text-lg font-bold tracking-tight text-foreground sm:text-xl"
+            className="text-lg font-bold tracking-tight text-foreground sm:text-xl"
           >
-            <span className="text-primary">Built</span>By
-            <span className="text-primary">Bas</span>
+            <span className="text-green-400">Built</span>By
+            <span className="text-green-400">Bas</span>
           </Link>
 
           {/* Desktop nav */}
@@ -198,8 +198,8 @@ export function PublicHeader() {
                   <p className="text-sm text-foreground">
                     The best way to predict the future is to create it
                   </p>
-                  <span className="neon-text text-xs font-medium text-primary">
-                    BuiltByBas
+                  <span className="text-xs font-medium text-foreground">
+                    <span className="text-green-400">Built</span>By<span className="text-green-400">Bas</span>
                   </span>
                 </div>
               </motion.div>

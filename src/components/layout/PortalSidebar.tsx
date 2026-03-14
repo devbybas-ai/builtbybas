@@ -21,7 +21,7 @@ export function PortalSidebar() {
           href="/portal"
           className="text-lg font-bold tracking-tight text-foreground"
         >
-          Built<span className="text-primary">By</span>Bas
+          <span className="text-green-400">Built</span>By<span className="text-green-400">Bas</span>
         </Link>
         <span className="ml-2 rounded-md bg-primary/10 px-2 py-0.5 text-xs text-primary">
           Portal

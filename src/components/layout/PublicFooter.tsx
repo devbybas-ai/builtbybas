@@ -23,9 +23,9 @@ export function PublicFooter() {
           <div>
             <Link
               href="/"
-              className="neon-text text-xl font-bold tracking-tight text-foreground"
+              className="text-xl font-bold tracking-tight text-foreground"
             >
-              <span className="text-primary">Built</span>By<span className="text-primary">Bas</span>
+              <span className="text-green-400">Built</span>By<span className="text-green-400">Bas</span>
             </Link>
           </div>
 
