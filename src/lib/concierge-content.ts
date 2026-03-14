@@ -66,7 +66,7 @@ export interface ConciergeContent {
 export const conciergeContent: ConciergeContent = {
   welcome: {
     headline: "Welcome to BuiltByBas",
-    subtitle: "Where we build solutions that work like your business does.",
+    subtitle: "We build solutions shaped around your business.",
   },
   greeting: {
     headline: "What are you building?",

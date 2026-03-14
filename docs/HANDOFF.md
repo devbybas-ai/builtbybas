@@ -1,8 +1,40 @@
 # BuiltByBas — Handoff Document
 
-> **Last Updated:** 2026-03-14 (Session 48)
-> **Status:** Concierge UX polish + carousel + HeroBackground animation rework in progress.
-> **Next Session Priority:** Fix data packet animation (full-length trace travel → chip impact). Deploy to VPS.
+> **Last Updated:** 2026-03-14 (Session 49)
+> **Status:** Data packet animation complete. Welcome screen polished. Ready for deploy.
+> **Next Session Priority:** Deploy to VPS. Concierge on desktop. Diversify payoff portfolio combos.
+
+## Session 49 Changes (2026-03-14)
+
+**Data Packet Animation — COMPLETE:**
+
+- Full-length trace travel implemented: packets now traverse the entire board along existing r1-r16 PCB route paths (2500-2800ms travel time), no longer short edge-to-chip hops.
+- 4 routes, all targeting edge chips (no center chips hit): Left edge to IC4 (right), Top to IC7 (bottom-right), Right to IC5 (left), Bottom to IC1 (top-left).
+- Matrix rain effect on chip impact: when a data packet hits a chip, scrolling 1s and 0s (cyan, monospace) rain vertically inside the chip for 3.33s, clipped to chip boundaries. Staggered column speeds, no-wrap continuous scroll. Binary digits fade out 400ms before the glow fades.
+- Chip fill animation preserved: directional fill (400ms) + matrix rain (3.33s) + glow fade (600ms).
+- Pause between packets: 7.77s.
+- IC chip blinking LEDs kept (6 dots on IC1, IC3, IC4, IC8).
+
+**Welcome Screen Polish:**
+
+- Title enlarged: `text-4xl` on mobile (was `text-[1.875rem]`), `text-5xl` on sm, scaling up to `text-7xl` on lg. "Welcome to BuiltByBas" is now the clear focal point.
+- Subtitle shortened: "We build solutions shaped around your business." (was "Where we build solutions that work like your business does." — orphaned "does." on mobile).
+- Tagline second line colored cyan: "We'll Build the System Around It." uses `text-primary`.
+- No scroll on mobile: section locked to `h-[100svh]` with `overflow-hidden`.
+- Content spacing tightened for better visual balance across breakpoints.
+
+**Home Button Reset:**
+
+- Clicking "Home" in nav while on the homepage now resets the concierge to the welcome screen (custom `concierge-reset` event). Works on both desktop and mobile nav.
+
+**Tests:** 229/229 pass. tsc clean.
+
+**Known issues for next session:**
+- 5 of 9 payoff combos still map to All Beauty Hair Studio
+- Deploy all changes to VPS
+- Bas wants concierge on desktop too (not just mobile)
+
+---
 
 ## Session 48 Changes (2026-03-14)
 

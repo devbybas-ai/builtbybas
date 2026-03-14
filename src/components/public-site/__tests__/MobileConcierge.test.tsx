@@ -64,7 +64,7 @@ describe("MobileConcierge", () => {
     ).toBeInTheDocument();
     expect(
       screen.getByText(
-        "Where we build solutions that work like your business does.",
+        "We build solutions shaped around your business.",
       ),
     ).toBeInTheDocument();
   });

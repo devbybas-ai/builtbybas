@@ -57,6 +57,12 @@ export function PublicHeader() {
               <Link
                 key={link.href}
                 href={link.href}
+                onClick={(e) => {
+                  if (link.href === "/" && pathname === "/") {
+                    e.preventDefault();
+                    window.dispatchEvent(new CustomEvent("concierge-reset"));
+                  }
+                }}
                 className={`text-sm transition-colors hover:text-foreground ${
                   isActive(link.href)
                     ? "text-foreground font-medium"
@@ -146,7 +152,13 @@ export function PublicHeader() {
                   >
                     <Link
                       href={link.href}
-                      onClick={() => setMobileOpen(false)}
+                      onClick={(e) => {
+                        setMobileOpen(false);
+                        if (link.href === "/" && pathname === "/") {
+                          e.preventDefault();
+                          window.dispatchEvent(new CustomEvent("concierge-reset"));
+                        }
+                      }}
                       className={`group flex items-center justify-between rounded-xl px-4 py-4 text-2xl font-medium transition-all ${
                         isActive(link.href)
                           ? "bg-white/10 text-foreground"

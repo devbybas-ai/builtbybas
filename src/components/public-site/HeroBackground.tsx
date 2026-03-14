@@ -2,35 +2,35 @@
 
 import { useEffect, useRef } from "react";
 
-/** Data packet routes: from screen edges to IC chips, following PCB traces */
+/** Data packet routes: full-length traces across the board, ending at IC chips */
 const PACKET_ROUTES = [
   {
-    // LEFT edge → IC5 (70,250 30×45): y=110 bus → x=60 vertical → chip
-    path: "M0,110 H60 V250 H70",
-    chip: { x: 70, y: 250, w: 30, h: 45 },
-    fillDir: "left" as const,
-    dur: 1500,
-  },
-  {
-    // TOP edge → IC9 (530,130 40×30): vertical drop to chip
-    path: "M550,0 V40 H540 V130",
-    chip: { x: 530, y: 130, w: 40, h: 30 },
-    fillDir: "top" as const,
-    dur: 1100,
-  },
-  {
-    // RIGHT edge → IC4 (860,230 30×50): y=110 bus → x=940 vertical → chip
-    path: "M1000,110 H940 V230 H890",
+    // LEFT edge → IC4 (right side): follows r1 path across center, then r9 reversed to chip
+    path: "M0,150 H200 V250 H350 V300 H700 V250 H860",
     chip: { x: 860, y: 230, w: 30, h: 50 },
-    fillDir: "right" as const,
-    dur: 1500,
+    fillDir: "left" as const,
+    dur: 2500,
   },
   {
-    // BOTTOM edge → IC7 (760,500 45×35): x=840 vertical → y=550 bus → chip
-    path: "M840,600 V550 H770 V535",
+    // TOP edge → IC7 (bottom-right): follows r5 path through center, continues to edge chip
+    path: "M300,0 V80 H400 V180 H500 V300 V420 H600 V500 H760",
     chip: { x: 760, y: 500, w: 45, h: 35 },
-    fillDir: "bottom" as const,
-    dur: 1400,
+    fillDir: "left" as const,
+    dur: 2800,
+  },
+  {
+    // RIGHT edge → IC5 (left side): follows r10 path across center, then r1 reversed to chip
+    path: "M1000,300 H850 V350 H700 V300 H350 V250 H100",
+    chip: { x: 70, y: 250, w: 30, h: 45 },
+    fillDir: "right" as const,
+    dur: 2500,
+  },
+  {
+    // BOTTOM edge → IC1 (top-left): follows r12 path through center, continues to edge chip
+    path: "M500,600 V500 H450 V400 H500 V200 H250 V100 H105",
+    chip: { x: 70, y: 55, w: 35, h: 50 },
+    fillDir: "right" as const,
+    dur: 2800,
   },
 ];
 
@@ -95,9 +95,76 @@ export function HeroBackground() {
       return new Promise((resolve) => {
         const t0 = performance.now();
         const FILL = 400,
-          HOLD = 300,
+          MATRIX = 3330,
           FADE = 600;
 
+        /* ── Matrix rain setup ── */
+        const clipId = `mc${Date.now()}`;
+        const defs = svg!.querySelector("defs");
+        const clipEl = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "clipPath",
+        );
+        clipEl.setAttribute("id", clipId);
+        const cr = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "rect",
+        );
+        cr.setAttribute("x", String(chip.x));
+        cr.setAttribute("y", String(chip.y));
+        cr.setAttribute("width", String(chip.w));
+        cr.setAttribute("height", String(chip.h));
+        clipEl.appendChild(cr);
+        defs!.appendChild(clipEl);
+
+        const matrixG = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "g",
+        );
+        matrixG.setAttribute("clip-path", `url(#${clipId})`);
+        matrixG.setAttribute("opacity", "0");
+
+        const fs = 6;
+        const colW = 7;
+        const cols = Math.max(2, Math.floor(chip.w / colW));
+        /* Buffer enough rows so no column ever wraps during MATRIX phase */
+        const maxSpd = 50;
+        const scrollBuf = Math.ceil(maxSpd * (MATRIX / 1000));
+        const rowCount = Math.ceil((chip.h + scrollBuf) / fs) + 2;
+        const speeds: number[] = [];
+        const startOffsets: number[] = [];
+        const colGs: SVGGElement[] = [];
+
+        for (let c = 0; c < cols; c++) {
+          const g = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "g",
+          );
+          const cx = chip.x + c * colW + colW / 2 + 1;
+          for (let r = 0; r < rowCount; r++) {
+            const t = document.createElementNS(
+              "http://www.w3.org/2000/svg",
+              "text",
+            );
+            t.setAttribute("x", String(cx));
+            t.setAttribute("y", String(chip.y - scrollBuf + r * fs + fs));
+            t.setAttribute("font-size", String(fs));
+            t.setAttribute("fill", "#00D4FF");
+            t.setAttribute("opacity", String(0.1 + Math.random() * 0.9));
+            t.setAttribute("text-anchor", "middle");
+            t.setAttribute("font-family", "monospace");
+            t.textContent = Math.random() > 0.5 ? "1" : "0";
+            g.appendChild(t);
+          }
+          matrixG.appendChild(g);
+          colGs.push(g);
+          speeds.push(20 + Math.random() * 30);
+          startOffsets.push(Math.random() * chip.h * 0.4);
+        }
+
+        svg!.appendChild(matrixG);
+
+        /* ── Chip fill rect ── */
         function setRect(progress: number) {
           switch (dir) {
             case "left":
@@ -133,27 +200,48 @@ export function HeroBackground() {
           }
         }
 
+        function cleanup() {
+          overlay!.setAttribute("opacity", "0");
+          if (svg!.contains(matrixG)) svg!.removeChild(matrixG);
+          if (defs!.contains(clipEl)) defs!.removeChild(clipEl);
+        }
+
         function tick(now: number) {
           if (cancelled) {
-            overlay!.setAttribute("opacity", "0");
+            cleanup();
             resolve();
             return;
           }
           const elapsed = now - t0;
+
           if (elapsed < FILL) {
+            /* Phase 1: directional fill */
             setRect(elapsed / FILL);
             overlay!.setAttribute("opacity", "0.6");
-          } else if (elapsed < FILL + HOLD) {
+          } else if (elapsed < FILL + MATRIX) {
+            /* Phase 2: chip lit + matrix rain scrolls inside */
             setRect(1);
             overlay!.setAttribute("opacity", "0.6");
-          } else if (elapsed < FILL + HOLD + FADE) {
+            matrixG.setAttribute("opacity", "1");
+            const mt = (elapsed - FILL) / 1000;
+            for (let c = 0; c < colGs.length; c++) {
+              const offset = startOffsets[c] + mt * speeds[c];
+              colGs[c].setAttribute("transform", `translate(0,${offset})`);
+            }
+            /* Fade out 1s & 0s before glow fades */
+            const matrixFadeStart = MATRIX - 400;
+            if (elapsed - FILL > matrixFadeStart) {
+              const mfade = 1 - (elapsed - FILL - matrixFadeStart) / 400;
+              matrixG.setAttribute("opacity", String(Math.max(0, mfade)));
+            }
+          } else if (elapsed < FILL + MATRIX + FADE) {
+            /* Phase 3: glow fades out (matrix already gone) */
             setRect(1);
-            overlay!.setAttribute(
-              "opacity",
-              String(0.6 * (1 - (elapsed - FILL - HOLD) / FADE)),
-            );
+            matrixG.setAttribute("opacity", "0");
+            const fade = 1 - (elapsed - FILL - MATRIX) / FADE;
+            overlay!.setAttribute("opacity", String(0.6 * fade));
           } else {
-            overlay!.setAttribute("opacity", "0");
+            cleanup();
             resolve();
             return;
           }
@@ -170,7 +258,7 @@ export function HeroBackground() {
         if (cancelled) break;
         await fillChip(route.chip, route.fillDir);
         if (cancelled) break;
-        await delay(4440);
+        await delay(7770);
         idx++;
       }
     }

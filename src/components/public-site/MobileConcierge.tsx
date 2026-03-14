@@ -45,6 +45,18 @@ export function MobileConcierge() {
               ? conciergeContent.otherPayoff.headline
               : "Here\u2019s what we can do for you";
 
+  // Reset to welcome when Home is clicked from the homepage
+  useEffect(() => {
+    function handleReset() {
+      setScreen("welcome");
+      setCategory(null);
+      setPriority(null);
+      setDirection(-1);
+    }
+    window.addEventListener("concierge-reset", handleReset);
+    return () => window.removeEventListener("concierge-reset", handleReset);
+  }, []);
+
   // Announce headline and move focus on screen change
   useEffect(() => {
     if (announcementRef.current) {
@@ -101,7 +113,7 @@ export function MobileConcierge() {
 
   return (
     <section
-      className="relative overflow-hidden"
+      className="relative h-[100svh] overflow-hidden"
       aria-label="Welcome \u2014 tell us what you\u2019re building"
     >
       <HeroBackground />
@@ -139,17 +151,17 @@ export function MobileConcierge() {
               <div className="flex-1" />
 
               {/* Welcome intro */}
-              <div className="relative z-10 mx-auto w-full max-w-sm text-center md:max-w-2xl">
-                <h1 className="text-[1.875rem] font-bold leading-tight tracking-tight text-white sm:text-4xl md:text-6xl lg:text-7xl">
+              <div className="relative z-10 mx-auto w-full max-w-md text-center md:max-w-2xl">
+                <h1 className="text-4xl font-bold leading-tight tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
                   Welcome to<br />
                   <span className="text-primary">Built</span>By<span className="text-primary">Bas</span>
                 </h1>
-                <p className="mt-4 text-base leading-relaxed text-muted-foreground md:mt-6 md:text-xl">
+                <p className="mt-3 text-sm leading-relaxed text-muted-foreground sm:mt-4 sm:text-base md:mt-6 md:text-xl">
                   {conciergeContent.welcome.subtitle}
                 </p>
-                <p className="mt-6 text-lg font-semibold leading-snug text-white md:mt-8 md:text-2xl">
+                <p className="mt-4 text-base font-semibold leading-snug text-white sm:mt-6 sm:text-lg md:mt-8 md:text-2xl">
                   Tell Us How Your Business Works.<br />
-                  We&apos;ll Build the System Around It.
+                  <span className="text-primary">We&apos;ll Build the System Around It.</span>
                 </p>
               </div>
 
@@ -170,7 +182,7 @@ export function MobileConcierge() {
             <div className="flex-1" />
 
             {/* Question */}
-            <div className="relative z-10 mx-auto w-full max-w-sm md:max-w-lg">
+            <div className="relative z-10 mx-auto w-full max-w-sm md:max-w-xl lg:max-w-2xl">
               <h1 className="text-center text-[1.875rem] font-bold leading-tight tracking-tight text-white md:text-5xl lg:text-6xl">
                 {conciergeContent.greeting.headline}
               </h1>
@@ -223,7 +235,7 @@ export function MobileConcierge() {
             <div className="flex-1" />
 
             {/* Follow-up question */}
-            <div className="relative z-10 mx-auto w-full max-w-sm md:max-w-lg">
+            <div className="relative z-10 mx-auto w-full max-w-sm md:max-w-xl lg:max-w-2xl">
               <h2 className="text-center text-[1.875rem] font-bold leading-tight tracking-tight text-white md:text-5xl lg:text-6xl">
                 {conciergeContent.followUps[category].headline}
               </h2>
@@ -252,7 +264,7 @@ export function MobileConcierge() {
         {screen === "matching" && (
           <ConciergeScreen screenKey="matching" direction={direction}>
             <div className="flex-1" />
-            <div className="relative z-10 mx-auto w-full max-w-sm text-center md:max-w-lg">
+            <div className="relative z-10 mx-auto w-full max-w-sm text-center md:max-w-xl lg:max-w-2xl">
               <div className="inline-block animate-pulse">
                 <div className="h-2 w-2 rounded-full bg-green-400 shadow-[0_0_12px] shadow-green-400/40 md:h-3 md:w-3" />
               </div>
@@ -282,7 +294,7 @@ export function MobileConcierge() {
             <div className="flex-1" />
 
             {/* Payoff content */}
-            <div className="relative z-10 mx-auto w-full max-w-sm md:max-w-lg">
+            <div className="relative z-10 mx-auto w-full max-w-sm md:max-w-xl lg:max-w-3xl">
               {category === "other" ? (
                 /* "Something Else" variant — no portfolio piece */
                 <div className="text-center">
