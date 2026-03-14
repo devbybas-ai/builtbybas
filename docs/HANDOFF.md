@@ -10,6 +10,12 @@
 - Added ArrowUp/ArrowDown navigation between concierge option buttons on all screens
 - Wraps around at top/bottom of list
 - Uses `data-concierge-option` attribute for DOM targeting
+
+**CTA Routing Through Concierge:**
+- "Start a Project" CTAs (header, footer, CTA section, service cards) now route to `/?start` instead of `/intake`
+- `?start` param auto-skips the welcome screen and goes straight to category selection
+- Users go through the guided concierge flow instead of landing on a flat service selection list
+- `/intake` still works for concierge-routed users (with `?service=` params)
 - 256 tests passing
 
 ---

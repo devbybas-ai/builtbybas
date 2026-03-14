@@ -4,7 +4,7 @@ const footerLinks = [
   { href: "/services", label: "Services" },
   { href: "/portfolio", label: "Portfolio" },
   { href: "/about", label: "About" },
-  { href: "/intake", label: "Start a Project" },
+  { href: "/?start", label: "Start a Project" },
 ];
 
 const policyLinks = [

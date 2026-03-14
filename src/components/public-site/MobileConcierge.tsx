@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
@@ -24,7 +24,9 @@ import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 
 export function MobileConcierge() {
-  const [screen, setScreen] = useState<ScreenType>("welcome");
+  const searchParams = useSearchParams();
+  const autoStart = searchParams.get("start") !== null;
+  const [screen, setScreen] = useState<ScreenType>(autoStart ? "category" : "welcome");
   const [category, setCategory] = useState<CategoryId | null>(null);
   const [service, setService] = useState<QualifierId | null>(null);
   const [priority, setPriority] = useState<PriorityId | null>(null);

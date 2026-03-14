@@ -129,7 +129,7 @@ function CardContent({
         </span>
       ) : (
         <Link
-          href="/intake"
+          href="/?start"
           className="mt-6 inline-flex items-center text-sm font-medium text-primary transition-colors hover:text-cyan-hover"
           onClick={(e) => e.stopPropagation()}
         >

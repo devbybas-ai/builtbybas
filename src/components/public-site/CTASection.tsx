@@ -27,7 +27,7 @@ export function CTASection({
         <div className="mt-8">
           {shouldReduceMotion ? (
             <Link
-              href="/intake"
+              href="/?start"
               className="btn-shine neon-glow inline-flex h-12 items-center rounded-lg bg-primary px-8 text-base font-semibold text-primary-foreground transition-all hover:bg-cyan-hover"
             >
               Start a Project
@@ -40,7 +40,7 @@ export function CTASection({
               className="inline-block"
             >
               <Link
-                href="/intake"
+                href="/?start"
                 className="btn-shine neon-glow inline-flex h-12 items-center rounded-lg bg-primary px-8 text-base font-semibold text-primary-foreground transition-all hover:bg-cyan-hover"
               >
                 Start a Project

@@ -234,7 +234,7 @@ export function PublicHeader() {
               >
                 {/* CTA button */}
                 <Link
-                  href="/intake"
+                  href="/?start"
                   onClick={() => setMobileOpen(false)}
                   className="btn-shine neon-glow flex h-14 items-center justify-center gap-3 rounded-xl bg-primary text-lg font-semibold text-primary-foreground transition-all hover:bg-cyan-hover"
                 >
