@@ -1,8 +1,60 @@
 # BuiltByBas — Handoff Document
 
-> **Last Updated:** 2026-03-13 (Session 45)
-> **Status:** PCB Card Connections IMPLEMENTED — card-anchored fragments with connector traces live across 5 pages. PCBDivider removed. Visual tuning complete. Ready to commit, push, and deploy.
-> **Next Session Priority:** Commit all pending changes (Sessions 42-45). Push + deploy to VPS. Then: hero subtitle text change ("web apps"), hero background trace normalization, stats bar design upgrade.
+> **Last Updated:** 2026-03-13 (Session 46)
+> **Status:** Mobile Concierge Experience — DESIGNED & PLANNED. Spec and implementation plan written, reviewed, and committed. Ready to execute.
+> **Next Session Priority:** Execute `docs/superpowers/plans/2026-03-13-mobile-concierge.md` (9 tasks, 3 chunks) using `superpowers:subagent-driven-development`. Then: deploy to VPS.
+
+## Session 46 Changes (2026-03-13)
+
+**Mobile Concierge Experience — DESIGNED & PLANNED:**
+
+Brainstormed and designed a guided mobile concierge flow that replaces the traditional hero section on mobile. Instead of a "website with information," the mobile landing asks visitors two quick questions and delivers a tailored portfolio piece with an intent-matched CTA.
+
+**Core philosophy:** "Good service listens before it speaks." The site is about the visitor, not about us.
+
+**Flow (3 screens + matching interstitial):**
+1. **Screen 1 — The Greeting:** "What are you building?" — 4 glassmorphism tap targets (Website, Web App, Platform, Something Else) + skip link to /services
+2. **Screen 2 — The Follow-Up:** "What matters most?" — 3 options tailored to Screen 1 answer. "Something Else" skips straight to intake.
+3. **Matching Animation:** 800ms labor illusion ("Finding your match...") — makes the result feel earned
+4. **Screen 3 — The Payoff:** Tailored portfolio piece + intent-matched CTA (e.g., "Let's make your brand stand out") linking to `/intake?type={category}&priority={priority}` for progressive profiling
+
+**Research-backed enhancements incorporated:**
+- Intent-matched CTAs — per-combination CTA copy instead of generic button
+- Progressive profiling — URL params carry concierge answers to intake form
+- Labor illusion — brief matching animation increases perceived value
+
+**Key design decisions:**
+- Mobile only (`md:hidden`) — desktop hero unchanged
+- Client-side state machine (4 `useState` states: greeting → followup → matching → payoff)
+- Full viewport (`100svh`), no scroll on mobile landing
+- Framer Motion `AnimatePresence` with spring physics (no duration — avoids Session 41 bug)
+- Fresh start every visit — no cookies, no tracking
+- `<noscript>` fallback with simplified layout
+
+**Documents Created:**
+- `docs/superpowers/specs/2026-03-13-mobile-concierge-design.md` — full design spec (approved after 2 review rounds)
+- `docs/superpowers/plans/2026-03-13-mobile-concierge.md` — 9-task implementation plan across 3 chunks (approved after 2 review rounds)
+
+**Implementation plan overview (9 tasks, 3 chunks):**
+- Chunk 1: Content map (`concierge-content.ts`) + tests
+- Chunk 2: UI components (`ConciergeOption`, `ConciergeScreen`, `MobileConcierge`) + Hero.tsx refactor
+- Chunk 3: Integration tests + build verification + final commit
+
+**New files to create:**
+- `src/lib/concierge-content.ts` — types + content map + `getPayoff()` + `getIntakeHref()`
+- `src/components/public-site/ConciergeOption.tsx` — glassmorphism tap target with selection glow
+- `src/components/public-site/ConciergeScreen.tsx` — full-viewport animated container
+- `src/components/public-site/MobileConcierge.tsx` — state machine wrapper with accessibility
+
+**Files to modify:**
+- `src/components/public-site/Hero.tsx` — split into mobile concierge (`md:hidden`) + desktop hero (`hidden md:flex`)
+
+**Commits:**
+- `524e2a6` — design spec
+- `3b290ce` — implementation plan
+- `e6abbf1` — research enhancements (intent-matched CTAs, progressive profiling, labor illusion)
+
+**Build:** No code changes — design/planning session only. TypeScript clean.
 
 ## Session 45 Changes (2026-03-13)
 
