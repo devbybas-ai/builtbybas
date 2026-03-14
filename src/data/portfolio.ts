@@ -199,7 +199,7 @@ export const projects: PortfolioProject[] = [
     technologies: ["Next.js", "TypeScript", "Tailwind CSS", "PostgreSQL", "Custom CRM", "AI Integration"],
     status: "in-progress",
     featured: true,
-    url: "https://allbeautyhairstudio.com",
+    url: "http://72.62.200.30",
     colorAccent: "pink",
     image: "/portfolio/allbeautyhairstudio/homepage.webp",
     gallery: [
