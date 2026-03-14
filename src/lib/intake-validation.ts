@@ -34,6 +34,11 @@ export const timelineBudgetSchema = z.object({
   budgetRange: z.string().min(1, "Please select a budget range"),
 });
 
+/** Budget Only (timeline pre-filled by concierge) */
+export const budgetOnlySchema = z.object({
+  budgetRange: z.string().min(1, "Please select a budget range"),
+});
+
 /** Design & Brand */
 export const designBrandSchema = z.object({
   designPreference: z.string().min(1, "Please select a design preference"),
@@ -120,6 +125,7 @@ export const fullIntakeSchema = z.object({
   additionalNotes: z.string().max(2000).optional().default(""),
   howDidYouHear: z.string().max(255).optional().default(""),
   preferredContact: z.string().max(100).optional().default(""),
+  conciergePriority: z.string().optional().default(""),
 });
 
 // ============================================

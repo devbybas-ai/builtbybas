@@ -21,6 +21,9 @@ export interface IntakeFormData {
   timeline: string;
   budgetRange: string;
 
+  // Concierge progressive profiling
+  conciergePriority: string;
+
   // Design & Brand
   designPreference: string;
   hasBrandAssets: string;
@@ -47,6 +50,7 @@ export const INITIAL_FORM_DATA: IntakeFormData = {
   serviceAnswers: {},
   timeline: "",
   budgetRange: "",
+  conciergePriority: "",
   designPreference: "",
   hasBrandAssets: "",
   brandColors: "",
@@ -68,6 +72,7 @@ export type StepType =
   | "business"
   | "service-questions"
   | "timeline-budget"
+  | "budget-only"
   | "design-brand"
   | "final";
 
@@ -80,6 +85,7 @@ export interface StepConfig {
 export function buildSteps(
   selectedServices: string[],
   skipServiceSelection = false,
+  skipTimeline = false,
 ): StepConfig[] {
   const steps: StepConfig[] = [];
 
@@ -97,8 +103,13 @@ export function buildSteps(
     steps.push({ type: "service-questions", label, serviceId });
   }
 
+  if (skipTimeline) {
+    steps.push({ type: "budget-only", label: "Budget" });
+  } else {
+    steps.push({ type: "timeline-budget", label: "Timeline & Budget" });
+  }
+
   steps.push(
-    { type: "timeline-budget", label: "Timeline & Budget" },
     { type: "design-brand", label: "Design & Brand" },
     { type: "final", label: "Final Details" },
   );
@@ -106,7 +117,7 @@ export function buildSteps(
   return steps;
 }
 
-const SERVICE_LABELS: Record<string, string> = {
+export const SERVICE_LABELS: Record<string, string> = {
   "marketing-website": "Website Details",
   "website-redesign": "Redesign Details",
   "landing-page": "Landing Page Details",

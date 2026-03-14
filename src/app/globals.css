@@ -522,6 +522,16 @@ html, body {
   animation: cta-glow 2s ease-in-out infinite;
 }
 
+/* === CONFIRMATION FILL -- 4.44s linear progress === */
+@keyframes confirmation-fill {
+  0% { width: 0%; }
+  100% { width: 100%; }
+}
+
+.animate-confirmation-fill {
+  animation: confirmation-fill 4.44s linear forwards;
+}
+
 /* === REDUCED MOTION === */
 @media (prefers-reduced-motion: reduce) {
   *,

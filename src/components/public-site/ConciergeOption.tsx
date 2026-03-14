@@ -4,7 +4,21 @@ import { forwardRef, useState } from "react";
 import { motion } from "framer-motion";
 import { springs } from "@/lib/motion";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
-import { Globe, LayoutDashboard, Layers, Sparkles, Check } from "lucide-react";
+import {
+  Globe,
+  LayoutDashboard,
+  Layers,
+  Sparkles,
+  Check,
+  RefreshCw,
+  FileText,
+  BarChart3,
+  Users,
+  Target,
+  ShoppingCart,
+  HelpCircle,
+  Clock,
+} from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
 const iconMap: Record<string, LucideIcon> = {
@@ -13,6 +27,14 @@ const iconMap: Record<string, LucideIcon> = {
   Layers,
   Sparkles,
   Check,
+  RefreshCw,
+  FileText,
+  BarChart3,
+  Users,
+  Target,
+  ShoppingCart,
+  HelpCircle,
+  Clock,
 };
 
 interface ConciergeOptionProps {

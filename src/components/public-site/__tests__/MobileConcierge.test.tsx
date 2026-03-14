@@ -12,7 +12,9 @@ vi.mock("framer-motion", () => ({
     }: {
       children: React.ReactNode;
       [key: string]: unknown;
-    }) => <div {...(props as React.HTMLAttributes<HTMLDivElement>)}>{children}</div>,
+    }) => (
+      <div {...(props as React.HTMLAttributes<HTMLDivElement>)}>{children}</div>
+    ),
   },
   AnimatePresence: ({ children }: { children: React.ReactNode }) => (
     <>{children}</>
@@ -30,11 +32,10 @@ vi.mock("next/link", () => ({
   }) => <a href={href}>{children}</a>,
 }));
 
-// Mock next/image
-vi.mock("next/image", () => ({
-  default: ({ alt, src }: { alt: string; src: string }) => (
-    <img alt={alt} src={src} />
-  ),
+// Mock next/navigation
+const mockPush = vi.fn();
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ push: mockPush }),
 }));
 
 // Mock HeroBackground (heavy SVG)
@@ -49,7 +50,7 @@ vi.mock("@/hooks/useReducedMotion", () => ({
 
 import { MobileConcierge } from "../MobileConcierge";
 
-/** Helper: render and tap past the welcome screen to the greeting */
+/** Helper: render and tap past the welcome screen to the category screen */
 function renderAndSkipWelcome() {
   vi.useFakeTimers();
   render(<MobileConcierge />);
@@ -61,24 +62,22 @@ describe("MobileConcierge", () => {
     render(<MobileConcierge />);
     expect(screen.getAllByText(/Welcome to/i).length).toBeGreaterThan(0);
     expect(
-      screen.getByText(
-        "We build solutions shaped around your business.",
-      ),
+      screen.getByText("We build solutions shaped around your business."),
     ).toBeInTheDocument();
   });
 
-  it("tapping welcome screen transitions to greeting", () => {
+  it("tapping welcome screen transitions to category", () => {
     render(<MobileConcierge />);
     fireEvent.click(screen.getByLabelText("Continue to get started"));
     expect(
-      screen.getByRole("heading", { name: "What are you building?" }),
+      screen.getByRole("heading", { name: "What are we building?" }),
     ).toBeInTheDocument();
   });
 
-  it("renders the greeting screen with all 4 categories", () => {
+  it("renders the category screen with all 4 categories", () => {
     renderAndSkipWelcome();
     expect(
-      screen.getByRole("heading", { name: "What are you building?" }),
+      screen.getByRole("heading", { name: "What are we building?" }),
     ).toBeInTheDocument();
     expect(screen.getByLabelText("Select: A Website")).toBeInTheDocument();
     expect(
@@ -104,14 +103,41 @@ describe("MobileConcierge", () => {
   // Note: ConciergeOption has a 150ms selection glow delay before calling onSelect.
   // Tests use vi.useFakeTimers() + act() to advance past the delay.
 
-  it("shows follow-up screen when a category is selected", () => {
+  it("shows qualifier screen when a category is selected", () => {
     renderAndSkipWelcome();
     fireEvent.click(screen.getByLabelText("Select: A Website"));
     act(() => {
       vi.advanceTimersByTime(200);
     });
     expect(
-      screen.getByRole("heading", { name: "What matters most to you?" }),
+      screen.getByRole("heading", { name: "Is this a..." }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByLabelText("Select: A brand new site"),
+    ).toBeInTheDocument();
+    expect(screen.getByLabelText("Select: A redesign")).toBeInTheDocument();
+    expect(
+      screen.getByLabelText("Select: A single landing page"),
+    ).toBeInTheDocument();
+    vi.useRealTimers();
+  });
+
+  it("shows priority screen after qualifier selection", () => {
+    renderAndSkipWelcome();
+    // Select Website category
+    fireEvent.click(screen.getByLabelText("Select: A Website"));
+    act(() => {
+      vi.advanceTimersByTime(200);
+    });
+    // Select qualifier
+    fireEvent.click(screen.getByLabelText("Select: A brand new site"));
+    act(() => {
+      vi.advanceTimersByTime(200);
+    });
+    expect(
+      screen.getByRole("heading", {
+        name: "What matters most in this project?",
+      }),
     ).toBeInTheDocument();
     expect(
       screen.getByLabelText("Select: It needs to look incredible"),
@@ -119,9 +145,14 @@ describe("MobileConcierge", () => {
     vi.useRealTimers();
   });
 
-  it("shows matching screen then payoff when priority is selected", () => {
+  it("shows timeline screen after priority selection", () => {
     renderAndSkipWelcome();
+    // Category -> Qualifier -> Priority
     fireEvent.click(screen.getByLabelText("Select: A Website"));
+    act(() => {
+      vi.advanceTimersByTime(200);
+    });
+    fireEvent.click(screen.getByLabelText("Select: A brand new site"));
     act(() => {
       vi.advanceTimersByTime(200);
     });
@@ -131,21 +162,52 @@ describe("MobileConcierge", () => {
     act(() => {
       vi.advanceTimersByTime(200);
     });
-    // Should show matching screen with labor illusion (aria-live also has text, so use getAllBy)
-    const matchingTexts = screen.getAllByText("Finding your match...");
-    expect(matchingTexts.length).toBeGreaterThanOrEqual(1);
-    // Advance past 800ms matching animation
-    act(() => {
-      vi.advanceTimersByTime(800);
-    });
-    // Now should show payoff with intent-matched CTA
     expect(
-      screen.getByText("Let\u2019s make your brand stand out"),
+      screen.getByRole("heading", { name: "When do you need this?" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByLabelText("Select: ASAP -- I needed this yesterday"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByLabelText("Select: Flexible -- quality over speed"),
     ).toBeInTheDocument();
     vi.useRealTimers();
   });
 
-  it("'Something Else' skips to payoff with intake CTA", () => {
+  it("shows confirmation screen after timeline selection", () => {
+    renderAndSkipWelcome();
+    // Full flow: Category -> Qualifier -> Priority -> Timeline
+    fireEvent.click(screen.getByLabelText("Select: A Website"));
+    act(() => {
+      vi.advanceTimersByTime(200);
+    });
+    fireEvent.click(screen.getByLabelText("Select: A brand new site"));
+    act(() => {
+      vi.advanceTimersByTime(200);
+    });
+    fireEvent.click(
+      screen.getByLabelText("Select: It needs to look incredible"),
+    );
+    act(() => {
+      vi.advanceTimersByTime(200);
+    });
+    fireEvent.click(
+      screen.getByLabelText("Select: ASAP -- I needed this yesterday"),
+    );
+    act(() => {
+      vi.advanceTimersByTime(200);
+    });
+    expect(
+      screen.getByRole("heading", { name: "Here's what we heard." }),
+    ).toBeInTheDocument();
+    // Confirmation shows service name
+    expect(
+      screen.getByText("a new marketing website", { exact: false }),
+    ).toBeInTheDocument();
+    vi.useRealTimers();
+  });
+
+  it("'Something Else' skips qualifier and goes to priority", () => {
     renderAndSkipWelcome();
     fireEvent.click(screen.getByLabelText("Select: Something Else"));
     act(() => {
@@ -153,49 +215,69 @@ describe("MobileConcierge", () => {
     });
     expect(
       screen.getByRole("heading", {
-        name: "We\u2019d love to hear about it",
+        name: "What matters most in this project?",
       }),
     ).toBeInTheDocument();
-    const ctaLink = screen.getByText("Tell Us About Your Project");
-    expect(ctaLink.closest("a")).toHaveAttribute("href", "/intake?type=other");
+    // Shows generic priorities
+    expect(
+      screen.getByLabelText(
+        "Select: Quality -- built right, no shortcuts",
+      ),
+    ).toBeInTheDocument();
     vi.useRealTimers();
   });
 
-  it("payoff CTA includes progressive profiling params", () => {
+  it("webapp category shows 'Something else' option in qualifier", () => {
     renderAndSkipWelcome();
-    fireEvent.click(screen.getByLabelText("Select: A Website"));
+    fireEvent.click(
+      screen.getByLabelText("Select: A Web App or Dashboard"),
+    );
     act(() => {
       vi.advanceTimersByTime(200);
     });
-    fireEvent.click(
-      screen.getByLabelText("Select: It needs to look incredible"),
-    );
-    act(() => {
-      vi.advanceTimersByTime(1000);
-    });
-    const ctaLink = screen.getByText(
-      "Let\u2019s make your brand stand out",
-    );
-    expect(ctaLink.closest("a")).toHaveAttribute(
-      "href",
-      "/intake?type=website&priority=design",
-    );
+    expect(
+      screen.getByLabelText("Select: Something else"),
+    ).toBeInTheDocument();
     vi.useRealTimers();
   });
 
-  it("back button returns to previous screen", () => {
+  it("back button returns to previous screen from qualifier", () => {
     renderAndSkipWelcome();
     fireEvent.click(screen.getByLabelText("Select: A Website"));
     act(() => {
       vi.advanceTimersByTime(200);
     });
     expect(
-      screen.getByRole("heading", { name: "What matters most to you?" }),
+      screen.getByRole("heading", { name: "Is this a..." }),
     ).toBeInTheDocument();
 
     fireEvent.click(screen.getByLabelText("Go back to previous question"));
     expect(
-      screen.getByRole("heading", { name: "What are you building?" }),
+      screen.getByRole("heading", { name: "What are we building?" }),
+    ).toBeInTheDocument();
+    vi.useRealTimers();
+  });
+
+  it("back button returns to qualifier from priority", () => {
+    renderAndSkipWelcome();
+    // Category -> Qualifier -> Priority
+    fireEvent.click(screen.getByLabelText("Select: A Website"));
+    act(() => {
+      vi.advanceTimersByTime(200);
+    });
+    fireEvent.click(screen.getByLabelText("Select: A brand new site"));
+    act(() => {
+      vi.advanceTimersByTime(200);
+    });
+    expect(
+      screen.getByRole("heading", {
+        name: "What matters most in this project?",
+      }),
+    ).toBeInTheDocument();
+
+    fireEvent.click(screen.getByLabelText("Go back to previous question"));
+    expect(
+      screen.getByRole("heading", { name: "Is this a..." }),
     ).toBeInTheDocument();
     vi.useRealTimers();
   });
@@ -211,6 +293,45 @@ describe("MobileConcierge", () => {
     const section = document.querySelector("section[aria-label]");
     expect(section).toBeInTheDocument();
     expect(section?.getAttribute("aria-label")).toContain("Welcome");
-    expect(section?.getAttribute("aria-label")).toContain("tell us what you");
+    expect(section?.getAttribute("aria-label")).toContain(
+      "tell us what you",
+    );
+  });
+
+  it("confirmation auto-navigates after 4.44s", () => {
+    renderAndSkipWelcome();
+    // Full flow to confirmation
+    fireEvent.click(screen.getByLabelText("Select: A Website"));
+    act(() => {
+      vi.advanceTimersByTime(200);
+    });
+    fireEvent.click(screen.getByLabelText("Select: A brand new site"));
+    act(() => {
+      vi.advanceTimersByTime(200);
+    });
+    fireEvent.click(
+      screen.getByLabelText("Select: It needs to look incredible"),
+    );
+    act(() => {
+      vi.advanceTimersByTime(200);
+    });
+    fireEvent.click(
+      screen.getByLabelText("Select: ASAP -- I needed this yesterday"),
+    );
+    act(() => {
+      vi.advanceTimersByTime(200);
+    });
+    // Confirmation screen is shown
+    expect(
+      screen.getByRole("heading", { name: "Here's what we heard." }),
+    ).toBeInTheDocument();
+    // Advance past 4.44s
+    act(() => {
+      vi.advanceTimersByTime(4500);
+    });
+    expect(mockPush).toHaveBeenCalledWith(
+      expect.stringContaining("/intake?service=marketing-website"),
+    );
+    vi.useRealTimers();
   });
 });

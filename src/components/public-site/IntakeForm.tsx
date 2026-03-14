@@ -11,6 +11,7 @@ import { IntakeStep } from "@/components/public-site/IntakeStep";
 import { cn } from "@/lib/utils";
 import { toIntakeId } from "@/data/service-id-map";
 import { getServiceModule } from "@/data/intake-questions";
+import { SERVICE_LABELS } from "@/types/intake";
 
 const slideVariants = {
   enter: (direction: number) => ({
@@ -52,6 +53,7 @@ export function IntakeForm() {
     nextStep,
     prevStep,
     submitForm,
+    conciergeService,
   } = useIntakeForm({ preselectedService });
 
   const isLastStep = currentStep === totalSteps - 1;
@@ -74,6 +76,20 @@ export function IntakeForm() {
         totalSteps={totalSteps}
         steps={steps}
       />
+
+      {conciergeService && (
+        <div className="mb-4 flex items-center justify-between rounded-lg bg-primary/10 px-4 py-2">
+          <span className="text-sm font-medium text-white">
+            {SERVICE_LABELS[conciergeService] ?? conciergeService}
+          </span>
+          <a
+            href="/"
+            className="text-xs text-muted-foreground transition-colors hover:text-white"
+          >
+            change
+          </a>
+        </div>
+      )}
 
       <div className="glass-card overflow-hidden p-6 sm:p-8">
         {shouldReduceMotion ? (

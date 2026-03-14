@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useMemo } from "react";
+import { useSearchParams } from "next/navigation";
 import type { IntakeFormData, StepConfig } from "@/types/intake";
 import { INITIAL_FORM_DATA, buildSteps } from "@/types/intake";
 import {
@@ -8,6 +9,7 @@ import {
   contactSchema,
   businessSchema,
   timelineBudgetSchema,
+  budgetOnlySchema,
   designBrandSchema,
   finalSchema,
   validateServiceStep,
@@ -57,16 +59,30 @@ export interface UseIntakeFormOptions {
 }
 
 export function useIntakeForm(options: UseIntakeFormOptions = {}) {
-  const { preselectedService } = options;
-  const skipServiceSelection = !!preselectedService;
+  const searchParams = useSearchParams();
+  const conciergeService =
+    options.preselectedService ?? searchParams.get("service") ?? undefined;
+  const conciergePriority = searchParams.get("priority");
+  const conciergeTimeline = searchParams.get("timeline");
+
+  const skipServiceSelection = !!conciergeService;
+  const skipTimeline = !!conciergeTimeline;
 
   const [state, setState] = useState<IntakeFormState>(() => {
     const draft = loadDraft();
-    const base = draft ? { ...INITIAL_FORM_DATA, ...draft } : { ...INITIAL_FORM_DATA };
+    const base = draft
+      ? { ...INITIAL_FORM_DATA, ...draft }
+      : { ...INITIAL_FORM_DATA };
 
-    // If a service was preselected via query param, set it
-    if (preselectedService && base.selectedServices.length === 0) {
-      base.selectedServices = [preselectedService];
+    // Concierge params override draft for controlled fields
+    if (conciergeService) {
+      base.selectedServices = [conciergeService];
+    }
+    if (conciergePriority) {
+      base.conciergePriority = conciergePriority;
+    }
+    if (conciergeTimeline) {
+      base.timeline = conciergeTimeline;
     }
 
     return {
@@ -80,8 +96,13 @@ export function useIntakeForm(options: UseIntakeFormOptions = {}) {
 
   // Dynamic step list based on selected services
   const steps: StepConfig[] = useMemo(
-    () => buildSteps(state.formData.selectedServices, skipServiceSelection),
-    [state.formData.selectedServices, skipServiceSelection],
+    () =>
+      buildSteps(
+        state.formData.selectedServices,
+        skipServiceSelection,
+        skipTimeline,
+      ),
+    [state.formData.selectedServices, skipServiceSelection, skipTimeline],
   );
 
   const totalSteps = steps.length;
@@ -127,7 +148,10 @@ export function useIntakeForm(options: UseIntakeFormOptions = {}) {
     const step = steps[state.currentStep];
     if (!step) return true;
 
-    let result: { success: boolean; error?: { issues: { path: PropertyKey[]; message: string }[] } };
+    let result: {
+      success: boolean;
+      error?: { issues: { path: PropertyKey[]; message: string }[] };
+    };
 
     switch (step.type) {
       case "service-selection":
@@ -142,6 +166,22 @@ export function useIntakeForm(options: UseIntakeFormOptions = {}) {
       case "timeline-budget":
         result = timelineBudgetSchema.safeParse(state.formData);
         break;
+      case "budget-only": {
+        const budgetResult = budgetOnlySchema.safeParse({
+          budgetRange: state.formData.budgetRange,
+        });
+        if (!budgetResult.success) {
+          const fieldErrors: Record<string, string> = {};
+          for (const issue of budgetResult.error.issues) {
+            const field = issue.path[0] as string;
+            fieldErrors[field] = issue.message;
+          }
+          setState((prev) => ({ ...prev, errors: fieldErrors }));
+          return false;
+        }
+        setState((prev) => ({ ...prev, errors: {} }));
+        return true;
+      }
       case "design-brand":
         result = designBrandSchema.safeParse(state.formData);
         break;
@@ -188,7 +228,11 @@ export function useIntakeForm(options: UseIntakeFormOptions = {}) {
       const nextIdx = Math.min(prev.currentStep + 1, totalSteps - 1);
 
       // When service selection changes, ensure we don't go past new bounds
-      const newSteps = buildSteps(prev.formData.selectedServices, skipServiceSelection);
+      const newSteps = buildSteps(
+        prev.formData.selectedServices,
+        skipServiceSelection,
+        skipTimeline,
+      );
       const bounded = Math.min(nextIdx, newSteps.length - 1);
 
       return {
@@ -199,7 +243,7 @@ export function useIntakeForm(options: UseIntakeFormOptions = {}) {
     });
 
     window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [validateCurrentStep, totalSteps]);
+  }, [validateCurrentStep, totalSteps, skipServiceSelection, skipTimeline]);
 
   const prevStep = useCallback(() => {
     setState((prev) => ({
@@ -262,5 +306,7 @@ export function useIntakeForm(options: UseIntakeFormOptions = {}) {
     nextStep,
     prevStep,
     submitForm,
+    skipTimeline,
+    conciergeService,
   };
 }

@@ -594,10 +594,10 @@ function TimelineBudgetStep({
             <RadioGroup
               name="timeline"
               options={[
-                { value: "asap", label: "ASAP \u2014 I needed this yesterday" },
-                { value: "1-3-months", label: "1-3 months" },
-                { value: "3-6-months", label: "3-6 months" },
-                { value: "flexible", label: "Flexible \u2014 quality over speed" },
+                { value: "asap", label: "ASAP -- I needed this yesterday" },
+                { value: "2-4-weeks", label: "2-4 weeks" },
+                { value: "5-6-weeks", label: "5-6 weeks" },
+                { value: "flexible", label: "Flexible -- quality over speed" },
               ]}
               value={formData.timeline}
               onChange={(v) => onUpdate("timeline", v)}
@@ -623,6 +623,43 @@ function TimelineBudgetStep({
           </div>
           <FieldError error={errors.budgetRange} />
         </div>
+      </div>
+    </div>
+  );
+}
+
+function BudgetOnlyStep({
+  formData,
+  errors,
+  onUpdate,
+}: {
+  formData: IntakeFormData;
+  errors: Record<string, string>;
+  onUpdate: IntakeStepProps["onUpdate"];
+}) {
+  return (
+    <div className="space-y-8">
+      <StepHeader
+        title="Budget"
+        description="What investment range are you considering?"
+      />
+      <div>
+        <Label>Investment Range *</Label>
+        <div className="mt-1.5">
+          <RadioGroup
+            name="budgetRange"
+            options={[
+              { value: "1k-5k", label: "$1,000 - $5,000" },
+              { value: "5k-15k", label: "$5,000 - $15,000" },
+              { value: "15k-30k", label: "$15,000 - $30,000" },
+              { value: "30k+", label: "$30,000+" },
+              { value: "unsure", label: "Not sure yet" },
+            ]}
+            value={formData.budgetRange}
+            onChange={(val) => onUpdate("budgetRange", val)}
+          />
+        </div>
+        <FieldError error={errors.budgetRange} />
       </div>
     </div>
   );
@@ -832,6 +869,14 @@ export function IntakeStep({
     case "timeline-budget":
       return (
         <TimelineBudgetStep
+          formData={formData}
+          errors={errors}
+          onUpdate={onUpdate}
+        />
+      );
+    case "budget-only":
+      return (
+        <BudgetOnlyStep
           formData={formData}
           errors={errors}
           onUpdate={onUpdate}
