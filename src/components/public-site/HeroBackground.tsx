@@ -1,6 +1,187 @@
 "use client";
 
+import { useEffect, useRef } from "react";
+
+/** Data packet routes: from screen edges to IC chips, following PCB traces */
+const PACKET_ROUTES = [
+  {
+    // LEFT edge → IC5 (70,250 30×45): y=110 bus → x=60 vertical → chip
+    path: "M0,110 H60 V250 H70",
+    chip: { x: 70, y: 250, w: 30, h: 45 },
+    fillDir: "left" as const,
+    dur: 1500,
+  },
+  {
+    // TOP edge → IC9 (530,130 40×30): vertical drop to chip
+    path: "M550,0 V40 H540 V130",
+    chip: { x: 530, y: 130, w: 40, h: 30 },
+    fillDir: "top" as const,
+    dur: 1100,
+  },
+  {
+    // RIGHT edge → IC4 (860,230 30×50): y=110 bus → x=940 vertical → chip
+    path: "M1000,110 H940 V230 H890",
+    chip: { x: 860, y: 230, w: 30, h: 50 },
+    fillDir: "right" as const,
+    dur: 1500,
+  },
+  {
+    // BOTTOM edge → IC7 (760,500 45×35): x=840 vertical → y=550 bus → chip
+    path: "M840,600 V550 H770 V535",
+    chip: { x: 760, y: 500, w: 45, h: 35 },
+    fillDir: "bottom" as const,
+    dur: 1400,
+  },
+];
+
 export function HeroBackground() {
+  const svgRef = useRef<SVGSVGElement>(null);
+
+  useEffect(() => {
+    const svg = svgRef.current;
+    if (!svg) return;
+    if (window.matchMedia("(max-width: 768px)").matches) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const packet = svg.getElementById("data-packet") as SVGCircleElement | null;
+    const overlay = svg.getElementById("chip-overlay") as SVGRectElement | null;
+    if (!packet || !overlay) return;
+
+    const tempPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    tempPath.setAttribute("fill", "none");
+    tempPath.setAttribute("stroke", "none");
+    svg.appendChild(tempPath);
+
+    let cancelled = false;
+    let idx = 0;
+
+    function delay(ms: number): Promise<void> {
+      return new Promise((resolve) => {
+        setTimeout(resolve, ms);
+      });
+    }
+
+    function movePacket(pathD: string, dur: number): Promise<void> {
+      return new Promise((resolve) => {
+        tempPath.setAttribute("d", pathD);
+        const len = tempPath.getTotalLength();
+        const t0 = performance.now();
+        packet!.setAttribute("opacity", "1");
+
+        function tick(now: number) {
+          if (cancelled) {
+            packet!.setAttribute("opacity", "0");
+            resolve();
+            return;
+          }
+          const t = Math.min((now - t0) / dur, 1);
+          const pt = tempPath.getPointAtLength(t * len);
+          packet!.setAttribute("cx", String(pt.x));
+          packet!.setAttribute("cy", String(pt.y));
+          if (t < 1) requestAnimationFrame(tick);
+          else {
+            packet!.setAttribute("opacity", "0");
+            resolve();
+          }
+        }
+        requestAnimationFrame(tick);
+      });
+    }
+
+    function fillChip(
+      chip: { x: number; y: number; w: number; h: number },
+      dir: "left" | "right" | "top" | "bottom",
+    ): Promise<void> {
+      return new Promise((resolve) => {
+        const t0 = performance.now();
+        const FILL = 400,
+          HOLD = 300,
+          FADE = 600;
+
+        function setRect(progress: number) {
+          switch (dir) {
+            case "left":
+              overlay!.setAttribute("x", String(chip.x));
+              overlay!.setAttribute("y", String(chip.y));
+              overlay!.setAttribute("width", String(chip.w * progress));
+              overlay!.setAttribute("height", String(chip.h));
+              break;
+            case "right":
+              overlay!.setAttribute(
+                "x",
+                String(chip.x + chip.w * (1 - progress)),
+              );
+              overlay!.setAttribute("y", String(chip.y));
+              overlay!.setAttribute("width", String(chip.w * progress));
+              overlay!.setAttribute("height", String(chip.h));
+              break;
+            case "top":
+              overlay!.setAttribute("x", String(chip.x));
+              overlay!.setAttribute("y", String(chip.y));
+              overlay!.setAttribute("width", String(chip.w));
+              overlay!.setAttribute("height", String(chip.h * progress));
+              break;
+            case "bottom":
+              overlay!.setAttribute("x", String(chip.x));
+              overlay!.setAttribute(
+                "y",
+                String(chip.y + chip.h * (1 - progress)),
+              );
+              overlay!.setAttribute("width", String(chip.w));
+              overlay!.setAttribute("height", String(chip.h * progress));
+              break;
+          }
+        }
+
+        function tick(now: number) {
+          if (cancelled) {
+            overlay!.setAttribute("opacity", "0");
+            resolve();
+            return;
+          }
+          const elapsed = now - t0;
+          if (elapsed < FILL) {
+            setRect(elapsed / FILL);
+            overlay!.setAttribute("opacity", "0.6");
+          } else if (elapsed < FILL + HOLD) {
+            setRect(1);
+            overlay!.setAttribute("opacity", "0.6");
+          } else if (elapsed < FILL + HOLD + FADE) {
+            setRect(1);
+            overlay!.setAttribute(
+              "opacity",
+              String(0.6 * (1 - (elapsed - FILL - HOLD) / FADE)),
+            );
+          } else {
+            overlay!.setAttribute("opacity", "0");
+            resolve();
+            return;
+          }
+          requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+      });
+    }
+
+    async function loop() {
+      while (!cancelled) {
+        const route = PACKET_ROUTES[idx % PACKET_ROUTES.length];
+        await movePacket(route.path, route.dur);
+        if (cancelled) break;
+        await fillChip(route.chip, route.fillDir);
+        if (cancelled) break;
+        await delay(4440);
+        idx++;
+      }
+    }
+
+    loop();
+
+    return () => {
+      cancelled = true;
+      if (svg.contains(tempPath)) svg.removeChild(tempPath);
+    };
+  }, []);
 
   return (
     <div
@@ -16,6 +197,7 @@ export function HeroBackground() {
       />
 
       <svg
+        ref={svgRef}
         className="absolute inset-0 h-full w-full"
         viewBox="0 0 1000 600"
         xmlns="http://www.w3.org/2000/svg"
@@ -270,24 +452,6 @@ export function HeroBackground() {
           <circle cx="600" cy="420" r="3" /><circle cx="600" cy="420" r="1.2" fill="rgba(0, 212, 255, 0.06)" />
         </g>
 
-        {/* Center hub */}
-        <circle className="hero-filter-glow" cx="500" cy="300" r="5" fill="rgba(0, 212, 255, 0.5)">
-          <animate attributeName="fill" values="rgba(0,212,255,0.5);rgba(255,255,255,1);rgba(255,255,255,0.9);rgba(0,212,255,0.5)" keyTimes="0;0.1;0.5;1" dur="0.6s" begin="p1.end" fill="remove" />
-          <animate attributeName="fill" values="rgba(0,212,255,0.5);rgba(255,255,255,1);rgba(255,255,255,0.9);rgba(0,212,255,0.5)" keyTimes="0;0.1;0.5;1" dur="0.6s" begin="p2.end" fill="remove" />
-          <animate attributeName="fill" values="rgba(0,212,255,0.5);rgba(255,255,255,1);rgba(255,255,255,0.9);rgba(0,212,255,0.5)" keyTimes="0;0.1;0.5;1" dur="0.6s" begin="p3.end" fill="remove" />
-          <animate attributeName="r" values="5;7;5" keyTimes="0;0.3;1" dur="0.6s" begin="p1.end" fill="remove" />
-          <animate attributeName="r" values="5;7;5" keyTimes="0;0.3;1" dur="0.6s" begin="p2.end" fill="remove" />
-          <animate attributeName="r" values="5;7;5" keyTimes="0;0.3;1" dur="0.6s" begin="p3.end" fill="remove" />
-        </circle>
-        <circle cx="500" cy="300" r="2.5" fill="#00D4FF" opacity="1">
-          <animate attributeName="fill" values="#00D4FF;#FFFFFF;#FFFFFF;#00D4FF" keyTimes="0;0.1;0.5;1" dur="0.6s" begin="p1.end" fill="remove" />
-          <animate attributeName="fill" values="#00D4FF;#FFFFFF;#FFFFFF;#00D4FF" keyTimes="0;0.1;0.5;1" dur="0.6s" begin="p2.end" fill="remove" />
-          <animate attributeName="fill" values="#00D4FF;#FFFFFF;#FFFFFF;#00D4FF" keyTimes="0;0.1;0.5;1" dur="0.6s" begin="p3.end" fill="remove" />
-          <animate attributeName="r" values="2.5;3.5;2.5" keyTimes="0;0.3;1" dur="0.6s" begin="p1.end" fill="remove" />
-          <animate attributeName="r" values="2.5;3.5;2.5" keyTimes="0;0.3;1" dur="0.6s" begin="p2.end" fill="remove" />
-          <animate attributeName="r" values="2.5;3.5;2.5" keyTimes="0;0.3;1" dur="0.6s" begin="p3.end" fill="remove" />
-        </circle>
-
         {/* Junction nodes on routes */}
         <g fill="rgba(0, 212, 255, 0.12)">
           <circle cx="200" cy="150" r="1.5" /><circle cx="200" cy="250" r="1.5" />
@@ -386,46 +550,10 @@ export function HeroBackground() {
           </circle>
         </g>
 
-        {/* ============================================ */}
-        {/* ============================================ */}
-        {/* TRACE ILLUMINATION + PARTICLES — chained       */}
-        {/* Particles travel routes to center hub, flash   */}
-        {/* 7.55s gap between each particle cycle          */}
-        {/* ============================================ */}
-        <g className="hero-anim" fill="none">
-          <use href="#r1" stroke="rgba(0, 212, 255, 0.12)" strokeWidth="1" strokeDasharray="30 2000" strokeDashoffset="30" strokeLinecap="square">
-            <animate attributeName="stroke-dashoffset" from="30" to="-620" dur="1.8s" begin="0s; p3.end+7.55s" fill="remove" />
-          </use>
-          <use href="#r6" stroke="rgba(0, 212, 255, 0.12)" strokeWidth="1" strokeDasharray="30 2000" strokeDashoffset="30" strokeLinecap="square">
-            <animate attributeName="stroke-dashoffset" from="30" to="-370" dur="1.2s" begin="p1.end+7.55s" fill="remove" />
-          </use>
-          <use href="#r9" stroke="rgba(0, 212, 255, 0.12)" strokeWidth="1" strokeDasharray="30 2000" strokeDashoffset="30" strokeLinecap="square">
-            <animate attributeName="stroke-dashoffset" from="30" to="-620" dur="1.8s" begin="p2.end+7.55s" fill="remove" />
-          </use>
-        </g>
-
-        {/* Particles — 7.55s gap between cycles */}
-        <g className="hero-anim">
-          <circle r="0.8" fill="#66EEFF" filter="url(#g1)" opacity="1">
-            <animateMotion id="p1" dur="1.8s" begin="0s; p3.end+7.55s" fill="remove"><mpath href="#r1" /></animateMotion>
-          </circle>
-          <circle r="0.8" fill="#66EEFF" filter="url(#g1)" opacity="1">
-            <animateMotion id="p2" dur="1.2s" begin="p1.end+7.55s" fill="remove"><mpath href="#r6" /></animateMotion>
-          </circle>
-          <circle r="0.8" fill="#66EEFF" filter="url(#g1)" opacity="1">
-            <animateMotion id="p3" dur="1.8s" begin="p2.end+7.55s" fill="remove"><mpath href="#r9" /></animateMotion>
-          </circle>
-        </g>
+        {/* Data packet — JS-driven animation */}
+        <circle className="hero-anim" id="data-packet" r="1.5" fill="#66EEFF" filter="url(#g1)" opacity="0" cx="0" cy="0" />
+        <rect className="hero-anim" id="chip-overlay" fill="#00D4FF" opacity="0" rx="1" x="0" y="0" width="0" height="0" />
       </svg>
-
-      {/* Central processor area — subtle, no glow */}
-      <div
-        className="absolute left-1/2 top-[65%] h-[350px] w-[350px] -translate-x-1/2 -translate-y-1/2 rounded-full md:h-[500px] md:w-[500px]"
-        style={{
-          background:
-            "radial-gradient(circle at center, rgba(0, 212, 255, 0.03) 0%, transparent 50%)",
-        }}
-      />
 
       {/* Grain — hidden on mobile to reduce GPU load */}
       <div

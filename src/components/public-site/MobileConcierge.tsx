@@ -507,7 +507,7 @@ function PayoffContent({
               <button
                 key={`${proj.slug}-${i}`}
                 onClick={() => setDetailProject(proj)}
-                className={`w-[80%] flex-shrink-0 snap-center overflow-hidden rounded-xl border border-white/[0.06] bg-white/[0.03] text-left backdrop-blur-sm transition-colors hover:border-white/[0.12] ${i >= carouselItems.length ? "hidden md:block" : ""}`}
+                className={`w-[90%] flex-shrink-0 snap-center overflow-hidden rounded-xl border border-white/[0.06] bg-white/[0.03] text-left backdrop-blur-sm transition-colors hover:border-white/[0.12] ${i >= carouselItems.length ? "hidden md:block" : ""}`}
                 aria-label={`View details for ${proj.title}`}
               >
                 {proj.image && (
