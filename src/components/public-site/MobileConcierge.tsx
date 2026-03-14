@@ -320,6 +320,20 @@ export function MobileConcierge() {
   );
 }
 
+/** Build carousel list: matched project first, then other live/in-progress projects */
+function getCarouselProjects(matchedSlug: string | undefined) {
+  const isShowable = (p: (typeof projects)[number]) =>
+    (p.status === "live" || p.status === "in-progress") && p.image;
+
+  const matched = matchedSlug
+    ? projects.find((p) => p.slug === matchedSlug && isShowable(p))
+    : null;
+  const others = projects.filter(
+    (p) => isShowable(p) && p.slug !== matchedSlug,
+  );
+  return matched ? [matched, ...others] : others;
+}
+
 /** Extracted payoff content to avoid IIFE in JSX */
 function PayoffContent({
   category,
@@ -330,22 +344,22 @@ function PayoffContent({
   priority: PriorityId | null;
   focusRef: (el: HTMLElement | null) => void;
 }) {
-  const [showDetails, setShowDetails] = useState(false);
+  const [detailProject, setDetailProject] = useState<typeof projects[number] | null>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
   const payoff =
     category && priority ? getPayoff(category, priority) : null;
-  const project = payoff
-    ? projects.find((p) => p.slug === payoff.projectSlug)
-    : null;
+  const carouselItems = getCarouselProjects(payoff?.projectSlug);
 
-  if (showDetails && project) {
+  // Detail overlay
+  if (detailProject) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/95 backdrop-blur-xl">
         <div className="flex h-[80svh] w-[90vw] flex-col rounded-2xl border border-white/[0.08] bg-white/[0.04] md:w-[80vw] lg:w-[70vw]">
           {/* Header with close */}
           <div className="flex items-center justify-between border-b border-white/[0.06] px-5 py-3">
-            <h3 className="text-lg font-bold text-white">{project.title}</h3>
+            <h3 className="text-lg font-bold text-white">{detailProject.title}</h3>
             <button
-              onClick={() => setShowDetails(false)}
+              onClick={() => setDetailProject(null)}
               className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-white/[0.06] hover:text-white"
               aria-label="Close project details"
             >
@@ -353,13 +367,13 @@ function PayoffContent({
             </button>
           </div>
 
-          {/* Content — fills remaining space, hidden scrollbar */}
+          {/* Content — hidden scrollbar */}
           <div className="flex-1 overflow-y-auto p-5 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden md:p-8">
-            {project.image && (
+            {detailProject.image && (
               <div className="relative aspect-video w-full overflow-hidden rounded-xl">
                 <Image
-                  src={project.image}
-                  alt={project.title}
+                  src={detailProject.image}
+                  alt={detailProject.title}
                   fill
                   className="object-cover"
                   sizes="(max-width: 768px) 90vw, 80vw"
@@ -368,19 +382,19 @@ function PayoffContent({
               </div>
             )}
 
-            <p className="mt-4 text-sm text-primary md:text-base">{project.subtitle}</p>
+            <p className="mt-4 text-sm text-primary md:text-base">{detailProject.subtitle}</p>
 
             <p className="mt-4 text-sm leading-relaxed text-muted-foreground md:text-base md:leading-relaxed">
-              {project.description}
+              {detailProject.description}
             </p>
 
-            {project.capabilities.length > 0 && (
+            {detailProject.capabilities.length > 0 && (
               <div className="mt-6">
                 <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                   Capabilities
                 </h4>
                 <div className="mt-2 flex flex-wrap gap-1.5">
-                  {project.capabilities.map((cap) => (
+                  {detailProject.capabilities.map((cap) => (
                     <span
                       key={cap}
                       className="rounded-md bg-white/[0.06] px-2.5 py-1 text-xs text-white/80"
@@ -392,9 +406,9 @@ function PayoffContent({
               </div>
             )}
 
-            {project.url && (
+            {detailProject.url && (
               <a
-                href={project.url}
+                href={detailProject.url}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="mt-6 inline-flex items-center gap-1.5 text-sm text-primary transition-colors hover:text-white"
@@ -411,43 +425,56 @@ function PayoffContent({
 
   return (
     <div className="text-center">
-      {/* Portfolio showcase — clickable for details */}
-      {project && (
-        <button
-          onClick={() => setShowDetails(true)}
-          className="mb-6 w-full overflow-hidden rounded-xl border border-white/[0.06] bg-white/[0.03] text-left backdrop-blur-sm transition-colors hover:border-white/[0.12]"
-          aria-label={`View details for ${project.title}`}
+      {/* Carousel with edge fade mask */}
+      {carouselItems.length > 0 && (
+        <div
+          className="mb-6"
+          style={{
+            maskImage: "linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)",
+            WebkitMaskImage: "linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)",
+          }}
         >
-          {project.image && (
-            <div className="relative aspect-video w-full overflow-hidden">
-              <Image
-                src={project.image}
-                alt={project.title}
-                fill
-                className="object-cover"
-                sizes="(max-width: 768px) 100vw, 512px"
-                priority
-              />
-            </div>
-          )}
-          <div className="p-4">
-            <h3
-              ref={focusRef as React.Ref<HTMLHeadingElement>}
-              tabIndex={-1}
-              className="text-lg font-bold text-white outline-none"
-            >
-              {project.title}
-            </h3>
-            {payoff && (
-              <p className="mt-1 text-sm text-muted-foreground">
-                {payoff.tagline}
-              </p>
-            )}
-            <p className="mt-2 text-xs text-primary">
-              Tap to see project details
-            </p>
+          <div
+            ref={scrollRef}
+            className="flex snap-x snap-mandatory gap-4 overflow-x-auto px-[10%] [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+          >
+            {carouselItems.map((proj) => (
+              <button
+                key={proj.slug}
+                onClick={() => setDetailProject(proj)}
+                className="w-[80%] flex-shrink-0 snap-center overflow-hidden rounded-xl border border-white/[0.06] bg-white/[0.03] text-left backdrop-blur-sm transition-colors hover:border-white/[0.12]"
+                aria-label={`View details for ${proj.title}`}
+              >
+                {proj.image && (
+                  <div className="relative aspect-video w-full overflow-hidden">
+                    <Image
+                      src={proj.image}
+                      alt={proj.title}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 80vw, 400px"
+                    />
+                  </div>
+                )}
+                <div className="p-4">
+                  <h3
+                    ref={proj.slug === payoff?.projectSlug ? focusRef as React.Ref<HTMLHeadingElement> : undefined}
+                    tabIndex={proj.slug === payoff?.projectSlug ? -1 : undefined}
+                    className="text-lg font-bold text-white outline-none"
+                  >
+                    {proj.title}
+                  </h3>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    {proj.subtitle}
+                  </p>
+                  <p className="mt-2 text-xs text-primary">
+                    Tap to see project details
+                  </p>
+                </div>
+              </button>
+            ))}
           </div>
-        </button>
+        </div>
       )}
 
       {/* Intent-matched CTA with progressive profiling */}
