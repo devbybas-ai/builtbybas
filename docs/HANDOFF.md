@@ -1,8 +1,58 @@
 # BuiltByBas — Handoff Document
 
-> **Last Updated:** 2026-03-14 (Session 50)
-> **Status:** Nav redesigned, portfolio arrows added, homepage locked, keyboard accessible. Ready for deploy.
-> **Next Session Priority:** Deploy to VPS. Diversify payoff portfolio combos (5/9 still All Beauty). Rotate Resend API key.
+> **Last Updated:** 2026-03-14 (Session 51)
+> **Status:** Bug fixes committed (`e20af1a`). Concierge Smart Routing spec and plan complete, reviewed, and ready for implementation. Plan at `docs/superpowers/plans/2026-03-14-concierge-smart-routing.md`.
+> **Next Session Priority:** Execute the Concierge Smart Routing implementation plan (16 tasks across 4 chunks). Then deploy everything to VPS. Rotate Resend API key (ISS-12).
+
+## Session 51 Changes (2026-03-14)
+
+**Bug Fixes (committed `e20af1a`):**
+
+- CTA "Click Anywhere to Get Started" changed from emerald to bright white with white glow animation.
+- iOS Safari scroll fix: body scroll lock on homepage (position fixed, overflow hidden, touch-action manipulation, overscroll-behavior none). Eliminates vertical scrollbar on iPhone 14 Pro Max.
+- Services page mobile rendering fix: ServicesGrid IntersectionObserver fallback using requestAnimationFrame + getBoundingClientRect (same pattern as FadeIn/AnimatedText iOS fix).
+
+**Concierge Smart Routing Redesign (brainstormed, spec'd, plan reviewed):**
+
+- Spec: `docs/superpowers/specs/2026-03-14-concierge-smart-routing-design.md` (13 sections, approved)
+- Plan: `docs/superpowers/plans/2026-03-14-concierge-smart-routing.md` (16 tasks, 4 chunks, reviewed)
+- Replaces the 5-screen portfolio showcase funnel with a 7-screen smart intake router
+- Every tap captures qualifying data: category, exact service, priority, timeline
+- Auto-routes to `/intake?service=x&priority=y&timeline=z` with 4.44s confirmation screen
+- Intake form skips service selection and timeline for concierge users (pre-filled)
+- "Something Else" path gets generic priorities and full service selection in form
+- Plan review loop complete: 6 critical issues and 10 important issues found and fixed
+
+**Design decisions captured:**
+
+- No em dashes in client-facing copy (feedback saved to memory)
+- Spec headline: "What are we building?" (not "What are you building?")
+- Query params for data handoff (bookmarkable, debuggable, survives new tabs)
+- 4.44s auto-transition on confirmation screen with tap-to-skip
+- Timeline options: ASAP, 2-4 weeks, 5-6 weeks, Flexible
+
+**Commits this session:**
+
+- `e20af1a` fix: white CTA glow, iOS scroll lock, services grid IntersectionObserver
+
+**What the next session needs to do:**
+
+1. Execute the plan using superpowers:subagent-driven-development skill
+2. The plan has 4 chunks / 16 tasks:
+   - Chunk 1 (Tasks 1-5): Data layer -- types, content, validation in concierge-content.ts, intake.ts, intake-validation.ts
+   - Chunk 2 (Tasks 6-10): Concierge component -- state machine rewrite, icon map update, JSX screens, ConfirmationContent, CSS animation
+   - Chunk 3 (Tasks 11-13): Intake form integration -- useIntakeForm hook, IntakeForm badge, BudgetOnlyStep
+   - Chunk 4 (Tasks 14-16): Cleanup and verification -- remove payoff code, verify icons, full build/test
+3. After implementation: deploy to VPS, smoke test all paths
+4. Rotate Resend API key (ISS-12)
+
+**Known issues:**
+
+- 5/9 payoff combos map to All Beauty -- will be RESOLVED by removing payoff system entirely (part of this plan)
+- Rotate Resend API key (ISS-12 -- still open)
+- Marketing push, SMS notifications, modular AI provider architecture (future work)
+
+---
 
 ## Session 50 Changes (2026-03-14)
 
@@ -12,16 +62,23 @@
 - Removed "Start a Project" CTA button from desktop nav.
 - Added centered browse prompt: "Just browsing, click here to view the BuiltByBas Portfolio." — "click here" is a cyan link to `/portfolio`.
 - Home and About links remain on the left.
-- Right spacer balances the three-zone layout (Home/About | browse prompt | spacer).
+- Services link conditionally shown on non-homepage pages (left side, after About).
+- Right side: "* Pricing varies by project" on non-home pages, spacer on home.
+- Browse prompt absolutely centered using `pointer-events-none`/`pointer-events-auto` pattern — stays fixed regardless of left/right content changes.
 - Mobile nav unchanged — still has all 4 links + Start a Project CTA.
 
-**Welcome Screen Copy Updates:**
+**Welcome Screen Redesigned:**
 
-- Tagline line 1: "Tell Us How Your Business Works." changed to "Let's Talk About Your Business Needs."
-- Tagline line 2: "We'll Build the System Around It." changed to "Then We'll Build a System Around Them."
-- Title ("Welcome to BuiltByBas") enlarged 130%: `text-5xl` mobile, `text-6xl` sm, `text-7xl` md, `text-8xl` lg.
-- "Tap to get started" moved up 40px on mobile (`mb-10 md:mb-0`).
-- Desktop CTA updated: "Press Enter or click to get started" for keyboard users.
+- Complete three-tier layout: Brand (Welcome to / BuiltByBas) → Value Prop (subtitle + tagline) → CTA.
+- Tagline: "Let's Talk About Your Business Needs." (white/80) + "Then We'll Build a System Around Them." (cyan).
+- Title enlarged 130%: `text-6xl` mobile up to `text-9xl` lg. "Welcome to" as small uppercase label above brand wordmark.
+- CTA: "Click Anywhere to Get Started" in emerald-400 with custom `cta-glow` animation (brightness pulse + emerald drop-shadow). Emerald accent bar below.
+- Asymmetric flex spacers (1.2 / 1.6) for optical centering — CTA sits lower for natural visual weight.
+
+**Service Card Pricing Removed:**
+
+- Removed per-card price range badges from ServiceCard component.
+- "* Pricing varies by project" moved to desktop nav (right side, non-home pages only).
 
 **Portfolio Gallery Arrows:**
 
@@ -44,8 +101,8 @@
 **Tests:** 229/229 pass. tsc clean.
 
 **Commits this session:**
-- `0c4f0e9` feat: full-length PCB packet routes, matrix rain chips, welcome polish (session 49 changes)
-- Session 50 changes not yet committed.
+- `0c4f0e9` feat: full-length PCB packet routes, matrix rain chips, welcome polish (session 49 carry-over)
+- `961cae4` feat: desktop nav redesign, welcome screen polish, gallery arrows, scroll lock
 
 **Known issues for next session:**
 - 5 of 9 payoff combos still map to All Beauty Hair Studio

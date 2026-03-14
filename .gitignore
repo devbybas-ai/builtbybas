@@ -1,6 +1,9 @@
 # Dependencies
 node_modules/
 
+# Superpowers brainstorming assets
+.superpowers/
+
 # Environment (NEVER commit)
 .env
 .env.local
