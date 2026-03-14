@@ -141,7 +141,8 @@ export function MobileConcierge() {
               {/* Welcome intro */}
               <div className="relative z-10 mx-auto w-full max-w-sm text-center md:max-w-2xl">
                 <h1 className="text-[1.875rem] font-bold leading-tight tracking-tight text-white sm:text-4xl md:text-6xl lg:text-7xl">
-                  {conciergeContent.welcome.headline}
+                  Welcome to<br />
+                  <span className="text-primary">Built</span>By<span className="text-primary">Bas</span>
                 </h1>
                 <p className="mt-4 text-base leading-relaxed text-muted-foreground md:mt-6 md:text-xl">
                   {conciergeContent.welcome.subtitle}

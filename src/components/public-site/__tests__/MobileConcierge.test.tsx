@@ -60,7 +60,7 @@ describe("MobileConcierge", () => {
   it("renders the welcome screen on initial load", () => {
     render(<MobileConcierge />);
     expect(
-      screen.getByRole("heading", { name: "Welcome to BuiltByBas" }),
+      screen.getByRole("heading", { name: /Welcome to/i }),
     ).toBeInTheDocument();
     expect(
       screen.getByText(

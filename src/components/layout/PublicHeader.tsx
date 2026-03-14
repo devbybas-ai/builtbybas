@@ -51,16 +51,7 @@ export function PublicHeader() {
           className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6 md:h-16 lg:px-8"
           aria-label="Main navigation"
         >
-          {/* Brand */}
-          <Link
-            href="/"
-            className="text-lg font-bold tracking-tight text-foreground sm:text-xl"
-          >
-            <span className="text-green-400">Built</span>By
-            <span className="text-green-400">Bas</span>
-          </Link>
-
-          {/* Desktop nav */}
+          {/* Desktop nav — links left, CTA right */}
           <div className="hidden items-center gap-8 md:flex">
             {navLinks.map((link) => (
               <Link
@@ -75,13 +66,14 @@ export function PublicHeader() {
                 {link.label}
               </Link>
             ))}
-            <Link
-              href="/intake"
-              className="btn-shine neon-glow inline-flex items-center rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-all hover:bg-cyan-hover"
-            >
-              Start a Project
-            </Link>
           </div>
+
+          <Link
+            href="/intake"
+            className="btn-shine neon-glow hidden items-center rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-all hover:bg-cyan-hover md:inline-flex"
+          >
+            Start a Project
+          </Link>
 
           {/* Mobile menu button */}
           <button
