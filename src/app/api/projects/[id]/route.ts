@@ -103,7 +103,7 @@ export async function PATCH(
     );
   }
 
-  const updates: Record<string, unknown> = { updatedAt: new Date() };
+  const updates: Partial<typeof projects.$inferInsert> = { updatedAt: new Date() };
   const data = parsed.data;
 
   if (data.name !== undefined) updates.name = sanitizeString(data.name);

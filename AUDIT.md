@@ -75,9 +75,11 @@
 
 ## Section 4: Tech Debt Register
 
-| ID  | Class | Description                         | Owner | Target Date | Status |
-| --- | ----- | ----------------------------------- | ----- | ----------- | ------ |
-| —   | —     | No tech debt — project starts clean | —     | —           | —      |
+| ID   | Class | Description                                                             | Owner | Target Date  | Status |
+| ---- | ----- | ----------------------------------------------------------------------- | ----- | ------------ | ------ |
+| TD-1 | TD-1  | Remove next-themes from package.json (no longer imported)               | Bas   | Next deploy  | Open   |
+| TD-2 | TD-2  | Add structured logging library (pino/winston) for production visibility | Bas   | Q2 2026      | Open   |
+| TD-3 | TD-3  | HeroBackground.tsx 663 lines (mostly SVG, hard to split meaningfully)   | Bas   | Low priority | Open   |
 
 Tech Debt Classes:
 - TD-1: Known shortcut, plan to fix within 2 sessions
@@ -111,6 +113,7 @@ Tech Debt Classes:
 | 2026-03-01 | Sess. 18 | Portfolio + Animation   | 10/10 (A+)  | Claude + Bas | Portfolio image galleries: auto-cycle (5s), thumbnail click-to-swap, pause on hover, AnimatePresence crossfade, progress indicators. 17 screenshots converted PNG→WebP (4.7MB→244KB). Gallery arrays for Orca Child (9) + BuiltByBas (4). 4 new animation demos: MicroInteractions (8), LayoutAnimations (6), SVGAnimations (7), ScrollAnimations (5) — 41 total specimens across 6 pages. About page: #OneTeam→Human Oversight. Raw submission data: recursive structured display. Deployed to production (commit 92269cc). 163/163 tests, 50-route build. |
 | 2026-03-06 | Sess. 36 | Full Site Audit         | 10/10 (A+)  | Claude + Bas | Head-to-toe audit: content (mdash removal, I-to-we story arc, lift-up messaging), SEO (sitemap 5→52+ pages, homepage metadata), security (env var consistency, CSP for Umami, SSL cert), accessibility (ProposalResponse label + main landmark), RAI compliance (Section 6 added). 12 issues found, 11 closed, 1 open (API key rotation). 4 parallel audit agents: content, SEO, accessibility, security/performance. All 8 pillars verified.                                                                                                               |
 | 2026-03-07 | Sess. 37 | Demo Backend + Perf     | 10/10 (A+)  | Claude + Bas | Interactive public demo backend (8 pages at /demo): dashboard, clients, pipeline (drag-and-drop kanban), projects, proposals, invoices, analytics. All client-side state, no auth required. Demo data math verified flawless. Real client removed from demo. Portfolio PNGs converted to WebP (61% size reduction). Case-sensitive folder fix for Linux VPS. 5 commits pushed. No new issues.                                                                                                                                                               |
+| 2026-03-14 | Sess. 52 | Full Site Audit (62/62) | 10/10 (A+)  | Claude + Bas | Complete codebase audit: 10 dimensions, 261 files, 62 findings resolved in 8 parallel waves. Security: auth on 3 endpoints, transactions on 10 routes, HMAC key separation, rate limiting, HSTS. Architecture: env validation, DRY constants, settings decomposition. UX: error boundaries, loading states, focus traps. SEO: og:image, canonicals, JSON-LD. Design: token standardization, dead code removal. Infra: ESLint enforcement, tsconfig strict, multi-browser Playwright. 247 tests (29 new API route tests). 3 tech debt items logged.          |
 
 ---
 

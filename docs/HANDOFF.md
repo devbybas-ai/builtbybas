@@ -1,8 +1,100 @@
 # BuiltByBas — Handoff Document
 
-> **Last Updated:** 2026-03-14 (Session 51)
-> **Status:** Bug fixes committed (`e20af1a`). Concierge Smart Routing spec and plan complete, reviewed, and ready for implementation. Plan at `docs/superpowers/plans/2026-03-14-concierge-smart-routing.md`.
+> **Last Updated:** 2026-03-14 (Session 52)
+> **Status:** Full-site audit complete -- 62/62 items resolved across 8 waves. 247 tests passing (29 new API route tests). Build clean. Concierge Smart Routing plan still pending implementation.
 > **Next Session Priority:** Execute the Concierge Smart Routing implementation plan (16 tasks across 4 chunks). Then deploy everything to VPS. Rotate Resend API key (ISS-12).
+
+## Session 52 Changes (2026-03-14)
+
+**Full Site Audit -- 62/62 Items Resolved:**
+
+Complete codebase audit across 10 dimensions (security, architecture, code quality, UX, SEO, a11y, design system, infrastructure, testing, performance). 261 files scanned. All 62 findings resolved in 8 parallel waves.
+
+**Wave 1 -- Security (10 items):**
+- Added `requireAdmin()` to 3 unprotected endpoints (notifications, intake GET, intake/[id] GET)
+- Wrapped 10 multi-write API routes in `db.transaction()`
+- Added Zod schema + sanitization to proposals/respond
+- HTML escaping on email template interpolation
+- Pool error handler on db.ts
+- HSTS header added to next.config.ts
+
+**Wave 2 -- Architecture (6 items):**
+- Standardized all Zod imports to `zod/v4`
+- Created `src/data/service-constants.ts` (eliminates 5 DRY violations)
+- Created `src/lib/env.ts` (Zod-based env validation at startup)
+- Split SettingsForm (522 lines) into 4 focused components + `useFormSection` hook
+- Deleted 8 orphaned components and 6 unused exports
+
+**Wave 3 -- Error Boundaries + UX (6 items):**
+- Added `global-error.tsx`, `error.tsx`, `not-found.tsx` (root + admin)
+- Added `loading.tsx` skeletons (admin + public)
+- Focus trap + Escape key on mobile menu overlay
+- Keyboard focus indicators on intake checkboxes/radios
+- Contrast fixes: `text-white/50` -> `text-white/75`
+- Focus trap + scroll lock on concierge detail overlay
+
+**Wave 4 -- SEO + Accessibility (5 items):**
+- `og:image` metadata on root layout
+- Canonical URLs on 9 public pages
+- JSON-LD (Breadcrumb, AboutPage, CreativeWork) on 7 pages
+- `scope="col"` on all `<th>` elements (10 files, 50+ elements)
+- Gallery pause/play toggle + keyboard focus pause
+
+**Wave 5 -- Design System (8 items):**
+- Removed spring+duration conflicts
+- `bg-[#0A0A0F]` -> `bg-background` design token (3 files)
+- `scrollbar-hide` -> `scrollbar-none` (2 files)
+- Glassmorphism opacity standardized
+- `bg-cyan-500` -> `bg-primary` design token
+- FadeIn defaults to `once: true`
+- Removed 4 dead CSS keyframes
+- Hardcoded dark theme in Sonner (next-themes removable)
+
+**Wave 6 -- Infrastructure (6 items):**
+- ESLint enforces Eight Pillars (no-console, no-eval, restricted syntax)
+- tsconfig: `noUnusedLocals`, `noUnusedParameters`, `forceConsistentCasingInFileNames` + fixed 19 violations
+- Umami analytics uses env vars + `next/script`
+- .env.example cleaned (added ADMIN_EMAIL, Umami; removed unused AUTH_SECRET, ANTHROPIC_API_KEY)
+- Node >=20 enforced (engines, .nvmrc, .node-version)
+- Playwright: added Firefox + WebKit browsers
+
+**Wave 7 -- Code Quality (8 items):**
+- Shared `(public)/layout.tsx` (removed header/footer from 12 pages)
+- `useInitialViewportCheck` hook (replaced 3 duplicated iOS patterns)
+- `useBodyScrollLock` hook used in PublicHeader + MobileConcierge
+- Drizzle `$inferInsert` types on all 4 PATCH handlers
+- `Promise.all()` for parallel DB queries in client detail
+- `IntakeStatus` derived from schema enum (single source)
+- intake-scoring.ts split: extracted `intake-rai.ts` + `intake-paths.ts`
+- PayoffContent extracted from MobileConcierge (626 -> 354 lines)
+
+**Wave 8 -- Security + Scale (12 items):**
+- Reusable `RateLimiter` class with auto-pruning
+- Rate limiting on POST /api/intake (10/hr/IP)
+- HMAC key derived separately from encryption key
+- Nginx config: HTTPS redirect, gzip, security headers
+- Invoice number race condition: transaction + retry
+- Session cleanup on login (fire-and-forget)
+- Middleware dead code removed
+- Intake validation: max lengths + bounded records
+- PM2: max_restarts, restart_delay
+- ISR revalidation (1hr) on services, about, portfolio
+- CI audit level bumped to high
+- Structured logging TODO noted
+
+**Wave 9 -- Test Foundation (1 item):**
+- 29 new API route tests (login: 9, intake: 11, settings/profile: 9)
+- Total tests: 247 across 16 test files
+
+**Files created:** ~20 new files (error boundaries, loading states, hooks, extracted components, rate limiter, API tests)
+**Files modified:** ~60 files
+**Files deleted:** 8 orphaned components
+
+**Verification:** 247/247 tests pass. `tsc --noEmit` clean. `pnpm build` clean.
+
+**Audit checklist:** `audit-checklist.html` at project root -- all 62 items pre-checked.
+
+---
 
 ## Session 51 Changes (2026-03-14)
 

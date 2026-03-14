@@ -2,6 +2,12 @@ import type { IntakeAnalysis, ServiceRecommendation } from "@/types/intake-analy
 import type { IntakeFormData } from "@/types/intake";
 import type { Service } from "@/types/services";
 import type { ProposalService } from "@/types/proposal";
+import { toServiceDataId, toIntakeId } from "@/data/service-id-map";
+import {
+  SERVICE_DURATION,
+  parsePriceRange,
+  formatCents,
+} from "@/data/service-constants";
 
 interface GeneratedProposal {
   title: string;
@@ -11,37 +17,6 @@ interface GeneratedProposal {
   estimatedBudgetCents: number;
   timeline: string;
 }
-
-/** Maps intake form service IDs → service data IDs */
-const INTAKE_TO_SERVICE_ID: Record<string, string> = {
-  "marketing-website": "marketing-websites",
-  "website-redesign": "website-redesigns",
-  "landing-page": "landing-pages",
-  "business-dashboard": "business-dashboards",
-  "client-portal": "client-portals",
-  ecommerce: "e-commerce",
-  "crm-system": "crm-systems",
-  "full-platform": "full-operations-platform",
-  "ai-tools": "ai-powered-tools",
-};
-
-/** Reverse mapping: service data ID → intake ID */
-const SERVICE_TO_INTAKE_ID: Record<string, string> = Object.fromEntries(
-  Object.entries(INTAKE_TO_SERVICE_ID).map(([k, v]) => [v, k]),
-);
-
-/** Estimated duration per service (matches intake-scoring.ts) */
-const SERVICE_DURATION: Record<string, string> = {
-  "landing-pages": "1-2 weeks",
-  "marketing-websites": "3-5 weeks",
-  "website-redesigns": "3-5 weeks",
-  "e-commerce": "6-10 weeks",
-  "business-dashboards": "4-8 weeks",
-  "client-portals": "4-8 weeks",
-  "crm-systems": "6-10 weeks",
-  "full-operations-platform": "12-20 weeks",
-  "ai-powered-tools": "8-14 weeks",
-};
 
 /**
  * Keywords in intake answers that signal premium scope for each service.
@@ -106,12 +81,8 @@ function parseBudgetFloor(budgetRange: string): number {
 
 /** Parse a price range string into [low, high] dollar amounts */
 function parseRangeDollars(range: string): [number, number] {
-  const numbers = range.match(/[\d,]+/g);
-  if (!numbers || numbers.length < 2) return [0, 0];
-  return [
-    parseInt(numbers[0].replace(/,/g, ""), 10),
-    parseInt(numbers[1].replace(/,/g, ""), 10),
-  ];
+  const { low, high } = parsePriceRange(range);
+  return [low, high];
 }
 
 /**
@@ -136,7 +107,7 @@ export function computeScopedPriceCents(
   let position = 0.3 + (complexity / 10) * 0.5;
 
   // Scope premium keywords from service-specific answers + additional notes
-  const intakeId = SERVICE_TO_INTAKE_ID[rec.serviceId];
+  const intakeId = toIntakeId(rec.serviceId);
   const answers = intakeId ? analysis.formData.serviceAnswers[intakeId] : undefined;
   const parts: string[] = [];
   if (answers) {
@@ -193,7 +164,7 @@ export function generateProposal(
 
   // Only include services the client actually selected
   const selectedDataIds = analysis.formData.selectedServices
-    .map((id) => INTAKE_TO_SERVICE_ID[id])
+    .map((id) => toServiceDataId(id))
     .filter((id): id is string => id !== undefined);
 
   const selectedServices = analysis.serviceRecommendations.filter((r) =>
@@ -357,7 +328,7 @@ function buildScopeOfWork(
 
   for (const rec of recommendations) {
     const catalogEntry = catalog.find((s) => s.id === rec.serviceId);
-    const intakeId = SERVICE_TO_INTAKE_ID[rec.serviceId];
+    const intakeId = toIntakeId(rec.serviceId);
     const answers = intakeId ? formData.serviceAnswers[intakeId] : undefined;
 
     lines.push(``);
@@ -419,7 +390,7 @@ function buildWhyThisService(
   formData: IntakeFormData,
 ): string[] {
   const reasons: string[] = [];
-  const intakeId = SERVICE_TO_INTAKE_ID[rec.serviceId];
+  const intakeId = toIntakeId(rec.serviceId);
   const answers = intakeId ? formData.serviceAnswers[intakeId] : undefined;
 
   // 1. What problem does this solve? (from their challenge/frustration answers)
@@ -689,13 +660,6 @@ function computeTimeline(selectedServices: ServiceRecommendation[]): string {
   const minMonths = Math.ceil(totalMinWeeks / 4);
   const maxMonths = Math.ceil(totalMaxWeeks / 4);
   return `${minMonths}-${maxMonths} months`;
-}
-
-function formatCents(cents: number): string {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  }).format(cents / 100);
 }
 
 function formatIndustry(industry: string): string {

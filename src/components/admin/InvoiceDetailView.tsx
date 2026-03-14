@@ -330,11 +330,11 @@ export function InvoiceDetailView({ invoice }: { invoice: InvoiceData }) {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-white/10 text-left text-xs text-muted-foreground">
-                    <th className="pb-2 pr-2">Description</th>
-                    <th className="pb-2 pr-2 w-20 text-right">Qty</th>
-                    <th className="pb-2 pr-2 w-28 text-right">Unit Price ($)</th>
-                    <th className="pb-2 w-24 text-right">Total</th>
-                    <th className="pb-2 w-10" />
+                    <th scope="col" className="pb-2 pr-2">Description</th>
+                    <th scope="col" className="pb-2 pr-2 w-20 text-right">Qty</th>
+                    <th scope="col" className="pb-2 pr-2 w-28 text-right">Unit Price ($)</th>
+                    <th scope="col" className="pb-2 w-24 text-right">Total</th>
+                    <th scope="col" className="pb-2 w-10" />
                   </tr>
                 </thead>
                 <tbody>
@@ -433,10 +433,10 @@ export function InvoiceDetailView({ invoice }: { invoice: InvoiceData }) {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-white/10 text-left text-xs text-muted-foreground">
-                  <th className="pb-2 pr-4">Description</th>
-                  <th className="pb-2 pr-4 text-right">Qty</th>
-                  <th className="pb-2 pr-4 text-right">Unit Price</th>
-                  <th className="pb-2 text-right">Total</th>
+                  <th scope="col" className="pb-2 pr-4">Description</th>
+                  <th scope="col" className="pb-2 pr-4 text-right">Qty</th>
+                  <th scope="col" className="pb-2 pr-4 text-right">Unit Price</th>
+                  <th scope="col" className="pb-2 text-right">Total</th>
                 </tr>
               </thead>
               <tbody>

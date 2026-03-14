@@ -98,11 +98,3 @@ export function getStageMeta(
   return PIPELINE_STAGES.find((s) => s.value === stage);
 }
 
-export function getNextStage(
-  current: PipelineStage
-): PipelineStage | undefined {
-  const meta = getStageMeta(current);
-  if (!meta) return undefined;
-  const next = PIPELINE_STAGES.find((s) => s.order === meta.order + 1);
-  return next?.value;
-}

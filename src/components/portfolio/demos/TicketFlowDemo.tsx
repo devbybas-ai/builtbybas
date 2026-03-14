@@ -9,7 +9,7 @@ import { DemoPageWrapper } from "@/components/portfolio/demos/shared/DemoPageWra
 import { DemoPageHeader } from "@/components/portfolio/demos/shared/DemoPageHeader";
 import { DemoStatCard } from "@/components/portfolio/demos/shared/DemoStatCard";
 import { DemoGlassButton } from "@/components/portfolio/demos/shared/DemoGlassButton";
-import { demoStaggerContainer, demoStaggerItem, demoSprings, demoCardHover } from "@/lib/demo-motion";
+import { demoStaggerContainer, demoStaggerItem } from "@/lib/demo-motion";
 
 /* ─── types ─── */
 interface DinerTicket {

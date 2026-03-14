@@ -3,7 +3,7 @@
 import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Heart, Clock, Calendar, AlertTriangle, DollarSign, CheckCircle, X, Shield,
+  Heart, Calendar, AlertTriangle, DollarSign,
 } from "lucide-react";
 import { DemoPageWrapper } from "@/components/portfolio/demos/shared/DemoPageWrapper";
 import { DemoPageHeader } from "@/components/portfolio/demos/shared/DemoPageHeader";
@@ -116,8 +116,6 @@ export function PawScheduleDemo() {
   const vaccineAlerts = pets.flatMap(p => p.vaccinations.filter(v => vaccineStatus(v.expires) !== "current")).length;
   const kennelsOccupied = boarding.filter(b => b.status === "checked-in").length;
   const revenueToday = appts.filter(a => a.status === "complete").reduce((s, a) => s + a.price, 0);
-  const selectedPetProfile = selectedPet ? pets.find(p => p.id === selectedPet) : null;
-
   const tabs: { id: Tab; label: string }[] = [
     { id: "schedule", label: "Today's Schedule" }, { id: "pets", label: "Pet Profiles" },
     { id: "boarding", label: "Boarding" }, { id: "vaccines", label: "Vaccinations" },
@@ -248,9 +246,9 @@ export function PawScheduleDemo() {
             <div className="demo-glass rounded-lg overflow-hidden" style={{ border: "1px solid rgba(255,255,255,0.06)" }}>
               <table className="w-full text-xs">
                 <thead><tr className="border-b border-white/5">
-                  <th className="text-left p-3 text-white/40 font-medium">Pet</th><th className="text-left p-3 text-white/40 font-medium">Vaccine</th>
-                  <th className="text-left p-3 text-white/40 font-medium">Given</th><th className="text-left p-3 text-white/40 font-medium">Expires</th>
-                  <th className="text-center p-3 text-white/40 font-medium">Status</th>
+                  <th scope="col" className="text-left p-3 text-white/40 font-medium">Pet</th><th scope="col" className="text-left p-3 text-white/40 font-medium">Vaccine</th>
+                  <th scope="col" className="text-left p-3 text-white/40 font-medium">Given</th><th scope="col" className="text-left p-3 text-white/40 font-medium">Expires</th>
+                  <th scope="col" className="text-center p-3 text-white/40 font-medium">Status</th>
                 </tr></thead>
                 <tbody>
                   {pets.flatMap(pet => pet.vaccinations.map(v => {

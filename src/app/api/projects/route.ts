@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { eq, desc } from "drizzle-orm";
 import { db } from "@/lib/db";
-import { projects, clients, users } from "@/lib/schema";
+import { projects, clients } from "@/lib/schema";
 import { requireAdmin } from "@/lib/api-auth";
 import { createProjectSchema } from "@/lib/project-validation";
 import { sanitizeString } from "@/lib/sanitize";

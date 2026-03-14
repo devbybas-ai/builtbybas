@@ -211,15 +211,6 @@ export function useIntakeForm(options: UseIntakeFormOptions = {}) {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
-  const goToStep = useCallback(
-    (step: number) => {
-      if (step >= 0 && step < totalSteps) {
-        setState((prev) => ({ ...prev, currentStep: step, errors: {} }));
-      }
-    },
-    [totalSteps],
-  );
-
   const submitForm = useCallback(async () => {
     if (!validateCurrentStep()) return;
 
@@ -270,7 +261,6 @@ export function useIntakeForm(options: UseIntakeFormOptions = {}) {
     updateServiceAnswer,
     nextStep,
     prevStep,
-    goToStep,
     submitForm,
   };
 }

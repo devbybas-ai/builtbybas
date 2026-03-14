@@ -33,7 +33,7 @@ export const demoStaggerContainer: Variants = {
 // Stagger item
 export const demoStaggerItem: Variants = {
   hidden: { opacity: 0, y: 10 },
-  visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 500, damping: 35, duration: 0.25 } },
+  visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 500, damping: 35 } },
 };
 
 // Scale pop

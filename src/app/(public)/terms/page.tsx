@@ -1,17 +1,26 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { PublicHeader } from "@/components/layout/PublicHeader";
-import { PublicFooter } from "@/components/layout/PublicFooter";
+import { JsonLd } from "@/components/shared/JsonLd";
+import { getBreadcrumbSchema } from "@/lib/json-ld";
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://builtbybas.com";
+
 export const metadata: Metadata = {
   title: "Terms of Service",
   description:
     "BuiltByBas Terms of Service. The agreement governing your use of our website and services.",
+  alternates: { canonical: `${SITE_URL}/terms` },
 };
 
 export default function TermsOfServicePage() {
   return (
     <>
-      <PublicHeader />
+      <JsonLd
+        data={getBreadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "Terms of Service", path: "/terms" },
+        ])}
+      />
       <main id="main-content" className="relative pt-24 pb-24">
         <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
           <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
@@ -532,7 +541,6 @@ export default function TermsOfServicePage() {
           </div>
         </div>
       </main>
-      <PublicFooter />
     </>
   );
 }

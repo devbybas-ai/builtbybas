@@ -82,27 +82,44 @@ export function buildServiceSchema(
 // Full form schema (for API submission)
 // ============================================
 
+/**
+ * Zod record with a maximum key count.
+ * Prevents abuse via unbounded objects.
+ */
+function boundedRecord<V extends z.ZodTypeAny>(
+  valueSchema: V,
+  maxKeys: number,
+) {
+  return z.record(z.string(), valueSchema).refine(
+    (obj) => Object.keys(obj).length <= maxKeys,
+    { message: `Object must have at most ${maxKeys} keys` },
+  );
+}
+
 export const fullIntakeSchema = z.object({
-  selectedServices: z.array(z.string()).min(1),
-  name: z.string().min(2),
-  email: z.string().email(),
-  phone: z.string().optional().default(""),
-  company: z.string().min(1),
-  industry: z.string().min(1),
-  businessSize: z.string().min(1),
-  website: z.string().optional().default(""),
-  yearsInBusiness: z.string().optional().default(""),
-  serviceAnswers: z.record(z.string(), z.record(z.string(), z.union([z.string(), z.array(z.string())]))),
-  timeline: z.string().min(1),
-  budgetRange: z.string().min(1),
-  designPreference: z.string().min(1),
-  hasBrandAssets: z.string().min(1),
-  brandColors: z.string().optional().default(""),
-  competitorSites: z.string().optional().default(""),
-  inspirationSites: z.string().optional().default(""),
-  additionalNotes: z.string().optional().default(""),
-  howDidYouHear: z.string().optional().default(""),
-  preferredContact: z.string().optional().default(""),
+  selectedServices: z.array(z.string().max(100)).min(1).max(20),
+  name: z.string().min(2).max(255),
+  email: z.string().email().max(255),
+  phone: z.string().max(50).optional().default(""),
+  company: z.string().min(1).max(255),
+  industry: z.string().min(1).max(255),
+  businessSize: z.string().min(1).max(100),
+  website: z.string().max(500).optional().default(""),
+  yearsInBusiness: z.string().max(100).optional().default(""),
+  serviceAnswers: boundedRecord(
+    boundedRecord(z.union([z.string().max(2000), z.array(z.string().max(500)).max(50)]), 50),
+    20,
+  ),
+  timeline: z.string().min(1).max(100),
+  budgetRange: z.string().min(1).max(100),
+  designPreference: z.string().min(1).max(100),
+  hasBrandAssets: z.string().min(1).max(100),
+  brandColors: z.string().max(500).optional().default(""),
+  competitorSites: z.string().max(1000).optional().default(""),
+  inspirationSites: z.string().max(1000).optional().default(""),
+  additionalNotes: z.string().max(2000).optional().default(""),
+  howDidYouHear: z.string().max(255).optional().default(""),
+  preferredContact: z.string().max(100).optional().default(""),
 });
 
 // ============================================
@@ -135,15 +152,3 @@ export function validateServiceStep(
 
   return { valid: false, errors };
 }
-
-/** Re-export step schemas for backward compat with tests */
-export const stepSchemas = [
-  serviceSelectionSchema,
-  contactSchema,
-  businessSchema,
-  timelineBudgetSchema,
-  designBrandSchema,
-  finalSchema,
-] as const;
-
-export type StepSchema = (typeof stepSchemas)[number];

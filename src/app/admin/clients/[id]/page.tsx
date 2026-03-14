@@ -25,63 +25,66 @@ export default async function AdminClientDetailPage({
     notFound();
   }
 
-  const [client] = await db
-    .select({
-      id: clients.id,
-      name: clients.name,
-      email: clients.email,
-      phone: clients.phone,
-      company: clients.company,
-      industry: clients.industry,
-      website: clients.website,
-      pipelineStage: clients.pipelineStage,
-      stageChangedAt: clients.stageChangedAt,
-      intakeSubmissionId: clients.intakeSubmissionId,
-      source: clients.source,
-      status: clients.status,
-      assignedTo: clients.assignedTo,
-      createdAt: clients.createdAt,
-      updatedAt: clients.updatedAt,
-      assignedUserName: users.name,
-    })
-    .from(clients)
-    .leftJoin(users, eq(clients.assignedTo, users.id))
-    .where(eq(clients.id, id))
-    .limit(1);
+  // Parallelize independent queries: client, notes, and pipeline history
+  const [clientRows, notes, history] = await Promise.all([
+    db
+      .select({
+        id: clients.id,
+        name: clients.name,
+        email: clients.email,
+        phone: clients.phone,
+        company: clients.company,
+        industry: clients.industry,
+        website: clients.website,
+        pipelineStage: clients.pipelineStage,
+        stageChangedAt: clients.stageChangedAt,
+        intakeSubmissionId: clients.intakeSubmissionId,
+        source: clients.source,
+        status: clients.status,
+        assignedTo: clients.assignedTo,
+        createdAt: clients.createdAt,
+        updatedAt: clients.updatedAt,
+        assignedUserName: users.name,
+      })
+      .from(clients)
+      .leftJoin(users, eq(clients.assignedTo, users.id))
+      .where(eq(clients.id, id))
+      .limit(1),
+    db
+      .select({
+        id: clientNotes.id,
+        type: clientNotes.type,
+        content: clientNotes.content,
+        createdAt: clientNotes.createdAt,
+        authorId: clientNotes.authorId,
+        authorName: users.name,
+      })
+      .from(clientNotes)
+      .leftJoin(users, eq(clientNotes.authorId, users.id))
+      .where(eq(clientNotes.clientId, id))
+      .orderBy(desc(clientNotes.createdAt))
+      .limit(20),
+    db
+      .select({
+        id: pipelineHistory.id,
+        fromStage: pipelineHistory.fromStage,
+        toStage: pipelineHistory.toStage,
+        note: pipelineHistory.note,
+        createdAt: pipelineHistory.createdAt,
+        changedBy: pipelineHistory.changedBy,
+        changedByName: users.name,
+      })
+      .from(pipelineHistory)
+      .leftJoin(users, eq(pipelineHistory.changedBy, users.id))
+      .where(eq(pipelineHistory.clientId, id))
+      .orderBy(desc(pipelineHistory.createdAt)),
+  ]);
+
+  const client = clientRows[0];
 
   if (!client) {
     notFound();
   }
-
-  const notes = await db
-    .select({
-      id: clientNotes.id,
-      type: clientNotes.type,
-      content: clientNotes.content,
-      createdAt: clientNotes.createdAt,
-      authorId: clientNotes.authorId,
-      authorName: users.name,
-    })
-    .from(clientNotes)
-    .leftJoin(users, eq(clientNotes.authorId, users.id))
-    .where(eq(clientNotes.clientId, id))
-    .orderBy(desc(clientNotes.createdAt))
-    .limit(20);
-
-  const history = await db
-    .select({
-      id: pipelineHistory.id,
-      fromStage: pipelineHistory.fromStage,
-      toStage: pipelineHistory.toStage,
-      note: pipelineHistory.note,
-      createdAt: pipelineHistory.createdAt,
-      changedBy: pipelineHistory.changedBy,
-      changedByName: users.name,
-    })
-    .from(pipelineHistory)
-    .leftJoin(users, eq(pipelineHistory.changedBy, users.id))
-    .where(eq(pipelineHistory.clientId, id))
-    .orderBy(desc(pipelineHistory.createdAt));
 
   return (
     <>

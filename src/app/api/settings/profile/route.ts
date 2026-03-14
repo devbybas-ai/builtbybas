@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
 import { eq } from "drizzle-orm";
-import { z } from "zod";
+import { z } from "zod/v4";
 import { requireAdmin } from "@/lib/api-auth";
 import { db } from "@/lib/db";
 import { users } from "@/lib/schema";
+import { sanitizeString } from "@/lib/sanitize";
 
 const profileSchema = z.object({
   name: z.string().min(1).max(255),
@@ -14,11 +15,20 @@ export async function PATCH(request: Request) {
   const auth = await requireAdmin();
   if ("error" in auth) return auth.error;
 
-  const body = await request.json();
+  let body: unknown;
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json(
+      { success: false, error: "Invalid request body" },
+      { status: 400 },
+    );
+  }
+
   const parsed = profileSchema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json(
-      { success: false, error: "Invalid input", details: parsed.error.flatten() },
+      { success: false, error: "Validation failed" },
       { status: 400 },
     );
   }
@@ -43,7 +53,7 @@ export async function PATCH(request: Request) {
 
   await db
     .update(users)
-    .set({ name, email: email.toLowerCase(), updatedAt: new Date() })
+    .set({ name: sanitizeString(name), email: email.toLowerCase(), updatedAt: new Date() })
     .where(eq(users.id, auth.user.id));
 
   return NextResponse.json({ success: true });

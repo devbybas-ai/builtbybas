@@ -341,7 +341,7 @@ export function ClientDetailDashboard({
       {/* Delete Confirmation Dialog */}
       {showDeleteDialog && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-          <div className="w-full max-w-md rounded-xl border border-white/10 bg-[#0A0A0F] p-6 shadow-2xl">
+          <div className="w-full max-w-md rounded-xl border border-white/10 bg-background p-6 shadow-2xl">
             <h2 className="text-lg font-semibold text-red-400">
               Delete Client
             </h2>

@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { computePriorityScore, getPriorityBadgeColors } from "@/lib/prioritization";
+import { getComplexityLabel } from "@/data/service-constants";
 import { GlassCard } from "@/components/shared/GlassCard";
 import type { IntakeSubmissionRow, IntakeStatus } from "@/lib/intake-storage";
 
@@ -23,13 +24,6 @@ interface IntakeListViewProps {
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
-
-function getComplexityLabel(score: number): string {
-  if (score >= 8) return "Enterprise";
-  if (score >= 6) return "Complex";
-  if (score >= 4) return "Moderate";
-  return "Simple";
-}
 
 const BUDGET_DISPLAY: Record<string, string> = {
   "1k-5k": "$1K - $5K",

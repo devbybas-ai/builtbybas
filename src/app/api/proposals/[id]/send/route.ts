@@ -126,49 +126,51 @@ export async function POST(
       );
     }
 
-    // Update proposal status to sent + store response token
-    await db
-      .update(proposals)
-      .set({
-        status: "sent",
-        sentAt: new Date(),
-        responseToken: hashedToken,
-        updatedAt: new Date(),
-      })
-      .where(eq(proposals.id, id));
+    // Update proposal status to sent + store response token + advance pipeline
+    await db.transaction(async (tx) => {
+      await tx
+        .update(proposals)
+        .set({
+          status: "sent",
+          sentAt: new Date(),
+          responseToken: hashedToken,
+          updatedAt: new Date(),
+        })
+        .where(eq(proposals.id, id));
 
-    // Advance pipeline stage to proposal_sent
-    if (proposal.clientId) {
-      const [client] = await db
-        .select({ pipelineStage: clients.pipelineStage })
-        .from(clients)
-        .where(eq(clients.id, proposal.clientId))
-        .limit(1);
+      // Advance pipeline stage to proposal_sent
+      if (proposal.clientId) {
+        const [client] = await tx
+          .select({ pipelineStage: clients.pipelineStage })
+          .from(clients)
+          .where(eq(clients.id, proposal.clientId))
+          .limit(1);
 
-      if (
-        client &&
-        ["proposal_draft", "analysis_complete", "fit_assessment"].includes(
-          client.pipelineStage
-        )
-      ) {
-        await db
-          .update(clients)
-          .set({
-            pipelineStage: "proposal_sent",
-            stageChangedAt: new Date(),
-            updatedAt: new Date(),
-          })
-          .where(eq(clients.id, proposal.clientId));
+        if (
+          client &&
+          ["proposal_draft", "analysis_complete", "fit_assessment"].includes(
+            client.pipelineStage
+          )
+        ) {
+          await tx
+            .update(clients)
+            .set({
+              pipelineStage: "proposal_sent",
+              stageChangedAt: new Date(),
+              updatedAt: new Date(),
+            })
+            .where(eq(clients.id, proposal.clientId));
 
-        await db.insert(pipelineHistory).values({
-          clientId: proposal.clientId,
-          fromStage: client.pipelineStage,
-          toStage: "proposal_sent",
-          changedBy: auth.user.id,
-          note: "Proposal sent to client via email",
-        });
+          await tx.insert(pipelineHistory).values({
+            clientId: proposal.clientId,
+            fromStage: client.pipelineStage,
+            toStage: "proposal_sent",
+            changedBy: auth.user.id,
+            note: "Proposal sent to client via email",
+          });
+        }
       }
-    }
+    });
 
     return NextResponse.json({ success: true });
   } catch {

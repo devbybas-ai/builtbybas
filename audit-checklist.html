@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BuiltByBas — Code Audit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0c0e12;
+    --surface: #14171e;
+    --surface-2: #1a1e27;
+    --border: #252a36;
+    --border-active: #3a4155;
+    --text: #c8cdd8;
+    --text-dim: #6b7280;
+    --text-bright: #eef0f4;
+    --critical: #ff4d6a;
+    --critical-bg: rgba(255, 77, 106, 0.08);
+    --critical-border: rgba(255, 77, 106, 0.25);
+    --high: #f59e0b;
+    --high-bg: rgba(245, 158, 11, 0.08);
+    --high-border: rgba(245, 158, 11, 0.25);
+    --medium: #3b82f6;
+    --medium-bg: rgba(59, 130, 246, 0.08);
+    --medium-border: rgba(59, 130, 246, 0.25);
+    --foundation: #6b7280;
+    --foundation-bg: rgba(107, 114, 128, 0.08);
+    --foundation-border: rgba(107, 114, 128, 0.25);
+    --done: #10b981;
+    --done-bg: rgba(16, 185, 129, 0.08);
+    --accent: #818cf8;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Grain Overlay ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* ── Progress Bar ── */
+  .progress-bar-fixed {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: var(--surface);
+    z-index: 1000;
+  }
+  .progress-bar-fixed .fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--critical), var(--high), var(--done));
+    width: 0%;
+    transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* ── Layout ── */
+  .container {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 6rem;
+  }
+
+  /* ── Header ── */
+  header {
+    padding: 2.5rem 0 2rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 2rem;
+  }
+  .header-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .logo {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 0.75rem;
+  }
+  h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-bright);
+    letter-spacing: -0.03em;
+    line-height: 1.2;
+  }
+  .header-meta {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    margin-top: 0.5rem;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .stats-ring {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+  }
+  .stat {
+    text-align: center;
+  }
+  .stat-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-bright);
+    line-height: 1;
+  }
+  .stat-num.done-num { color: var(--done); }
+  .stat-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-dim);
+    margin-top: 0.25rem;
+  }
+  .stat-divider {
+    width: 1px;
+    height: 2rem;
+    background: var(--border);
+  }
+
+  /* ── Section ── */
+  .section {
+    margin-bottom: 2rem;
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    cursor: pointer;
+    padding: 0.75rem 0;
+    user-select: none;
+  }
+  .section-header:hover .section-title { color: var(--text-bright); }
+  .risk-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.25rem 0.6rem;
+    border-radius: 3px;
+    white-space: nowrap;
+  }
+  .risk-badge.critical { background: var(--critical-bg); color: var(--critical); border: 1px solid var(--critical-border); }
+  .risk-badge.high { background: var(--high-bg); color: var(--high); border: 1px solid var(--high-border); }
+  .risk-badge.medium { background: var(--medium-bg); color: var(--medium); border: 1px solid var(--medium-border); }
+  .risk-badge.foundation { background: var(--foundation-bg); color: var(--foundation); border: 1px solid var(--foundation-border); }
+
+  .section-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text);
+    transition: color 0.2s;
+    flex: 1;
+  }
+  .section-count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text-dim);
+  }
+  .section-chevron {
+    color: var(--text-dim);
+    transition: transform 0.3s ease;
+    font-size: 0.75rem;
+  }
+  .section.collapsed .section-chevron { transform: rotate(-90deg); }
+  .section.collapsed .section-items { display: none; }
+
+  /* ── Item Cards ── */
+  .item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+    transition: all 0.3s ease;
+    overflow: hidden;
+  }
+  .item:hover { border-color: var(--border-active); }
+  .item.checked { opacity: 0.5; }
+  .item.checked .item-header { text-decoration: line-through; text-decoration-color: var(--text-dim); }
+  .item.checked .check-box { background: var(--done); border-color: var(--done); }
+  .item.checked .check-box svg { opacity: 1; }
+
+  .item-main {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+  }
+
+  .check-box {
+    width: 18px;
+    height: 18px;
+    min-width: 18px;
+    border: 2px solid var(--border-active);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2px;
+    transition: all 0.2s ease;
+    background: transparent;
+  }
+  .check-box svg {
+    width: 10px;
+    height: 10px;
+    opacity: 0;
+    transition: opacity 0.2s;
+    stroke: var(--bg);
+    stroke-width: 3;
+    fill: none;
+  }
+
+  .item-content { flex: 1; min-width: 0; }
+  .item-header {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-bright);
+    transition: all 0.3s;
+  }
+  .item-file {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    margin-top: 0.2rem;
+    word-break: break-all;
+  }
+
+  .item-expand {
+    color: var(--text-dim);
+    cursor: pointer;
+    padding: 0.25rem;
+    margin-top: 1px;
+    transition: color 0.2s;
+    font-size: 0.7rem;
+    min-width: 18px;
+    text-align: center;
+  }
+  .item-expand:hover { color: var(--text); }
+
+  .item-details {
+    display: none;
+    padding: 0 1rem 0.75rem 2.75rem;
+    font-size: 0.78rem;
+    color: var(--text-dim);
+    line-height: 1.7;
+  }
+  .item-details.open { display: block; }
+  .item-details strong { color: var(--text); font-weight: 500; }
+
+  .detail-tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 0.1rem 0.4rem;
+    margin-right: 0.25rem;
+    color: var(--text-dim);
+  }
+
+  /* ── Strengths ── */
+  .strengths {
+    background: var(--done-bg);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    border-radius: 6px;
+    padding: 1.25rem;
+    margin-top: 2rem;
+  }
+  .strengths h3 {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--done);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.75rem;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .strengths ul {
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.35rem 1.5rem;
+  }
+  .strengths li {
+    font-size: 0.78rem;
+    color: var(--text);
+    padding-left: 1.25rem;
+    position: relative;
+  }
+  .strengths li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: var(--done);
+    font-weight: 700;
+    font-size: 0.7rem;
+  }
+
+  /* ── Reset Button ── */
+  .reset-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 0.35rem 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.05em;
+  }
+  .reset-btn:hover { border-color: var(--critical); color: var(--critical); }
+
+  /* ── Notes ── */
+  .notes-area {
+    margin-top: 2rem;
+    border-top: 1px solid var(--border);
+    padding-top: 1.5rem;
+  }
+  .notes-area label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+  .notes-area textarea {
+    width: 100%;
+    min-height: 100px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    padding: 0.75rem 1rem;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.2s;
+    line-height: 1.6;
+  }
+  .notes-area textarea:focus { border-color: var(--accent); }
+  .notes-area textarea::placeholder { color: var(--text-dim); opacity: 0.5; }
+
+  /* ── Responsive ── */
+  @media (max-width: 600px) {
+    .container { padding: 1rem 1rem 4rem; }
+    h1 { font-size: 1.35rem; }
+    .strengths ul { grid-template-columns: 1fr; }
+    .stats-ring { gap: 1rem; }
+  }
+
+  /* ── Animations ── */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .section { animation: fadeIn 0.4s ease both; }
+  .section:nth-child(2) { animation-delay: 0.05s; }
+  .section:nth-child(3) { animation-delay: 0.1s; }
+  .section:nth-child(4) { animation-delay: 0.15s; }
+  .section:nth-child(5) { animation-delay: 0.2s; }
+</style>
+</head>
+<body>
+
+<div class="progress-bar-fixed"><div class="fill" id="progressFill"></div></div>
+
+<div class="container">
+  <header>
+    <div class="header-top">
+      <div>
+        <div class="logo">BuiltByBas</div>
+        <h1>Code Audit Checklist</h1>
+        <div class="header-meta">Full Site Audit · 10 agents · 261 files scanned · 2026-03-14</div>
+      </div>
+      <button class="reset-btn" onclick="resetAll()">↺ Reset All</button>
+    </div>
+    <div class="stats-ring">
+      <div class="stat">
+        <div class="stat-num done-num" id="doneCount">0</div>
+        <div class="stat-label">Done</div>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <div class="stat-num" id="totalCount">0</div>
+        <div class="stat-label">Total</div>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <div class="stat-num" id="percentDone">0%</div>
+        <div class="stat-label">Complete</div>
+      </div>
+    </div>
+  </header>
+
+  <div id="sections"></div>
+
+  <div class="strengths">
+    <h3>Confirmed Strengths</h3>
+    <ul>
+      <li>AES-256-GCM encryption for all PII</li>
+      <li>bcrypt 12 rounds for passwords</li>
+      <li>Zod validation on every API input</li>
+      <li>Drizzle ORM -- zero raw SQL anywhere</li>
+      <li>httpOnly + secure + sameSite strict cookies</li>
+      <li>Zero `any` types across 261 files</li>
+      <li>Security headers (CSP, X-Frame, etc.)</li>
+      <li>Reduced motion: 3-layer support (CSS, hook, SVG)</li>
+      <li>Skip-to-content link, proper ARIA labels</li>
+      <li>Focus trap on walkthrough modal</li>
+      <li>Fonts via next/font -- no external CDN</li>
+      <li>All images use next/image correctly</li>
+      <li>Demo components properly lazy-loaded</li>
+      <li>Clean CSS approach: 100% Tailwind, no competing libs</li>
+      <li>UUID validation on all [id] route params</li>
+      <li>No console.log in production code</li>
+      <li>Error messages use role="alert" throughout</li>
+      <li>AnimatedText: aria-label + aria-hidden pattern</li>
+    </ul>
+  </div>
+
+  <div class="notes-area">
+    <label>Scratch Notes</label>
+    <textarea id="notesField" placeholder="Jot things down as you go…"></textarea>
+  </div>
+</div>
+
+<script>
+const DATA = [
+  // ═══════════════════════════════════════════════════
+  // CRITICAL — Real data exposure, must fix
+  // ═══════════════════════════════════════════════════
+  {
+    risk: "critical",
+    title: "Critical — Data Exposure & Integrity",
+    items: [
+      {
+        id: "c1",
+        name: "/api/admin/notifications — NO AUTH",
+        file: "src/app/api/admin/notifications/route.ts",
+        detail: "<strong>Problem:</strong> GET returns dashboard counts (new intakes, draft proposals, overdue invoices) with <strong>no authentication</strong>. Middleware only checks cookie existence, not validity. Anyone with any cookie value can hit this endpoint.<br><br><strong>Fix:</strong> Add <span class='detail-tag'>requireAdmin()</span> call at the top of the GET handler."
+      },
+      {
+        id: "c2",
+        name: "/api/intake (GET) — Public List of All Submissions",
+        file: "src/app/api/intake/route.ts",
+        detail: "<strong>Problem:</strong> GET returns ALL intake submissions with no auth. Middleware allows all <span class='detail-tag'>/api/intake*</span> through (intended for POST). Names, emails, companies, phone numbers, budgets exposed.<br><br><strong>Fix:</strong> Add <span class='detail-tag'>requireAdmin()</span> to the GET handler. Consider splitting middleware to only allow POST on /api/intake."
+      },
+      {
+        id: "c3",
+        name: "/api/intake/[id] (GET) — Public PII Access",
+        file: "src/app/api/intake/[id]/route.ts",
+        detail: "<strong>Problem:</strong> GET returns a single intake with <strong>decrypted PII</strong> (name, email, phone, company) to anyone who knows the UUID.<br><br><strong>Fix:</strong> Add <span class='detail-tag'>requireAdmin()</span> to the GET handler."
+      },
+      {
+        id: "c4",
+        name: "/api/proposals/respond — Token Never Expires",
+        file: "src/app/api/proposals/respond/route.ts",
+        detail: "<strong>Problem:</strong> 64-char hex token grants full proposal access forever. No expiry check, no Zod validation (uses <span class='detail-tag'>as</span> type assertion), <span class='detail-tag'>reason</span> field stored without sanitization (stored XSS vector).<br><br><strong>Fix:</strong> Add token expiry, add Zod schema, run <span class='detail-tag'>sanitizeString()</span> on reason before storage."
+      },
+      {
+        id: "c5",
+        name: "10 API routes lack database transactions",
+        file: "src/app/api/clients/route.ts + 9 more",
+        detail: "<strong>Problem:</strong> Multi-table writes (insert client + insert history, delete notes + delete history + delete client, update invoice + delete items + insert items) run as separate queries. A crash between queries leaves orphaned records or missing data.<br><br><strong>Affected routes:</strong> clients POST, clients DELETE, clients/convert, clients/stage, proposals/generate, proposals PATCH, proposals/send, proposals/respond, invoices POST, invoices PATCH.<br><br><strong>Fix:</strong> Wrap multi-table writes in <span class='detail-tag'>db.transaction()</span>."
+      },
+      {
+        id: "c6",
+        name: "No error.tsx / global-error.tsx / not-found.tsx",
+        file: "src/app/ (missing files)",
+        detail: "<strong>Problem:</strong> Zero error boundary files exist anywhere in the App Router. Any unhandled error shows the default Next.js error page (leaks framework info). 404s show generic unstyled page. Violates <strong>Pillar 8</strong> (R3S): 'React error boundaries on every route.'<br><br><strong>Fix:</strong> Add <span class='detail-tag'>global-error.tsx</span>, <span class='detail-tag'>not-found.tsx</span>, and <span class='detail-tag'>error.tsx</span> at minimum in the root and admin route groups."
+      }
+    ]
+  },
+
+  // ═══════════════════════════════════════════════════
+  // HIGH — Security & Stability
+  // ═══════════════════════════════════════════════════
+  {
+    risk: "high",
+    title: "High — Security & Stability",
+    items: [
+      {
+        id: "h1",
+        name: "Login rate limit — in-memory Map, resets on restart",
+        file: "src/app/api/auth/login/route.ts",
+        detail: "<strong>What it does:</strong> 5 attempts per 15 min per IP via in-memory <span class='detail-tag'>Map</span>.<br><br><strong>Problems:</strong> (1) Resets on every PM2 restart/deploy. (2) Grows unbounded -- old entries never pruned. (3) IP from <span class='detail-tag'>x-forwarded-for</span> is spoofable if Nginx doesn't overwrite it.<br><br><strong>Scale check:</strong> Acceptable for current traffic. Note as future-scale item if brute-force becomes a concern."
+      },
+      {
+        id: "h2",
+        name: "Public endpoints have no rate limiting",
+        file: "src/app/api/intake/route.ts, src/app/api/proposals/respond/route.ts",
+        detail: "<strong>Problem:</strong> POST /api/intake (form submission) and POST /api/proposals/respond have zero rate limiting. An attacker can spam thousands of fake intakes, filling the database and flooding the admin dashboard.<br><br><strong>Fix:</strong> Add a simple per-IP rate limit. Even an in-memory one is better than nothing on public endpoints."
+      },
+      {
+        id: "h3",
+        name: "Same key for AES encryption and HMAC hashing",
+        file: "src/lib/encryption.ts",
+        detail: "<strong>Problem:</strong> <span class='detail-tag'>getKey()</span> is used in both <span class='detail-tag'>encrypt()/decrypt()</span> (AES-256-GCM) and <span class='detail-tag'>hmacHash()</span>. Crypto best practice: separate keys for separate purposes. If HMAC hashes are exposed, it provides an oracle against the encryption key. No key rotation support either -- rotating ENCRYPTION_KEY makes all data unrecoverable.<br><br><strong>Fix:</strong> Add <span class='detail-tag'>HMAC_KEY</span> env var. Document key rotation strategy."
+      },
+      {
+        id: "h4",
+        name: "Email template HTML injection",
+        file: "src/app/api/intake/send-link/route.ts",
+        detail: "<strong>Problem:</strong> <span class='detail-tag'>name</span> and <span class='detail-tag'>message</span> interpolated into HTML email with only newline-to-br conversion. No HTML escaping. Admin-originated, but still violates defense-in-depth. <span class='detail-tag'>escapeForEmail()</span> exists in proposal-email.ts but isn't used here.<br><br><strong>Fix:</strong> Run <span class='detail-tag'>escapeHtml()</span> on name and message before HTML interpolation."
+      },
+      {
+        id: "h5",
+        name: "No pool.on('error') handler — crash risk",
+        file: "src/lib/db.ts",
+        detail: "<strong>Problem:</strong> The pg.Pool emits 'error' events for idle client errors. Without a handler, an unhandled error crashes the Node.js process. PM2 restarts, but all in-flight requests are dropped.<br><br><strong>Fix:</strong> Add <span class='detail-tag'>pool.on('error', (err) => { /* log err */ })</span> after pool creation."
+      },
+      {
+        id: "h6",
+        name: "Missing HSTS header",
+        file: "next.config.ts",
+        detail: "<strong>Problem:</strong> Security headers include X-Content-Type-Options, X-Frame-Options, CSP, etc. but no <span class='detail-tag'>Strict-Transport-Security</span>. The site is live with SSL. The nginx config has HSTS in a commented-out HTTPS block.<br><br><strong>Fix:</strong> Add <span class='detail-tag'>Strict-Transport-Security: max-age=63072000; includeSubDomains</span> to next.config.ts headers."
+      },
+      {
+        id: "h7",
+        name: "Nginx config in repo is stale",
+        file: "deploy/nginx-builtbybas.conf",
+        detail: "<strong>Problem:</strong> HTTPS server block is entirely commented out. HTTP block still has proxy_pass active instead of redirecting to HTTPS. No gzip compression configured. If someone deploys this config as-is, the site serves over HTTP with no redirect.<br><br><strong>Fix:</strong> Update the repo config to match the actual VPS nginx config. Enable gzip for text/html, text/css, application/javascript, application/json."
+      },
+      {
+        id: "h8",
+        name: "Invoice number generation race condition",
+        file: "src/app/api/invoices/route.ts",
+        detail: "<strong>Problem:</strong> <span class='detail-tag'>generateInvoiceNumber()</span> does count(*) then derives next number. Two concurrent requests get the same count, generate duplicate numbers. The unique constraint causes one to fail with no retry.<br><br><strong>Scale check:</strong> Low risk at current volume. Becomes real when creating invoices from automation."
+      }
+    ]
+  },
+
+  // ═══════════════════════════════════════════════════
+  // HIGH — Code Integrity (things we can't stand behind)
+  // ═══════════════════════════════════════════════════
+  {
+    risk: "high",
+    title: "High — Code Integrity",
+    items: [
+      {
+        id: "hi1",
+        name: "Inconsistent Zod imports: zod vs zod/v4",
+        file: "src/lib/intake-validation.ts + 5 settings routes",
+        detail: "<strong>Problem:</strong> 6 files import from <span class='detail-tag'>\"zod\"</span> while 6 files import from <span class='detail-tag'>\"zod/v4\"</span>. These are different API surfaces in Zod v4 with potentially different validation behavior. Mixing them in the same codebase creates subtle, hard-to-debug differences.<br><br><strong>Fix:</strong> Standardize all imports to <span class='detail-tag'>\"zod/v4\"</span> (the newer API)."
+      },
+      {
+        id: "hi2",
+        name: "5 DRY violations — duplicated maps and functions",
+        file: "src/lib/intake-scoring.ts, proposal-generator.ts, dashboard-analytics.ts",
+        detail: "<strong>Duplicated 3-4 times each:</strong><br>- <span class='detail-tag'>INTAKE_TO_SERVICE_ID</span> map (3 copies -- service-id-map.ts already has it)<br>- <span class='detail-tag'>SERVICE_DURATION</span> map (2 copies)<br>- <span class='detail-tag'>INDUSTRY_LABELS</span> map (2 copies, with data inconsistency -- dashboard has extra entries scoring lacks)<br>- <span class='detail-tag'>getComplexityLabel()</span> (3 copies)<br>- <span class='detail-tag'>formatCents()</span> (4 copies)<br>- Price range parsers (3 copies)<br><br><strong>Fix:</strong> Create <span class='detail-tag'>src/data/service-constants.ts</span> for shared maps. Import <span class='detail-tag'>formatCents</span> from types/invoice.ts. Import <span class='detail-tag'>getComplexityLabel</span> from intake-scoring.ts."
+      },
+      {
+        id: "hi3",
+        name: "Zero API route tests, zero admin component tests",
+        file: "tests/ (missing files)",
+        detail: "<strong>Problem:</strong> 26 API route handlers across 17 route files have zero tests. 17 admin components have zero tests. Only 14 unit test files exist, testing pure functions (validation, scoring, encryption). The critical business flow (intake -> scoring -> conversion -> proposal -> send -> respond) has no integration test.<br><br><strong>Scale check:</strong> Not blocking today, but every new feature without tests accumulates risk. Start with auth and intake routes."
+      },
+      {
+        id: "hi4",
+        name: "intake-scoring.ts is 1109 lines — mixed concerns",
+        file: "src/lib/intake-scoring.ts",
+        detail: "<strong>Problem:</strong> Largest file in the codebase. Handles 7 distinct responsibilities: client profile scoring, service recommendations, complexity scoring, path forward generation, RAI screening, flag generation, summary generation. Several duplicated constants should live elsewhere.<br><br><strong>Fix:</strong> Extract RAI screening to <span class='detail-tag'>lib/intake-rai.ts</span>, path builders to <span class='detail-tag'>lib/intake-paths.ts</span>, shared constants to <span class='detail-tag'>data/service-constants.ts</span>. Main file stays as the orchestrator."
+      },
+      {
+        id: "hi5",
+        name: "No env var validation at startup",
+        file: "src/lib/db.ts, src/lib/encryption.ts, src/lib/email.ts",
+        detail: "<strong>Problem:</strong> If DATABASE_URL is missing, the app only crashes on first query with a confusing error. If ENCRYPTION_KEY is missing, it throws on first encryption call. EMAIL_FROM fallback silently uses Resend sandbox domain. ADMIN_EMAIL not even documented in .env.example.<br><br><strong>Fix:</strong> Create <span class='detail-tag'>src/lib/env.ts</span> with a Zod schema validating all required env vars at import time. Fail fast with clear messages."
+      },
+      {
+        id: "hi6",
+        name: "SettingsForm — 522 lines, 4 concerns, 4 duplicate useEffects",
+        file: "src/components/admin/SettingsForm.tsx",
+        detail: "<strong>Problem:</strong> One component managing Profile, Password, Business Info, and Notification settings with 12 state variables and 4 near-identical useEffect hooks for auto-clearing status. Violates single responsibility and the 500-line rule.<br><br><strong>Fix:</strong> Extract ProfileSettings, PasswordSettings, BusinessSettings, NotificationSettings as separate components. Extract <span class='detail-tag'>useSectionStatus()</span> hook for the repeated status pattern."
+      }
+    ]
+  },
+
+  // ═══════════════════════════════════════════════════
+  // MEDIUM — Security & Config
+  // ═══════════════════════════════════════════════════
+  {
+    risk: "medium",
+    title: "Medium — Security & Config",
+    items: [
+      {
+        id: "ms1",
+        name: "Session: 7-day lifetime, no rotation, no cleanup",
+        file: "src/lib/auth.ts",
+        detail: "<strong>Issues:</strong> (1) Sessions valid 7 days with no sliding window or rotation on sensitive actions. Stolen cookie is valid the full 7 days. (2) Expired sessions never deleted from DB -- sessions table grows unbounded. (3) Timing difference between user-not-found (~1ms) vs wrong-password (~100ms bcrypt) enables email enumeration.<br><br><strong>Fix:</strong> Add a session cleanup function (call periodically or on login). Consider reducing to 24h for admin."
+      },
+      {
+        id: "ms2",
+        name: "Middleware: cookie-exists check, default-allow pattern",
+        file: "src/middleware.ts",
+        detail: "<strong>Issues:</strong> (1) Only checks if session cookie exists, not if it's valid in DB. Expired/fabricated cookies pass. (2) Dead code: login redirect (line 30) never reached because /login is caught by PUBLIC_ROUTES first. (3) Default-allow pattern -- any route not starting with /admin or /portal is public by default. New routes are accidentally public unless they start with the right prefix.<br><br><strong>Scale check:</strong> The real auth happens in requireAdmin() per route, which is correct. Middleware is a UX gate, not security. But it makes it easy to forget adding requireAdmin() to new routes."
+      },
+      {
+        id: "ms3",
+        name: "Sanitization gaps across routes",
+        file: "src/lib/sanitize.ts + multiple routes",
+        detail: "<strong>Issues:</strong> (1) <span class='detail-tag'>sanitizeObject()</span> does not recurse into nested objects/arrays. (2) Missing backtick escape in escapeHtml. (3) Settings profile/business routes store strings without sanitizeString(). (4) Pipeline stage note stored without sanitization. (5) Proposal content stored without sanitization on create and update (title/summary are sanitized but content is not). (6) escapeForEmail() in proposal-email.ts omits single-quote escape.<br><br><strong>Fix:</strong> Audit each POST/PATCH handler for sanitizeString() calls on all string fields."
+      },
+      {
+        id: "ms4",
+        name: "Intake validation — unbounded z.record(), no max lengths",
+        file: "src/lib/intake-validation.ts",
+        detail: "<strong>Problem:</strong> <span class='detail-tag'>serviceAnswers</span> uses <span class='detail-tag'>z.record(z.string(), z.record(z.string(), z.union([z.string(), z.array(z.string())])))</span> -- accepts arbitrarily deep/wide data with no max lengths on inner strings and no key count limits. An attacker could submit megabytes. Fields like name, email, company, additionalNotes also lack max() constraints (unlike client-validation.ts which properly caps at 255/500)."
+      },
+      {
+        id: "ms5",
+        name: "Settings routes: missing try/catch, leak Zod details",
+        file: "src/app/api/settings/profile|password|business|notifications/route.ts",
+        detail: "<strong>Problems:</strong> (1) All 4 settings routes call <span class='detail-tag'>await request.json()</span> without try/catch. Malformed JSON crashes with HTTP 500. (2) Return <span class='detail-tag'>parsed.error.flatten()</span> in validation errors, exposing internal Zod schema structure. Other routes return generic 'Validation failed'. (3) Define schemas inline instead of shared validation files.<br><br><strong>Fix:</strong> Add try/catch, return generic errors, extract schemas to <span class='detail-tag'>lib/settings-validation.ts</span>."
+      },
+      {
+        id: "ms6",
+        name: "PM2 single instance, no log rotation",
+        file: "ecosystem.config.cjs",
+        detail: "<strong>Issues:</strong> (1) <span class='detail-tag'>instances: 1, exec_mode: 'fork'</span> -- no zero-downtime restarts, single crash takes site offline until PM2 restarts. (2) No log rotation -- PM2 logs grow unbounded. (3) No max_restarts or restart_delay for crash loop protection.<br><br><strong>Scale check:</strong> Single instance is fine for current traffic. Cluster mode requires moving rate limiter out of memory first. Log rotation should be added now via <span class='detail-tag'>pm2 install pm2-logrotate</span>."
+      },
+      {
+        id: "ms7",
+        name: "Zero caching strategy",
+        file: "src/app/ (all pages)",
+        detail: "<strong>Problem:</strong> No <span class='detail-tag'>revalidate</span> exports on any public page. No <span class='detail-tag'>unstable_cache</span> or <span class='detail-tag'>cache()</span> usage. No HTTP cache headers on API responses. Every public page hit (/services, /about, /portfolio) runs through full server rendering even though they serve static content from data files. Only exception: portfolio/[slug] uses generateStaticParams() correctly.<br><br><strong>Scale check:</strong> At 50 hits/day, this doesn't matter. Add ISR revalidation when traffic grows."
+      },
+      {
+        id: "ms8",
+        name: "ESLint doesn't enforce project prohibitions",
+        file: "eslint.config.mjs",
+        detail: "<strong>Problem:</strong> Only extends next/core-web-vitals and next/typescript. No rules enforcing the Eight Pillars: no <span class='detail-tag'>no-console</span> rule, no <span class='detail-tag'>no-restricted-syntax</span> for eval()/Function()/document.write()/innerHTML. Currently clean (zero violations found), but enforced only by convention, not tooling.<br><br><strong>Fix:</strong> Add <span class='detail-tag'>no-console: [\"error\", { allow: [\"warn\", \"error\"] }]</span> and restricted syntax rules."
+      }
+    ]
+  },
+
+  // ═══════════════════════════════════════════════════
+  // MEDIUM — Code Quality & Architecture
+  // ═══════════════════════════════════════════════════
+  {
+    risk: "medium",
+    title: "Medium — Code Quality & Architecture",
+    items: [
+      {
+        id: "mq1",
+        name: "No shared public layout — 12+ pages duplicate header/footer",
+        file: "src/app/(public)/ (missing layout.tsx)",
+        detail: "<strong>Problem:</strong> Every public page individually imports and renders PublicHeader + PublicFooter. A shared <span class='detail-tag'>(public)/layout.tsx</span> would eliminate this duplication and ensure consistency.<br><br><strong>Fix:</strong> Create <span class='detail-tag'>src/app/(public)/layout.tsx</span> with header/footer. Remove individual imports from each page."
+      },
+      {
+        id: "mq2",
+        name: "iOS viewport detection pattern duplicated 3 times",
+        file: "src/components/motion/FadeIn.tsx, AnimatedText.tsx, ServicesGrid.tsx",
+        detail: "<strong>Problem:</strong> The same requestAnimationFrame + getBoundingClientRect pattern (iOS Safari IntersectionObserver fallback) is copy-pasted in 3 components.<br><br><strong>Fix:</strong> Extract to a custom hook like <span class='detail-tag'>useInitialViewportCheck(ref)</span>."
+      },
+      {
+        id: "mq3",
+        name: "Body scroll lock duplicated vs. existing hook",
+        file: "src/components/layout/PublicHeader.tsx, MobileConcierge.tsx",
+        detail: "<strong>Problem:</strong> <span class='detail-tag'>useBodyScrollLock</span> hook exists but PublicHeader and MobileConcierge implement their own manual <span class='detail-tag'>document.body.style.overflow</span> pattern instead of using the hook.<br><br><strong>Fix:</strong> Replace manual scroll lock with the existing hook."
+      },
+      {
+        id: "mq4",
+        name: "Dead code: unused exports and orphaned components",
+        file: "Multiple files",
+        detail: "<strong>Unused exports:</strong> <span class='detail-tag'>getSessionPayload()</span> in auth.ts, <span class='detail-tag'>ApiResponse/PaginatedResponse/ApiError</span> types in types/api.ts, <span class='detail-tag'>getNextStage()</span> in types/client.ts, <span class='detail-tag'>goToStep</span> from useIntakeForm, <span class='detail-tag'>stepSchemas</span> from intake-validation.ts, <span class='detail-tag'>sanitizeObject()</span> only used in tests.<br><br><strong>Orphaned components:</strong> StatsBar, ScrollTeaser, ValueProposition, PCBDivider, PCBConnection/PCBFragment -- never imported by any page.<br><br><strong>Fix:</strong> Delete orphaned components. Remove unused exports."
+      },
+      {
+        id: "mq5",
+        name: "API PATCH handlers use Record<string, unknown>",
+        file: "src/app/api/clients/[id], projects/[id], proposals/[id], invoices/[id]",
+        detail: "<strong>Problem:</strong> PATCH handlers build a <span class='detail-tag'>Record&lt;string, unknown&gt;</span> updates object, bypassing Drizzle type safety. Should use <span class='detail-tag'>Partial&lt;typeof table.$inferInsert&gt;</span> for compile-time column name/type checking."
+      },
+      {
+        id: "mq6",
+        name: "Waterfall queries in admin client detail",
+        file: "src/app/admin/clients/[id]/page.tsx",
+        detail: "<strong>Problem:</strong> Three sequential DB queries (client, notes, pipelineHistory). Notes and history are independent and could run in parallel with <span class='detail-tag'>Promise.all()</span>. Minor perf hit at current scale, but demonstrates a pattern that should be correct."
+      },
+      {
+        id: "mq7",
+        name: "Hero component is an empty passthrough",
+        file: "src/components/public-site/Hero.tsx",
+        detail: "<strong>Problem:</strong> Component does nothing except render <span class='detail-tag'>&lt;MobileConcierge /&gt;</span>. Unnecessary indirection layer. Either give it a real purpose or import MobileConcierge directly."
+      },
+      {
+        id: "mq8",
+        name: "IntakeStatus type defined in two places",
+        file: "src/lib/intake-storage.ts + src/lib/schema.ts",
+        detail: "<strong>Problem:</strong> <span class='detail-tag'>IntakeStatus</span> type defined as a manual type in intake-storage.ts AND as <span class='detail-tag'>intakeStatusEnum</span> in schema.ts with the same values. Should be derived from one source to prevent drift."
+      }
+    ]
+  },
+
+  // ═══════════════════════════════════════════════════
+  // MEDIUM — UX, Accessibility & SEO
+  // ═══════════════════════════════════════════════════
+  {
+    risk: "medium",
+    title: "Medium — UX, Accessibility & SEO",
+    items: [
+      {
+        id: "mx1",
+        name: "No loading.tsx anywhere — no loading states",
+        file: "src/app/ (missing files)",
+        detail: "<strong>Problem:</strong> Zero loading.tsx files exist. 17 admin pages with force-dynamic and DB queries show nothing while server components resolve. Users see blank/frozen pages during navigation. Violates <strong>Pillar 6</strong>: 'Loading states, error states, empty states.'<br><br><strong>Fix:</strong> Add loading.tsx to admin route group and public route group with skeleton loaders."
+      },
+      {
+        id: "mx2",
+        name: "Mobile menu: no focus trap, no Escape key",
+        file: "src/components/layout/PublicHeader.tsx",
+        detail: "<strong>Problem:</strong> Full-screen mobile menu overlay does not use <span class='detail-tag'>useFocusTrap</span> (which exists and is used in ServiceWalkthroughOverlay). Keyboard users can Tab into invisible content behind the overlay. Escape key doesn't close the menu. <br><br><strong>Fix:</strong> Add <span class='detail-tag'>useFocusTrap</span> and Escape key handler."
+      },
+      {
+        id: "mx3",
+        name: "Custom checkbox/radio missing keyboard focus indicators",
+        file: "src/components/public-site/IntakeStep.tsx",
+        detail: "<strong>Problem:</strong> Real inputs have <span class='detail-tag'>className=\"sr-only\"</span> (visually hidden). When keyboard users Tab to them, the custom visual indicators don't show a focus ring. Only state change (checked border) is visible.<br><br><strong>Fix:</strong> Add <span class='detail-tag'>[&amp;:has(input:focus-visible)]:ring-2</span> to parent label elements."
+      },
+      {
+        id: "mx4",
+        name: "Color contrast: opacity-reduced text fails WCAG",
+        file: "src/components/public-site/MobileConcierge.tsx, PublicFooter.tsx",
+        detail: "<strong>Failures:</strong> (1) Welcome screen subtitle <span class='detail-tag'>text-white/50</span> on dark bg yields ~4.0:1 (fails 4.5:1). (2) Footer policy links <span class='detail-tag'>text-muted-foreground/70</span> at text-xs is borderline 4.7:1. (3) 'Click Anywhere' secondary text at <span class='detail-tag'>text-white/60</span> is borderline 4.9:1.<br><br><strong>Fix:</strong> Increase opacity to at least /75 for all body text."
+      },
+      {
+        id: "mx5",
+        name: "No og:image on any page",
+        file: "src/app/layout.tsx (root metadata)",
+        detail: "<strong>Problem:</strong> Root layout sets openGraph.type, siteName, and locale but no <span class='detail-tag'>openGraph.images</span>. No individual page overrides this. Social media shares (LinkedIn, Slack, Twitter) show no preview image.<br><br><strong>Fix:</strong> Add default og:image to root layout metadata. Consider page-specific images for /services and /portfolio."
+      },
+      {
+        id: "mx6",
+        name: "No canonical URLs on any page",
+        file: "src/app/ (all pages)",
+        detail: "<strong>Problem:</strong> No page exports <span class='detail-tag'>alternates.canonical</span>. Without explicit canonicals, search engines may index duplicate content from trailing slashes or query parameter variants.<br><br><strong>Fix:</strong> Add <span class='detail-tag'>alternates: { canonical: '/path' }</span> to each public page's metadata."
+      },
+      {
+        id: "mx7",
+        name: "JSON-LD structured data missing on most pages",
+        file: "src/app/(public)/portfolio, about, intake",
+        detail: "<strong>Present:</strong> Root layout (Organization), Home (WebSite), Services (Service + FAQ + Breadcrumb).<br><strong>Missing:</strong> Portfolio (no Breadcrumb), Portfolio/[slug] (no CreativeWork), About (no Breadcrumb/AboutPage), Intake (no Breadcrumb), all legal pages (no Breadcrumb)."
+      },
+      {
+        id: "mx8",
+        name: "Tables missing scope attributes, touch targets under 44px",
+        file: "Multiple components",
+        detail: "<strong>A11y issues:</strong> (1) All <span class='detail-tag'>&lt;th&gt;</span> elements across 10+ files lack <span class='detail-tag'>scope=\"col\"</span>. Screen readers can't associate headers with data cells. (2) Walkthrough close button, gallery arrows, and progress step buttons are 32px -- below 44px WCAG minimum.<br><br><strong>Fix:</strong> Add scope attributes. Increase touch targets or add padding."
+      },
+      {
+        id: "mx9",
+        name: "Gallery auto-cycle has no pause button",
+        file: "src/components/portfolio/ProjectDetail.tsx, ProjectCardGallery.tsx",
+        detail: "<strong>Problem:</strong> Auto-cycling every 5s with no pause control. Pauses on mouse hover, but keyboard users can't pause. WCAG 2.2.2 requires pause for auto-playing content &gt;5s. Partially mitigated by reduced-motion check (no auto-cycle).<br><br><strong>Fix:</strong> Add visible pause/play toggle or pause when gallery receives keyboard focus."
+      },
+      {
+        id: "mx10",
+        name: "Concierge detail overlay: no focus trap, no scroll lock",
+        file: "src/components/public-site/MobileConcierge.tsx",
+        detail: "<strong>Problem:</strong> Clicking a carousel item opens a full-screen overlay (<span class='detail-tag'>fixed inset-0 z-50</span>) without <span class='detail-tag'>useFocusTrap</span> or <span class='detail-tag'>useBodyScrollLock</span>. Users can Tab/scroll behind the overlay."
+      }
+    ]
+  },
+
+  // ═══════════════════════════════════════════════════
+  // LOW — Design System & Polish
+  // ═══════════════════════════════════════════════════
+  {
+    risk: "foundation",
+    title: "Low — Design System & Polish",
+    items: [
+      {
+        id: "ld1",
+        name: "Spring+duration conflict in IntakeForm",
+        file: "src/components/public-site/IntakeForm.tsx:96",
+        detail: "<strong>Problem:</strong> <span class='detail-tag'>transition={{ ...springs.snappy, duration: 0.25 }}</span> -- Framer Motion springs ignore the duration property. The duration is dead code making the spring params look meaningless. Same issue in demo-motion.ts:36.<br><br><strong>Fix:</strong> Remove <span class='detail-tag'>duration</span> from spring transitions."
+      },
+      {
+        id: "ld2",
+        name: "Hardcoded #0A0A0F instead of bg-background",
+        file: "src/components/admin/ClientDetailDashboard.tsx, ProposalDetailView.tsx, ProposalResponse.tsx",
+        detail: "<strong>Problem:</strong> 3 components hardcode <span class='detail-tag'>bg-[#0A0A0F]</span> instead of using the <span class='detail-tag'>bg-background</span> design token. If the background color ever changes, these drift."
+      },
+      {
+        id: "ld3",
+        name: "scrollbar-hide class used but undefined",
+        file: "src/components/portfolio/ProjectFilter.tsx, ConceptSubfilter.tsx",
+        detail: "<strong>Problem:</strong> Uses <span class='detail-tag'>scrollbar-hide</span> CSS class, but globals.css only defines <span class='detail-tag'>scrollbar-none</span>. This class has no effect -- horizontal overflow may show a scrollbar on some browsers.<br><br><strong>Fix:</strong> Change to <span class='detail-tag'>scrollbar-none</span>."
+      },
+      {
+        id: "ld4",
+        name: "3 competing glassmorphism patterns",
+        file: "src/app/globals.css, src/components/shared/GlassCard.tsx, MobileConcierge.tsx",
+        detail: "<strong>Problem:</strong> (1) <span class='detail-tag'>.glass-card</span> CSS class uses bg-white/0.05. (2) <span class='detail-tag'>&lt;GlassCard&gt;</span> component wraps it. (3) MobileConcierge uses manual <span class='detail-tag'>bg-white/[0.03]</span> with different opacity. The visual difference is subtle but the inconsistency means no single source of truth for the glass look.<br><br><strong>Fix:</strong> Use .glass-card or GlassCard everywhere. If lighter variants are needed, add .glass-card-light."
+      },
+      {
+        id: "ld5",
+        name: "ProposalResponse uses bg-cyan-500 instead of bg-primary",
+        file: "src/components/public-site/ProposalResponse.tsx:184",
+        detail: "<strong>Problem:</strong> <span class='detail-tag'>bg-cyan-500</span> is Tailwind's default cyan, not the project's #00D4FF (mapped to primary). Off-brand."
+      },
+      {
+        id: "ld6",
+        name: "FadeIn defaults to once: false — wasteful re-animation",
+        file: "src/components/motion/FadeIn.tsx:43",
+        detail: "<strong>Problem:</strong> <span class='detail-tag'>useInView(ref, { once: false })</span> means every FadeIn element re-animates on scroll in/out. 15+ FadeIn wrappers on the about page alone. The <span class='detail-tag'>viewportOnce</span> preset exists in motion.ts but FadeIn doesn't use it.<br><br><strong>Fix:</strong> Default to <span class='detail-tag'>once: true</span> for content sections."
+      },
+      {
+        id: "ld7",
+        name: "Unused CSS keyframes",
+        file: "src/app/globals.css",
+        detail: "<span class='detail-tag'>neon-pulse</span>, <span class='detail-tag'>neon-text-pulse</span>, <span class='detail-tag'>orb-pulse</span>, <span class='detail-tag'>hero-grid</span> are defined but never referenced. Dead CSS."
+      },
+      {
+        id: "ld8",
+        name: "next-themes imported but ThemeProvider never configured",
+        file: "package.json, src/components/ui/sonner.tsx",
+        detail: "<strong>Problem:</strong> <span class='detail-tag'>next-themes</span> is in dependencies. The Sonner toaster imports <span class='detail-tag'>useTheme</span> from it. But no ThemeProvider is rendered -- the app hardcodes <span class='detail-tag'>className=\"dark\"</span>. useTheme() always returns 'system'.<br><br><strong>Fix:</strong> Hardcode dark theme in Sonner config. Remove next-themes dependency."
+      }
+    ]
+  },
+
+  // ═══════════════════════════════════════════════════
+  // LOW — Infrastructure & Tooling
+  // ═══════════════════════════════════════════════════
+  {
+    risk: "foundation",
+    title: "Low — Infrastructure & Tooling",
+    items: [
+      {
+        id: "li1",
+        name: "No E2E tests in CI pipeline",
+        file: ".github/workflows/ci.yml",
+        detail: "Pipeline runs Vitest unit tests but not Playwright E2E. E2E tests exist but aren't gated. <span class='detail-tag'>pnpm audit --audit-level=critical</span> should also be <span class='detail-tag'>--audit-level=high</span>."
+      },
+      {
+        id: "li2",
+        name: "tsconfig missing strict catch-all options",
+        file: "tsconfig.json",
+        detail: "<span class='detail-tag'>noUnusedLocals</span>, <span class='detail-tag'>noUnusedParameters</span>, <span class='detail-tag'>forceConsistentCasingInFileNames</span> are NOT included in <span class='detail-tag'>strict: true</span> and are not set. These catch dead code and cross-platform filename issues."
+      },
+      {
+        id: "li3",
+        name: "No structured logging — zero production visibility",
+        file: "src/ (no logging library)",
+        detail: "<strong>Problem:</strong> Every API route catches errors and returns generic messages, but never logs the actual error. No request logging, no audit trail for security-sensitive actions (login, password change, data access). No logging library in package.json (winston, pino, etc.).<br><br><strong>Scale check:</strong> Debugging production issues is currently blind."
+      },
+      {
+        id: "li4",
+        name: "Hardcoded Umami analytics ID and URL",
+        file: "src/app/layout.tsx:67-68",
+        detail: "Website ID and script URL hardcoded in JSX. Should be <span class='detail-tag'>NEXT_PUBLIC_UMAMI_WEBSITE_ID</span> and <span class='detail-tag'>NEXT_PUBLIC_UMAMI_URL</span> env vars. Also uses raw <span class='detail-tag'>&lt;script&gt;</span> instead of <span class='detail-tag'>next/script</span>."
+      },
+      {
+        id: "li5",
+        name: "ADMIN_EMAIL missing from .env.example",
+        file: ".env.example",
+        detail: "<span class='detail-tag'>ADMIN_EMAIL</span> used in email.ts for BCC on proposals but not documented. Also: unused <span class='detail-tag'>AUTH_SECRET</span> and <span class='detail-tag'>ANTHROPIC_API_KEY</span> vars still in .env.example creating confusion."
+      },
+      {
+        id: "li6",
+        name: "No engines field, no .nvmrc",
+        file: "package.json",
+        detail: "No <span class='detail-tag'>engines: { node: \">=20\" }</span> in package.json and no .nvmrc/.node-version file. Someone could run this on Node 18 and get silent failures."
+      },
+      {
+        id: "li7",
+        name: "Playwright only tests Chromium",
+        file: "playwright.config.ts",
+        detail: "Only chromium configured. Firefox and WebKit (Safari) missing. iOS Safari bugs have been a recurring issue per session history."
+      },
+      {
+        id: "li8",
+        name: "3 component files exceed 500-line limit",
+        file: "MobileConcierge.tsx (612), HeroBackground.tsx (663), SettingsForm.tsx (522)",
+        detail: "Per <strong>Pillar 2</strong>: 'No file >500 lines.' HeroBackground is mostly SVG (hard to split). MobileConcierge has an extractable PayoffContent. SettingsForm covered in hi6. Also: data files portfolio.ts (1438), intake-questions.ts (1109), services.ts (832) -- data files are acceptable."
+      }
+    ]
+  }
+];
+
+const STORAGE_KEY = 'bbb_audit_state';
+
+// Items resolved during audit waves (pre-checked)
+const RESOLVED = {
+  // Wave 1 — Security
+  c1: true, c2: true, c3: true, c4: true, c5: true,
+  h4: true, h5: true, h6: true,
+  ms3: true, ms5: true,
+  // Wave 2 — Architecture
+  hi1: true, hi2: true, hi5: true, hi6: true,
+  mq4: true, mq7: true,
+  // Wave 3 — Error Boundaries + UX
+  c6: true, mx1: true, mx2: true, mx3: true, mx4: true, mx10: true,
+  // Wave 4 — SEO + Accessibility
+  mx5: true, mx6: true, mx7: true, mx8: true, mx9: true,
+  // Wave 5 — Design System
+  ld1: true, ld2: true, ld3: true, ld4: true, ld5: true, ld6: true, ld7: true, ld8: true,
+  // Wave 6 — Infrastructure
+  ms8: true, li2: true, li4: true, li5: true, li6: true, li7: true,
+  // Wave 7 — Code Quality + Architecture
+  mq1: true, mq2: true, mq3: true, mq5: true, mq6: true, mq8: true,
+  hi4: true, li8: true,
+  // Wave 8 — Security + Scale
+  h1: true, h2: true, h3: true, h7: true, h8: true,
+  ms1: true, ms2: true, ms4: true, ms6: true, ms7: true,
+  li1: true, li3: true,
+  // Wave 9 — Test Foundation
+  hi3: true,
+};
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    const saved = raw ? JSON.parse(raw) : { checked: {}, notes: '' };
+    // Merge resolved defaults with saved state (saved state wins)
+    saved.checked = { ...RESOLVED, ...saved.checked };
+    return saved;
+  } catch { return { checked: { ...RESOLVED }, notes: '' }; }
+}
+
+function saveState(state) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+let state = loadState();
+
+function render() {
+  const container = document.getElementById('sections');
+  container.innerHTML = '';
+
+  let total = 0;
+  let done = 0;
+
+  DATA.forEach(section => {
+    const sectionEl = document.createElement('div');
+    sectionEl.className = 'section';
+
+    const sectionDone = section.items.filter(i => state.checked[i.id]).length;
+    total += section.items.length;
+    done += sectionDone;
+
+    sectionEl.innerHTML = `
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="risk-badge ${section.risk}">${section.risk}</span>
+        <span class="section-title">${section.title}</span>
+        <span class="section-count">${sectionDone}/${section.items.length}</span>
+        <span class="section-chevron">▼</span>
+      </div>
+      <div class="section-items">
+        ${section.items.map(item => `
+          <div class="item ${state.checked[item.id] ? 'checked' : ''}" data-id="${item.id}">
+            <div class="item-main">
+              <div class="check-box" onclick="toggleCheck('${item.id}')">
+                <svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg>
+              </div>
+              <div class="item-content" onclick="toggleCheck('${item.id}')">
+                <div class="item-header">${item.name}</div>
+                <div class="item-file">${item.file}</div>
+              </div>
+              <div class="item-expand" onclick="toggleDetail(this)" title="Details">▸</div>
+            </div>
+            <div class="item-details">${item.detail}</div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+    container.appendChild(sectionEl);
+  });
+
+  document.getElementById('doneCount').textContent = done;
+  document.getElementById('totalCount').textContent = total;
+  const pct = total ? Math.round((done / total) * 100) : 0;
+  document.getElementById('percentDone').textContent = pct + '%';
+  document.getElementById('progressFill').style.width = pct + '%';
+
+  document.getElementById('notesField').value = state.notes || '';
+}
+
+function toggleCheck(id) {
+  state.checked[id] = !state.checked[id];
+  saveState(state);
+  render();
+}
+
+function toggleSection(header) {
+  header.parentElement.classList.toggle('collapsed');
+}
+
+function toggleDetail(btn) {
+  const details = btn.closest('.item').querySelector('.item-details');
+  details.classList.toggle('open');
+  btn.textContent = details.classList.contains('open') ? '▾' : '▸';
+}
+
+function resetAll() {
+  if (confirm('Reset all checkboxes and notes?')) {
+    state = { checked: {}, notes: '' };
+    saveState(state);
+    render();
+  }
+}
+
+// Save notes on input
+document.addEventListener('input', (e) => {
+  if (e.target.id === 'notesField') {
+    state.notes = e.target.value;
+    saveState(state);
+  }
+});
+
+render();
+</script>
+</body>
+</html>

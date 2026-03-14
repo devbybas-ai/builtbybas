@@ -67,7 +67,7 @@ function CheckboxGroup({
           <label
             key={option.value}
             className={cn(
-              "flex cursor-pointer items-center gap-3 rounded-lg border p-3 text-sm transition-colors",
+              "flex cursor-pointer items-center gap-3 rounded-lg border p-3 text-sm transition-colors has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-ring has-[:focus-visible]:ring-offset-2 has-[:focus-visible]:ring-offset-background",
               isChecked
                 ? "border-primary/30 bg-primary/5"
                 : "border-white/10 bg-white/[0.02] hover:border-white/20",
@@ -132,7 +132,7 @@ function RadioGroup({
         <label
           key={option.value}
           className={cn(
-            "flex cursor-pointer items-center gap-3 rounded-lg border p-3 text-sm transition-colors",
+            "flex cursor-pointer items-center gap-3 rounded-lg border p-3 text-sm transition-colors has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-ring has-[:focus-visible]:ring-offset-2 has-[:focus-visible]:ring-offset-background",
             value === option.value
               ? "border-primary/30 bg-primary/5"
               : "border-white/10 bg-white/[0.02] hover:border-white/20",
@@ -322,7 +322,7 @@ function ServiceSelectionStep({
             <label
               key={svc.serviceId}
               className={cn(
-                "flex cursor-pointer flex-col gap-1.5 rounded-xl border p-4 transition-all",
+                "flex cursor-pointer flex-col gap-1.5 rounded-xl border p-4 transition-all has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-ring has-[:focus-visible]:ring-offset-2 has-[:focus-visible]:ring-offset-background",
                 isSelected
                   ? "border-primary/40 bg-primary/5 shadow-[0_0_20px_rgba(0,212,255,0.08)]"
                   : "border-white/10 bg-white/[0.02] hover:border-white/20",
@@ -723,7 +723,7 @@ function DesignBrandStep({
 
 function FinalStep({
   formData,
-  errors,
+  errors: _errors,
   onUpdate,
 }: {
   formData: IntakeFormData;

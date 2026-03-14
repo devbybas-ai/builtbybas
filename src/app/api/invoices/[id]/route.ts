@@ -115,7 +115,7 @@ export async function PATCH(
   }
 
   const data = parsed.data;
-  const updates: Record<string, unknown> = { updatedAt: new Date() };
+  const updates: Partial<typeof invoices.$inferInsert> = { updatedAt: new Date() };
 
   if (data.status !== undefined) {
     updates.status = data.status;
@@ -139,30 +139,36 @@ export async function PATCH(
   }
 
   try {
-    const [updated] = await db
-      .update(invoices)
-      .set(updates)
-      .where(eq(invoices.id, id))
-      .returning();
+    const updated = await db.transaction(async (tx) => {
+      const [u] = await tx
+        .update(invoices)
+        .set(updates)
+        .where(eq(invoices.id, id))
+        .returning();
+
+      if (!u) return null;
+
+      if (data.items) {
+        await tx.delete(invoiceItems).where(eq(invoiceItems.invoiceId, id));
+        const itemRows = data.items.map((item, i) => ({
+          invoiceId: id,
+          description: sanitizeString(item.description),
+          quantity: item.quantity.toString(),
+          unitPriceCents: item.unitPriceCents,
+          totalCents: Math.round(item.quantity * item.unitPriceCents),
+          sortOrder: i,
+        }));
+        await tx.insert(invoiceItems).values(itemRows);
+      }
+
+      return u;
+    });
 
     if (!updated) {
       return NextResponse.json(
         { success: false, error: "Invoice not found" },
         { status: 404 }
       );
-    }
-
-    if (data.items) {
-      await db.delete(invoiceItems).where(eq(invoiceItems.invoiceId, id));
-      const itemRows = data.items.map((item, i) => ({
-        invoiceId: id,
-        description: sanitizeString(item.description),
-        quantity: item.quantity.toString(),
-        unitPriceCents: item.unitPriceCents,
-        totalCents: Math.round(item.quantity * item.unitPriceCents),
-        sortOrder: i,
-      }));
-      await db.insert(invoiceItems).values(itemRows);
     }
 
     return NextResponse.json({ success: true, data: updated });

@@ -311,46 +311,7 @@ html, body {
   border-radius: inherit;
 }
 
-.hero-grid {
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-  background-size: 60px 60px;
-}
-
 /* === SHINE ANIMATIONS === */
-@keyframes neon-pulse {
-  0%,
-  100% {
-    box-shadow:
-      0 0 12px rgba(0, 212, 255, 0.35),
-      0 0 24px rgba(0, 212, 255, 0.2),
-      0 0 48px rgba(0, 212, 255, 0.1);
-  }
-  50% {
-    box-shadow:
-      0 0 18px rgba(0, 212, 255, 0.5),
-      0 0 36px rgba(0, 212, 255, 0.3),
-      0 0 60px rgba(0, 212, 255, 0.15);
-  }
-}
-
-@keyframes neon-text-pulse {
-  0%,
-  100% {
-    text-shadow:
-      0 0 8px rgba(0, 212, 255, 0.8),
-      0 0 20px rgba(0, 212, 255, 0.5),
-      0 0 40px rgba(0, 212, 255, 0.25);
-  }
-  50% {
-    text-shadow:
-      0 0 12px rgba(0, 212, 255, 1),
-      0 0 30px rgba(0, 212, 255, 0.7),
-      0 0 60px rgba(0, 212, 255, 0.4);
-  }
-}
-
 @keyframes btn-shine {
   0%,
   88% {
@@ -378,16 +339,6 @@ html, body {
 }
 
 /* === HERO BACKGROUND ANIMATIONS === */
-@keyframes orb-pulse {
-  0%,
-  100% {
-    opacity: 0.3;
-  }
-  50% {
-    opacity: 0.6;
-  }
-}
-
 @keyframes trace-pulse-h {
   0% {
     stroke-dashoffset: 200;

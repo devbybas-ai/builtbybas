@@ -1,6 +1,4 @@
 import type { Metadata } from "next";
-import { PublicHeader } from "@/components/layout/PublicHeader";
-import { PublicFooter } from "@/components/layout/PublicFooter";
 import { IntakeConfirmation } from "@/components/public-site/IntakeConfirmation";
 
 export const metadata: Metadata = {
@@ -11,11 +9,9 @@ export const metadata: Metadata = {
 export default function IntakeConfirmationPage() {
   return (
     <>
-      <PublicHeader />
       <main id="main-content">
         <IntakeConfirmation />
       </main>
-      <PublicFooter />
     </>
   );
 }

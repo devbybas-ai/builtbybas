@@ -1,4 +1,11 @@
 import { services } from "@/data/services";
+import { toServiceDataId } from "@/data/service-id-map";
+import {
+  INDUSTRY_LABELS,
+  SERVICE_DURATION,
+  getComplexityLabel,
+  parsePriceRange as parseRange,
+} from "@/data/service-constants";
 import type { IntakeFormData } from "@/types/intake";
 import type {
   AnalysisFlag,
@@ -7,28 +14,15 @@ import type {
   ComplexityFactor,
   ComplexityScore,
   IntakeAnalysis,
-  PathForward,
-  PathPhase,
   ScoredDimension,
   ServiceRecommendation,
 } from "@/types/intake-analysis";
+import { screenForRaiConcerns } from "./intake-rai";
+import { generatePathsForward } from "./intake-paths";
 
-// ---------------------------------------------------------------------------
-// Constants
-// ---------------------------------------------------------------------------
-
-/** Maps intake form service IDs to service data IDs */
-const INTAKE_TO_SERVICE_ID: Record<string, string> = {
-  "marketing-website": "marketing-websites",
-  "website-redesign": "website-redesigns",
-  "landing-page": "landing-pages",
-  "business-dashboard": "business-dashboards",
-  "client-portal": "client-portals",
-  ecommerce: "e-commerce",
-  "crm-system": "crm-systems",
-  "full-platform": "full-operations-platform",
-  "ai-tools": "ai-powered-tools",
-};
+// Re-export for backward compatibility
+export { getComplexityLabel } from "@/data/service-constants";
+export { generatePathsForward } from "./intake-paths";
 
 /** Keywords per service for recommendation scoring */
 const SERVICE_KEYWORDS: Record<string, string[]> = {
@@ -57,32 +51,6 @@ const INDUSTRY_SERVICE_MAP: Record<string, string[]> = {
   technology: ["business-dashboards", "crm-systems", "ai-powered-tools"],
 };
 
-const INDUSTRY_LABELS: Record<string, string> = {
-  "professional-services": "Professional Services",
-  "home-services": "Home Services",
-  healthcare: "Healthcare",
-  "retail-ecommerce": "Retail / E-Commerce",
-  "food-hospitality": "Food & Hospitality",
-  "fitness-wellness": "Fitness & Wellness",
-  "real-estate": "Real Estate",
-  construction: "Construction",
-  education: "Education",
-  nonprofit: "Nonprofit",
-  technology: "Technology",
-  other: "Other",
-};
-
-const SERVICE_DURATION: Record<string, string> = {
-  "landing-pages": "1-2 weeks",
-  "marketing-websites": "3-5 weeks",
-  "website-redesigns": "3-5 weeks",
-  "e-commerce": "6-10 weeks",
-  "business-dashboards": "4-8 weeks",
-  "client-portals": "4-8 weeks",
-  "crm-systems": "6-10 weeks",
-  "full-operations-platform": "12-20 weeks",
-  "ai-powered-tools": "8-14 weeks",
-};
 
 const SCOPE_KEYWORDS = [
   "page", "pages", "user", "users", "login", "dashboard", "api", "database",
@@ -96,12 +64,8 @@ const SCOPE_KEYWORDS = [
 // ---------------------------------------------------------------------------
 
 export function parsePriceRange(range: string): [number, number] {
-  const numbers = range.match(/[\d,]+/g);
-  if (!numbers || numbers.length < 2) return [0, 0];
-  return [
-    parseInt(numbers[0].replace(/,/g, ""), 10),
-    parseInt(numbers[1].replace(/,/g, ""), 10),
-  ];
+  const { low, high } = parseRange(range);
+  return [low, high];
 }
 
 export function parseBudgetRange(range: string): [number, number] | null {
@@ -124,7 +88,7 @@ function parseDurationWeeks(dur: string): [number, number] {
 /** Resolves intake service IDs to service data IDs */
 function resolveServiceIds(intakeIds: string[]): string[] {
   return intakeIds
-    .map((id) => INTAKE_TO_SERVICE_ID[id])
+    .map((id) => toServiceDataId(id))
     .filter((id): id is string => id !== undefined);
 }
 
@@ -170,13 +134,6 @@ export function getScoreLabel(score: number): ScoredDimension["label"] {
   if (score >= 51) return "High";
   if (score >= 26) return "Medium";
   return "Low";
-}
-
-export function getComplexityLabel(score: number): ComplexityScore["label"] {
-  if (score >= 8) return "Enterprise";
-  if (score >= 6) return "Complex";
-  if (score >= 4) return "Moderate";
-  return "Simple";
 }
 
 export function getFitLabel(score: number): ServiceRecommendation["fitLabel"] {
@@ -629,339 +586,6 @@ export function scoreComplexity(fd: IntakeFormData): ComplexityScore {
     label: getComplexityLabel(overall),
     factors,
   };
-}
-
-// ---------------------------------------------------------------------------
-// Paths Forward
-// ---------------------------------------------------------------------------
-
-export function generatePathsForward(
-  complexity: ComplexityScore,
-  recommendations: ServiceRecommendation[],
-): PathForward[] {
-  const serviceIds = recommendations.map((r) => r.serviceId);
-  if (serviceIds.length === 0) return [];
-
-  const primary = recommendations[0];
-  const secondary = serviceIds.filter((id) => id !== primary.serviceId);
-
-  if (complexity.overall <= 3) {
-    return [buildDirectPath(primary, serviceIds)];
-  }
-
-  if (complexity.overall <= 5) {
-    return [
-      buildComprehensivePath(serviceIds),
-      buildPhasedPath(primary, secondary),
-    ];
-  }
-
-  return [
-    buildFullPlatformPath(serviceIds),
-    buildStrategicPhasesPath(serviceIds),
-    buildQuickWinPath(primary, secondary),
-  ];
-}
-
-function buildDirectPath(
-  primary: ServiceRecommendation,
-  allIds: string[],
-): PathForward {
-  return {
-    name: "Direct Build",
-    description: "Single-phase delivery focused on your primary need",
-    phases: [{
-      order: 1,
-      title: primary.serviceTitle,
-      services: allIds,
-      duration: sumDurationWeeks(allIds),
-      description: `Build and launch your ${primary.serviceTitle.toLowerCase()}`,
-    }],
-    estimatedTimeline: sumDurationWeeks(allIds),
-    estimatedInvestment: sumPriceRanges(allIds),
-    recommended: true,
-  };
-}
-
-function buildComprehensivePath(serviceIds: string[]): PathForward {
-  return {
-    name: "Comprehensive Build",
-    description: "All recommended services built in one engagement",
-    phases: [{
-      order: 1,
-      title: "Full Build",
-      services: serviceIds,
-      duration: sumDurationWeeks(serviceIds),
-      description: "Complete build of all recommended services in parallel",
-    }],
-    estimatedTimeline: sumDurationWeeks(serviceIds),
-    estimatedInvestment: sumPriceRanges(serviceIds),
-    recommended: true,
-  };
-}
-
-function buildPhasedPath(
-  primary: ServiceRecommendation,
-  secondary: string[],
-): PathForward {
-  const phases: PathPhase[] = [
-    {
-      order: 1,
-      title: `Phase 1: ${primary.serviceTitle}`,
-      services: [primary.serviceId],
-      duration: SERVICE_DURATION[primary.serviceId] ?? "4-8 weeks",
-      description: `Launch your ${primary.serviceTitle.toLowerCase()} first`,
-    },
-  ];
-
-  if (secondary.length > 0) {
-    const secondaryTitles = secondary.map((id) => {
-      const svc = services.find((s) => s.id === id);
-      return svc?.title ?? id;
-    });
-    phases.push({
-      order: 2,
-      title: `Phase 2: ${secondaryTitles.join(" + ")}`,
-      services: secondary,
-      duration: sumDurationWeeks(secondary),
-      description: "Build remaining services on top of the foundation",
-    });
-  }
-
-  return {
-    name: "Phased Approach",
-    description: "Primary service first, then expand with additional services",
-    phases,
-    estimatedTimeline: sumDurationWeeks([primary.serviceId, ...secondary]),
-    estimatedInvestment: sumPriceRanges([primary.serviceId, ...secondary]),
-    recommended: false,
-  };
-}
-
-function buildFullPlatformPath(serviceIds: string[]): PathForward {
-  return {
-    name: "Full Platform Build",
-    description: "Everything built at once for maximum integration",
-    phases: [{
-      order: 1,
-      title: "Complete Platform",
-      services: serviceIds,
-      duration: sumDurationWeeks(serviceIds),
-      description: "Unified build of all services for seamless integration",
-    }],
-    estimatedTimeline: sumDurationWeeks(serviceIds),
-    estimatedInvestment: sumPriceRanges(serviceIds),
-    recommended: false,
-  };
-}
-
-function buildStrategicPhasesPath(serviceIds: string[]): PathForward {
-  const webIds = serviceIds.filter((id) => {
-    const svc = services.find((s) => s.id === id);
-    return svc?.category === "web";
-  });
-  const softwareIds = serviceIds.filter((id) => {
-    const svc = services.find((s) => s.id === id);
-    return svc?.category === "software";
-  });
-  const aiIds = serviceIds.filter((id) => {
-    const svc = services.find((s) => s.id === id);
-    return svc?.category === "ai";
-  });
-
-  const phases: PathPhase[] = [];
-  let order = 1;
-
-  const phase1Ids = webIds.length > 0 ? webIds : serviceIds.slice(0, 1);
-  phases.push({
-    order: order++,
-    title: "Phase 1: Web Presence",
-    services: phase1Ids,
-    duration: sumDurationWeeks(phase1Ids),
-    description: "Establish your online presence and start generating leads",
-  });
-
-  const phase2Ids = softwareIds.length > 0 ? softwareIds : serviceIds.slice(1, 3);
-  if (phase2Ids.length > 0) {
-    phases.push({
-      order: order++,
-      title: "Phase 2: Business Tools",
-      services: phase2Ids,
-      duration: sumDurationWeeks(phase2Ids),
-      description: "Build operational tools to manage your growing business",
-    });
-  }
-
-  if (aiIds.length > 0) {
-    phases.push({
-      order: order++,
-      title: "Phase 3: AI Integration",
-      services: aiIds,
-      duration: sumDurationWeeks(aiIds),
-      description: "Add AI-powered capabilities for competitive advantage",
-    });
-  }
-
-  return {
-    name: "Strategic Phases",
-    description: "Phased delivery - each phase delivers usable value",
-    phases,
-    estimatedTimeline: sumDurationWeeks(serviceIds),
-    estimatedInvestment: sumPriceRanges(serviceIds),
-    recommended: true,
-  };
-}
-
-function buildQuickWinPath(
-  primary: ServiceRecommendation,
-  secondary: string[],
-): PathForward {
-  const phases: PathPhase[] = [{
-    order: 1,
-    title: `Quick Win: ${primary.serviceTitle}`,
-    services: [primary.serviceId],
-    duration: SERVICE_DURATION[primary.serviceId] ?? "4-8 weeks",
-    description: "Get the most impactful service live fast",
-  }];
-
-  if (secondary.length > 0) {
-    phases.push({
-      order: 2,
-      title: "Scale Up",
-      services: secondary,
-      duration: sumDurationWeeks(secondary),
-      description: "Iterate and expand with additional services",
-    });
-  }
-
-  return {
-    name: "Quick Win + Scale",
-    description: "Launch the highest-impact service first, then build iteratively",
-    phases,
-    estimatedTimeline: sumDurationWeeks([primary.serviceId, ...secondary]),
-    estimatedInvestment: sumPriceRanges([primary.serviceId, ...secondary]),
-    recommended: false,
-  };
-}
-
-// ---------------------------------------------------------------------------
-// RAI Screening - Responsible AI red flags
-// ---------------------------------------------------------------------------
-
-/**
- * Keyword groups that indicate potentially unethical project requests.
- * Each group has a category label and an array of patterns.
- * When matched, a rai-concern flag is raised for Bas to review.
- */
-const RAI_CONCERN_PATTERNS: { category: string; patterns: RegExp[] }[] = [
-  {
-    category: "Surveillance / tracking without consent",
-    patterns: [
-      /\b(spy|spying|stalk|stalking|track\s*(people|users|employees|staff)\s*without)\b/i,
-      /\b(hidden\s*tracking|covert\s*monitor|secret(ly)?\s*(monitor|track|record))\b/i,
-      /\b(keylog|keystroke\s*log|screen\s*capture\s*without)\b/i,
-    ],
-  },
-  {
-    category: "Deceptive practices",
-    patterns: [
-      /\b(fake\s*(review|testimonial|rating|profile|account)s?)\b/i,
-      /\b(impersonat|catfish|phishing|spoof\s*(email|site|website))\b/i,
-      /\b(astroturf|shill|sock\s*puppet|fake\s*engagement)\b/i,
-      /\b(mislead|deceiv|manipulat)\w*\s*(user|customer|visitor|client)s?\b/i,
-    ],
-  },
-  {
-    category: "Discrimination / bias by design",
-    patterns: [
-      /\b(discriminat|exclude\s*based\s*on\s*(race|gender|age|religion|disability|ethnicity|orientation))\b/i,
-      /\b(racial\s*profil|redlin(e|ing)|deny\s*service\s*based\s*on)\b/i,
-      /\b(filter\s*out\s*(minorities|women|disabled|elderly))\b/i,
-    ],
-  },
-  {
-    category: "Data harvesting / privacy violation",
-    patterns: [
-      /\b(scrape\s*(personal|user|private)\s*data)\b/i,
-      /\b(harvest\s*(email|phone|contact)s?\s*without)\b/i,
-      /\b(sell\s*(user|personal|customer)\s*data)\b/i,
-      /\b(collect\s*data\s*(without\s*consent|secretly|covertly))\b/i,
-      /\b(bypass\s*(gdpr|ccpa|privacy\s*law|consent))\b/i,
-    ],
-  },
-  {
-    category: "Dark patterns / manipulative UX",
-    patterns: [
-      /\b(dark\s*pattern|trick\s*(user|people)\s*into|forced\s*(consent|signup))\b/i,
-      /\b(hidden\s*(fee|charge|cost)s?|bait\s*and\s*switch)\b/i,
-      /\b(make\s*it\s*(hard|impossible)\s*to\s*(cancel|unsubscribe|opt\s*out))\b/i,
-      /\b(roach\s*motel|confirm\s*sham|misdirect)\b/i,
-    ],
-  },
-  {
-    category: "Exploitation of vulnerable populations",
-    patterns: [
-      /\b(target\s*(children|minors|elderly|vulnerable|addicts))\b/i,
-      /\b(predatory\s*(lending|pricing|marketing))\b/i,
-      /\b(exploit\s*(children|minors|students|elderly|disabled))\b/i,
-      /\b(gambling\s*(for|targeting)\s*(kids|minors|children))\b/i,
-    ],
-  },
-  {
-    category: "Illegal or harmful content",
-    patterns: [
-      /\b(deepfake|non.?consensual\s*(image|video|content))\b/i,
-      /\b(counterfeit|pirat(e|ed|ing)\s*(content|software|product))\b/i,
-      /\b(harassment\s*tool|dox(x)?ing|swat(t)?ing)\b/i,
-      /\b(weapon|drug\s*(market|sales|deal)|illegal\s*(market|sales|trade))\b/i,
-    ],
-  },
-  {
-    category: "Circumventing laws / regulations",
-    patterns: [
-      /\b(bypass\s*(regulation|law|compliance|audit))\b/i,
-      /\b(money\s*launder|tax\s*evas|fraud\s*scheme)\b/i,
-      /\b(circumvent\s*(law|legal|restriction|ban))\b/i,
-      /\b(hide\s*(income|revenue|transaction)s?\s*from)\b/i,
-    ],
-  },
-];
-
-/**
- * Scans all text content from the intake for RAI concerns.
- * Returns flags for any matches found.
- */
-function screenForRaiConcerns(fd: IntakeFormData): AnalysisFlag[] {
-  const flags: AnalysisFlag[] = [];
-
-  // Gather all text from the form
-  const textParts: string[] = [
-    fd.company,
-    fd.additionalNotes,
-    fd.competitorSites,
-    fd.inspirationSites,
-    extractServiceText(fd),
-  ];
-  const fullText = textParts.join(" ");
-
-  if (fullText.trim().length === 0) return flags;
-
-  const matched = new Set<string>();
-
-  for (const group of RAI_CONCERN_PATTERNS) {
-    for (const pattern of group.patterns) {
-      if (pattern.test(fullText) && !matched.has(group.category)) {
-        matched.add(group.category);
-        flags.push({
-          type: "rai-concern",
-          message: `RAI Red Flag: Potential ${group.category.toLowerCase()} detected in submission - requires manual review before proceeding`,
-        });
-        break;
-      }
-    }
-  }
-
-  return flags;
 }
 
 // ---------------------------------------------------------------------------

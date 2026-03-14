@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { z } from "zod/v4";
 import { requireAdmin } from "@/lib/api-auth";
+import { escapeHtml } from "@/lib/sanitize";
 import { resend, EMAIL_FROM, SITE_URL } from "@/lib/email";
 import { buildEmailFooterHtml } from "@/lib/proposal-email";
 
@@ -41,9 +42,9 @@ export async function POST(request: NextRequest) {
 
   const { email, name, message } = parsed.data;
   const intakeUrl = `${SITE_URL}/intake`;
-  const greeting = name ? `Hi ${name},` : "Hi,";
+  const greeting = name ? `Hi ${escapeHtml(name)},` : "Hi,";
   const customMessage = message
-    ? `<p style="color:#a1a1aa;font-size:15px;line-height:1.6;margin:16px 0;">${message.replace(/\n/g, "<br/>")}</p>`
+    ? `<p style="color:#a1a1aa;font-size:15px;line-height:1.6;margin:16px 0;">${escapeHtml(message).replace(/\n/g, "<br/>")}</p>`
     : "";
 
   try {

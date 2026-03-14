@@ -1,17 +1,26 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { PublicHeader } from "@/components/layout/PublicHeader";
-import { PublicFooter } from "@/components/layout/PublicFooter";
+import { JsonLd } from "@/components/shared/JsonLd";
+import { getBreadcrumbSchema } from "@/lib/json-ld";
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://builtbybas.com";
+
 export const metadata: Metadata = {
   title: "Refund & Cancellation Policy",
   description:
     "BuiltByBas Refund and Cancellation Policy. Our fair and transparent approach to refunds, deposits, and project cancellations.",
+  alternates: { canonical: `${SITE_URL}/refund` },
 };
 
 export default function RefundPolicyPage() {
   return (
     <>
-      <PublicHeader />
+      <JsonLd
+        data={getBreadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "Refund Policy", path: "/refund" },
+        ])}
+      />
       <main id="main-content" className="relative pt-24 pb-24">
         <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
           <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
@@ -80,13 +89,13 @@ export default function RefundPolicyPage() {
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-white/10 text-left">
-                      <th className="pb-2 pr-4 font-medium text-foreground">
+                      <th scope="col" className="pb-2 pr-4 font-medium text-foreground">
                         Stage
                       </th>
-                      <th className="pb-2 pr-4 font-medium text-foreground">
+                      <th scope="col" className="pb-2 pr-4 font-medium text-foreground">
                         Refund
                       </th>
-                      <th className="pb-2 font-medium text-foreground">
+                      <th scope="col" className="pb-2 font-medium text-foreground">
                         What You Receive
                       </th>
                     </tr>
@@ -329,7 +338,6 @@ export default function RefundPolicyPage() {
           </div>
         </div>
       </main>
-      <PublicFooter />
     </>
   );
 }

@@ -1,4 +1,5 @@
-import type { Metadata, Viewport } from "next";
+import type { Metadata } from "next";
+import Script from "next/script";
 import { Inter, Outfit } from "next/font/google";
 import { SkipToContent } from "@/components/shared/SkipToContent";
 import { ScrollToTop } from "@/components/shared/ScrollToTop";
@@ -36,6 +37,14 @@ export const metadata: Metadata = {
     type: "website",
     siteName: "BuiltByBas",
     locale: "en_US",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "BuiltByBas - Custom Software & Web Development",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
@@ -62,10 +71,10 @@ export default function RootLayout({
     <html lang="en" className={`dark ${inter.variable} ${outfit.variable} overflow-x-hidden`}>
       <head>
         <JsonLd data={getOrganizationSchema()} />
-        <script
-          defer
-          src="https://analytics.builtbybas.com/script.js"
-          data-website-id="1ff108d4-6963-4543-a838-a0d62a6ae979"
+        <Script
+          src={process.env.NEXT_PUBLIC_UMAMI_URL || "https://analytics.builtbybas.com/script.js"}
+          data-website-id={process.env.NEXT_PUBLIC_UMAMI_ID || "1ff108d4-6963-4543-a838-a0d62a6ae979"}
+          strategy="afterInteractive"
         />
       </head>
       <body className="min-h-screen overflow-x-hidden bg-background font-sans text-foreground antialiased">

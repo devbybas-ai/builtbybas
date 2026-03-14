@@ -224,9 +224,9 @@ export function SweetCounterDemo() {
             <div className="demo-glass rounded-lg overflow-hidden" style={{ border: "1px solid rgba(255,255,255,0.06)" }}>
               <table className="w-full text-xs">
                 <thead><tr className="border-b border-white/5">
-                  <th className="text-left p-3 text-white/40 font-medium">Product</th><th className="text-left p-3 text-white/40 font-medium">Category</th>
-                  <th className="text-right p-3 text-white/40 font-medium">Price</th><th className="text-right p-3 text-white/40 font-medium">Stock</th>
-                  <th className="text-center p-3 text-white/40 font-medium">Status</th>
+                  <th scope="col" className="text-left p-3 text-white/40 font-medium">Product</th><th scope="col" className="text-left p-3 text-white/40 font-medium">Category</th>
+                  <th scope="col" className="text-right p-3 text-white/40 font-medium">Price</th><th scope="col" className="text-right p-3 text-white/40 font-medium">Stock</th>
+                  <th scope="col" className="text-center p-3 text-white/40 font-medium">Status</th>
                 </tr></thead>
                 <tbody>
                   {filteredProducts.map(p => {

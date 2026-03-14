@@ -26,11 +26,6 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Login page — redirect to dashboard if already authenticated
-  if (pathname === "/login" && sessionCookie) {
-    return NextResponse.redirect(new URL("/admin", request.url));
-  }
-
   // Admin routes — require session
   if (pathname.startsWith("/admin") || pathname.startsWith("/api/admin")) {
     if (!sessionCookie) {

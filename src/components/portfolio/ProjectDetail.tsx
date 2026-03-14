@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, ArrowRight, ExternalLink } from "lucide-react";
+import { ArrowLeft, ArrowRight, ExternalLink, Pause, Play } from "lucide-react";
 import { springs, fadeInUp } from "@/lib/motion";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { FadeIn } from "@/components/motion/FadeIn";
@@ -105,6 +105,12 @@ export function ProjectDetail({
             className="overflow-hidden rounded-2xl"
             onMouseEnter={() => setPaused(true)}
             onMouseLeave={() => setPaused(false)}
+            onFocus={() => setPaused(true)}
+            onBlur={(e) => {
+              if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+                setPaused(false);
+              }
+            }}
           >
             {/* Main Image */}
             <div className="relative aspect-[21/9] overflow-hidden">
@@ -129,6 +135,18 @@ export function ProjectDetail({
                 </motion.div>
               </AnimatePresence>
               <div className="absolute inset-0 bg-gradient-to-t from-background/40 to-transparent" />
+
+              {/* Pause/Play toggle */}
+              {!shouldReduceMotion && hasGallery && (
+                <button
+                  type="button"
+                  onClick={() => setPaused((p) => !p)}
+                  className="absolute right-3 top-3 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm transition-colors hover:bg-black/70"
+                  aria-label={paused ? "Play slideshow" : "Pause slideshow"}
+                >
+                  {paused ? <Play className="h-4 w-4" /> : <Pause className="h-4 w-4" />}
+                </button>
+              )}
 
               {/* Progress indicators */}
               {!shouldReduceMotion && hasGallery && (

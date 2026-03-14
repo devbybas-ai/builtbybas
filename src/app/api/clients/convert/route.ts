@@ -42,28 +42,32 @@ export async function POST(request: NextRequest) {
 
     const { formData } = row.analysis;
 
-    const [client] = await db
-      .insert(clients)
-      .values({
-        name: encrypt(sanitizeString(formData.name)),
-        email: encrypt(formData.email.toLowerCase()),
-        phone: formData.phone ? encrypt(sanitizeString(formData.phone)) : null,
-        company: sanitizeString(formData.company),
-        industry: formData.industry ? sanitizeString(formData.industry) : null,
-        website: formData.website || null,
-        pipelineStage: "intake_submitted",
-        source: "intake",
-        intakeSubmissionId,
-        assignedTo: auth.user.id,
-      })
-      .returning();
+    const [client] = await db.transaction(async (tx) => {
+      const [c] = await tx
+        .insert(clients)
+        .values({
+          name: encrypt(sanitizeString(formData.name)),
+          email: encrypt(formData.email.toLowerCase()),
+          phone: formData.phone ? encrypt(sanitizeString(formData.phone)) : null,
+          company: sanitizeString(formData.company),
+          industry: formData.industry ? sanitizeString(formData.industry) : null,
+          website: formData.website || null,
+          pipelineStage: "intake_submitted",
+          source: "intake",
+          intakeSubmissionId,
+          assignedTo: auth.user.id,
+        })
+        .returning();
 
-    await db.insert(pipelineHistory).values({
-      clientId: client.id,
-      fromStage: null,
-      toStage: "intake_submitted",
-      changedBy: auth.user.id,
-      note: `Converted from intake submission ${intakeSubmissionId}`,
+      await tx.insert(pipelineHistory).values({
+        clientId: c.id,
+        fromStage: null,
+        toStage: "intake_submitted",
+        changedBy: auth.user.id,
+        note: `Converted from intake submission ${intakeSubmissionId}`,
+      });
+
+      return [c];
     });
 
     return NextResponse.json({

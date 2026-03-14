@@ -1,4 +1,5 @@
 import { createCipheriv, createDecipheriv, randomBytes, createHmac } from "crypto";
+import { env } from "./env";
 
 const ALGORITHM = "aes-256-gcm";
 const IV_LENGTH = 12;
@@ -6,11 +7,7 @@ const TAG_LENGTH = 16;
 const PREFIX = "enc:v1:";
 
 function getKey(): Buffer {
-  const key = process.env.ENCRYPTION_KEY;
-  if (!key) {
-    throw new Error("ENCRYPTION_KEY environment variable is not set");
-  }
-  const buf = Buffer.from(key, "base64");
+  const buf = Buffer.from(env.ENCRYPTION_KEY, "base64");
   if (buf.length !== 32) {
     throw new Error("ENCRYPTION_KEY must be exactly 32 bytes (base64-encoded)");
   }
@@ -75,10 +72,22 @@ export function isEncrypted(value: string): boolean {
 }
 
 /**
+ * Derive a separate HMAC key from the encryption key.
+ * Uses HMAC with a fixed label to achieve key separation without a new env var.
+ */
+function getHmacKey(): Buffer {
+  const encKey = getKey();
+  return Buffer.from(
+    createHmac("sha256", encKey).update("builtbybas-hmac-key").digest()
+  );
+}
+
+/**
  * Deterministic HMAC-SHA256 hash for indexed lookups (e.g., email dedup).
+ * Uses a derived key separate from the AES encryption key.
  */
 export function hmacHash(value: string): string {
-  const key = getKey();
+  const key = getHmacKey();
   return createHmac("sha256", key).update(value.toLowerCase()).digest("hex");
 }
 

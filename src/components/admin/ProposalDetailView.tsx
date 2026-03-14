@@ -11,6 +11,7 @@ import {
 } from "@/types/proposal";
 import type { ProposalStatus, ProposalService } from "@/types/proposal";
 import { markdownToHtml } from "@/lib/markdown-to-html";
+import { formatCents } from "@/data/service-constants";
 
 interface ProposalData {
   id: string;
@@ -37,13 +38,6 @@ interface ProposalData {
   clientName: string | null;
   clientCompany: string | null;
   clientEmail: string | null;
-}
-
-function formatCents(cents: number): string {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  }).format(cents / 100);
 }
 
 function formatDate(d: Date | null): string {
@@ -497,9 +491,9 @@ export function ProposalDetailView({
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-white/10 text-left text-xs text-muted-foreground">
-                  <th className="pb-2 pr-4">Service</th>
-                  <th className="pb-2 pr-4 text-right">Estimate</th>
-                  <th className="pb-2 text-right">Timeline</th>
+                  <th scope="col" className="pb-2 pr-4">Service</th>
+                  <th scope="col" className="pb-2 pr-4 text-right">Estimate</th>
+                  <th scope="col" className="pb-2 text-right">Timeline</th>
                 </tr>
               </thead>
               <tbody>
@@ -757,7 +751,7 @@ export function ProposalDetailView({
       {/* Delete Confirmation Dialog */}
       {showDeleteDialog && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-          <div className="w-full max-w-md rounded-xl border border-white/10 bg-[#0A0A0F] p-6 shadow-2xl">
+          <div className="w-full max-w-md rounded-xl border border-white/10 bg-background p-6 shadow-2xl">
             <h2 className="text-lg font-semibold text-red-400">
               Delete Proposal
             </h2>
@@ -787,7 +781,7 @@ export function ProposalDetailView({
       {/* Rejection Reason Dialog */}
       {showRejectDialog && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-          <div className="w-full max-w-md rounded-xl border border-white/10 bg-[#0A0A0F] p-6 shadow-2xl">
+          <div className="w-full max-w-md rounded-xl border border-white/10 bg-background p-6 shadow-2xl">
             <h2 className="text-lg font-semibold text-red-400">
               Reject Proposal
             </h2>

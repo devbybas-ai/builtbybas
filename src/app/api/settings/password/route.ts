@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { eq } from "drizzle-orm";
-import { z } from "zod";
+import { z } from "zod/v4";
 import { requireAdmin } from "@/lib/api-auth";
 import { db } from "@/lib/db";
 import { users } from "@/lib/schema";
@@ -15,11 +15,20 @@ export async function PATCH(request: Request) {
   const auth = await requireAdmin();
   if ("error" in auth) return auth.error;
 
-  const body = await request.json();
+  let body: unknown;
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json(
+      { success: false, error: "Invalid request body" },
+      { status: 400 },
+    );
+  }
+
   const parsed = passwordSchema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json(
-      { success: false, error: "Invalid input", details: parsed.error.flatten() },
+      { success: false, error: "Validation failed" },
       { status: 400 },
     );
   }

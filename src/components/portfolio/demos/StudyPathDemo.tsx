@@ -3,7 +3,7 @@
 import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  BookOpen, Target, Clock, AlertTriangle, CheckCircle, Plus, ChevronUp, ChevronDown,
+  BookOpen, Target, Clock, AlertTriangle, CheckCircle,
 } from "lucide-react";
 import { DemoPageWrapper } from "@/components/portfolio/demos/shared/DemoPageWrapper";
 import { DemoPageHeader } from "@/components/portfolio/demos/shared/DemoPageHeader";

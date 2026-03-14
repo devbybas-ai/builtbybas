@@ -69,51 +69,55 @@ export async function POST(request: NextRequest) {
     const validUntil = new Date();
     validUntil.setDate(validUntil.getDate() + 30);
 
-    const [proposal] = await db
-      .insert(proposals)
-      .values({
-        clientId: resolvedClientId,
-        intakeSubmissionId,
-        title: generated.title,
-        summary: generated.summary,
-        content: generated.content,
-        services: generated.services,
-        estimatedBudgetCents: generated.estimatedBudgetCents,
-        timeline: generated.timeline,
-        validUntil,
-        status: "draft",
-        generatedBy: auth.user.id,
-      })
-      .returning();
-
-    // Advance pipeline stage to proposal_draft if appropriate
-    const [client] = await db
-      .select({ pipelineStage: clients.pipelineStage })
-      .from(clients)
-      .where(eq(clients.id, resolvedClientId))
-      .limit(1);
-
-    if (
-      client &&
-      ["analysis_complete", "fit_assessment"].includes(client.pipelineStage)
-    ) {
-      await db
-        .update(clients)
-        .set({
-          pipelineStage: "proposal_draft",
-          stageChangedAt: new Date(),
-          updatedAt: new Date(),
+    const proposal = await db.transaction(async (tx) => {
+      const [p] = await tx
+        .insert(proposals)
+        .values({
+          clientId: resolvedClientId,
+          intakeSubmissionId,
+          title: generated.title,
+          summary: generated.summary,
+          content: generated.content,
+          services: generated.services,
+          estimatedBudgetCents: generated.estimatedBudgetCents,
+          timeline: generated.timeline,
+          validUntil,
+          status: "draft",
+          generatedBy: auth.user.id,
         })
-        .where(eq(clients.id, resolvedClientId));
+        .returning();
 
-      await db.insert(pipelineHistory).values({
-        clientId: resolvedClientId,
-        fromStage: client.pipelineStage,
-        toStage: "proposal_draft",
-        changedBy: auth.user.id,
-        note: "Proposal generated from intake analysis",
-      });
-    }
+      // Advance pipeline stage to proposal_draft if appropriate
+      const [client] = await tx
+        .select({ pipelineStage: clients.pipelineStage })
+        .from(clients)
+        .where(eq(clients.id, resolvedClientId))
+        .limit(1);
+
+      if (
+        client &&
+        ["analysis_complete", "fit_assessment"].includes(client.pipelineStage)
+      ) {
+        await tx
+          .update(clients)
+          .set({
+            pipelineStage: "proposal_draft",
+            stageChangedAt: new Date(),
+            updatedAt: new Date(),
+          })
+          .where(eq(clients.id, resolvedClientId));
+
+        await tx.insert(pipelineHistory).values({
+          clientId: resolvedClientId,
+          fromStage: client.pipelineStage,
+          toStage: "proposal_draft",
+          changedBy: auth.user.id,
+          note: "Proposal generated from intake analysis",
+        });
+      }
+
+      return p;
+    });
 
     return NextResponse.json({ success: true, data: proposal }, { status: 201 });
   } catch {

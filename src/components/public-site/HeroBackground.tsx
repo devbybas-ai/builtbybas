@@ -258,7 +258,7 @@ export function HeroBackground() {
         if (cancelled) break;
         await fillChip(route.chip, route.fillDir);
         if (cancelled) break;
-        await delay(7770);
+        await delay(11110);
         idx++;
       }
     }

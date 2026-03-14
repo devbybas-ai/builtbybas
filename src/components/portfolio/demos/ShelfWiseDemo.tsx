@@ -3,7 +3,7 @@
 import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  BookOpen, Search, X, Users, AlertTriangle, CheckCircle, DollarSign,
+  BookOpen, Search, X, Users, AlertTriangle, CheckCircle,
 } from "lucide-react";
 import { DemoPageWrapper } from "@/components/portfolio/demos/shared/DemoPageWrapper";
 import { DemoPageHeader } from "@/components/portfolio/demos/shared/DemoPageHeader";

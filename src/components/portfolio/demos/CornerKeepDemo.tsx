@@ -207,9 +207,9 @@ export function CornerKeepDemo() {
             <div className="demo-glass rounded-lg overflow-hidden" style={{ border: "1px solid rgba(255,255,255,0.06)" }}>
               <table className="w-full text-xs">
                 <thead><tr className="border-b border-white/5">
-                  <th className="text-left p-3 text-white/40 font-medium">Item</th><th className="text-left p-3 text-white/40 font-medium">Aisle</th>
-                  <th className="text-right p-3 text-white/40 font-medium">Price</th><th className="text-right p-3 text-white/40 font-medium">Margin</th>
-                  <th className="text-right p-3 text-white/40 font-medium">Stock</th><th className="text-right p-3 text-white/40 font-medium">Expires</th>
+                  <th scope="col" className="text-left p-3 text-white/40 font-medium">Item</th><th scope="col" className="text-left p-3 text-white/40 font-medium">Aisle</th>
+                  <th scope="col" className="text-right p-3 text-white/40 font-medium">Price</th><th scope="col" className="text-right p-3 text-white/40 font-medium">Margin</th>
+                  <th scope="col" className="text-right p-3 text-white/40 font-medium">Stock</th><th scope="col" className="text-right p-3 text-white/40 font-medium">Expires</th>
                 </tr></thead>
                 <tbody>
                   {searchedItems.map(item => {

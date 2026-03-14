@@ -92,3 +92,41 @@ export function getFAQSchema(items: { question: string; answer: string }[]) {
     })),
   };
 }
+
+export function getAboutPageSchema() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "AboutPage",
+    name: "About BuiltByBas",
+    url: `${SITE_URL}/about`,
+    description:
+      "BuiltByBas is a software development company focused on building operational software systems for real-world businesses.",
+    mainEntity: {
+      "@type": "Organization",
+      name: "BuiltByBas",
+      url: SITE_URL,
+    },
+  };
+}
+
+export function getCreativeWorkSchema(project: {
+  name: string;
+  description: string;
+  url?: string;
+  image?: string;
+  slug: string;
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "CreativeWork",
+    name: project.name,
+    description: project.description,
+    url: project.url ?? `${SITE_URL}/portfolio/${project.slug}`,
+    ...(project.image ? { image: `${SITE_URL}${project.image}` } : {}),
+    creator: {
+      "@type": "Organization",
+      name: "BuiltByBas",
+      url: SITE_URL,
+    },
+  };
+}

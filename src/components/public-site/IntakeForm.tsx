@@ -93,7 +93,7 @@ export function IntakeForm() {
               initial="enter"
               animate="center"
               exit="exit"
-              transition={{ ...springs.snappy, duration: 0.25 }}
+              transition={springs.snappy}
             >
               <IntakeStep
                 stepConfig={currentStepConfig}

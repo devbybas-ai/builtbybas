@@ -194,11 +194,11 @@ export function LedgerDeskDemo() {
               <table className="w-full text-xs">
                 <thead>
                   <tr className="border-b border-white/5">
-                    <th className="text-left p-3 text-white/40 font-medium">Date</th>
-                    <th className="text-left p-3 text-white/40 font-medium">Account</th>
-                    <th className="text-left p-3 text-white/40 font-medium">Description</th>
-                    <th className="text-right p-3 text-emerald-400/60 font-medium">Debit</th>
-                    <th className="text-right p-3 text-rose-400/60 font-medium">Credit</th>
+                    <th scope="col" className="text-left p-3 text-white/40 font-medium">Date</th>
+                    <th scope="col" className="text-left p-3 text-white/40 font-medium">Account</th>
+                    <th scope="col" className="text-left p-3 text-white/40 font-medium">Description</th>
+                    <th scope="col" className="text-right p-3 text-emerald-400/60 font-medium">Debit</th>
+                    <th scope="col" className="text-right p-3 text-rose-400/60 font-medium">Credit</th>
                   </tr>
                 </thead>
                 <tbody>

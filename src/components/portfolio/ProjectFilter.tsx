@@ -27,7 +27,7 @@ export function ProjectFilter({ active, onChange }: ProjectFilterProps) {
 
   return (
     <nav aria-label="Filter projects by category" className="mb-12">
-      <div className="flex w-full overflow-x-auto scrollbar-hide border border-white/10 rounded-xl p-1 bg-white/5 backdrop-blur-sm gap-1">
+      <div className="flex w-full overflow-x-auto scrollbar-none border border-white/10 rounded-xl p-1 bg-white/5 backdrop-blur-sm gap-1">
         {allCategories.map((cat) => (
           <button
             key={cat.id}

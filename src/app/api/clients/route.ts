@@ -91,28 +91,32 @@ export async function POST(request: NextRequest) {
   const stage = data.pipelineStage ?? "lead";
 
   try {
-    const [client] = await db
-      .insert(clients)
-      .values({
-        name: encrypt(sanitizeString(data.name)),
-        email: encrypt(data.email.toLowerCase()),
-        phone: data.phone ? encrypt(sanitizeString(data.phone)) : null,
-        company: sanitizeString(data.company),
-        industry: data.industry ? sanitizeString(data.industry) : null,
-        website: data.website || null,
-        pipelineStage: stage,
-        source: data.source ? sanitizeString(data.source) : null,
-        intakeSubmissionId: data.intakeSubmissionId ?? null,
-        assignedTo: auth.user.id,
-      })
-      .returning();
+    const [client] = await db.transaction(async (tx) => {
+      const [c] = await tx
+        .insert(clients)
+        .values({
+          name: encrypt(sanitizeString(data.name)),
+          email: encrypt(data.email.toLowerCase()),
+          phone: data.phone ? encrypt(sanitizeString(data.phone)) : null,
+          company: sanitizeString(data.company),
+          industry: data.industry ? sanitizeString(data.industry) : null,
+          website: data.website || null,
+          pipelineStage: stage,
+          source: data.source ? sanitizeString(data.source) : null,
+          intakeSubmissionId: data.intakeSubmissionId ?? null,
+          assignedTo: auth.user.id,
+        })
+        .returning();
 
-    await db.insert(pipelineHistory).values({
-      clientId: client.id,
-      fromStage: null,
-      toStage: stage,
-      changedBy: auth.user.id,
-      note: "Client created",
+      await tx.insert(pipelineHistory).values({
+        clientId: c.id,
+        fromStage: null,
+        toStage: stage,
+        changedBy: auth.user.id,
+        note: "Client created",
+      });
+
+      return [c];
     });
 
     return NextResponse.json({

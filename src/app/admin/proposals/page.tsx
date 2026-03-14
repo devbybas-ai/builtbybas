@@ -4,6 +4,7 @@ import { desc, eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { proposals, clients } from "@/lib/schema";
 import { decrypt } from "@/lib/encryption";
+import { formatCents } from "@/data/service-constants";
 import { GlassCard } from "@/components/shared/GlassCard";
 import { cn } from "@/lib/utils";
 import { getProposalStatusMeta } from "@/types/proposal";
@@ -14,13 +15,6 @@ export const metadata: Metadata = {
   title: "Proposals - BuiltByBas Admin",
   robots: { index: false, follow: false },
 };
-
-function formatCents(cents: number): string {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  }).format(cents / 100);
-}
 
 export default async function ProposalsPage() {
   const rows = await db

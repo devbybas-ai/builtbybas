@@ -4,10 +4,11 @@ const HTML_ENTITIES: Record<string, string> = {
   ">": "&gt;",
   '"': "&quot;",
   "'": "&#39;",
+  "`": "&#96;",
 };
 
 export function escapeHtml(str: string): string {
-  return str.replace(/[&<>"']/g, (char) => HTML_ENTITIES[char] || char);
+  return str.replace(/[&<>"'`]/g, (char) => HTML_ENTITIES[char] || char);
 }
 
 export function sanitizeString(str: string): string {

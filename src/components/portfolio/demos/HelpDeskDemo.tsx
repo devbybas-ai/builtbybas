@@ -19,7 +19,7 @@ import { DemoPageHeader } from "@/components/portfolio/demos/shared/DemoPageHead
 import { DemoStatCard } from "@/components/portfolio/demos/shared/DemoStatCard";
 import { DemoGlassButton } from "@/components/portfolio/demos/shared/DemoGlassButton";
 import { helpTickets } from "@/data/demo-seed";
-import { demoStaggerContainer, demoStaggerItem, demoSprings, demoFadeUp, demoScalePop } from "@/lib/demo-motion";
+import { demoStaggerContainer, demoStaggerItem, demoSprings, demoFadeUp } from "@/lib/demo-motion";
 import { demoGetRelativeTime } from "@/lib/demo-utils";
 
 // ---- Filter tabs ----

@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface ProjectCardGalleryProps {
@@ -75,11 +75,20 @@ export function ProjectCardGallery({ images, title, colorAccent }: ProjectCardGa
     startTimer();
   };
 
+  const handleFocus = () => setPaused(true);
+  const handleBlur = (e: React.FocusEvent) => {
+    if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+      setPaused(false);
+    }
+  };
+
   return (
     <div
       className={cn("relative overflow-hidden bg-gradient-to-br", gradient)}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
+      onFocus={handleFocus}
+      onBlur={handleBlur}
     >
       {/* Main Image */}
       <div className="relative aspect-video overflow-hidden">
@@ -103,13 +112,13 @@ export function ProjectCardGallery({ images, title, colorAccent }: ProjectCardGa
           </motion.div>
         </AnimatePresence>
 
-        {/* Navigation arrows */}
+        {/* Navigation arrows + pause/play */}
         {images.length > 1 && (
           <>
             <motion.button
               type="button"
               onClick={goPrev}
-              className="absolute left-2 top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm transition-colors hover:bg-black/70"
+              className="absolute left-2 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm transition-colors hover:bg-black/70"
               initial={{ opacity: 0, x: -8 }}
               whileHover={{ scale: 1.1 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -121,7 +130,7 @@ export function ProjectCardGallery({ images, title, colorAccent }: ProjectCardGa
             <motion.button
               type="button"
               onClick={goNext}
-              className="absolute right-2 top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm transition-colors hover:bg-black/70"
+              className="absolute right-2 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm transition-colors hover:bg-black/70"
               initial={{ opacity: 0, x: 8 }}
               whileHover={{ scale: 1.1 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -130,6 +139,20 @@ export function ProjectCardGallery({ images, title, colorAccent }: ProjectCardGa
             >
               <ChevronRight className="h-4 w-4" />
             </motion.button>
+            {!shouldReduceMotion && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setPaused((p) => !p);
+                }}
+                className="absolute right-2 top-2 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm transition-colors hover:bg-black/70"
+                aria-label={paused ? "Play slideshow" : "Pause slideshow"}
+              >
+                {paused ? <Play className="h-3.5 w-3.5" /> : <Pause className="h-3.5 w-3.5" />}
+              </button>
+            )}
           </>
         )}
 
@@ -172,7 +195,7 @@ export function ProjectCardGallery({ images, title, colorAccent }: ProjectCardGa
                 handleThumbClick(i);
               }}
               className={cn(
-                "relative h-10 flex-1 overflow-hidden rounded-sm transition-all",
+                "relative h-11 flex-1 overflow-hidden rounded-sm transition-all",
                 i === activeIndex
                   ? "ring-1.5 ring-primary ring-offset-1 ring-offset-black/50"
                   : "opacity-60 hover:opacity-90",

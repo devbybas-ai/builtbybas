@@ -1,6 +1,4 @@
 import type { Metadata } from "next";
-import { PublicHeader } from "@/components/layout/PublicHeader";
-import { PublicFooter } from "@/components/layout/PublicFooter";
 import { ServicesGrid } from "@/components/public-site/ServicesGrid";
 import { CTASection } from "@/components/public-site/CTASection";
 import { FadeIn } from "@/components/motion/FadeIn";
@@ -11,10 +9,16 @@ import {
   getFAQSchema,
 } from "@/lib/json-ld";
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://builtbybas.com";
+
+/** ISR: revalidate static content every hour */
+export const revalidate = 3600;
+
 export const metadata: Metadata = {
   title: "Web Development Services",
   description:
     "Custom websites, dashboards, portals, e-commerce, CRM systems, and AI-powered tools. Precision-engineered for your business. Get a quote today.",
+  alternates: { canonical: `${SITE_URL}/services` },
 };
 
 const faqItems = [
@@ -46,7 +50,6 @@ export default function ServicesPage() {
         ])}
       />
       <JsonLd data={getFAQSchema(faqItems)} />
-      <PublicHeader />
       <main id="main-content" className="relative overflow-x-clip pt-24">
         <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <FadeIn className="mb-12">
@@ -66,7 +69,6 @@ export default function ServicesPage() {
           <CTASection />
         </div>
       </main>
-      <PublicFooter />
     </>
   );
 }

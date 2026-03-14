@@ -9,7 +9,6 @@ import {
 import {
   PIPELINE_STAGES,
   getStageMeta,
-  getNextStage,
 } from "@/types/client";
 
 // ============================================
@@ -301,13 +300,3 @@ describe("getStageMeta", () => {
   });
 });
 
-describe("getNextStage", () => {
-  it("returns next stage in sequence", () => {
-    expect(getNextStage("lead")).toBe("intake_submitted");
-    expect(getNextStage("proposal_sent")).toBe("proposal_accepted");
-  });
-
-  it("returns undefined for last stage", () => {
-    expect(getNextStage("completed")).toBeUndefined();
-  });
-});

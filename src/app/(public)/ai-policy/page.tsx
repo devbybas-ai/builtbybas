@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { PublicHeader } from "@/components/layout/PublicHeader";
-import { PublicFooter } from "@/components/layout/PublicFooter";
+
 export const metadata: Metadata = {
   title: "Responsible AI Policy",
   description:
@@ -11,7 +10,6 @@ export const metadata: Metadata = {
 export default function AIPolicyPage() {
   return (
     <>
-      <PublicHeader />
       <main id="main-content" className="relative pt-24 pb-24">
         <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
           <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
@@ -51,13 +49,13 @@ export default function AIPolicyPage() {
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-white/10 text-left">
-                      <th className="pb-2 pr-4 font-medium text-foreground">
+                      <th scope="col" className="pb-2 pr-4 font-medium text-foreground">
                         Use Case
                       </th>
-                      <th className="pb-2 pr-4 font-medium text-foreground">
+                      <th scope="col" className="pb-2 pr-4 font-medium text-foreground">
                         What AI Does
                       </th>
-                      <th className="pb-2 font-medium text-foreground">
+                      <th scope="col" className="pb-2 font-medium text-foreground">
                         Human Oversight
                       </th>
                     </tr>
@@ -359,7 +357,6 @@ export default function AIPolicyPage() {
           </div>
         </div>
       </main>
-      <PublicFooter />
     </>
   );
 }

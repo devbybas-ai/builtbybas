@@ -1,15 +1,11 @@
 import { eq, desc } from "drizzle-orm";
 import { db } from "./db";
-import { intakeSubmissions } from "./schema";
+import { intakeSubmissions, intakeStatusEnum } from "./schema";
 import { encrypt, encryptAnalysisPii, decryptAnalysisPii } from "./encryption";
 import type { IntakeAnalysis } from "@/types/intake-analysis";
 
-export type IntakeStatus =
-  | "new"
-  | "reviewed"
-  | "accepted"
-  | "rejected"
-  | "converted";
+/** Derived from the schema enum -- single source of truth */
+export type IntakeStatus = (typeof intakeStatusEnum.enumValues)[number];
 
 export interface IntakeSubmissionRow {
   analysis: IntakeAnalysis;

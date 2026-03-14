@@ -56,22 +56,26 @@ export async function PATCH(
 
     const now = new Date();
 
-    const [updated] = await db
-      .update(clients)
-      .set({
-        pipelineStage: stage,
-        stageChangedAt: now,
-        updatedAt: now,
-      })
-      .where(eq(clients.id, id))
-      .returning();
+    const [updated] = await db.transaction(async (tx) => {
+      const [u] = await tx
+        .update(clients)
+        .set({
+          pipelineStage: stage,
+          stageChangedAt: now,
+          updatedAt: now,
+        })
+        .where(eq(clients.id, id))
+        .returning();
 
-    await db.insert(pipelineHistory).values({
-      clientId: id,
-      fromStage: current.pipelineStage,
-      toStage: stage,
-      changedBy: auth.user.id,
-      note: note ?? null,
+      await tx.insert(pipelineHistory).values({
+        clientId: id,
+        fromStage: current.pipelineStage,
+        toStage: stage,
+        changedBy: auth.user.id,
+        note: note ?? null,
+      });
+
+      return [u];
     });
 
     return NextResponse.json({ success: true, data: updated });

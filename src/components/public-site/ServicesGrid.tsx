@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { AnimatePresence, motion, useInView } from "framer-motion";
 import { staggerContainer } from "@/lib/motion";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { useInitialViewportCheck } from "@/hooks/useInitialViewportCheck";
 import { ServiceCard } from "@/components/public-site/ServiceCard";
 import { ServiceWalkthroughOverlay } from "@/components/public-site/ServiceWalkthroughOverlay";
 import { services } from "@/data/services";
@@ -14,25 +15,11 @@ export function ServicesGrid() {
   const [activeService, setActiveService] = useState<Service | null>(null);
   const gridRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(gridRef, { once: true, margin: "0px 0px -40px 0px" });
-  const [mountVisible, setMountVisible] = useState(false);
-
-  // iOS Safari fix: IntersectionObserver may not fire for elements
-  // already in viewport on mount (same pattern as FadeIn)
-  useEffect(() => {
-    const frame = requestAnimationFrame(() => {
-      if (gridRef.current) {
-        const rect = gridRef.current.getBoundingClientRect();
-        if (rect.top < window.innerHeight && rect.bottom > 0) {
-          setMountVisible(true);
-        }
-      }
-    });
-    return () => cancelAnimationFrame(frame);
-  }, []);
+  const mountVisible = useInitialViewportCheck(gridRef);
 
   const grid = (
     <>
-      {services.map((service, index) => {
+      {services.map((service) => {
         const card = (
           <ServiceCard
             key={service.id}

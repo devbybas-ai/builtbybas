@@ -1,6 +1,4 @@
 import type { Metadata } from "next";
-import { PublicHeader } from "@/components/layout/PublicHeader";
-import { PublicFooter } from "@/components/layout/PublicFooter";
 import { FadeIn } from "@/components/motion/FadeIn";
 import { ConceptGrid } from "@/components/portfolio/ConceptGrid";
 import { CTASection } from "@/components/public-site/CTASection";
@@ -15,7 +13,6 @@ export const metadata: Metadata = {
 export default function ConceptsPage() {
   return (
     <>
-      <PublicHeader />
       <main id="main-content">
         <section className="pt-24 pb-12">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -39,7 +36,6 @@ export default function ConceptsPage() {
 
         <CTASection />
       </main>
-      <PublicFooter />
     </>
   );
 }

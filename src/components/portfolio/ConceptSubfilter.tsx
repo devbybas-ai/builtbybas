@@ -27,7 +27,7 @@ export function ConceptSubfilter({ active, onChange }: ConceptSubfilterProps) {
       transition={{ duration: 0.2 }}
       className="mb-8 overflow-hidden"
     >
-      <div className="flex w-full overflow-x-auto scrollbar-hide border border-white/5 rounded-lg p-1 bg-white/[0.02] gap-1">
+      <div className="flex w-full overflow-x-auto scrollbar-none border border-white/5 rounded-lg p-1 bg-white/[0.02] gap-1">
         {allOptions.map((sub) => (
           <button
             key={sub.id}

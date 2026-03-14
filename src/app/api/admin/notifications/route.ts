@@ -2,10 +2,14 @@ import { NextResponse } from "next/server";
 import { count, eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { intakeSubmissions, proposals, invoices } from "@/lib/schema";
+import { requireAdmin } from "@/lib/api-auth";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
+  const auth = await requireAdmin();
+  if ("error" in auth) return auth.error;
+
   const [
     [newIntakes],
     [draftProposals],

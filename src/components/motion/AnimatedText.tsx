@@ -1,9 +1,10 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
+import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { springs } from "@/lib/motion";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { useInitialViewportCheck } from "@/hooks/useInitialViewportCheck";
 import { cn } from "@/lib/utils";
 
 interface AnimatedTextProps {
@@ -26,21 +27,7 @@ export function AnimatedText({
   const shouldReduceMotion = useReducedMotion();
   const ref = useRef<HTMLSpanElement>(null);
   const isInView = useInView(ref, { once: true, margin: "0px 0px -40px 0px" });
-  const [mountVisible, setMountVisible] = useState(false);
-
-  useEffect(() => {
-    // iOS Safari fix: IntersectionObserver may not fire for elements
-    // already in viewport during Next.js client-side navigation
-    const frame = requestAnimationFrame(() => {
-      if (ref.current) {
-        const rect = ref.current.getBoundingClientRect();
-        if (rect.top < window.innerHeight && rect.bottom > 0) {
-          setMountVisible(true);
-        }
-      }
-    });
-    return () => cancelAnimationFrame(frame);
-  }, []);
+  const mountVisible = useInitialViewportCheck(ref);
 
   if (shouldReduceMotion) {
     return (

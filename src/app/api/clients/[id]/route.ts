@@ -140,18 +140,12 @@ export async function DELETE(
   }
 
   try {
-    // Delete related records first (notes, pipeline history)
-    await db
-      .delete(clientNotes)
-      .where(eq(clientNotes.clientId, id));
-    await db
-      .delete(pipelineHistory)
-      .where(eq(pipelineHistory.clientId, id));
-
-    const [deleted] = await db
-      .delete(clients)
-      .where(eq(clients.id, id))
-      .returning({ id: clients.id });
+    const [deleted] = await db.transaction(async (tx) => {
+      await tx.delete(clientNotes).where(eq(clientNotes.clientId, id));
+      await tx.delete(pipelineHistory).where(eq(pipelineHistory.clientId, id));
+      const [d] = await tx.delete(clients).where(eq(clients.id, id)).returning({ id: clients.id });
+      return [d];
+    });
 
     if (!deleted) {
       return NextResponse.json(
@@ -202,7 +196,7 @@ export async function PATCH(
     );
   }
 
-  const updates: Record<string, unknown> = { updatedAt: new Date() };
+  const updates: Partial<typeof clients.$inferInsert> = { updatedAt: new Date() };
   const data = parsed.data;
 
   if (data.name !== undefined) updates.name = encrypt(sanitizeString(data.name));

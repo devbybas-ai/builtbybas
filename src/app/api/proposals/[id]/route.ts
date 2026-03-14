@@ -151,7 +151,7 @@ export async function PATCH(
   }
 
   const data = parsed.data;
-  const updates: Record<string, unknown> = { updatedAt: new Date() };
+  const updates: Partial<typeof proposals.$inferInsert> = { updatedAt: new Date() };
 
   if (data.title !== undefined) updates.title = sanitizeString(data.title);
   if (data.summary !== undefined)
@@ -185,51 +185,57 @@ export async function PATCH(
   }
 
   try {
-    const [updated] = await db
-      .update(proposals)
-      .set(updates)
-      .where(eq(proposals.id, id))
-      .returning();
+    const result = await db.transaction(async (tx) => {
+      const [u] = await tx
+        .update(proposals)
+        .set(updates)
+        .where(eq(proposals.id, id))
+        .returning();
 
-    if (!updated) {
+      if (!u) return null;
+
+      // Pipeline stage advancement on status changes
+      if (data.status === "accepted" && u.clientId) {
+        const [client] = await tx
+          .select({ pipelineStage: clients.pipelineStage })
+          .from(clients)
+          .where(eq(clients.id, u.clientId))
+          .limit(1);
+
+        if (
+          client &&
+          ["proposal_draft", "proposal_sent"].includes(client.pipelineStage)
+        ) {
+          await tx
+            .update(clients)
+            .set({
+              pipelineStage: "proposal_accepted",
+              stageChangedAt: new Date(),
+              updatedAt: new Date(),
+            })
+            .where(eq(clients.id, u.clientId));
+
+          await tx.insert(pipelineHistory).values({
+            clientId: u.clientId,
+            fromStage: client.pipelineStage,
+            toStage: "proposal_accepted",
+            changedBy: auth.user.id,
+            note: "Proposal accepted by client",
+          });
+        }
+      }
+
+      return u;
+    });
+
+    if (!result) {
       return NextResponse.json(
         { success: false, error: "Proposal not found" },
         { status: 404 }
       );
     }
 
-    // Pipeline stage advancement on status changes
-    if (data.status === "accepted" && updated.clientId) {
-      const [client] = await db
-        .select({ pipelineStage: clients.pipelineStage })
-        .from(clients)
-        .where(eq(clients.id, updated.clientId))
-        .limit(1);
-
-      if (
-        client &&
-        ["proposal_draft", "proposal_sent"].includes(client.pipelineStage)
-      ) {
-        await db
-          .update(clients)
-          .set({
-            pipelineStage: "proposal_accepted",
-            stageChangedAt: new Date(),
-            updatedAt: new Date(),
-          })
-          .where(eq(clients.id, updated.clientId));
-
-        await db.insert(pipelineHistory).values({
-          clientId: updated.clientId,
-          fromStage: client.pipelineStage,
-          toStage: "proposal_accepted",
-          changedBy: auth.user.id,
-          note: "Proposal accepted by client",
-        });
-      }
-    }
-
-    return NextResponse.json({ success: true, data: updated });
+    return NextResponse.json({ success: true, data: result });
   } catch {
     return NextResponse.json(
       { success: false, error: "Failed to update proposal" },

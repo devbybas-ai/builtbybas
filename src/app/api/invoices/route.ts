@@ -1,20 +1,24 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { eq, desc, sql } from "drizzle-orm";
-import { db } from "@/lib/db";
+import { db, type Database } from "@/lib/db";
 import { invoices, invoiceItems, clients, projects } from "@/lib/schema";
 import { requireAdmin } from "@/lib/api-auth";
 import { createInvoiceSchema } from "@/lib/invoice-validation";
 import { sanitizeString } from "@/lib/sanitize";
 import { decrypt } from "@/lib/encryption";
 
-async function generateInvoiceNumber(): Promise<string> {
+type Transaction = Parameters<Parameters<Database["transaction"]>[0]>[0];
+
+async function generateInvoiceNumber(tx: Transaction): Promise<string> {
   const year = new Date().getFullYear();
-  const [result] = await db
+  const [result] = await tx
     .select({ count: sql<number>`count(*)::int` })
     .from(invoices);
   const seq = (result.count + 1).toString().padStart(4, "0");
   return `INV-${year}-${seq}`;
 }
+
+const MAX_INVOICE_RETRIES = 3;
 
 export async function GET(request: NextRequest) {
   const auth = await requireAdmin();
@@ -107,35 +111,56 @@ export async function POST(request: NextRequest) {
   const totalCents = subtotalCents + taxCents;
 
   try {
-    const invoiceNumber = await generateInvoiceNumber();
+    // Retry loop to handle unique constraint violations on invoice number
+    let lastError: unknown;
+    for (let attempt = 0; attempt < MAX_INVOICE_RETRIES; attempt++) {
+      try {
+        const invoice = await db.transaction(async (tx) => {
+          // Generate inside the transaction to avoid race conditions
+          const invoiceNumber = await generateInvoiceNumber(tx);
 
-    const [invoice] = await db
-      .insert(invoices)
-      .values({
-        invoiceNumber,
-        clientId: data.clientId,
-        projectId: data.projectId ?? null,
-        dueDate: new Date(data.dueDate),
-        taxRate: taxRate.toString(),
-        subtotalCents,
-        taxCents,
-        totalCents,
-        notes: data.notes ? sanitizeString(data.notes) : null,
-      })
-      .returning();
+          const [inv] = await tx
+            .insert(invoices)
+            .values({
+              invoiceNumber,
+              clientId: data.clientId,
+              projectId: data.projectId ?? null,
+              dueDate: new Date(data.dueDate),
+              taxRate: taxRate.toString(),
+              subtotalCents,
+              taxCents,
+              totalCents,
+              notes: data.notes ? sanitizeString(data.notes) : null,
+            })
+            .returning();
 
-    const itemRows = data.items.map((item, i) => ({
-      invoiceId: invoice.id,
-      description: sanitizeString(item.description),
-      quantity: item.quantity.toString(),
-      unitPriceCents: item.unitPriceCents,
-      totalCents: Math.round(item.quantity * item.unitPriceCents),
-      sortOrder: i,
-    }));
+          const itemRows = data.items.map((item, i) => ({
+            invoiceId: inv.id,
+            description: sanitizeString(item.description),
+            quantity: item.quantity.toString(),
+            unitPriceCents: item.unitPriceCents,
+            totalCents: Math.round(item.quantity * item.unitPriceCents),
+            sortOrder: i,
+          }));
 
-    await db.insert(invoiceItems).values(itemRows);
+          await tx.insert(invoiceItems).values(itemRows);
 
-    return NextResponse.json({ success: true, data: invoice }, { status: 201 });
+          return inv;
+        });
+
+        return NextResponse.json({ success: true, data: invoice }, { status: 201 });
+      } catch (err) {
+        lastError = err;
+        // Retry only on unique constraint violation (PostgreSQL error code 23505)
+        const isUniqueViolation =
+          err instanceof Error &&
+          "code" in err &&
+          (err as Error & { code: string }).code === "23505";
+        if (!isUniqueViolation) throw err;
+      }
+    }
+
+    throw lastError;
   } catch {
     return NextResponse.json(
       { success: false, error: "Failed to create invoice" },

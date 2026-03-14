@@ -1,9 +1,9 @@
 import { cookies } from "next/headers";
-import { eq, and, gt } from "drizzle-orm";
+import { eq, and, gt, lt } from "drizzle-orm";
 import bcryptjs from "bcryptjs";
 import { db } from "./db";
 import { users, sessions } from "./schema";
-import type { SafeUser, SessionPayload } from "@/types/auth";
+import type { SafeUser } from "@/types/auth";
 
 const SESSION_COOKIE = "builtbybas_session";
 const SESSION_MAX_AGE = 7 * 24 * 60 * 60; // 7 days in seconds
@@ -92,11 +92,11 @@ export async function destroySession(): Promise<void> {
   });
 }
 
-export function getSessionPayload(user: SafeUser, sessionId: string): SessionPayload {
-  return {
-    sessionId,
-    userId: user.id,
-    role: user.role,
-    expiresAt: Date.now() + SESSION_MAX_AGE * 1000,
-  };
+/**
+ * Delete sessions that expired more than 7 days ago.
+ * Called fire-and-forget from the login route to periodically clean up
+ * without requiring a separate cron job.
+ */
+export async function cleanupExpiredSessions(): Promise<void> {
+  await db.delete(sessions).where(lt(sessions.expiresAt, new Date()));
 }

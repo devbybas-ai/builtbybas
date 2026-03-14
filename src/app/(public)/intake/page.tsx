@@ -1,20 +1,28 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import { PublicHeader } from "@/components/layout/PublicHeader";
-import { PublicFooter } from "@/components/layout/PublicFooter";
 import { FadeIn } from "@/components/motion/FadeIn";
 import { IntakeForm } from "@/components/public-site/IntakeForm";
+import { JsonLd } from "@/components/shared/JsonLd";
+import { getBreadcrumbSchema } from "@/lib/json-ld";
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://builtbybas.com";
 
 export const metadata: Metadata = {
   title: "Start a Project",
   description:
     "Tell us about your project. Fill out the intake form and get a custom proposal within 48 hours. No templates, no shortcuts.",
+  alternates: { canonical: `${SITE_URL}/intake` },
 };
 
 export default function IntakePage() {
   return (
     <>
-      <PublicHeader />
+      <JsonLd
+        data={getBreadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "Start a Project", path: "/intake" },
+        ])}
+      />
       <main id="main-content" className="relative overflow-x-clip">
         <section className="pt-24 pb-8">
           <div className="mx-auto max-w-2xl px-4 text-center sm:px-6 lg:px-8">
@@ -36,7 +44,6 @@ export default function IntakePage() {
           </Suspense>
         </section>
       </main>
-      <PublicFooter />
     </>
   );
 }

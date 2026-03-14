@@ -248,13 +248,13 @@ export function ClassPulseDemo() {
                   <thead>
                     <tr className="border-b border-white/5">
                       {(["name", "Math", "Reading", "Science", "average"] as SortCol[]).map((col) => (
-                        <th key={col} onClick={() => handleSort(col)}
+                        <th scope="col" key={col} onClick={() => handleSort(col)}
                           className={`p-3 font-medium cursor-pointer hover:text-white/80 transition-colors ${col === "name" ? "text-left text-white/40" : "text-right text-white/40"}`}>
                           {col === "name" ? "Student" : col === "average" ? "Average" : col}
                           <SortIcon col={col} />
                         </th>
                       ))}
-                      <th className="p-3 text-right text-white/40 font-medium">Status</th>
+                      <th scope="col" className="p-3 text-right text-white/40 font-medium">Status</th>
                     </tr>
                   </thead>
                   <tbody>

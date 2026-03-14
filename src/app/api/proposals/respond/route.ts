@@ -1,8 +1,10 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { eq } from "drizzle-orm";
+import { z } from "zod/v4";
 import { db } from "@/lib/db";
 import { proposals, clients, pipelineHistory } from "@/lib/schema";
 import { hmacHash } from "@/lib/encryption";
+import { sanitizeString } from "@/lib/sanitize";
 
 export async function POST(request: NextRequest) {
   let body: unknown;
@@ -15,25 +17,21 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const { token, action, reason } = body as {
-    token?: string;
-    action?: string;
-    reason?: string;
-  };
+  const respondSchema = z.object({
+    token: z.string().regex(/^[a-f0-9]{64}$/),
+    action: z.enum(["accept", "decline"]),
+    reason: z.string().max(1000).optional(),
+  });
 
-  if (!token || typeof token !== "string" || !/^[a-f0-9]{64}$/.test(token)) {
+  const parsed = respondSchema.safeParse(body);
+  if (!parsed.success) {
     return NextResponse.json(
-      { success: false, error: "Invalid token" },
+      { success: false, error: "Validation failed" },
       { status: 400 }
     );
   }
 
-  if (action !== "accept" && action !== "decline") {
-    return NextResponse.json(
-      { success: false, error: "Action must be 'accept' or 'decline'" },
-      { status: 400 }
-    );
-  }
+  const { token, action, reason } = parsed.data;
 
   const hashedToken = hmacHash(token);
 
@@ -72,60 +70,62 @@ export async function POST(request: NextRequest) {
   const now = new Date();
   const newStatus = action === "accept" ? "accepted" : "rejected";
 
-  await db
-    .update(proposals)
-    .set({
-      status: newStatus,
-      respondedAt: now,
-      acceptedAt: action === "accept" ? now : undefined,
-      rejectionReason: action === "decline" && reason ? reason.slice(0, 1000) : undefined,
-      updatedAt: now,
-    })
-    .where(eq(proposals.id, proposal.id));
+  await db.transaction(async (tx) => {
+    await tx
+      .update(proposals)
+      .set({
+        status: newStatus,
+        respondedAt: now,
+        acceptedAt: action === "accept" ? now : undefined,
+        rejectionReason: action === "decline" && reason ? sanitizeString(reason.slice(0, 1000)) : undefined,
+        updatedAt: now,
+      })
+      .where(eq(proposals.id, proposal.id));
 
-  // Advance pipeline stage
-  if (proposal.clientId) {
-    const [client] = await db
-      .select({ pipelineStage: clients.pipelineStage })
-      .from(clients)
-      .where(eq(clients.id, proposal.clientId))
-      .limit(1);
+    // Advance pipeline stage
+    if (proposal.clientId) {
+      const [client] = await tx
+        .select({ pipelineStage: clients.pipelineStage })
+        .from(clients)
+        .where(eq(clients.id, proposal.clientId))
+        .limit(1);
 
-    if (client) {
-      if (action === "accept") {
-        await db
-          .update(clients)
-          .set({
-            pipelineStage: "proposal_accepted",
-            stageChangedAt: now,
-            updatedAt: now,
-          })
-          .where(eq(clients.id, proposal.clientId));
+      if (client) {
+        if (action === "accept") {
+          await tx
+            .update(clients)
+            .set({
+              pipelineStage: "proposal_accepted",
+              stageChangedAt: now,
+              updatedAt: now,
+            })
+            .where(eq(clients.id, proposal.clientId));
 
-        await db.insert(pipelineHistory).values({
-          clientId: proposal.clientId,
-          fromStage: client.pipelineStage,
-          toStage: "proposal_accepted",
-          note: "Client accepted the proposal",
-        });
-      } else {
-        await db
-          .update(clients)
-          .set({
-            status: "lost",
-            updatedAt: now,
-          })
-          .where(eq(clients.id, proposal.clientId));
+          await tx.insert(pipelineHistory).values({
+            clientId: proposal.clientId,
+            fromStage: client.pipelineStage,
+            toStage: "proposal_accepted",
+            note: "Client accepted the proposal",
+          });
+        } else {
+          await tx
+            .update(clients)
+            .set({
+              status: "lost",
+              updatedAt: now,
+            })
+            .where(eq(clients.id, proposal.clientId));
 
-        await db.insert(pipelineHistory).values({
-          clientId: proposal.clientId,
-          fromStage: client.pipelineStage,
-          toStage: client.pipelineStage,
-          note: `Client declined the proposal${reason ? `: ${reason.slice(0, 500)}` : ""}`,
-        });
+          await tx.insert(pipelineHistory).values({
+            clientId: proposal.clientId,
+            fromStage: client.pipelineStage,
+            toStage: client.pipelineStage,
+            note: `Client declined the proposal${reason ? `: ${sanitizeString(reason.slice(0, 500))}` : ""}`,
+          });
+        }
       }
     }
-  }
+  });
 
   return NextResponse.json({ success: true, status: newStatus });
 }

@@ -2,37 +2,22 @@ import { NextResponse, type NextRequest } from "next/server";
 import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { users } from "@/lib/schema";
-import { verifyPassword, createSession } from "@/lib/auth";
+import { verifyPassword, createSession, cleanupExpiredSessions } from "@/lib/auth";
 import { loginSchema } from "@/lib/validation";
+import { RateLimiter } from "@/lib/rate-limit";
 
-// Rate limiting: in-memory store (5 attempts / 15 min / IP)
-const loginAttempts = new Map<string, { count: number; resetAt: number }>();
-const MAX_ATTEMPTS = 5;
-const WINDOW_MS = 15 * 60 * 1000; // 15 minutes
-
-function checkRateLimit(ip: string): boolean {
-  const now = Date.now();
-  const record = loginAttempts.get(ip);
-
-  if (!record || now > record.resetAt) {
-    loginAttempts.set(ip, { count: 1, resetAt: now + WINDOW_MS });
-    return true;
-  }
-
-  if (record.count >= MAX_ATTEMPTS) {
-    return false;
-  }
-
-  record.count++;
-  return true;
-}
+// Rate limiting: 5 attempts per IP per 15 minutes
+const loginLimiter = new RateLimiter({
+  maxAttempts: 5,
+  windowMs: 15 * 60 * 1000,
+});
 
 export async function POST(request: NextRequest) {
   const ip =
     request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
     "unknown";
 
-  if (!checkRateLimit(ip)) {
+  if (!loginLimiter.check(ip)) {
     return NextResponse.json(
       { success: false, error: "Too many login attempts. Please try again later." },
       { status: 429 }
@@ -74,6 +59,11 @@ export async function POST(request: NextRequest) {
   }
 
   await createSession(user.id);
+
+  // Fire-and-forget: clean up expired sessions periodically
+  cleanupExpiredSessions().catch(() => {
+    // Intentionally swallowed -- cleanup is best-effort
+  });
 
   return NextResponse.json({
     success: true,

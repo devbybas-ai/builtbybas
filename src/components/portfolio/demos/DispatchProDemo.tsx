@@ -3,7 +3,7 @@
 import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Wrench, Phone, MapPin, Clock, Truck, User, CheckCircle, AlertTriangle,
+  Wrench, Phone, MapPin, Clock, Truck, User, AlertTriangle,
   ChevronRight, DollarSign, Search, History,
 } from "lucide-react";
 import { DemoPageWrapper } from "@/components/portfolio/demos/shared/DemoPageWrapper";

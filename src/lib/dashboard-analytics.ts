@@ -3,6 +3,11 @@ import { db } from "./db";
 import { clients, intakeSubmissions, pipelineHistory } from "./schema";
 import { decryptAnalysisPii } from "./encryption";
 import { computePriorityScore } from "./prioritization";
+import {
+  INDUSTRY_LABELS,
+  getComplexityLabel,
+  parsePriceRange,
+} from "@/data/service-constants";
 import type { IntakeAnalysis } from "@/types/intake-analysis";
 import type { PipelineStage } from "@/types/client";
 import type { PriorityResult } from "./prioritization";
@@ -83,25 +88,6 @@ export interface DashboardData {
 // Helpers
 // ---------------------------------------------------------------------------
 
-const INDUSTRY_LABELS: Record<string, string> = {
-  "professional-services": "Professional Services",
-  "home-services": "Home Services",
-  healthcare: "Healthcare",
-  "retail-ecommerce": "Retail / E-Commerce",
-  retail: "Retail / E-Commerce",
-  "food-hospitality": "Food & Hospitality",
-  "fitness-wellness": "Fitness & Wellness",
-  "real-estate": "Real Estate",
-  construction: "Construction",
-  education: "Education",
-  nonprofit: "Nonprofit",
-  technology: "Technology",
-  "financial-services": "Financial Services",
-  legal: "Legal",
-  logistics: "Logistics & Transportation",
-  automotive: "Automotive",
-  other: "Other",
-};
 
 const BUDGET_LABELS: Record<string, string> = {
   unsure: "Undecided",
@@ -127,13 +113,6 @@ function normalizeBudgetKey(raw: string): string {
   return "unsure";
 }
 
-function getComplexityLabel(score: number): string {
-  if (score >= 8) return "Enterprise";
-  if (score >= 6) return "Complex";
-  if (score >= 4) return "Moderate";
-  return "Simple";
-}
-
 function getComplexityColor(label: string): string {
   switch (label) {
     case "Enterprise": return "bg-red-500";
@@ -143,14 +122,6 @@ function getComplexityColor(label: string): string {
   }
 }
 
-function parsePipelineValue(investment: string): [number, number] {
-  const numbers = investment.match(/[\d,]+/g);
-  if (!numbers || numbers.length < 2) return [0, 0];
-  return [
-    parseInt(numbers[0].replace(/,/g, ""), 10),
-    parseInt(numbers[1].replace(/,/g, ""), 10),
-  ];
-}
 
 // ---------------------------------------------------------------------------
 // Main query
@@ -194,7 +165,7 @@ export async function getDashboardData(): Promise<DashboardData> {
   let pipelineMin = 0;
   let pipelineMax = 0;
   for (const a of analyses) {
-    const [min, max] = parsePipelineValue(
+    const { low: min, high: max } = parsePriceRange(
       a.summary.estimatedTotalInvestment,
     );
     pipelineMin += min;

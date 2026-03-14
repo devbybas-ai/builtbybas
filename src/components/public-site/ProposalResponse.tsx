@@ -81,7 +81,7 @@ export function ProposalResponse({ token }: { token: string }) {
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-[#0A0A0F] flex items-center justify-center">
+      <main className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-white/50 text-lg">Loading proposal...</div>
       </main>
     );
@@ -89,7 +89,7 @@ export function ProposalResponse({ token }: { token: string }) {
 
   if (error && !proposal) {
     return (
-      <main className="min-h-screen bg-[#0A0A0F] flex items-center justify-center px-4">
+      <main className="min-h-screen bg-background flex items-center justify-center px-4">
         <div className="max-w-md w-full text-center">
           <h1 className="text-2xl font-bold text-white mb-4">Proposal Not Found</h1>
           <p className="text-white/50">{error}</p>
@@ -107,7 +107,7 @@ export function ProposalResponse({ token }: { token: string }) {
     : null;
 
   return (
-    <main className="min-h-screen bg-[#0A0A0F]">
+    <main className="min-h-screen bg-background">
       <div className="max-w-3xl mx-auto px-4 py-12 sm:py-16">
         {/* Header */}
         <div className="mb-8">
@@ -181,7 +181,7 @@ export function ProposalResponse({ token }: { token: string }) {
                   <button
                     onClick={() => handleRespond("accept")}
                     disabled={responding}
-                    className="flex-1 py-3 px-6 bg-cyan-500 hover:bg-cyan-400 text-[#0A0A0F] font-bold rounded-xl transition-colors disabled:opacity-50 text-center"
+                    className="flex-1 py-3 px-6 bg-primary hover:bg-cyan-hover text-primary-foreground font-bold rounded-xl transition-colors disabled:opacity-50 text-center"
                   >
                     {responding ? "Submitting..." : "Accept Proposal"}
                   </button>
@@ -235,7 +235,7 @@ export function ProposalResponse({ token }: { token: string }) {
           <p className="text-white/30 text-xs">
             BuiltByBas - Custom Software &amp; Web Development
           </p>
-          <a href="https://builtbybas.com" className="text-cyan-500/50 text-xs hover:text-cyan-400 transition-colors">
+          <a href="https://builtbybas.com" className="text-primary/50 text-xs hover:text-primary transition-colors">
             builtbybas.com
           </a>
         </div>
