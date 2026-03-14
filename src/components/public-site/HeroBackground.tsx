@@ -1,147 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-
-// Chip locations + PCB trace paths from hub (500,300) — routed with right-angle segments, no crossings
-// side: which side of the board the chip is on (for opposite-side targeting)
-// p1 arrives from left → fire to "right" chips
-// p2 arrives from top  → fire to "bottom" chips
-// p3 arrives from right → fire to "left" chips
-const chipTargets = [
-  // Left side
-  { x: 230, y: 90, w: 12, h: 6, peak: 0.35, side: "left" as const, trace: "M500,300 L460,300 L460,93 L236,93" },
-  { x: 140, y: 365, w: 12, h: 6, peak: 0.35, side: "left" as const, trace: "M500,300 L300,300 L300,368 L146,368" },
-  { x: 70, y: 250, w: 30, h: 45, peak: 0.15, side: "left" as const, trace: "M500,300 L350,300 L350,272 L85,272" },
-  { x: 195, y: 500, w: 45, h: 35, peak: 0.15, side: "left" as const, trace: "M500,300 L400,300 L400,480 L217,480 L217,517" },
-  // Right side
-  { x: 810, y: 310, w: 12, h: 6, peak: 0.35, side: "right" as const, trace: "M500,300 L700,300 L700,313 L816,313" },
-  { x: 620, y: 240, w: 12, h: 6, peak: 0.35, side: "right" as const, trace: "M500,300 L580,300 L580,243 L626,243" },
-  { x: 860, y: 230, w: 30, h: 50, peak: 0.15, side: "right" as const, trace: "M500,300 L740,300 L740,255 L875,255" },
-  { x: 870, y: 360, w: 35, h: 40, peak: 0.15, side: "right" as const, trace: "M500,300 L760,300 L760,380 L887,380" },
-  // Top side
-  { x: 560, y: 65, w: 12, h: 6, peak: 0.35, side: "top" as const, trace: "M500,300 L520,300 L520,68 L566,68" },
-  { x: 530, y: 130, w: 40, h: 30, peak: 0.15, side: "top" as const, trace: "M500,300 L550,300 L550,145" },
-  // Bottom side
-  { x: 460, y: 550, w: 12, h: 6, peak: 0.35, side: "bottom" as const, trace: "M500,300 L500,450 L466,450 L466,553" },
-  { x: 430, y: 440, w: 40, h: 30, peak: 0.15, side: "bottom" as const, trace: "M500,300 L450,300 L450,455" },
-];
-
-// Particle → opposite side mapping
-const particleOpposite: Record<string, string> = {
-  p1: "right",  // p1 comes from left
-  p2: "bottom", // p2 comes from top
-  p3: "left",   // p3 comes from right
-};
-
-function useChipActivity(
-  pathsRef: React.RefObject<SVGGElement | null>,
-  rectsRef: React.RefObject<SVGGElement | null>,
-  hubOuterRef: React.RefObject<SVGCircleElement | null>,
-  hubInnerRef: React.RefObject<SVGCircleElement | null>,
-) {
-  useEffect(() => {
-    const pg = pathsRef.current;
-    const rg = rectsRef.current;
-    const hubOuter = hubOuterRef.current;
-    const hubInner = hubInnerRef.current;
-    if (!pg || !rg || !hubOuter || !hubInner) return;
-    const svg = pg.closest("svg");
-    if (!svg) return;
-
-    const rects = rg.querySelectorAll<SVGRectElement>("rect");
-    const paths = pg.querySelectorAll<SVGPathElement>("path");
-    if (!rects.length || !paths.length) return;
-
-    // Measure each trace path length and set up hidden dasharray
-    const lengths: number[] = [];
-    paths.forEach((path, idx) => {
-      const len = path.getTotalLength();
-      lengths[idx] = len;
-      path.style.strokeDasharray = String(len);
-      path.style.strokeDashoffset = String(len);
-    });
-
-    // Only one trace active at a time — ignore extra endEvents
-    let lastIdx = -1;
-    let busy = false;
-    const timeouts: ReturnType<typeof setTimeout>[] = [];
-
-    const fireTrace = (targetSide: string) => {
-      if (busy) return;
-      busy = true;
-      // Pick a random chip on the opposite side
-      const candidates = chipTargets
-        .map((c, idx) => ({ ...c, idx }))
-        .filter((c) => c.side === targetSide && c.idx !== lastIdx);
-      if (!candidates.length) return;
-
-      const pick = candidates[Math.floor(Math.random() * candidates.length)];
-      lastIdx = pick.idx;
-
-      const rect = rects[pick.idx];
-      const path = paths[pick.idx];
-      const peak = pick.peak;
-      const len = lengths[pick.idx];
-
-      // Progress-bar fill: trace lights up from hub toward chip over 2s
-      const fillAnim = path.animate(
-        [
-          { strokeDashoffset: len, stroke: "rgba(0, 212, 255, 0.35)" },
-          { strokeDashoffset: 0, stroke: "rgba(0, 212, 255, 0.35)" },
-        ],
-        { duration: 2000, easing: "ease-in-out", fill: "forwards" }
-      );
-
-      fillAnim.onfinish = () => {
-        // Chip lights up once trace reaches it
-        rect.animate(
-          [
-            { fill: `rgba(0, 212, 255, 0)`, offset: 0 },
-            { fill: `rgba(0, 212, 255, ${peak})`, offset: 0.05 },
-            { fill: `rgba(0, 212, 255, ${peak})`, offset: 0.6 },
-            { fill: `rgba(0, 212, 255, 0)`, offset: 1 },
-          ],
-          { duration: 3330, easing: "linear" }
-        );
-
-        // Fade trace back to dim after chip is lit
-        const fadeAnim = path.animate(
-          [
-            { strokeDashoffset: 0, stroke: "rgba(0, 212, 255, 0.35)" },
-            { strokeDashoffset: 0, stroke: "rgba(0, 212, 255, 0.06)" },
-          ],
-          { duration: 2000, delay: 800, easing: "ease-out", fill: "forwards" }
-        );
-        fadeAnim.onfinish = () => {
-          path.style.strokeDashoffset = String(len);
-          busy = false;
-        };
-      };
-    };
-
-    // Listen for SMIL particle arrivals at the center hub — fire trace immediately
-    const particles = svg.querySelectorAll<SVGAnimateMotionElement>("animateMotion[id^='p']");
-    const handler = (e: Event) => {
-      const id = (e.target as SVGAnimateMotionElement).id;
-      const targetSide = particleOpposite[id];
-      if (!targetSide) return;
-      fireTrace(targetSide);
-    };
-    particles.forEach((p) => p.addEventListener("endEvent", handler));
-
-    return () => {
-      particles.forEach((p) => p.removeEventListener("endEvent", handler));
-      timeouts.forEach(clearTimeout);
-    };
-  }, [pathsRef, rectsRef, hubOuterRef, hubInnerRef]);
-}
-
 export function HeroBackground() {
-  const chipPathsRef = useRef<SVGGElement>(null);
-  const chipRectsRef = useRef<SVGGElement>(null);
-  const hubOuterRef = useRef<SVGCircleElement>(null);
-  const hubInnerRef = useRef<SVGCircleElement>(null);
-  useChipActivity(chipPathsRef, chipRectsRef, hubOuterRef, hubInnerRef);
 
   return (
     <div
@@ -213,7 +72,7 @@ export function HeroBackground() {
         {/* ============================================ */}
 
         {/* Parallel bus lines — horizontal groups */}
-        <g stroke="rgba(0, 212, 255, 0.08)" strokeWidth="0.5" fill="none">
+        <g stroke="rgba(0, 212, 255, 0.12)" strokeWidth="1" fill="none">
           {/* Top bus group */}
           <line x1="30" y1="40" x2="280" y2="40" /><line x1="30" y1="44" x2="260" y2="44" />
           <line x1="30" y1="48" x2="240" y2="48" /><line x1="30" y1="52" x2="220" y2="52" />
@@ -264,7 +123,7 @@ export function HeroBackground() {
         </g>
 
         {/* Vertical bus lines */}
-        <g stroke="rgba(0, 212, 255, 0.08)" strokeWidth="0.5" fill="none">
+        <g stroke="rgba(0, 212, 255, 0.12)" strokeWidth="1" fill="none">
           <line x1="60" y1="30" x2="60" y2="180" /><line x1="64" y1="30" x2="64" y2="160" />
           <line x1="60" y1="220" x2="60" y2="380" /><line x1="64" y1="240" x2="64" y2="380" />
           <line x1="60" y1="420" x2="60" y2="570" /><line x1="64" y1="440" x2="64" y2="570" />
@@ -284,7 +143,7 @@ export function HeroBackground() {
         </g>
 
         {/* Dense short connectors — fills the gaps */}
-        <g stroke="rgba(0, 212, 255, 0.09)" strokeWidth="0.6" fill="none">
+        <g stroke="rgba(0, 212, 255, 0.12)" strokeWidth="1" fill="none">
           {/* Dozens of small right-angle connectors */}
           <path d="M80,40 V70 H120" /><path d="M180,44 V75 H220" /><path d="M280,40 V60 H320" />
           <path d="M480,40 V65 H520" /><path d="M700,40 V60 H740" />
@@ -312,14 +171,11 @@ export function HeroBackground() {
         </g>
 
         {/* Main animated route traces */}
-        <g stroke="rgba(0, 212, 255, 0.12)" strokeWidth="1" fill="none" strokeLinecap="square">
+        <g stroke="rgba(0, 212, 255, 0.05)" strokeWidth="1" fill="none" strokeLinecap="square">
           <use href="#r1" /><use href="#r2" /><use href="#r3" /><use href="#r4" />
           <use href="#r5" /><use href="#r6" /><use href="#r7" /><use href="#r8" />
           <use href="#r9" /><use href="#r10" /><use href="#r11" /><use href="#r12" />
           <use href="#r13" /><use href="#r14" /><use href="#r15" /><use href="#r16" />
-        </g>
-        <g className="hero-filter-glow" stroke="rgba(0, 212, 255, 0.22)" strokeWidth="1" fill="none" filter="url(#g1)" strokeLinecap="square">
-          <use href="#r1" /><use href="#r5" /><use href="#r6" /><use href="#r9" /><use href="#r12" />
         </g>
 
         {/* ============================================ */}
@@ -415,7 +271,7 @@ export function HeroBackground() {
         </g>
 
         {/* Center hub */}
-        <circle ref={hubOuterRef} className="hero-filter-glow" cx="500" cy="300" r="5" fill="rgba(0, 212, 255, 0.5)">
+        <circle className="hero-filter-glow" cx="500" cy="300" r="5" fill="rgba(0, 212, 255, 0.5)">
           <animate attributeName="fill" values="rgba(0,212,255,0.5);rgba(255,255,255,1);rgba(255,255,255,0.9);rgba(0,212,255,0.5)" keyTimes="0;0.1;0.5;1" dur="0.6s" begin="p1.end" fill="remove" />
           <animate attributeName="fill" values="rgba(0,212,255,0.5);rgba(255,255,255,1);rgba(255,255,255,0.9);rgba(0,212,255,0.5)" keyTimes="0;0.1;0.5;1" dur="0.6s" begin="p2.end" fill="remove" />
           <animate attributeName="fill" values="rgba(0,212,255,0.5);rgba(255,255,255,1);rgba(255,255,255,0.9);rgba(0,212,255,0.5)" keyTimes="0;0.1;0.5;1" dur="0.6s" begin="p3.end" fill="remove" />
@@ -423,7 +279,7 @@ export function HeroBackground() {
           <animate attributeName="r" values="5;7;5" keyTimes="0;0.3;1" dur="0.6s" begin="p2.end" fill="remove" />
           <animate attributeName="r" values="5;7;5" keyTimes="0;0.3;1" dur="0.6s" begin="p3.end" fill="remove" />
         </circle>
-        <circle ref={hubInnerRef} cx="500" cy="300" r="2.5" fill="#00D4FF" opacity="1">
+        <circle cx="500" cy="300" r="2.5" fill="#00D4FF" opacity="1">
           <animate attributeName="fill" values="#00D4FF;#FFFFFF;#FFFFFF;#00D4FF" keyTimes="0;0.1;0.5;1" dur="0.6s" begin="p1.end" fill="remove" />
           <animate attributeName="fill" values="#00D4FF;#FFFFFF;#FFFFFF;#00D4FF" keyTimes="0;0.1;0.5;1" dur="0.6s" begin="p2.end" fill="remove" />
           <animate attributeName="fill" values="#00D4FF;#FFFFFF;#FFFFFF;#00D4FF" keyTimes="0;0.1;0.5;1" dur="0.6s" begin="p3.end" fill="remove" />
@@ -433,7 +289,7 @@ export function HeroBackground() {
         </circle>
 
         {/* Junction nodes on routes */}
-        <g fill="rgba(0, 212, 255, 0.45)">
+        <g fill="rgba(0, 212, 255, 0.12)">
           <circle cx="200" cy="150" r="1.5" /><circle cx="200" cy="250" r="1.5" />
           <circle cx="350" cy="250" r="1.5" /><circle cx="350" cy="300" r="1.5" />
           <circle cx="150" cy="300" r="1.5" /><circle cx="150" cy="350" r="1.5" />
@@ -456,13 +312,6 @@ export function HeroBackground() {
           <circle cx="620" cy="350" r="1.5" /><circle cx="100" cy="530" r="1.5" />
           <circle cx="250" cy="450" r="1.5" /><circle cx="900" cy="530" r="1.5" />
           <circle cx="750" cy="450" r="1.5" />
-        </g>
-
-        {/* Chip trace paths — drawn before chip bodies so chips cover them */}
-        <g className="hero-anim" ref={chipPathsRef}>
-          {chipTargets.map((c, i) => (
-            <path key={`t${i}`} d={c.trace} fill="none" stroke="rgba(0, 212, 255, 0.06)" strokeWidth="0.8" />
-          ))}
         </g>
 
         {/* IC chip bodies — drawn last to cover ALL lines */}
@@ -498,13 +347,6 @@ export function HeroBackground() {
           <circle cx="436" cy="446" r="1.2" opacity="0">
             <animate attributeName="opacity" values="0;0.8;0" dur="1s" begin="0.2s" repeatCount="indefinite" />
           </circle>
-        </g>
-
-        {/* Chip glow overlay rects — on top of chip bodies so animation lights them up */}
-        <g className="hero-anim" ref={chipRectsRef}>
-          {chipTargets.map((c, i) => (
-            <rect key={`c${i}`} x={c.x} y={c.y} width={c.w} height={c.h} rx={1} fill="rgba(0, 212, 255, 0)" stroke="none" />
-          ))}
         </g>
 
         {/* ============================================ */}
@@ -547,22 +389,22 @@ export function HeroBackground() {
         {/* ============================================ */}
         {/* ============================================ */}
         {/* TRACE ILLUMINATION + PARTICLES — chained       */}
-        {/* After particle arrives: 1.11s delay + 2s trace */}
-        {/* + 3.33s chip glow + 2.22s pause = 7.55s gap   */}
+        {/* Particles travel routes to center hub, flash   */}
+        {/* 7.55s gap between each particle cycle          */}
         {/* ============================================ */}
-        <g className="hero-anim" fill="none" filter="url(#g1)">
-          <use href="#r1" stroke="#00D4FF" strokeWidth="1.5" opacity="0.5" strokeDasharray="30 2000" strokeDashoffset="30" strokeLinecap="round">
+        <g className="hero-anim" fill="none">
+          <use href="#r1" stroke="rgba(0, 212, 255, 0.12)" strokeWidth="1" strokeDasharray="30 2000" strokeDashoffset="30" strokeLinecap="square">
             <animate attributeName="stroke-dashoffset" from="30" to="-620" dur="1.8s" begin="0s; p3.end+7.55s" fill="remove" />
           </use>
-          <use href="#r6" stroke="#00D4FF" strokeWidth="1.5" opacity="0.5" strokeDasharray="30 2000" strokeDashoffset="30" strokeLinecap="round">
+          <use href="#r6" stroke="rgba(0, 212, 255, 0.12)" strokeWidth="1" strokeDasharray="30 2000" strokeDashoffset="30" strokeLinecap="square">
             <animate attributeName="stroke-dashoffset" from="30" to="-370" dur="1.2s" begin="p1.end+7.55s" fill="remove" />
           </use>
-          <use href="#r9" stroke="#00D4FF" strokeWidth="1.5" opacity="0.5" strokeDasharray="30 2000" strokeDashoffset="30" strokeLinecap="round">
+          <use href="#r9" stroke="rgba(0, 212, 255, 0.12)" strokeWidth="1" strokeDasharray="30 2000" strokeDashoffset="30" strokeLinecap="square">
             <animate attributeName="stroke-dashoffset" from="30" to="-620" dur="1.8s" begin="p2.end+7.55s" fill="remove" />
           </use>
         </g>
 
-        {/* Particles — 7.55s gap: chip completes + 2.22s pause */}
+        {/* Particles — 7.55s gap between cycles */}
         <g className="hero-anim">
           <circle r="0.8" fill="#66EEFF" filter="url(#g1)" opacity="1">
             <animateMotion id="p1" dur="1.8s" begin="0s; p3.end+7.55s" fill="remove"><mpath href="#r1" /></animateMotion>
