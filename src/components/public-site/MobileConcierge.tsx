@@ -147,6 +147,10 @@ export function MobileConcierge() {
                 <p className="mt-4 text-base leading-relaxed text-muted-foreground md:mt-6 md:text-xl">
                   {conciergeContent.welcome.subtitle}
                 </p>
+                <p className="mt-6 text-lg font-semibold leading-snug text-white md:mt-8 md:text-2xl">
+                  Tell Us How Your Business Works.<br />
+                  We&apos;ll Build the System Around It.
+                </p>
               </div>
 
               <div className="flex-1" />
