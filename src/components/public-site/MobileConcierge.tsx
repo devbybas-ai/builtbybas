@@ -4,7 +4,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, X, ExternalLink } from "lucide-react";
 import { HeroBackground } from "@/components/public-site/HeroBackground";
 import { ConciergeScreen } from "@/components/public-site/ConciergeScreen";
 import { ConciergeOption } from "@/components/public-site/ConciergeOption";
@@ -330,17 +330,92 @@ function PayoffContent({
   priority: PriorityId | null;
   focusRef: (el: HTMLElement | null) => void;
 }) {
+  const [showDetails, setShowDetails] = useState(false);
   const payoff =
     category && priority ? getPayoff(category, priority) : null;
   const project = payoff
     ? projects.find((p) => p.slug === payoff.projectSlug)
     : null;
 
+  if (showDetails && project) {
+    return (
+      <div className="text-left">
+        {/* Close button */}
+        <button
+          onClick={() => setShowDetails(false)}
+          className="mb-4 flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-white"
+          aria-label="Close project details"
+        >
+          <X className="h-4 w-4" />
+          Close
+        </button>
+
+        {/* Scrollable detail card */}
+        <div className="max-h-[60svh] overflow-y-auto rounded-xl border border-white/[0.06] bg-white/[0.03] backdrop-blur-sm">
+          {project.image && (
+            <div className="relative aspect-video w-full overflow-hidden">
+              <Image
+                src={project.image}
+                alt={project.title}
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, 512px"
+                priority
+              />
+            </div>
+          )}
+          <div className="p-5">
+            <h3 className="text-xl font-bold text-white">{project.title}</h3>
+            <p className="mt-1 text-sm text-primary">{project.subtitle}</p>
+
+            <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
+              {project.description}
+            </p>
+
+            {project.capabilities.length > 0 && (
+              <div className="mt-4">
+                <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  Capabilities
+                </h4>
+                <div className="mt-2 flex flex-wrap gap-1.5">
+                  {project.capabilities.map((cap) => (
+                    <span
+                      key={cap}
+                      className="rounded-md bg-white/[0.06] px-2 py-1 text-xs text-white/80"
+                    >
+                      {cap}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {project.url && (
+              <a
+                href={project.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-4 inline-flex items-center gap-1.5 text-sm text-primary transition-colors hover:text-white"
+              >
+                Visit live site
+                <ExternalLink className="h-3.5 w-3.5" />
+              </a>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="text-center">
-      {/* Portfolio showcase */}
+      {/* Portfolio showcase — clickable for details */}
       {project && (
-        <div className="mb-6 overflow-hidden rounded-xl border border-white/[0.06] bg-white/[0.03] backdrop-blur-sm">
+        <button
+          onClick={() => setShowDetails(true)}
+          className="mb-6 w-full overflow-hidden rounded-xl border border-white/[0.06] bg-white/[0.03] text-left backdrop-blur-sm transition-colors hover:border-white/[0.12]"
+          aria-label={`View details for ${project.title}`}
+        >
           {project.image && (
             <div className="relative aspect-video w-full overflow-hidden">
               <Image
@@ -366,8 +441,11 @@ function PayoffContent({
                 {payoff.tagline}
               </p>
             )}
+            <p className="mt-2 text-xs text-primary">
+              Tap to see project details
+            </p>
           </div>
-        </div>
+        </button>
       )}
 
       {/* Intent-matched CTA with progressive profiling */}
