@@ -151,10 +151,10 @@ export function MobileConcierge() {
 
               <div className="flex-1" />
 
-              {/* Subtle hint — pulse to draw attention */}
-              <p className="relative z-10 animate-pulse pb-4 text-sm text-muted-foreground/60 md:pb-8">
-                <span className="md:hidden">Tap to continue</span>
-                <span className="hidden md:inline">Click to continue</span>
+              {/* CTA hint — pulse to draw attention */}
+              <p className="relative z-10 animate-pulse pb-4 text-lg font-semibold md:pb-8 md:text-xl">
+                <span className="md:hidden"><span className="text-primary">Tap</span> <span className="text-white">to</span> <span className="text-primary">get started</span></span>
+                <span className="hidden md:inline"><span className="text-primary">Click</span> <span className="text-white">to</span> <span className="text-primary">get started</span></span>
               </p>
             </button>
           </ConciergeScreen>
