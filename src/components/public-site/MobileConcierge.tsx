@@ -45,6 +45,22 @@ export function MobileConcierge() {
               ? conciergeContent.otherPayoff.headline
               : "Here\u2019s what we can do for you";
 
+  // Lock body scroll on homepage — prevents iOS Safari touch-scroll ambiguity
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    document.body.style.position = "fixed";
+    document.body.style.inset = "0";
+    document.body.style.touchAction = "manipulation";
+    document.body.style.overscrollBehavior = "none";
+    return () => {
+      document.body.style.overflow = "";
+      document.body.style.position = "";
+      document.body.style.inset = "";
+      document.body.style.touchAction = "";
+      document.body.style.overscrollBehavior = "";
+    };
+  }, []);
+
   // Reset to welcome when Home is clicked from the homepage
   useEffect(() => {
     function handleReset() {
@@ -113,7 +129,7 @@ export function MobileConcierge() {
 
   return (
     <section
-      className="relative h-[100svh] overflow-hidden"
+      className="relative h-[100svh] touch-manipulation overflow-hidden"
       aria-label="Welcome \u2014 tell us what you\u2019re building"
     >
       <HeroBackground />
@@ -180,11 +196,11 @@ export function MobileConcierge() {
               {/* Tier 3: CTA — anchored near bottom, distinct from content */}
               <div className="relative z-10 mb-8 text-center sm:mb-10 md:mb-12">
                 <p className="animate-cta-glow text-lg font-bold tracking-wide sm:text-xl md:text-2xl">
-                  <span className="text-emerald-400">Click Anywhere</span>{" "}
+                  <span className="text-white">Click Anywhere</span>{" "}
                   <span className="text-white/60">to</span>{" "}
-                  <span className="text-emerald-400">Get Started</span>
+                  <span className="text-white">Get Started</span>
                 </p>
-                <div className="animate-cta-glow mx-auto mt-2.5 h-px w-20 rounded-full bg-emerald-400/60 md:w-28" />
+                <div className="animate-cta-glow mx-auto mt-2.5 h-px w-20 rounded-full bg-white/60 md:w-28" />
               </div>
             </button>
           </ConciergeScreen>
