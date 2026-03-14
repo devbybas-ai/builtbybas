@@ -50,7 +50,7 @@ export function MobileConcierge() {
       category && category !== "other"
         ? conciergeContent.qualifiers[category].headline
         : "",
-    priority: "What matters most in this project?",
+    priority: "What matters most?",
     timeline: "When do you need this?",
     confirmation: conciergeContent.confirmation.headline,
   };
@@ -397,7 +397,7 @@ export function MobileConcierge() {
             <div className="flex-1" />
             <div className="relative z-10 mx-auto w-full max-w-sm md:max-w-xl lg:max-w-2xl">
               <h2 className="text-center text-[1.875rem] font-bold leading-tight tracking-tight text-white md:text-5xl lg:text-6xl">
-                What matters most in this project?
+                What matters most?
               </h2>
               <div className="mt-8 flex flex-col gap-3 md:mt-10 md:gap-4">
                 {(category === "other" || !category

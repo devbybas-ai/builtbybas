@@ -149,27 +149,27 @@ export const conciergeContent: ConciergeContent = {
   },
   followUps: {
     website: {
-      headline: "What matters most in this project?",
+      headline: "What matters most?",
       priorities: [
-        { id: "design", label: "It needs to look incredible", icon: "Check" },
-        { id: "speed", label: "It needs to be fast and reliable", icon: "Check" },
-        { id: "budget", label: "I need it done right, on budget", icon: "Check" },
+        { id: "budget", label: "Budget -- stay on target, no surprises", icon: "Check" },
+        { id: "time", label: "Time -- I need this done fast", icon: "Check" },
+        { id: "vision", label: "Completeness -- no compromises", icon: "Check" },
       ],
     },
     webapp: {
-      headline: "What matters most in this project?",
+      headline: "What matters most?",
       priorities: [
-        { id: "realtime", label: "Real-time data and visibility", icon: "Check" },
-        { id: "ux", label: "An experience my team will actually use", icon: "Check" },
-        { id: "scale", label: "It needs to grow with us", icon: "Check" },
+        { id: "budget", label: "Budget -- stay on target, no surprises", icon: "Check" },
+        { id: "time", label: "Time -- I need this done fast", icon: "Check" },
+        { id: "vision", label: "Completeness -- no compromises", icon: "Check" },
       ],
     },
     platform: {
-      headline: "What matters most in this project?",
+      headline: "What matters most?",
       priorities: [
-        { id: "control", label: "End-to-end control over everything", icon: "Check" },
-        { id: "portal", label: "A portal my clients will love", icon: "Check" },
-        { id: "growth", label: "Built to scale as we grow", icon: "Check" },
+        { id: "budget", label: "Budget -- stay on target, no surprises", icon: "Check" },
+        { id: "time", label: "Time -- I need this done fast", icon: "Check" },
+        { id: "vision", label: "Completeness -- no compromises", icon: "Check" },
       ],
     },
     other: {
@@ -203,7 +203,7 @@ export const conciergeContent: ConciergeContent = {
       hasSomethingElse: false,
     },
     webapp: {
-      headline: "What kind of tool are you looking for?",
+      headline: "What kind of tool?",
       options: [
         {
           id: "business-dashboard",
@@ -233,7 +233,7 @@ export const conciergeContent: ConciergeContent = {
       hasSomethingElse: true,
     },
     platform: {
-      headline: "What does your platform need to do?",
+      headline: "What does it need to do?",
       options: [
         {
           id: "full-platform",
@@ -258,9 +258,9 @@ export const conciergeContent: ConciergeContent = {
     { id: "flexible", label: "Flexible -- quality over speed" },
   ],
   otherPriorities: [
-    { id: "quality", label: "Quality -- built right, no shortcuts", icon: "Check" },
-    { id: "speed", label: "Speed -- I need this fast", icon: "Check" },
-    { id: "budget", label: "Budget -- I need it done smart", icon: "Check" },
+    { id: "budget", label: "Budget -- stay on target, no surprises", icon: "Check" },
+    { id: "time", label: "Time -- I need this done fast", icon: "Check" },
+    { id: "vision", label: "Completeness -- no compromises", icon: "Check" },
   ],
   confirmation: {
     headline: "Here's what we heard.",
@@ -293,16 +293,9 @@ export const serviceDisplayLabels: Record<QualifierId, string> = {
 };
 
 export const priorityDisplayLabels: Record<string, string> = {
-  design: "Design",
-  speed: "Speed",
   budget: "Budget",
-  realtime: "Real-time data",
-  ux: "User experience",
-  scale: "Scalability",
-  control: "Control",
-  portal: "Client experience",
-  growth: "Growth",
-  quality: "Quality",
+  time: "Speed",
+  vision: "Completeness",
 };
 
 export const timelineDisplayLabels: Record<TimelineId, string> = {

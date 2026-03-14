@@ -136,11 +136,11 @@ describe("MobileConcierge", () => {
     });
     expect(
       screen.getByRole("heading", {
-        name: "What matters most in this project?",
+        name: "What matters most?",
       }),
     ).toBeInTheDocument();
     expect(
-      screen.getByLabelText("Select: It needs to look incredible"),
+      screen.getByLabelText("Select: Budget -- stay on target, no surprises"),
     ).toBeInTheDocument();
     vi.useRealTimers();
   });
@@ -157,7 +157,7 @@ describe("MobileConcierge", () => {
       vi.advanceTimersByTime(200);
     });
     fireEvent.click(
-      screen.getByLabelText("Select: It needs to look incredible"),
+      screen.getByLabelText("Select: Budget -- stay on target, no surprises"),
     );
     act(() => {
       vi.advanceTimersByTime(200);
@@ -186,7 +186,7 @@ describe("MobileConcierge", () => {
       vi.advanceTimersByTime(200);
     });
     fireEvent.click(
-      screen.getByLabelText("Select: It needs to look incredible"),
+      screen.getByLabelText("Select: Budget -- stay on target, no surprises"),
     );
     act(() => {
       vi.advanceTimersByTime(200);
@@ -215,13 +215,13 @@ describe("MobileConcierge", () => {
     });
     expect(
       screen.getByRole("heading", {
-        name: "What matters most in this project?",
+        name: "What matters most?",
       }),
     ).toBeInTheDocument();
     // Shows generic priorities
     expect(
       screen.getByLabelText(
-        "Select: Quality -- built right, no shortcuts",
+        "Select: Budget -- stay on target, no surprises",
       ),
     ).toBeInTheDocument();
     vi.useRealTimers();
@@ -271,7 +271,7 @@ describe("MobileConcierge", () => {
     });
     expect(
       screen.getByRole("heading", {
-        name: "What matters most in this project?",
+        name: "What matters most?",
       }),
     ).toBeInTheDocument();
 
@@ -310,7 +310,7 @@ describe("MobileConcierge", () => {
       vi.advanceTimersByTime(200);
     });
     fireEvent.click(
-      screen.getByLabelText("Select: It needs to look incredible"),
+      screen.getByLabelText("Select: Budget -- stay on target, no surprises"),
     );
     act(() => {
       vi.advanceTimersByTime(200);
