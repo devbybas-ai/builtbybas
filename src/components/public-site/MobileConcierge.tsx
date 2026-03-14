@@ -505,7 +505,7 @@ function ConfirmationContent({
     const url = buildIntakeUrl(service, priority, timeline, category);
     const timer = setTimeout(() => {
       router.push(url);
-    }, 4440);
+    }, 7770);
     return () => clearTimeout(timer);
   }, [service, priority, timeline, category, router]);
 

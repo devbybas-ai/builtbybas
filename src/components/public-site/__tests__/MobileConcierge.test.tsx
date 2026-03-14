@@ -325,9 +325,9 @@ describe("MobileConcierge", () => {
     expect(
       screen.getByRole("heading", { name: "Here's what we heard." }),
     ).toBeInTheDocument();
-    // Advance past 4.44s
+    // Advance past 7.77s
     act(() => {
-      vi.advanceTimersByTime(4500);
+      vi.advanceTimersByTime(7800);
     });
     expect(mockPush).toHaveBeenCalledWith(
       expect.stringContaining("/intake?service=marketing-website"),
