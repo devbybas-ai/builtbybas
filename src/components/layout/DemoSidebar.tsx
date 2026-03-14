@@ -35,7 +35,7 @@ export function DemoSidebar() {
           href="/demo"
           className="text-lg font-bold tracking-tight text-foreground"
         >
-          <span className="text-green-400">Built</span>By<span className="text-green-400">Bas</span>
+          <span className="text-primary">Built</span>By<span className="text-primary">Bas</span>
         </Link>
         <span className="rounded-full bg-amber-500/20 px-2 py-0.5 text-[10px] font-bold text-amber-400">
           DEMO

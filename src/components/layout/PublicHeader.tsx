@@ -191,7 +191,7 @@ export function PublicHeader() {
                     The best way to predict the future is to create it
                   </p>
                   <span className="text-xs font-medium text-foreground">
-                    <span className="text-green-400">Built</span>By<span className="text-green-400">Bas</span>
+                    <span className="text-primary">Built</span>By<span className="text-primary">Bas</span>
                   </span>
                 </div>
               </motion.div>
