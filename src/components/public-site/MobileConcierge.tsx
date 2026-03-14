@@ -339,41 +339,43 @@ function PayoffContent({
 
   if (showDetails && project) {
     return (
-      <div className="text-left">
-        {/* Close button */}
-        <button
-          onClick={() => setShowDetails(false)}
-          className="mb-4 flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-white"
-          aria-label="Close project details"
-        >
-          <X className="h-4 w-4" />
-          Close
-        </button>
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/95 backdrop-blur-xl">
+        <div className="flex h-[80svh] w-[90vw] flex-col rounded-2xl border border-white/[0.08] bg-white/[0.04] md:w-[80vw] lg:w-[70vw]">
+          {/* Header with close */}
+          <div className="flex items-center justify-between border-b border-white/[0.06] px-5 py-3">
+            <h3 className="text-lg font-bold text-white">{project.title}</h3>
+            <button
+              onClick={() => setShowDetails(false)}
+              className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-white/[0.06] hover:text-white"
+              aria-label="Close project details"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          </div>
 
-        {/* Scrollable detail card */}
-        <div className="max-h-[60svh] overflow-y-auto rounded-xl border border-white/[0.06] bg-white/[0.03] backdrop-blur-sm">
-          {project.image && (
-            <div className="relative aspect-video w-full overflow-hidden">
-              <Image
-                src={project.image}
-                alt={project.title}
-                fill
-                className="object-cover"
-                sizes="(max-width: 768px) 100vw, 512px"
-                priority
-              />
-            </div>
-          )}
-          <div className="p-5">
-            <h3 className="text-xl font-bold text-white">{project.title}</h3>
-            <p className="mt-1 text-sm text-primary">{project.subtitle}</p>
+          {/* Content — fills remaining space, scrolls only if needed */}
+          <div className="flex-1 overflow-y-auto p-5 md:p-8">
+            {project.image && (
+              <div className="relative aspect-video w-full overflow-hidden rounded-xl">
+                <Image
+                  src={project.image}
+                  alt={project.title}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 90vw, 80vw"
+                  priority
+                />
+              </div>
+            )}
 
-            <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
+            <p className="mt-4 text-sm text-primary md:text-base">{project.subtitle}</p>
+
+            <p className="mt-4 text-sm leading-relaxed text-muted-foreground md:text-base md:leading-relaxed">
               {project.description}
             </p>
 
             {project.capabilities.length > 0 && (
-              <div className="mt-4">
+              <div className="mt-6">
                 <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                   Capabilities
                 </h4>
@@ -381,7 +383,7 @@ function PayoffContent({
                   {project.capabilities.map((cap) => (
                     <span
                       key={cap}
-                      className="rounded-md bg-white/[0.06] px-2 py-1 text-xs text-white/80"
+                      className="rounded-md bg-white/[0.06] px-2.5 py-1 text-xs text-white/80"
                     >
                       {cap}
                     </span>
@@ -395,7 +397,7 @@ function PayoffContent({
                 href={project.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-4 inline-flex items-center gap-1.5 text-sm text-primary transition-colors hover:text-white"
+                className="mt-6 inline-flex items-center gap-1.5 text-sm text-primary transition-colors hover:text-white"
               >
                 Visit live site
                 <ExternalLink className="h-3.5 w-3.5" />
