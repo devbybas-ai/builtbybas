@@ -55,16 +55,31 @@ Replace the mobile homepage hero with a full-screen, no-scroll concierge flow. I
 - 3 tap targets tailored to Screen 1 selection (see Content Mapping below)
 - Back arrow top-left (below nav) to revise Screen 1 answer
 
+### Transition: Matching Animation (Labor Illusion)
+
+- After Screen 2 answer, a brief (~800ms) "matching" interstitial plays before Screen 3
+- Subtle shimmer/pulse animation with text like "Finding your match..."
+- Makes the tailored result feel earned, not random — increases perceived value
+- Reduced motion: skip animation, transition directly to Screen 3
+
 ### Screen 3 — The Payoff
 
 - Full viewport
 - Tailored portfolio piece based on both answers:
   - Project screenshot/preview
   - "We built this for [client name]"
-- Below: warm personal CTA — "Tell us about yours — it takes 2 minutes"
-  - Single button linking to `/intake`
+- Below: **intent-matched CTA** — dynamically generated based on their answers, not generic
+  - e.g., Website + Design → "Let's make your brand stand out"
+  - e.g., Platform + Growth → "Let's build something that scales with you"
+  - Single button linking to `/intake?type={category}&priority={priority}` (progressive profiling)
 - Secondary link: "Explore our services →" linking to `/services`
 - Back arrow to revise Screen 2 answer
+
+### Progressive Profiling
+
+- The `/intake` link includes query params from the concierge answers: `?type={category}&priority={priority}`
+- The intake form can pre-fill the project type field based on these params
+- Reduces form friction — the visitor doesn't repeat information they already provided
 
 ---
 
@@ -81,16 +96,18 @@ Replace the mobile homepage hero with a full-screen, no-scroll concierge flow. I
 
 ### Screen 2 → Screen 3 Portfolio Match
 
-| Combination | Portfolio Piece |
-|---|---|
-| Website + Design | The Colour Parlor |
-| Website + Speed | Orca Child in the Wild |
-| Website + Budget | The Colour Parlor |
-| Web App + any | All Beauty Hair Studio |
-| Platform + End-to-end control | All Beauty Hair Studio |
-| Platform + Client-facing portal | All Beauty Hair Studio |
-| Platform + Growth-ready | Figaro Barbershop |
-| Something Else | (skips to intake) |
+| Combination | Portfolio Piece | Intent-Matched CTA |
+|---|---|---|
+| Website + Design | The Colour Parlor | "Let's make your brand stand out" |
+| Website + Speed | Orca Child in the Wild | "Let's build something fast and reliable" |
+| Website + Budget | The Colour Parlor | "Let's get you online — done right" |
+| Web App + Real-time | All Beauty Hair Studio | "Let's give you real-time visibility" |
+| Web App + UX | All Beauty Hair Studio | "Let's build tools your team will love" |
+| Web App + Scale | All Beauty Hair Studio | "Let's build something that grows with you" |
+| Platform + Control | All Beauty Hair Studio | "Let's put you in control" |
+| Platform + Portal | All Beauty Hair Studio | "Let's give your clients a window in" |
+| Platform + Growth | Figaro Barbershop | "Let's build something that scales with you" |
+| Something Else | (skips to intake) | "Tell Us About Your Project" |
 
 Exact copy and mappings will be refined during implementation. The principle: every combination has a destination.
 
@@ -154,7 +171,7 @@ Exact copy and mappings will be refined during implementation. The principle: ev
 ### State Management
 
 ```
-useState: screen ('greeting' | 'followup' | 'payoff')
+useState: screen ('greeting' | 'followup' | 'matching' | 'payoff')
 useState: category (string | null)
 useState: priority (string | null)
 ```

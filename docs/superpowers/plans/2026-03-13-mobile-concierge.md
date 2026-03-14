@@ -47,7 +47,7 @@ Create the file with strict types for the concierge content map:
 ```typescript
 // src/lib/concierge-content.ts
 
-export type ConciergeScreen = "greeting" | "followup" | "payoff";
+export type ConciergeScreen = "greeting" | "followup" | "matching" | "payoff";
 
 export type CategoryId = "website" | "webapp" | "platform" | "other";
 
@@ -69,7 +69,8 @@ export interface ConciergePriority {
 
 export interface ConciergePayoff {
   projectSlug: string;
-  tagline: string; // e.g., "We built this for a hair salon that needed to stand out"
+  tagline: string; // e.g., "We built this for a salon that wanted to stand out online"
+  ctaLabel: string; // Intent-matched CTA, e.g., "Let's make your brand stand out"
 }
 
 export interface ConciergeContent {
@@ -90,14 +91,11 @@ export interface ConciergeContent {
     ctaLabel: string;
     ctaHref: string;
   };
-  payoffCta: {
-    label: string;
-    href: string;
-  };
   payoffSecondary: {
     label: string;
     href: string;
   };
+  matchingText: string; // shown during labor illusion animation
 }
 ```
 
@@ -149,35 +147,37 @@ export const conciergeContent: ConciergeContent = {
     },
   },
   payoffs: {
-    "website-design": { projectSlug: "the-colour-parlor", tagline: "We built this for a salon that wanted to stand out online" },
-    "website-speed": { projectSlug: "orca-child-in-the-wild", tagline: "We built this for a conservation nonprofit that needed to reach everyone" },
-    "website-budget": { projectSlug: "the-colour-parlor", tagline: "We built this for a small business that needed maximum impact" },
-    "webapp-realtime": { projectSlug: "all-beauty-hair-studio", tagline: "We built this for a studio that needed real-time visibility into their business" },
-    "webapp-ux": { projectSlug: "all-beauty-hair-studio", tagline: "We built this for a team that needed tools they'd actually enjoy using" },
-    "webapp-scale": { projectSlug: "all-beauty-hair-studio", tagline: "We built this to grow with the business — from one location to many" },
-    "platform-control": { projectSlug: "all-beauty-hair-studio", tagline: "We built this for a business that wanted to own every part of their operation" },
-    "platform-portal": { projectSlug: "all-beauty-hair-studio", tagline: "We built this so their clients could see everything in one place" },
-    "platform-growth": { projectSlug: "figaro-barbershop", tagline: "We're building this for a barbershop that's ready to grow" },
+    "website-design": { projectSlug: "the-colour-parlor", tagline: "We built this for a salon that wanted to stand out online", ctaLabel: "Let's make your brand stand out" },
+    "website-speed": { projectSlug: "orca-child-in-the-wild", tagline: "We built this for a conservation nonprofit that needed to reach everyone", ctaLabel: "Let's build something fast and reliable" },
+    "website-budget": { projectSlug: "the-colour-parlor", tagline: "We built this for a small business that needed maximum impact", ctaLabel: "Let's get you online — done right" },
+    "webapp-realtime": { projectSlug: "all-beauty-hair-studio", tagline: "We built this for a studio that needed real-time visibility into their business", ctaLabel: "Let's give you real-time visibility" },
+    "webapp-ux": { projectSlug: "all-beauty-hair-studio", tagline: "We built this for a team that needed tools they'd actually enjoy using", ctaLabel: "Let's build tools your team will love" },
+    "webapp-scale": { projectSlug: "all-beauty-hair-studio", tagline: "We built this to grow with the business — from one location to many", ctaLabel: "Let's build something that grows with you" },
+    "platform-control": { projectSlug: "all-beauty-hair-studio", tagline: "We built this for a business that wanted to own every part of their operation", ctaLabel: "Let's put you in control" },
+    "platform-portal": { projectSlug: "all-beauty-hair-studio", tagline: "We built this so their clients could see everything in one place", ctaLabel: "Let's give your clients a window in" },
+    "platform-growth": { projectSlug: "figaro-barbershop", tagline: "We're building this for a barbershop that's ready to grow", ctaLabel: "Let's build something that scales with you" },
   },
   otherPayoff: {
     headline: "We'd love to hear about it",
     body: "Every project is different — tell us about yours and we'll figure it out together.",
     ctaLabel: "Tell Us About Your Project",
-    ctaHref: "/intake",
-  },
-  payoffCta: {
-    label: "Tell us about yours — it takes 2 minutes",
-    href: "/intake",
+    ctaHref: "/intake?type=other",
   },
   payoffSecondary: {
     label: "Explore our services →",
     href: "/services",
   },
+  matchingText: "Finding your match...",
 };
 
 /** Lookup helper — returns the payoff for a category+priority combo */
 export function getPayoff(category: CategoryId, priority: PriorityId): ConciergePayoff | null {
   return conciergeContent.payoffs[`${category}-${priority}`] ?? null;
+}
+
+/** Build intake URL with progressive profiling params */
+export function getIntakeHref(category: CategoryId, priority: PriorityId): string {
+  return `/intake?type=${encodeURIComponent(category)}&priority=${encodeURIComponent(priority)}`;
 }
 ```
 
@@ -236,6 +236,13 @@ describe("concierge-content", () => {
     }
   });
 
+  it("every payoff has an intent-matched ctaLabel", () => {
+    for (const [key, payoff] of Object.entries(conciergeContent.payoffs)) {
+      expect(payoff.ctaLabel, `Missing ctaLabel for ${key}`).toBeTruthy();
+      expect(payoff.ctaLabel.length).toBeGreaterThan(5);
+    }
+  });
+
   it("getPayoff returns null for unknown combos", () => {
     expect(getPayoff("website" as CategoryId, "nonexistent")).toBeNull();
   });
@@ -254,7 +261,7 @@ describe("concierge-content", () => {
 
 Run: `pnpm vitest run src/lib/__tests__/concierge-content.test.ts`
 
-Expected: All 6 tests PASS. If any fail, fix the content map data (likely a slug mismatch — check `src/data/portfolio.ts` for exact slug values).
+Expected: All 7 tests PASS. If any fail, fix the content map data (likely a slug mismatch — check `src/data/portfolio.ts` for exact slug values).
 
 - [ ] **Step 3: Commit**
 
@@ -455,6 +462,7 @@ import { ConciergeOption } from "@/components/public-site/ConciergeOption";
 import {
   conciergeContent,
   getPayoff,
+  getIntakeHref,
   type ConciergeScreen as ScreenType,
   type CategoryId,
   type PriorityId,
@@ -475,9 +483,11 @@ export function MobileConcierge() {
       ? conciergeContent.greeting.headline
       : screen === "followup" && category
         ? conciergeContent.followUps[category].headline
-        : category === "other"
-          ? conciergeContent.otherPayoff.headline
-          : "Here's what we can do for you";
+        : screen === "matching"
+          ? conciergeContent.matchingText
+          : category === "other"
+            ? conciergeContent.otherPayoff.headline
+            : "Here's what we can do for you";
 
   // Announce headline and move focus on screen change
   useEffect(() => {
@@ -505,7 +515,11 @@ export function MobileConcierge() {
   function handlePrioritySelect(priId: PriorityId) {
     setPriority(priId);
     setDirection(1);
-    setScreen("payoff");
+    setScreen("matching");
+    // Labor illusion: brief matching animation before showing payoff
+    setTimeout(() => {
+      setScreen("payoff");
+    }, 800);
   }
 
   function handleBack() {
@@ -634,6 +648,21 @@ export function MobileConcierge() {
           </ConciergeScreen>
         )}
 
+        {screen === "matching" && (
+          <ConciergeScreen screenKey="matching" direction={direction}>
+            <div className="flex-1" />
+            <div className="relative z-10 mx-auto w-full max-w-sm text-center">
+              <div className="inline-block animate-pulse">
+                <div className="h-2 w-2 rounded-full bg-green-400 shadow-[0_0_12px] shadow-green-400/40" />
+              </div>
+              <p className="mt-4 text-base text-muted-foreground">
+                {conciergeContent.matchingText}
+              </p>
+            </div>
+            <div className="flex-1" />
+          </ConciergeScreen>
+        )}
+
         {screen === "payoff" && (
           <ConciergeScreen screenKey="payoff" direction={direction}>
             {/* Back button */}
@@ -741,12 +770,12 @@ function PayoffContent({
         </div>
       )}
 
-      {/* Primary CTA */}
+      {/* Intent-matched CTA with progressive profiling */}
       <Link
-        href={conciergeContent.payoffCta.href}
+        href={category && priority ? getIntakeHref(category, priority) : "/intake"}
         className="btn-shine neon-glow inline-flex h-12 w-full items-center justify-center rounded-xl bg-primary text-base font-semibold text-primary-foreground transition-all hover:bg-cyan-hover"
       >
-        {conciergeContent.payoffCta.label}
+        {payoff?.ctaLabel ?? "Tell us about yours"}
       </Link>
 
       {/* Secondary link */}
@@ -908,14 +937,19 @@ describe("MobileConcierge", () => {
     vi.useRealTimers();
   });
 
-  it("shows payoff screen when priority is selected", () => {
+  it("shows matching screen then payoff when priority is selected", () => {
     vi.useFakeTimers();
     render(<MobileConcierge />);
     fireEvent.click(screen.getByLabelText("Select: A Website"));
-    act(() => { vi.advanceTimersByTime(200); });
+    act(() => { vi.advanceTimersByTime(200); }); // past option glow delay
     fireEvent.click(screen.getByLabelText("Select: It needs to look incredible"));
-    act(() => { vi.advanceTimersByTime(200); });
-    expect(screen.getByText(/tell us about yours/i)).toBeInTheDocument();
+    act(() => { vi.advanceTimersByTime(200); }); // past option glow delay
+    // Should show matching screen with labor illusion
+    expect(screen.getByText("Finding your match...")).toBeInTheDocument();
+    // Advance past 800ms matching animation
+    act(() => { vi.advanceTimersByTime(800); });
+    // Now should show payoff with intent-matched CTA
+    expect(screen.getByText("Let's make your brand stand out")).toBeInTheDocument();
     vi.useRealTimers();
   });
 
@@ -926,7 +960,19 @@ describe("MobileConcierge", () => {
     act(() => { vi.advanceTimersByTime(200); });
     expect(screen.getByText("We'd love to hear about it")).toBeInTheDocument();
     const ctaLink = screen.getByText("Tell Us About Your Project");
-    expect(ctaLink.closest("a")).toHaveAttribute("href", "/intake");
+    expect(ctaLink.closest("a")).toHaveAttribute("href", "/intake?type=other");
+    vi.useRealTimers();
+  });
+
+  it("payoff CTA includes progressive profiling params", () => {
+    vi.useFakeTimers();
+    render(<MobileConcierge />);
+    fireEvent.click(screen.getByLabelText("Select: A Website"));
+    act(() => { vi.advanceTimersByTime(200); });
+    fireEvent.click(screen.getByLabelText("Select: It needs to look incredible"));
+    act(() => { vi.advanceTimersByTime(1000); }); // past glow + matching
+    const ctaLink = screen.getByText("Let's make your brand stand out");
+    expect(ctaLink.closest("a")).toHaveAttribute("href", "/intake?type=website&priority=design");
     vi.useRealTimers();
   });
 
