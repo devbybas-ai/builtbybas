@@ -13,7 +13,10 @@
 - **Personal name removed:** "Bas Rosario" replaced with "the BuiltByBas team" / "BuiltByBas staff" in AI policy page, proposal emails, proposal generator, JSON-LD schema.
 - **Welcome screen improved:** "Tap/Click to get started" with pulse animation, white text, larger size.
 - **Project detail overlay:** Clickable carousel cards open inline 80svh detail view with hidden scrollbar, close button returns to payoff.
-- **ValueProposition section removed** from homepage — streamlined to Hero → CTA.
+- **ValueProposition section removed** from homepage.
+- **CTA section removed** from homepage.
+- **Footer removed** from homepage — landing page is now purely the concierge flow (nav + full-screen concierge, nothing below).
+- **Tagline added to welcome screen:** "Tell Us How Your Business Works. / We'll Build the System Around It." — white, bold, 2 rows, below the subtitle.
 - **Carousel cards enlarged** from 80% to 90% viewport width.
 
 **HeroBackground Animation — PARTIAL (needs next session):**
@@ -36,6 +39,8 @@
 - `cb7e34f` feat: portfolio carousel on payoff screen
 - `06dd839` feat: auto-scrolling infinite carousel on desktop
 - `9074fdd` feat: data packet chip animation, remove center hub + ValueProposition
+- `988c68d` feat: add tagline to welcome screen — 2-row white text
+- `4904de6` feat: remove CTA section and footer from homepage
 - Plus 5 earlier commits (nav cleanup, branding, name removal, welcome CTA, detail overlay, scrollbar fix, All Beauty URL)
 
 **Known issues for next session:**
