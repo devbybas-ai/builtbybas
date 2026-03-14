@@ -353,8 +353,8 @@ function PayoffContent({
             </button>
           </div>
 
-          {/* Content — fills remaining space, scrolls only if needed */}
-          <div className="flex-1 overflow-y-auto p-5 md:p-8">
+          {/* Content — fills remaining space, hidden scrollbar */}
+          <div className="flex-1 overflow-y-auto p-5 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden md:p-8">
             {project.image && (
               <div className="relative aspect-video w-full overflow-hidden rounded-xl">
                 <Image
