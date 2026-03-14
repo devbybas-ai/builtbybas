@@ -1,8 +1,50 @@
 # BuiltByBas — Handoff Document
 
-> **Last Updated:** 2026-03-13 (Session 47)
-> **Status:** Mobile Concierge Experience — IMPLEMENTED. 3-screen guided flow live on mobile. Desktop hero unchanged.
-> **Next Session Priority:** Extend concierge to desktop. Diversify portfolio mappings (too many point to All Beauty). Deploy to VPS.
+> **Last Updated:** 2026-03-14 (Session 48)
+> **Status:** Concierge UX polish + carousel + HeroBackground animation rework in progress.
+> **Next Session Priority:** Fix data packet animation (full-length trace travel → chip impact). Deploy to VPS.
+
+## Session 48 Changes (2026-03-14)
+
+**Concierge UX Polish & Landing Page Streamlining:**
+
+- **Portfolio carousel on payoff screen:** Single project card replaced with horizontal snap-scroll carousel showing all live + in-progress portfolio projects. CSS mask-image edge fade on both sides. Each payoff option starts on its matched project. Desktop: auto-scrolls every 3.33s with 2.22s initial delay, infinite loop via duplicated items, pauses on hover. Mobile: manual swipe with scroll-snap.
+- **Branding unified:** "Built" (text-primary) "By" (white) "Bas" (text-primary) applied across all layout components — PublicHeader, PublicFooter, AdminSidebar, PortalSidebar, DemoSidebar. Nav logo text removed, nav links kept left, CTA right.
+- **Personal name removed:** "Bas Rosario" replaced with "the BuiltByBas team" / "BuiltByBas staff" in AI policy page, proposal emails, proposal generator, JSON-LD schema.
+- **Welcome screen improved:** "Tap/Click to get started" with pulse animation, white text, larger size.
+- **Project detail overlay:** Clickable carousel cards open inline 80svh detail view with hidden scrollbar, close button returns to payoff.
+- **ValueProposition section removed** from homepage — streamlined to Hero → CTA.
+- **Carousel cards enlarged** from 80% to 90% viewport width.
+
+**HeroBackground Animation — PARTIAL (needs next session):**
+
+- Removed center hub circle (the white-flashing circle at center).
+- Removed old particle-to-center animation system (p1/p2/p3 + trace illumination dashes).
+- Removed central processor radial gradient div.
+- Added new JS-driven data packet animation: packet travels from screen edge along PCB traces to an IC chip, chip fills with light from impact side, fades, waits 4.44s, cycles through 4 chips from 4 edges.
+- **ISSUE — Bas wants different behavior:** The data packet should travel the FULL LENGTH of the page along existing traces (like the old r1-r16 routes), not short paths from edges. The packet should traverse the entire screen following traces, then on reaching the far side, hit a chip and do the fill animation. The old particle behavior (traveling long routes) was correct — just redirect to chips instead of center hub.
+- **Fix for next session:** Change PACKET_ROUTES to use the existing long r1-r16 route paths (which span the full board), but redirect their endpoints to nearby IC chips instead of center (500,300). Keep the chip fill-on-impact animation.
+
+**Other changes:**
+
+- All Beauty Hair Studio URL temporarily pointed to `http://72.62.200.30`.
+- Chip trace animation (removed in Session 41) stays removed — only the new data packet system.
+
+**Tests:** 229/229 pass. tsc clean. Build clean.
+
+**Commits pushed to main:**
+- `cb7e34f` feat: portfolio carousel on payoff screen
+- `06dd839` feat: auto-scrolling infinite carousel on desktop
+- `9074fdd` feat: data packet chip animation, remove center hub + ValueProposition
+- Plus 5 earlier commits (nav cleanup, branding, name removal, welcome CTA, detail overlay, scrollbar fix, All Beauty URL)
+
+**Known issues for next session:**
+- Data packet animation needs rework — full-length trace travel, not short edge paths
+- 5 of 9 payoff combos still map to All Beauty Hair Studio
+- Deploy all changes to VPS
+- Bas wants concierge on desktop too (not just mobile)
+
+---
 
 ## Session 47 Changes (2026-03-13)
 
