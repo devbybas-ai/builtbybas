@@ -350,6 +350,71 @@ function PayoffContent({
     category && priority ? getPayoff(category, priority) : null;
   const carouselItems = getCarouselProjects(payoff?.projectSlug);
 
+  // Duplicate items for seamless desktop loop (hidden on mobile)
+  const displayItems = [...carouselItems, ...carouselItems];
+
+  // Desktop auto-scroll: 2.22s delay, 3.33s per card, pause on hover
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el || carouselItems.length <= 1) return;
+    if (!window.matchMedia("(min-width: 768px)").matches) return;
+
+    let currentIdx = 0;
+    const count = carouselItems.length;
+    let paused = false;
+    let startTimer: ReturnType<typeof setTimeout> | null = null;
+    let advanceTimer: ReturnType<typeof setTimeout> | null = null;
+
+    function getCardLeft(i: number) {
+      const card = el!.children[i] as HTMLElement | undefined;
+      if (!card) return 0;
+      return card.offsetLeft - el!.offsetWidth * 0.1;
+    }
+
+    function scheduleAdvance() {
+      advanceTimer = setTimeout(() => {
+        if (paused) {
+          scheduleAdvance();
+          return;
+        }
+        currentIdx++;
+
+        if (currentIdx >= count) {
+          // Smooth scroll to the first duplicate card
+          el!.scrollTo({ left: getCardLeft(currentIdx), behavior: "smooth" });
+          // After transition completes, jump back to real first card
+          setTimeout(() => {
+            currentIdx = 0;
+            // Temporarily disable snap so jump is instant
+            el!.style.scrollSnapType = "none";
+            el!.scrollTo({ left: getCardLeft(0), behavior: "auto" });
+            requestAnimationFrame(() => {
+              el!.style.scrollSnapType = "";
+            });
+          }, 500);
+        } else {
+          el!.scrollTo({ left: getCardLeft(currentIdx), behavior: "smooth" });
+        }
+
+        scheduleAdvance();
+      }, 3330);
+    }
+
+    startTimer = setTimeout(scheduleAdvance, 2220);
+
+    const pause = () => { paused = true; };
+    const resume = () => { paused = false; };
+    el.addEventListener("mouseenter", pause);
+    el.addEventListener("mouseleave", resume);
+
+    return () => {
+      if (startTimer) clearTimeout(startTimer);
+      if (advanceTimer) clearTimeout(advanceTimer);
+      el.removeEventListener("mouseenter", pause);
+      el.removeEventListener("mouseleave", resume);
+    };
+  }, [carouselItems.length]);
+
   // Detail overlay
   if (detailProject) {
     return (
@@ -436,13 +501,13 @@ function PayoffContent({
         >
           <div
             ref={scrollRef}
-            className="flex snap-x snap-mandatory gap-4 overflow-x-auto px-[10%] [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+            className="flex snap-x snap-mandatory gap-4 overflow-x-auto px-[10%] md:snap-none [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
           >
-            {carouselItems.map((proj) => (
+            {displayItems.map((proj, i) => (
               <button
-                key={proj.slug}
+                key={`${proj.slug}-${i}`}
                 onClick={() => setDetailProject(proj)}
-                className="w-[80%] flex-shrink-0 snap-center overflow-hidden rounded-xl border border-white/[0.06] bg-white/[0.03] text-left backdrop-blur-sm transition-colors hover:border-white/[0.12]"
+                className={`w-[80%] flex-shrink-0 snap-center overflow-hidden rounded-xl border border-white/[0.06] bg-white/[0.03] text-left backdrop-blur-sm transition-colors hover:border-white/[0.12] ${i >= carouselItems.length ? "hidden md:block" : ""}`}
                 aria-label={`View details for ${proj.title}`}
               >
                 {proj.image && (
@@ -458,8 +523,8 @@ function PayoffContent({
                 )}
                 <div className="p-4">
                   <h3
-                    ref={proj.slug === payoff?.projectSlug ? focusRef as React.Ref<HTMLHeadingElement> : undefined}
-                    tabIndex={proj.slug === payoff?.projectSlug ? -1 : undefined}
+                    ref={i < carouselItems.length && proj.slug === payoff?.projectSlug ? focusRef as React.Ref<HTMLHeadingElement> : undefined}
+                    tabIndex={i < carouselItems.length && proj.slug === payoff?.projectSlug ? -1 : undefined}
                     className="text-lg font-bold text-white outline-none"
                   >
                     {proj.title}
