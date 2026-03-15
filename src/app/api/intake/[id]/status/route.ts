@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { z } from "zod";
+import { z } from "zod/v4";
 import { requireAdmin } from "@/lib/api-auth";
 import { updateIntakeStatus } from "@/lib/intake-storage";
 

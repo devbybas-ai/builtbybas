@@ -2,6 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { markdownToHtml } from "@/lib/markdown-to-html";
+import {
+  ProposalPolicyOverlay,
+  type PolicyKey,
+} from "@/components/proposal/ProposalPolicyOverlay";
 
 interface ProposalData {
   title: string;
@@ -30,6 +34,7 @@ export function ProposalResponse({ token }: { token: string }) {
   const [responded, setResponded] = useState<"accepted" | "rejected" | null>(null);
   const [declineReason, setDeclineReason] = useState("");
   const [showDeclineForm, setShowDeclineForm] = useState(false);
+  const [activePolicy, setActivePolicy] = useState<PolicyKey | null>(null);
 
   useEffect(() => {
     async function fetchProposal() {
@@ -231,15 +236,42 @@ export function ProposalResponse({ token }: { token: string }) {
         </div>
 
         {/* Footer */}
-        <div className="mt-8 pt-6 border-t border-white/10 text-center">
-          <p className="text-white/30 text-xs">
-            BuiltByBas - Custom Software &amp; Web Development
-          </p>
-          <a href="https://builtbybas.com" className="text-primary/50 text-xs hover:text-primary transition-colors">
-            builtbybas.com
-          </a>
+        <div className="mt-8 pt-6 border-t border-white/10">
+          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
+            {(
+              [
+                ["privacy", "Privacy Policy"],
+                ["terms", "Terms of Service"],
+                ["cookies", "Cookie Policy"],
+                ["refund", "Refund Policy"],
+                ["ai-policy", "Responsible AI"],
+              ] as const
+            ).map(([key, label]) => (
+              <button
+                key={key}
+                onClick={() => setActivePolicy(key)}
+                className="text-xs text-white/30 transition-colors hover:text-primary"
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+          <div className="mt-3 text-center">
+            <a
+              href="https://builtbybas.com"
+              className="text-primary/50 text-xs hover:text-primary transition-colors"
+            >
+              builtbybas.com
+            </a>
+          </div>
         </div>
       </div>
+
+      {/* Policy overlay */}
+      <ProposalPolicyOverlay
+        activePolicy={activePolicy}
+        onClose={() => setActivePolicy(null)}
+      />
     </main>
   );
 }

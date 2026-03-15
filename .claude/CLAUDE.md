@@ -24,7 +24,7 @@ Read these files at the start of every session, in this order:
 
 | #   | File       | Location            | Why                                                         |
 | --- | ---------- | ------------------- | ----------------------------------------------------------- |
-| 1   | HANDOFF.md | `docs/HANDOFF.md`   | Master context — where we left off, what's next             |
+| 1   | HANDOFF.md | `.claude/HANDOFF.md`   | Master context — where we left off, what's next             |
 | 2   | AUDIT.md   | `AUDIT.md`          | Health dashboard — current scores, open issues, tech debt   |
 | 3   | CLAUDE.md  | `.claude/CLAUDE.md` | This file — project identity, standards, prohibited actions |
 
@@ -35,7 +35,7 @@ If code exists: run `pnpm test` and `pnpm build` to confirm baseline before maki
 ## 3. Session Protocol
 
 ### Start of Session
-1. Read `docs/HANDOFF.md` — understand current state
+1. Read `.claude/HANDOFF.md` — understand current state
 2. Check `AUDIT.md` — note any open issues or failing dimensions
 3. Run tests (if code exists): `pnpm test` then `pnpm build`
 4. Confirm understanding: "I've read the handoff. Here's what I understand: [summary]. Here's what I plan to do: [plan]."
@@ -45,10 +45,10 @@ If code exists: run `pnpm test` and `pnpm build` to confirm baseline before maki
 - Note any issues discovered — add to AUDIT.md issues tracker immediately
 - Test before and after every change: `pnpm test`
 - Follow the 8 pillars on every line of code
-- Activate SME agent personas from `docs/AGENT-PERSONAS.md` when task matches triggers
+- Activate SME agent personas from `.claude/AGENT-PERSONAS.md` when task matches triggers
 
 ### End of Session
-1. Update `docs/HANDOFF.md` — what was done, what's next, any blockers
+1. Update `.claude/HANDOFF.md` — what was done, what's next, any blockers
 2. Update `AUDIT.md` — new issues found, issues resolved, score changes
 3. Run full test suite: `pnpm test` then `pnpm build`
 4. Recommend next steps: "Next session should focus on: [specific tasks]"
@@ -169,7 +169,7 @@ From the Site Health Plan — these are NEVER allowed:
 **Process:**
 - No shipping without tests
 - No skipping the session protocol
-- No modifying archived content in `docs/archive/`
+- No modifying archived content in `.claude/archive/`
 - No changing locked tech stack decisions without documented justification in HANDOFF.md
 - No deploying without `pnpm test` and `pnpm build` passing
 
@@ -230,15 +230,15 @@ git pull origin main → pnpm install --frozen-lockfile → pnpm build → pm2 r
 | ---------------------- | -------------------- | ----------------------------------------------- | ----------------------- |
 | SITE-HEALTH-PLAN.md    | `.claude/`           | Source of truth — 8 pillars, all standards      | When source changes     |
 | CLAUDE.md              | `.claude/`           | This file — project instructions                | When standards change   |
-| HANDOFF.md             | `docs/`              | Master context — status, decisions, next steps  | Every session           |
+| HANDOFF.md             | `.claude/`           | Master context — status, decisions, next steps  | Every session           |
 | AUDIT.md               | root                 | Health dashboard, issues, tech debt             | When issues found/fixed |
 | RAI-POLICY.md          | root                 | AI governance — human review gates              | When AI scope changes   |
-| DIRECTORY-STRUCTURE.md | `docs/`              | File/folder tree and conventions                | When structure evolves  |
-| TESTING-PLAN.md        | `docs/`              | Test strategy and coverage targets              | When test types change  |
-| SITEMAP.md             | `docs/`              | Routes, pages, navigation                       | When routes change      |
-| DOCUMENT-INDEX.md      | `docs/`              | Master doc navigation                           | When docs added         |
-| AGENT-PERSONAS.md      | `docs/`              | SME agent library (59 agents)                   | When agents added       |
-| AGENT-PERFORMANCE.md   | `docs/`              | Agent performance log and leaderboard           | When agents activated   |
+| DIRECTORY-STRUCTURE.md | `.claude/`           | File/folder tree and conventions                | When structure evolves  |
+| TESTING-PLAN.md        | `.claude/`           | Test strategy and coverage targets              | When test types change  |
+| SITEMAP.md             | `.claude/`           | Routes, pages, navigation                       | When routes change      |
+| DOCUMENT-INDEX.md      | `.claude/`           | Master doc navigation                           | When docs added         |
+| AGENT-PERSONAS.md      | `.claude/`           | SME agent library (59 agents)                   | When agents added       |
+| AGENT-PERFORMANCE.md   | `.claude/`           | Agent performance log and leaderboard           | When agents activated   |
 | PROJECT-SETUP.md       | root                 | Founding document — how project was initialized | Reference only          |
 | .env.example           | root                 | Environment variable template                   | When vars added         |
 | .gitignore             | root                 | Git exclusion rules                             | When patterns needed    |

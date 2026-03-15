@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "zod/v4";
 import { SERVICE_MODULES, type ServiceModule } from "@/data/intake-questions";
 
 // ============================================

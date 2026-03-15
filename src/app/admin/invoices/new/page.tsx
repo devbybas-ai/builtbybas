@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { desc, eq } from "drizzle-orm";
+import { desc, inArray } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { clients, projects } from "@/lib/schema";
 import { decrypt } from "@/lib/encryption";
@@ -25,7 +25,7 @@ export default async function NewInvoicePage() {
         clientId: projects.clientId,
       })
       .from(projects)
-      .where(eq(projects.status, "in_progress"))
+      .where(inArray(projects.status, ["planning", "in_progress", "on_hold"]))
       .orderBy(desc(projects.updatedAt)),
   ]);
 
