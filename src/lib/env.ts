@@ -9,6 +9,9 @@ const envSchema = z.object({
   EMAIL_FROM: z.string().optional(),
   ADMIN_EMAIL: z.string().optional(),
   NEXT_PUBLIC_SITE_URL: z.string().optional(),
+  CRON_SECRET: z.string().optional(),
+  STRIPE_SECRET_KEY: z.string().optional(),
+  STRIPE_WEBHOOK_SECRET: z.string().optional(),
 });
 
 type Env = z.infer<typeof envSchema>;
