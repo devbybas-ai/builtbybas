@@ -300,12 +300,7 @@ export const invoices = pgTable(
     notes: text("notes"),
     token: varchar("token", { length: 64 }).unique(),
     reminderSentAt: timestamp("reminder_sent_at", { withTimezone: true }),
-    milestoneId: uuid("milestone_id").references(
-      () => billingMilestones.id,
-      {
-        onDelete: "set null",
-      }
-    ),
+    milestoneId: uuid("milestone_id"),
     paymentMethod: varchar("payment_method", { length: 50 }),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()

@@ -2,9 +2,11 @@ import { NextResponse, type NextRequest } from "next/server";
 import { eq } from "drizzle-orm";
 import { z } from "zod/v4";
 import { db } from "@/lib/db";
-import { proposals, clients, pipelineHistory } from "@/lib/schema";
+import { proposals, clients, pipelineHistory, projects, billingMilestones, invoices, invoiceItems } from "@/lib/schema";
 import { hmacHash } from "@/lib/encryption";
 import { sanitizeString } from "@/lib/sanitize";
+import { calculateMilestoneAmounts, calculateMilestoneDates, mapTimelineToWeeks, generateInvoiceToken, buildDepositLineItems } from "@/lib/billing";
+import { generateInvoiceNumber } from "@/lib/invoice-utils";
 
 export async function POST(request: NextRequest) {
   let body: unknown;
@@ -41,6 +43,9 @@ export async function POST(request: NextRequest) {
       clientId: proposals.clientId,
       status: proposals.status,
       title: proposals.title,
+      estimatedBudgetCents: proposals.estimatedBudgetCents,
+      timeline: proposals.timeline,
+      services: proposals.services,
     })
     .from(proposals)
     .where(eq(proposals.responseToken, hashedToken))
@@ -107,6 +112,81 @@ export async function POST(request: NextRequest) {
             toStage: "proposal_accepted",
             note: "Client accepted the proposal",
           });
+
+          // --- Auto-create project, milestones, and deposit invoice ---
+          const [existingProject] = await tx
+            .select({ id: projects.id })
+            .from(projects)
+            .where(eq(projects.proposalId, proposal.id))
+            .limit(1);
+
+          if (!existingProject) {
+            const startDate = now;
+            const weeks = mapTimelineToWeeks(proposal.timeline ?? "flexible");
+            const targetDate = new Date(now.getTime() + weeks * 7 * 24 * 60 * 60 * 1000);
+
+            const projectRows = await tx.insert(projects).values({
+              name: proposal.title,
+              clientId: proposal.clientId,
+              proposalId: proposal.id,
+              budgetCents: proposal.estimatedBudgetCents ?? 0,
+              services: (proposal.services ?? []) as unknown as string[],
+              status: "planning",
+              startDate,
+              targetDate,
+            }).returning() as { id: string; name: string }[];
+            const project = projectRows[0];
+
+            const amounts = calculateMilestoneAmounts(proposal.estimatedBudgetCents ?? 0);
+            const dates = calculateMilestoneDates(startDate, targetDate);
+
+            const milestoneRows = [
+              { projectId: project.id, type: "deposit" as const, percentage: 50, amountCents: amounts.deposit, scheduledDate: dates.deposit, status: "pending" as const },
+              { projectId: project.id, type: "midpoint" as const, percentage: 25, amountCents: amounts.midpoint, scheduledDate: dates.midpoint, status: "pending" as const },
+              { projectId: project.id, type: "final" as const, percentage: 25, amountCents: amounts.final, scheduledDate: dates.final, status: "pending" as const },
+            ];
+            const insertedMilestones = await tx.insert(billingMilestones).values(milestoneRows).returning() as { id: string; type: string }[];
+
+            if ((proposal.estimatedBudgetCents ?? 0) > 0) {
+              const depositMilestone = insertedMilestones.find(m => m.type === "deposit")!;
+              const { hashedToken: invoiceToken } = generateInvoiceToken();
+              const invoiceNumber = await generateInvoiceNumber(tx);
+              const proposalServices = (proposal.services as Array<{ serviceName: string; estimatedPriceCents: number }>) ?? [];
+              const lineItems = buildDepositLineItems(proposalServices, 50);
+              const subtotalCents = lineItems.reduce((s, li) => s + li.totalCents, 0);
+
+              const invoiceRows = await tx.insert(invoices).values({
+                invoiceNumber,
+                clientId: proposal.clientId!,
+                projectId: project.id,
+                status: "sent",
+                issuedDate: now,
+                dueDate: new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000),
+                token: invoiceToken,
+                milestoneId: depositMilestone.id,
+                subtotalCents,
+                taxCents: 0,
+                totalCents: subtotalCents,
+                taxRate: "0",
+              }).returning() as { id: string }[];
+              const invoice = invoiceRows[0];
+
+              await tx.insert(invoiceItems).values(
+                lineItems.map((li, i) => ({
+                  invoiceId: invoice.id,
+                  description: li.description,
+                  quantity: "1",
+                  unitPriceCents: li.unitPriceCents,
+                  totalCents: li.totalCents,
+                  sortOrder: i,
+                }))
+              );
+
+              await tx.update(billingMilestones)
+                .set({ status: "sent", invoiceId: invoice.id, updatedAt: now })
+                .where(eq(billingMilestones.id, depositMilestone.id));
+            }
+          }
         } else {
           await tx
             .update(clients)
@@ -126,6 +206,8 @@ export async function POST(request: NextRequest) {
       }
     }
   });
+
+  // TODO: Send deposit invoice email to client (wire up after invoice-email.ts is created in Chunk 3)
 
   return NextResponse.json({ success: true, status: newStatus });
 }

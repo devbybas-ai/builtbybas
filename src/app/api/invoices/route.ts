@@ -107,7 +107,7 @@ export async function POST(request: NextRequest) {
           // Generate inside the transaction to avoid race conditions
           const invoiceNumber = await generateInvoiceNumber(tx);
 
-          const [inv] = await tx
+          const rows = await tx
             .insert(invoices)
             .values({
               invoiceNumber,
@@ -120,7 +120,8 @@ export async function POST(request: NextRequest) {
               totalCents,
               notes: data.notes ? sanitizeString(data.notes) : null,
             })
-            .returning();
+            .returning() as { id: string }[];
+          const inv = rows[0];
 
           const itemRows = data.items.map((item, i) => ({
             invoiceId: inv.id,
