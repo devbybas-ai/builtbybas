@@ -1,11 +1,17 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { sql, eq } from "drizzle-orm";
 import { cn } from "@/lib/utils";
+import { db } from "@/lib/db";
+import { invoices, billingMilestones, projects } from "@/lib/schema";
 import { getDashboardData } from "@/lib/dashboard-analytics";
 import { getPriorityBadgeColors } from "@/lib/prioritization";
 import { GlassCard } from "@/components/shared/GlassCard";
 import { StageBadge } from "@/components/admin/StageBadge";
 import { SendIntakeLinkButton } from "@/components/admin/SendIntakeLinkButton";
+import { formatCents } from "@/types/invoice";
+import { getMilestoneTypeLabel } from "@/types/billing";
+import type { MilestoneType } from "@/types/billing";
 
 export const dynamic = "force-dynamic";
 
@@ -29,7 +35,31 @@ function getComplexityBadgeColors(label: string) {
 
 
 export default async function AdminDashboardPage() {
-  const data = await getDashboardData();
+  const [data, billingStatsRows, nextMilestoneRows] = await Promise.all([
+    getDashboardData(),
+    db
+      .select({
+        outstandingCents: sql<number>`coalesce(sum(case when ${invoices.status} in ('sent', 'overdue') then ${invoices.totalCents} else 0 end), 0)::int`,
+        overdueCount: sql<number>`coalesce(sum(case when ${invoices.status} = 'overdue' then 1 else 0 end), 0)::int`,
+      })
+      .from(invoices),
+    db
+      .select({
+        type: billingMilestones.type,
+        amountCents: billingMilestones.amountCents,
+        scheduledDate: billingMilestones.scheduledDate,
+        projectName: projects.name,
+      })
+      .from(billingMilestones)
+      .innerJoin(projects, eq(billingMilestones.projectId, projects.id))
+      .where(eq(billingMilestones.status, "pending"))
+      .orderBy(billingMilestones.scheduledDate)
+      .limit(1),
+  ]);
+
+  const billingStats = billingStatsRows[0] ?? { outstandingCents: 0, overdueCount: 0 };
+  const nextMilestone = nextMilestoneRows[0] ?? null;
+
   const {
     stats,
     complexityDistribution,
@@ -115,6 +145,55 @@ export default async function AdminDashboardPage() {
               style={{ width: `${(stats.avgComplexity / 10) * 100}%` }}
             />
           </div>
+        </GlassCard>
+      </div>
+
+      {/* ---- Billing Summary ---- */}
+      <div className="mt-6">
+        <GlassCard>
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-semibold">Billing</h2>
+            <Link href="/admin/invoices" className="text-sm text-primary hover:underline">
+              View invoices &rarr;
+            </Link>
+          </div>
+          <div className="mt-4 grid grid-cols-2 gap-4">
+            <div>
+              <p className="text-white/50 text-xs uppercase tracking-wide">Outstanding</p>
+              <p className="text-xl font-bold text-primary">
+                {formatCents(billingStats.outstandingCents)}
+              </p>
+            </div>
+            <div>
+              <p className="text-white/50 text-xs uppercase tracking-wide">Overdue</p>
+              <p
+                className={cn(
+                  "text-xl font-bold",
+                  billingStats.overdueCount > 0 ? "text-red-400" : "text-white/75",
+                )}
+              >
+                {billingStats.overdueCount}
+              </p>
+            </div>
+          </div>
+          {nextMilestone && (
+            <div className="mt-4 pt-4 border-t border-white/10">
+              <p className="text-white/50 text-xs uppercase tracking-wide mb-1">Next Milestone</p>
+              <p className="text-sm text-white">
+                {nextMilestone.projectName} -{" "}
+                {getMilestoneTypeLabel(nextMilestone.type as MilestoneType)}
+              </p>
+              {nextMilestone.scheduledDate && (
+                <p className="text-xs text-white/50">
+                  {new Date(nextMilestone.scheduledDate).toLocaleDateString("en-US", {
+                    month: "long",
+                    day: "numeric",
+                    year: "numeric",
+                  })}
+                </p>
+              )}
+            </div>
+          )}
         </GlassCard>
       </div>
 
