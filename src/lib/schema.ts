@@ -76,6 +76,19 @@ export const clientNoteTypeEnum = pgEnum("client_note_type", [
   "internal",
 ]);
 
+export const milestoneTypeEnum = pgEnum("milestone_type", [
+  "deposit",
+  "midpoint",
+  "final",
+]);
+export const milestoneStatusEnum = pgEnum("milestone_status", [
+  "pending",
+  "draft_created",
+  "sent",
+  "paid",
+  "cancelled",
+]);
+
 export const clients = pgTable(
   "clients",
   {
@@ -229,6 +242,14 @@ export const projects = pgTable(
     assignedTo: uuid("assigned_to").references(() => users.id, {
       onDelete: "set null",
     }),
+    billingModel: varchar("billing_model", { length: 50 }).default(
+      "milestone_50_25_25"
+    ),
+    proposalId: uuid("proposal_id")
+      .unique()
+      .references(() => proposals.id, {
+        onDelete: "set null",
+      }),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
       .defaultNow(),
@@ -277,6 +298,15 @@ export const invoices = pgTable(
     taxCents: integer("tax_cents").notNull().default(0),
     totalCents: integer("total_cents").notNull().default(0),
     notes: text("notes"),
+    token: varchar("token", { length: 64 }).unique(),
+    reminderSentAt: timestamp("reminder_sent_at", { withTimezone: true }),
+    milestoneId: uuid("milestone_id").references(
+      () => billingMilestones.id,
+      {
+        onDelete: "set null",
+      }
+    ),
+    paymentMethod: varchar("payment_method", { length: 50 }),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
       .defaultNow(),
@@ -308,6 +338,35 @@ export const invoiceItems = pgTable(
     sortOrder: integer("sort_order").notNull().default(0),
   },
   (table) => [index("idx_invoice_items_invoice_id").on(table.invoiceId)]
+);
+
+export const billingMilestones = pgTable(
+  "billing_milestones",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    projectId: uuid("project_id")
+      .notNull()
+      .references(() => projects.id, { onDelete: "cascade" }),
+    type: milestoneTypeEnum("type").notNull(),
+    percentage: integer("percentage").notNull(),
+    amountCents: integer("amount_cents").notNull(),
+    scheduledDate: timestamp("scheduled_date", { withTimezone: true }),
+    status: milestoneStatusEnum("status").notNull().default("pending"),
+    invoiceId: uuid("invoice_id").references(() => invoices.id, {
+      onDelete: "set null",
+    }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (table) => [
+    index("idx_billing_milestones_project_id").on(table.projectId),
+    index("idx_billing_milestones_status").on(table.status),
+    index("idx_billing_milestones_scheduled_date").on(table.scheduledDate),
+  ]
 );
 
 // ============================================
@@ -444,6 +503,11 @@ export const projectsRelations = relations(projects, ({ one, many }) => ({
     references: [users.id],
   }),
   invoices: many(invoices),
+  milestones: many(billingMilestones),
+  proposal: one(proposals, {
+    fields: [projects.proposalId],
+    references: [proposals.id],
+  }),
 }));
 
 export const invoicesRelations = relations(invoices, ({ one, many }) => ({
@@ -456,6 +520,10 @@ export const invoicesRelations = relations(invoices, ({ one, many }) => ({
     references: [projects.id],
   }),
   items: many(invoiceItems),
+  milestone: one(billingMilestones, {
+    fields: [invoices.milestoneId],
+    references: [billingMilestones.id],
+  }),
 }));
 
 export const invoiceItemsRelations = relations(invoiceItems, ({ one }) => ({
@@ -464,6 +532,20 @@ export const invoiceItemsRelations = relations(invoiceItems, ({ one }) => ({
     references: [invoices.id],
   }),
 }));
+
+export const billingMilestonesRelations = relations(
+  billingMilestones,
+  ({ one }) => ({
+    project: one(projects, {
+      fields: [billingMilestones.projectId],
+      references: [projects.id],
+    }),
+    invoice: one(invoices, {
+      fields: [billingMilestones.invoiceId],
+      references: [invoices.id],
+    }),
+  })
+);
 
 // ============================================
 // Site Settings (key-value)
