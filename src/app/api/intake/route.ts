@@ -34,8 +34,17 @@ export async function POST(request: NextRequest) {
   const parsed = fullIntakeSchema.safeParse(body);
 
   if (!parsed.success) {
+    // Surface field-level errors so the client can show what needs fixing
+    const fieldErrors: Record<string, string> = {};
+    for (const issue of parsed.error.issues) {
+      const key = issue.path.join(".");
+      if (key && !fieldErrors[key]) {
+        fieldErrors[key] = issue.message;
+      }
+    }
+
     return NextResponse.json(
-      { success: false, error: "Validation failed" },
+      { success: false, error: "Validation failed", fieldErrors },
       { status: 400 },
     );
   }

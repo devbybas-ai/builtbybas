@@ -12,6 +12,7 @@ import {
   budgetOnlySchema,
   designBrandSchema,
   finalSchema,
+  fullIntakeSchema,
   validateServiceStep,
 } from "@/lib/intake-validation";
 
@@ -258,6 +259,24 @@ export function useIntakeForm(options: UseIntakeFormOptions = {}) {
   const submitForm = useCallback(async () => {
     if (!validateCurrentStep()) return;
 
+    // Full-form validation before hitting the API -- catches any field
+    // that may have been cleared or corrupted after its step was passed.
+    const preCheck = fullIntakeSchema.safeParse(state.formData);
+    if (!preCheck.success) {
+      const fieldErrors: Record<string, string> = {};
+      for (const issue of preCheck.error.issues) {
+        const key = issue.path[0];
+        if (key && typeof key === "string" && !fieldErrors[key]) {
+          fieldErrors[key] = issue.message;
+        }
+      }
+      // Include a user-facing summary alongside the field errors
+      fieldErrors.form =
+        "Some required fields are missing. Please go back and fill in all required fields.";
+      setState((prev) => ({ ...prev, errors: fieldErrors }));
+      return;
+    }
+
     setState((prev) => ({ ...prev, isSubmitting: true }));
 
     try {
@@ -270,10 +289,20 @@ export function useIntakeForm(options: UseIntakeFormOptions = {}) {
       const result = await response.json();
 
       if (!response.ok || !result.success) {
+        // Surface field-level errors returned by the API
+        const apiErrors: Record<string, string> = {};
+        if (result.fieldErrors) {
+          for (const [key, msg] of Object.entries(result.fieldErrors)) {
+            if (typeof msg === "string") apiErrors[key] = msg;
+          }
+        }
+        apiErrors.form =
+          apiErrors.form ?? "Submission failed. Please try again.";
+
         setState((prev) => ({
           ...prev,
           isSubmitting: false,
-          errors: { form: "Submission failed. Please try again." },
+          errors: apiErrors,
         }));
         return;
       }

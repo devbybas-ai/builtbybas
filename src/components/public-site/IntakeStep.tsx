@@ -35,6 +35,16 @@ function FieldError({ error }: { error?: string }) {
   );
 }
 
+/** Label for radio/checkbox groups -- renders <span> instead of <label>
+ *  so the browser does not flag a missing for/htmlFor association. */
+function GroupLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="flex items-center gap-2 text-sm leading-none font-medium select-none">
+      {children}
+    </span>
+  );
+}
+
 function StepHeader({
   title,
   description,
@@ -249,9 +259,9 @@ function ServiceQuestionField({
     case "radio":
       return (
         <div>
-          <Label>
+          <GroupLabel>
             {question.label} {question.required && "*"}
-          </Label>
+          </GroupLabel>
           <div className="mt-1.5">
             <RadioGroup
               name={question.id}
@@ -272,9 +282,9 @@ function ServiceQuestionField({
     case "checkbox":
       return (
         <div>
-          <Label>
+          <GroupLabel>
             {question.label} {question.required && "*"}
-          </Label>
+          </GroupLabel>
           <div className="mt-1.5">
             <CheckboxGroup
               options={
@@ -463,7 +473,7 @@ function BusinessStep({
       />
       <div className="space-y-5">
         <div>
-          <Label>Industry *</Label>
+          <GroupLabel>Industry *</GroupLabel>
           <div className="mt-1.5">
             <RadioGroup
               name="industry"
@@ -488,7 +498,7 @@ function BusinessStep({
           <FieldError error={errors.industry} />
         </div>
         <div>
-          <Label>Business Size *</Label>
+          <GroupLabel>Business Size *</GroupLabel>
           <div className="mt-1.5">
             <RadioGroup
               name="businessSize"
@@ -506,7 +516,7 @@ function BusinessStep({
           <FieldError error={errors.businessSize} />
         </div>
         <div>
-          <Label>How long has your business been operating? *</Label>
+          <GroupLabel>How long has your business been operating? *</GroupLabel>
           <div className="mt-1.5">
             <RadioGroup
               name="yearsInBusiness"
@@ -589,7 +599,7 @@ function TimelineBudgetStep({
       />
       <div className="space-y-5">
         <div>
-          <Label>Timeline *</Label>
+          <GroupLabel>Timeline *</GroupLabel>
           <div className="mt-1.5">
             <RadioGroup
               name="timeline"
@@ -606,7 +616,7 @@ function TimelineBudgetStep({
           <FieldError error={errors.timeline} />
         </div>
         <div>
-          <Label>Investment Range *</Label>
+          <GroupLabel>Investment Range *</GroupLabel>
           <div className="mt-1.5">
             <RadioGroup
               name="budgetRange"
@@ -644,7 +654,7 @@ function BudgetOnlyStep({
         description="What investment range are you considering?"
       />
       <div>
-        <Label>Investment Range *</Label>
+        <GroupLabel>Investment Range *</GroupLabel>
         <div className="mt-1.5">
           <RadioGroup
             name="budgetRange"
@@ -682,7 +692,7 @@ function DesignBrandStep({
       />
       <div className="space-y-5">
         <div>
-          <Label>Design Preference *</Label>
+          <GroupLabel>Design Preference *</GroupLabel>
           <div className="mt-1.5">
             <RadioGroup
               name="designPreference"
@@ -700,7 +710,7 @@ function DesignBrandStep({
           <FieldError error={errors.designPreference} />
         </div>
         <div>
-          <Label>Do you have existing brand assets? *</Label>
+          <GroupLabel>Do you have existing brand assets? *</GroupLabel>
           <div className="mt-1.5">
             <RadioGroup
               name="hasBrandAssets"
@@ -789,7 +799,7 @@ function FinalStep({
           </div>
         </div>
         <div>
-          <Label>How did you hear about BuiltByBas? (optional)</Label>
+          <GroupLabel>How did you hear about BuiltByBas? (optional)</GroupLabel>
           <div className="mt-1.5">
             <RadioGroup
               name="howDidYouHear"
@@ -805,7 +815,7 @@ function FinalStep({
           </div>
         </div>
         <div>
-          <Label>Preferred Contact Method (optional)</Label>
+          <GroupLabel>Preferred Contact Method (optional)</GroupLabel>
           <div className="mt-1.5">
             <RadioGroup
               name="preferredContact"

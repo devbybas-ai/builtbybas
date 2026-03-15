@@ -1,5 +1,28 @@
 import type { NextConfig } from "next";
 
+const isDev = process.env.NODE_ENV === "development";
+
+// In dev mode, webpack HMR requires 'unsafe-eval' for source maps and fast refresh.
+// In production, eval is never needed and must stay blocked.
+const scriptSrc = isDev
+  ? "'self' 'unsafe-inline' 'unsafe-eval' https://analytics.builtbybas.com"
+  : "'self' 'unsafe-inline' https://analytics.builtbybas.com";
+
+// Dev mode also needs ws: for HMR websocket connections.
+const connectSrc = isDev
+  ? "'self' https://analytics.builtbybas.com ws://localhost:*"
+  : "'self' https://analytics.builtbybas.com";
+
+const csp = [
+  "default-src 'self'",
+  `script-src ${scriptSrc}`,
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data: blob:",
+  "font-src 'self' data:",
+  `connect-src ${connectSrc}`,
+  "frame-ancestors 'none'",
+].join("; ") + ";";
+
 const nextConfig: NextConfig = {
   serverExternalPackages: ["pg", "bcryptjs"],
   async headers() {
@@ -33,8 +56,7 @@ const nextConfig: NextConfig = {
           },
           {
             key: "Content-Security-Policy",
-            value:
-              "default-src 'self'; script-src 'self' 'unsafe-inline' https://analytics.builtbybas.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' https://analytics.builtbybas.com; frame-ancestors 'none';",
+            value: csp,
           },
         ],
       },

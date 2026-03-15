@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import { PublicHeader } from "@/components/layout/PublicHeader";
 import { MobileConcierge } from "@/components/public-site/MobileConcierge";
@@ -19,7 +20,9 @@ export default function HomePage() {
       <JsonLd data={getWebSiteSchema()} />
       <PublicHeader />
       <main id="main-content" className="relative h-full">
-        <MobileConcierge />
+        <Suspense>
+          <MobileConcierge />
+        </Suspense>
       </main>
     </div>
   );

@@ -128,13 +128,15 @@ describe("POST /api/intake", () => {
     expect(json.error).toBe("Invalid request body");
   });
 
-  it("returns 400 when required fields are missing", async () => {
+  it("returns 400 with field errors when required fields are missing", async () => {
     const res = await POST(buildPostRequest({ name: "Only Name" }));
     const json = await res.json();
 
     expect(res.status).toBe(400);
     expect(json.success).toBe(false);
     expect(json.error).toBe("Validation failed");
+    expect(json.fieldErrors).toBeDefined();
+    expect(Object.keys(json.fieldErrors).length).toBeGreaterThan(0);
   });
 
   it("returns 400 when email is invalid", async () => {
