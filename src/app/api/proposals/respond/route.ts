@@ -3,10 +3,12 @@ import { eq } from "drizzle-orm";
 import { z } from "zod/v4";
 import { db } from "@/lib/db";
 import { proposals, clients, pipelineHistory, projects, billingMilestones, invoices, invoiceItems } from "@/lib/schema";
-import { hmacHash } from "@/lib/encryption";
+import { hmacHash, decrypt } from "@/lib/encryption";
 import { sanitizeString } from "@/lib/sanitize";
 import { calculateMilestoneAmounts, calculateMilestoneDates, mapTimelineToWeeks, generateInvoiceToken, buildDepositLineItems } from "@/lib/billing";
 import { generateInvoiceNumber } from "@/lib/invoice-utils";
+import { buildInvoiceEmailHtml } from "@/lib/invoice-email";
+import { sendEmail, SITE_URL } from "@/lib/email";
 
 export async function POST(request: NextRequest) {
   let body: unknown;
@@ -75,6 +77,18 @@ export async function POST(request: NextRequest) {
   const now = new Date();
   const newStatus = action === "accept" ? "accepted" : "rejected";
 
+  // Captured inside transaction for post-transaction email send
+  let depositEmailData: {
+    rawToken: string;
+    invoiceNumber: string;
+    clientName: string;
+    clientEmail: string;
+    projectName: string;
+    dueDate: Date;
+    totalCents: number;
+    lineItems: { description: string; quantity: number; unitPriceCents: number; totalCents: number }[];
+  } | null = null;
+
   await db.transaction(async (tx) => {
     await tx
       .update(proposals)
@@ -90,7 +104,7 @@ export async function POST(request: NextRequest) {
     // Advance pipeline stage
     if (proposal.clientId) {
       const [client] = await tx
-        .select({ pipelineStage: clients.pipelineStage })
+        .select({ pipelineStage: clients.pipelineStage, name: clients.name, email: clients.email })
         .from(clients)
         .where(eq(clients.id, proposal.clientId))
         .limit(1);
@@ -149,11 +163,12 @@ export async function POST(request: NextRequest) {
 
             if ((proposal.estimatedBudgetCents ?? 0) > 0) {
               const depositMilestone = insertedMilestones.find(m => m.type === "deposit")!;
-              const { hashedToken: invoiceToken } = generateInvoiceToken();
+              const { rawToken, hashedToken: invoiceToken } = generateInvoiceToken();
               const invoiceNumber = await generateInvoiceNumber(tx);
               const proposalServices = (proposal.services as Array<{ serviceName: string; estimatedPriceCents: number }>) ?? [];
               const lineItems = buildDepositLineItems(proposalServices, 50);
               const subtotalCents = lineItems.reduce((s, li) => s + li.totalCents, 0);
+              const invoiceDueDate = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
 
               const invoiceRows = await tx.insert(invoices).values({
                 invoiceNumber,
@@ -161,7 +176,7 @@ export async function POST(request: NextRequest) {
                 projectId: project.id,
                 status: "sent",
                 issuedDate: now,
-                dueDate: new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000),
+                dueDate: invoiceDueDate,
                 token: invoiceToken,
                 milestoneId: depositMilestone.id,
                 subtotalCents,
@@ -185,6 +200,23 @@ export async function POST(request: NextRequest) {
               await tx.update(billingMilestones)
                 .set({ status: "sent", invoiceId: invoice.id, updatedAt: now })
                 .where(eq(billingMilestones.id, depositMilestone.id));
+
+              // Capture data for post-transaction email (decrypt PII outside tx)
+              depositEmailData = {
+                rawToken,
+                invoiceNumber,
+                clientName: decrypt(client.name),
+                clientEmail: decrypt(client.email),
+                projectName: project.name,
+                dueDate: invoiceDueDate,
+                totalCents: subtotalCents,
+                lineItems: lineItems.map((li) => ({
+                  description: li.description,
+                  quantity: 1,
+                  unitPriceCents: li.unitPriceCents,
+                  totalCents: li.totalCents,
+                })),
+              };
             }
           }
         } else {
@@ -207,7 +239,40 @@ export async function POST(request: NextRequest) {
     }
   });
 
-  // TODO: Send deposit invoice email to client (wire up after invoice-email.ts is created in Chunk 3)
+  // Send deposit invoice email after the transaction commits
+  if (depositEmailData) {
+    const {
+      rawToken,
+      invoiceNumber,
+      clientName,
+      clientEmail,
+      projectName,
+      dueDate,
+      totalCents,
+      lineItems,
+    } = depositEmailData;
+
+    try {
+      const invoiceUrl = `${SITE_URL}/invoice/${rawToken}`;
+      const html = buildInvoiceEmailHtml({
+        invoiceNumber,
+        clientName,
+        projectName,
+        milestoneType: "deposit",
+        amountCents: totalCents,
+        dueDate,
+        lineItems,
+        invoiceUrl,
+      });
+      await sendEmail({
+        to: clientEmail,
+        subject: `Invoice ${invoiceNumber} - BuiltByBas`,
+        html,
+      });
+    } catch {
+      // Email failure is non-fatal -- invoice is already created in the database
+    }
+  }
 
   return NextResponse.json({ success: true, status: newStatus });
 }
