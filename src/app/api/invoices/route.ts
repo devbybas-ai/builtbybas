@@ -1,24 +1,12 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { eq, desc, sql } from "drizzle-orm";
-import { db, type Database } from "@/lib/db";
+import { eq, desc } from "drizzle-orm";
+import { db } from "@/lib/db";
+import { generateInvoiceNumber, MAX_INVOICE_RETRIES } from "@/lib/invoice-utils";
 import { invoices, invoiceItems, clients, projects } from "@/lib/schema";
 import { requireAdmin } from "@/lib/api-auth";
 import { createInvoiceSchema } from "@/lib/invoice-validation";
 import { sanitizeString } from "@/lib/sanitize";
 import { decrypt } from "@/lib/encryption";
-
-type Transaction = Parameters<Parameters<Database["transaction"]>[0]>[0];
-
-async function generateInvoiceNumber(tx: Transaction): Promise<string> {
-  const year = new Date().getFullYear();
-  const [result] = await tx
-    .select({ count: sql<number>`count(*)::int` })
-    .from(invoices);
-  const seq = (result.count + 1).toString().padStart(4, "0");
-  return `INV-${year}-${seq}`;
-}
-
-const MAX_INVOICE_RETRIES = 3;
 
 export async function GET(request: NextRequest) {
   const auth = await requireAdmin();
