@@ -2,7 +2,13 @@ import type { Metadata } from "next";
 import { eq, asc } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import { db } from "@/lib/db";
-import { invoices, invoiceItems, clients, projects } from "@/lib/schema";
+import {
+  invoices,
+  invoiceItems,
+  clients,
+  projects,
+  billingMilestones,
+} from "@/lib/schema";
 import { decrypt } from "@/lib/encryption";
 import { InvoiceDetailView } from "@/components/admin/InvoiceDetailView";
 
@@ -36,6 +42,8 @@ export default async function InvoiceDetailPage({
       totalCents: invoices.totalCents,
       notes: invoices.notes,
       createdAt: invoices.createdAt,
+      milestoneId: invoices.milestoneId,
+      milestoneType: billingMilestones.type,
       clientName: clients.name,
       clientCompany: clients.company,
       clientEmail: clients.email,
@@ -44,6 +52,10 @@ export default async function InvoiceDetailPage({
     .from(invoices)
     .leftJoin(clients, eq(invoices.clientId, clients.id))
     .leftJoin(projects, eq(invoices.projectId, projects.id))
+    .leftJoin(
+      billingMilestones,
+      eq(invoices.milestoneId, billingMilestones.id)
+    )
     .where(eq(invoices.id, id))
     .limit(1);
 

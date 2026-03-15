@@ -23,6 +23,19 @@ interface EditableItem {
   unitPriceCents: number;
 }
 
+const PAYMENT_METHODS: { value: string; label: string }[] = [
+  { value: "zelle", label: "Zelle" },
+  { value: "check", label: "Check" },
+  { value: "bank_transfer", label: "Bank Transfer" },
+  { value: "other", label: "Other" },
+];
+
+const MILESTONE_TYPE_LABELS: Record<string, string> = {
+  deposit: "Deposit",
+  midpoint: "Midpoint",
+  final: "Final",
+};
+
 interface InvoiceData {
   id: string;
   invoiceNumber: string;
@@ -38,6 +51,8 @@ interface InvoiceData {
   totalCents: number;
   notes: string | null;
   createdAt: Date;
+  milestoneId: string | null;
+  milestoneType: "deposit" | "midpoint" | "final" | null;
   clientName: string | null;
   clientCompany: string | null;
   clientEmail: string | null;
@@ -57,6 +72,18 @@ export function InvoiceDetailView({ invoice }: { invoice: InvoiceData }) {
   const statusMeta = getInvoiceStatusMeta(invoice.status);
   const isOverdue =
     invoice.status === "sent" && new Date(invoice.dueDate) < new Date();
+
+  // Send/resend state
+  const [sending, setSending] = useState(false);
+  const [sendError, setSendError] = useState("");
+
+  // Mark as paid state
+  const [paymentMethod, setPaymentMethod] = useState("zelle");
+  const [markingPaid, setMarkingPaid] = useState(false);
+  const [markPaidError, setMarkPaidError] = useState("");
+
+  const canSend = ["draft", "sent", "overdue"].includes(invoice.status);
+  const canMarkPaid = ["sent", "overdue"].includes(invoice.status);
 
   // Edit mode state
   const [editing, setEditing] = useState(false);
@@ -80,6 +107,48 @@ export function InvoiceDetailView({ invoice }: { invoice: InvoiceData }) {
       router.refresh();
     } finally {
       setUpdating(false);
+    }
+  }
+
+  async function handleSend() {
+    setSending(true);
+    setSendError("");
+    try {
+      const res = await fetch(`/api/invoices/${invoice.id}/send`, {
+        method: "POST",
+      });
+      const data = (await res.json()) as { success: boolean; error?: string };
+      if (data.success) {
+        router.refresh();
+      } else {
+        setSendError(data.error ?? "Failed to send invoice");
+      }
+    } catch {
+      setSendError("Network error");
+    } finally {
+      setSending(false);
+    }
+  }
+
+  async function handleMarkPaid() {
+    setMarkingPaid(true);
+    setMarkPaidError("");
+    try {
+      const res = await fetch(`/api/invoices/${invoice.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: "paid", paymentMethod }),
+      });
+      const data = (await res.json()) as { success: boolean; error?: string };
+      if (data.success) {
+        router.refresh();
+      } else {
+        setMarkPaidError(data.error ?? "Failed to mark as paid");
+      }
+    } catch {
+      setMarkPaidError("Network error");
+    } finally {
+      setMarkingPaid(false);
     }
   }
 
@@ -192,9 +261,16 @@ export function InvoiceDetailView({ invoice }: { invoice: InvoiceData }) {
           >
             &larr; All Invoices
           </Link>
-          <h1 className="mt-2 text-2xl font-bold tracking-tight font-mono">
-            {invoice.invoiceNumber}
-          </h1>
+          <div className="mt-2 flex items-center gap-2">
+            <h1 className="text-2xl font-bold tracking-tight font-mono">
+              {invoice.invoiceNumber}
+            </h1>
+            {invoice.milestoneId && invoice.milestoneType && (
+              <span className="inline-flex items-center rounded-full bg-violet-500/20 px-2.5 py-0.5 text-xs font-semibold text-violet-300">
+                {MILESTONE_TYPE_LABELS[invoice.milestoneType] ?? "Milestone"}
+              </span>
+            )}
+          </div>
           <p className="mt-1 text-muted-foreground">
             {invoice.clientCompany}
             {invoice.clientName ? ` — ${invoice.clientName}` : ""}
@@ -252,6 +328,80 @@ export function InvoiceDetailView({ invoice }: { invoice: InvoiceData }) {
           </p>
         </GlassCard>
       </div>
+
+      {/* Send / Resend */}
+      {canSend && (
+        <GlassCard className="mt-6 border-cyan-500/20">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-sm font-semibold">
+                {invoice.status === "draft" ? "Send Invoice" : "Resend Invoice"}
+              </h2>
+              <p className="mt-1 text-xs text-muted-foreground">
+                {invoice.status === "draft"
+                  ? "Send this invoice to the client by email. Status will update to Sent."
+                  : "Send a fresh copy to the client. A new secure link will be generated."}
+              </p>
+            </div>
+            <button
+              onClick={handleSend}
+              disabled={sending}
+              className="rounded-lg bg-cyan-500 px-4 py-1.5 text-sm font-semibold text-black transition-colors hover:bg-cyan-400 disabled:opacity-50"
+            >
+              {sending
+                ? "Sending..."
+                : invoice.status === "draft"
+                ? "Send Invoice"
+                : "Resend Invoice"}
+            </button>
+          </div>
+          {sendError && (
+            <p className="mt-2 text-sm text-red-400" role="alert">
+              {sendError}
+            </p>
+          )}
+        </GlassCard>
+      )}
+
+      {/* Mark as Paid */}
+      {canMarkPaid && (
+        <GlassCard className="mt-4 border-emerald-500/20">
+          <h2 className="text-sm font-semibold">Mark as Paid</h2>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Record payment and close this invoice.
+          </p>
+          <div className="mt-3 flex flex-wrap items-center gap-3">
+            <label htmlFor="paymentMethod" className="sr-only">
+              Payment method
+            </label>
+            <select
+              id="paymentMethod"
+              value={paymentMethod}
+              onChange={(e) => setPaymentMethod(e.target.value)}
+              disabled={markingPaid}
+              className="rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-sm focus:border-emerald-500 focus:outline-none disabled:opacity-50"
+            >
+              {PAYMENT_METHODS.map((m) => (
+                <option key={m.value} value={m.value}>
+                  {m.label}
+                </option>
+              ))}
+            </select>
+            <button
+              onClick={handleMarkPaid}
+              disabled={markingPaid}
+              className="rounded-lg bg-emerald-600 px-4 py-1.5 text-sm font-semibold text-white transition-colors hover:bg-emerald-500 disabled:opacity-50"
+            >
+              {markingPaid ? "Saving..." : "Mark as Paid"}
+            </button>
+          </div>
+          {markPaidError && (
+            <p className="mt-2 text-sm text-red-400" role="alert">
+              {markPaidError}
+            </p>
+          )}
+        </GlassCard>
+      )}
 
       {/* Edit Controls */}
       {editing && (

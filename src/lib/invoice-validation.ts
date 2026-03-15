@@ -21,4 +21,7 @@ export const updateInvoiceSchema = z.object({
   taxRate: z.number().min(0).max(1).optional(),
   notes: z.string().max(5000).nullable().optional(),
   items: z.array(invoiceItemSchema).min(1).optional(),
+  paymentMethod: z
+    .enum(["zelle", "check", "bank_transfer", "other"])
+    .optional(),
 });

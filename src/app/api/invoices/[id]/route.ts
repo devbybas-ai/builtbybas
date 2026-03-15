@@ -121,6 +121,9 @@ export async function PATCH(
     updates.status = data.status;
     if (data.status === "paid") updates.paidDate = new Date();
   }
+  if (data.paymentMethod !== undefined) {
+    updates.paymentMethod = data.paymentMethod;
+  }
   if (data.dueDate !== undefined) updates.dueDate = new Date(data.dueDate);
   if (data.notes !== undefined)
     updates.notes = data.notes ? sanitizeString(data.notes) : null;
