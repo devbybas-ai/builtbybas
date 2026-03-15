@@ -270,9 +270,9 @@ export function useIntakeForm(options: UseIntakeFormOptions = {}) {
           fieldErrors[key] = issue.message;
         }
       }
-      // Include a user-facing summary alongside the field errors
-      fieldErrors.form =
-        "Some required fields are missing. Please go back and fill in all required fields.";
+      // Show the specific failing field names so the user knows what to fix
+      const failedNames = Object.keys(fieldErrors).join(", ");
+      fieldErrors.form = `Validation issue with: ${failedNames}. Please go back and check these fields.`;
       setState((prev) => ({ ...prev, errors: fieldErrors }));
       return;
     }
