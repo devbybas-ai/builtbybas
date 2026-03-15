@@ -1,8 +1,50 @@
 # BuiltByBas — Handoff Document
 
-> **Last Updated:** 2026-03-14 (Session 53)
-> **Status:** Arrow key navigation added to concierge options. 256 tests passing. Build clean. Concierge Smart Routing plan still pending implementation.
-> **Next Session Priority:** Execute the Concierge Smart Routing implementation plan (16 tasks across 4 chunks). Then deploy everything to VPS. Rotate Resend API key (ISS-12).
+> **Last Updated:** 2026-03-14 (Session 54)
+> **Status:** CRITICAL -- Intake form submission is broken on production. Form shows "Validation issue with: [fields]" error on submit even when all fields are filled. Site is live and clients are looking at it.
+> **Next Session Priority:** Fix the intake form validation failure. Then rotate Resend API key (ISS-12).
+
+## Session 54 Issues (2026-03-14)
+
+**CRITICAL: Intake form submission broken on production (builtbybas.com)**
+
+The intake form (`/intake`) fails to submit with a validation error. Users fill all 6 steps, click Submit, and see an error. This affects all concierge-routed submissions (`/intake?service=...&priority=...&timeline=...`).
+
+**Root cause: NOT YET IDENTIFIED.** The `fullIntakeSchema` (Zod) rejects the form data on the client side before it ever reaches the API. A diagnostic error message was deployed that shows the specific failing field names -- next session should test the form on production to see which fields fail, then trace why.
+
+**What was done this session:**
+- Added `<Suspense>` wrapper around `<MobileConcierge />` in `src/app/page.tsx` (fixed build failure and "Something went wrong" crash on homepage)
+- CSP split for dev/prod in `next.config.ts` (dev allows `unsafe-eval` for HMR, prod unchanged)
+- Added field-level Zod error reporting in `POST /api/intake` response
+- Added client-side `fullIntakeSchema` pre-submission validation in `useIntakeForm.ts` -- this is what now shows the error with field names
+- Changed radio/checkbox group labels from `<Label>` to `<GroupLabel>` (accessibility fix)
+- Added `src/lib/__tests__/intake-full-validation.test.ts` -- schema passes with properly constructed test data
+
+**What was NOT fixed:**
+1. The actual intake form validation failure -- the form data that the real browser form produces does not pass `fullIntakeSchema.safeParse()`. The test data passes, meaning something about how the real form constructs its data differs from the test. Next session must identify the exact field(s) by reading the diagnostic error message on production, then trace the data flow.
+2. CSP `eval()` warning in Chrome Issues tab -- this comes from Next.js's own polyfill bundle (`polyfillFiles` in build-manifest.json). It contains `Function("return this")()` as a fallback. In modern browsers this code path is never reached (`globalThis` resolves first). Chrome flags it statically. Cannot fix without `unsafe-eval` (not acceptable) or Next.js changing their polyfill. This is cosmetic and does NOT break functionality.
+
+**Key files for the intake form fix:**
+- `src/hooks/useIntakeForm.ts` -- the `submitForm` callback runs `fullIntakeSchema.safeParse(state.formData)` before submitting. Error message now shows failing field names.
+- `src/lib/intake-validation.ts` -- contains `fullIntakeSchema` and step-level schemas
+- `src/types/intake.ts` -- `IntakeFormData` type and `INITIAL_FORM_DATA`
+- `src/components/public-site/IntakeStep.tsx` -- form step renderers
+- `src/app/api/intake/route.ts` -- API now returns `fieldErrors` in 400 response
+
+**Debugging approach for next session:**
+1. Go to builtbybas.com, go through concierge, fill all intake form fields, submit
+2. Read the error message -- it will say "Validation issue with: fieldA, fieldB..."
+3. Those field names tell you exactly what's wrong
+4. Trace why those fields in `state.formData` don't match `fullIntakeSchema`
+5. Fix the mismatch (either the schema is too strict or the form data is malformed)
+
+**Commits this session:**
+- `6badc61` -- Suspense fix, CSP split, intake validation improvements, a11y
+- `420611f` -- Diagnostic error message showing field names
+
+**VPS state:** Deployed with commit `420611f`. Build clean. PM2 running. 258 tests pass.
+
+---
 
 ## Session 53 Changes (2026-03-14)
 
