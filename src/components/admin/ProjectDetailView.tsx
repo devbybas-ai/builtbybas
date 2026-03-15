@@ -8,6 +8,8 @@ import { cn } from "@/lib/utils";
 import { PROJECT_STATUSES, getProjectStatusMeta } from "@/types/project";
 import { formatCents } from "@/types/invoice";
 import type { ProjectStatus } from "@/types/project";
+import { BillingTimeline } from "@/components/admin/BillingTimeline";
+import type { MilestoneType, MilestoneStatus } from "@/types/billing";
 
 interface ProjectData {
   id: string;
@@ -26,7 +28,22 @@ interface ProjectData {
   updatedAt: Date;
 }
 
-export function ProjectDetailView({ project }: { project: ProjectData }) {
+interface MilestoneData {
+  id: string;
+  type: MilestoneType;
+  percentage: number;
+  amountCents: number;
+  scheduledDate: Date | null;
+  status: MilestoneStatus;
+  invoiceId: string | null;
+}
+
+interface ProjectDetailViewProps {
+  project: ProjectData;
+  milestones: MilestoneData[];
+}
+
+export function ProjectDetailView({ project, milestones }: ProjectDetailViewProps) {
   const router = useRouter();
   const [updating, setUpdating] = useState(false);
   const statusMeta = getProjectStatusMeta(project.status);
@@ -154,6 +171,13 @@ export function ProjectDetailView({ project }: { project: ProjectData }) {
           ))}
         </div>
       </GlassCard>
+
+      <BillingTimeline
+        milestones={milestones.map((m) => ({
+          ...m,
+          scheduledDate: m.scheduledDate ? m.scheduledDate.toISOString() : null,
+        }))}
+      />
     </>
   );
 }
