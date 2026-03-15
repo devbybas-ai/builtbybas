@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { eq } from "drizzle-orm";
+import { eq, and, inArray } from "drizzle-orm";
 import { db } from "@/lib/db";
-import { projects, clients } from "@/lib/schema";
+import { projects, clients, billingMilestones, invoices } from "@/lib/schema";
 import { requireAdmin } from "@/lib/api-auth";
 import { updateProjectSchema } from "@/lib/project-validation";
 import { sanitizeString } from "@/lib/sanitize";
@@ -128,20 +128,56 @@ export async function PATCH(
   if (data.assignedTo !== undefined) updates.assignedTo = data.assignedTo;
 
   try {
-    const [updated] = await db
-      .update(projects)
-      .set(updates)
-      .where(eq(projects.id, id))
-      .returning();
+    const result = await db.transaction(async (tx) => {
+      const now = new Date();
 
-    if (!updated) {
+      const [updated] = await tx
+        .update(projects)
+        .set(updates)
+        .where(eq(projects.id, id))
+        .returning();
+
+      if (!updated) return null;
+
+      // If project is being cancelled, cancel pending milestones and draft invoices
+      if (updates.status === "cancelled") {
+        const cancelledMilestones = await tx
+          .update(billingMilestones)
+          .set({ status: "cancelled", updatedAt: now })
+          .where(
+            and(
+              eq(billingMilestones.projectId, id),
+              inArray(billingMilestones.status, ["pending", "draft_created"])
+            )
+          )
+          .returning({ invoiceId: billingMilestones.invoiceId });
+
+        for (const ms of cancelledMilestones) {
+          if (ms.invoiceId) {
+            await tx
+              .update(invoices)
+              .set({ status: "cancelled", updatedAt: now })
+              .where(
+                and(
+                  eq(invoices.id, ms.invoiceId),
+                  eq(invoices.status, "draft")
+                )
+              );
+          }
+        }
+      }
+
+      return updated;
+    });
+
+    if (!result) {
       return NextResponse.json(
         { success: false, error: "Project not found" },
         { status: 404 }
       );
     }
 
-    return NextResponse.json({ success: true, data: updated });
+    return NextResponse.json({ success: true, data: result });
   } catch {
     return NextResponse.json(
       { success: false, error: "Failed to update project" },
